@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
+  <title>Bảng Điều Khiển</title>
+
+
+</head>
+
+<body>
+  <div id="main">
+    <div class="header">
+      <div class="left-header">
+        <div class="name-project">
+          <h2>Rice storage</h2>
+        </div>
+      </div>
+      <div class="right-header">
+        <div class="img-account">
+          <img src="https://www.freeiconspng.com/uploads/account-profile-user-icon-9.png" alt="img">
+        </div>
+        <div class="login">Login</div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="logo">Bảng Điều Khiển</div>
+      <a href="#">Trang chủ</a>
+      <a href="#">   </a>
+      <a href="#">Quản lý thanh toán</a>
+      <a href="#">Mua hàng</a>
+      <a href="#">Trung gian</a>
+      <a href="#">Dịch vụ</a>
+    </div>
+
+    <div class="main-content">
+      <div class="notification">
+        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
+      </div>
+
+
+      <div class="table-container">
+        <h3>Đơn mua của tôi</h3>
+        <div class="filters">
+          <select>
+            <option value="">Trạng thái</option>
+            <option value="">A->Z</option>
+            <option value="">Z->A</option>
+
+          </select>
+          <input type="text" placeholder="Từ">
+          <input type="text" placeholder="Đến">
+          <button>Bỏ lọc</button>
+          <button>Thu gọn</button>
+        </div>
+
+        <table>
+          <thead id="table-header">
+            <tr>
+              <th>Mã trung gian</th>
+              <th>Trạng thái</th>
+              <th>Người bán</th>
+              <th>Chủ đề</th>
+              <th>Phương thức</th>
+              <th>Công khai</th>
+              <th>Giá tiền</th>
+              <th>Ảnh</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="table-tbody">
+            <tr class="no-rows">
+              <td colspan="8" style="text-align: center;">No rows found</td>
+              <!-- <td >1</td>
+              <td >2</td>
+              <td >3</td>
+              <td >4</td>
+              <td >5</td>
+              <td >No rows found</td> -->
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  // Lấy số lượng cột từ <thead>
+  const thead = document.querySelector('thead');
+  const noRowsCells = document.querySelectorAll('.no-rows td'); // Lấy tất cả các ô có class no-rows
+
+  if (thead && noRowsCells) {
+    const columnCount = thead.querySelectorAll('th').length; // Đếm số cột
+    noRowsCells.forEach(cell => {
+      cell.setAttribute('colspan', columnCount); // Cập nhật colspan cho mỗi ô
+    });
+  }
+
+
+  // Số lượng hàng cần tạo
+  const rowCount = 10;
+
+  // Lấy tbody
+  const tbody = document.getElementById("table-tbody");
+
+  // Đếm số cột dựa trên thead
+  const columnCount = document.querySelectorAll("thead th").length;
+
+  // Tạo động các hàng
+  for (let i = 0; i < rowCount; i++) {
+    const row = document.createElement("tr");
+    row.className = "no-rows";
+
+    // Tạo một ô với colspan bằng số lượng cột
+    const cell = document.createElement("td");
+    cell.colSpan = columnCount;
+    cell.style.textAlign = "center";
+    cell.textContent = "No rows found";
+
+    row.appendChild(cell);
+    tbody.appendChild(row);
+  }
+
+</script>
+
+</html>
