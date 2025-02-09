@@ -1,0 +1,159 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package DAO;
+
+/**
+ *
+ * @author ADMIN
+ */
+import DAL.DBContext;
+import Entity.orders;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.sql.ResultSet;
+public class DAOOrders extends DBContext{
+     public Vector<orders> getOrders(String sql) {
+        Vector<orders> vector = new Vector<orders>();
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                int orderID = rs.getInt("orderID");
+                int customerID = rs.getInt("customerID");
+                int userID = rs.getInt("userID");
+                double totalAmount = rs.getDouble("totalAmount");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                int isDelete = rs.getInt("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                int porter = rs.getInt("porter");
+                String status = rs.getString("status");
+
+                orders order = new orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, porter, status);
+                vector.add(order);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return vector;
+    }
+
+    public int removeOrder(int orderID) {
+        int n = 0;
+        String sql = "DELETE FROM orders WHERE orderID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, orderID);
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOOrders.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+
+    public int updateOrder(orders order) {
+        int n = 0;
+        String sql = "UPDATE orders SET customerID=?, userID=?, totalAmount=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=?, porter=?, status=? WHERE orderID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, order.getCustomerID());
+            pre.setInt(2, order.getUserID());
+            pre.setDouble(3, order.getTotalAmount());
+            pre.setString(4, order.getCreateAt());
+            pre.setString(5, order.getUpdateAt());
+            pre.setInt(6, order.getCreateBy());
+            pre.setInt(7, order.getIsDelete());
+            pre.setString(8, order.getDeleteAt());
+            pre.setInt(9, order.getDeleteBy());
+            pre.setInt(10, order.getPorter());
+            pre.setString(11, order.getStatus());
+            pre.setInt(12, order.getOrderID());
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOOrders.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+
+    public int insertOrder(orders order) {
+        int n = 0;
+        String sql = "INSERT INTO orders (customerID, userID, totalAmount, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, porter, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, order.getCustomerID());
+            pre.setInt(2, order.getUserID());
+            pre.setDouble(3, order.getTotalAmount());
+            pre.setString(4, order.getCreateAt());
+            pre.setString(5, order.getUpdateAt());
+            pre.setInt(6, order.getCreateBy());
+            pre.setInt(7, order.getIsDelete());
+            pre.setString(8, order.getDeleteAt());
+            pre.setInt(9, order.getDeleteBy());
+            pre.setInt(10, order.getPorter());
+            pre.setString(11, order.getStatus());
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOOrders.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+
+    public void listAll() {
+        String sql = "SELECT * FROM orders"; // Cập nhật tên bảng
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                int orderID = rs.getInt("orderID");
+                int customerID = rs.getInt("customerID");
+                int userID = rs.getInt("userID");
+                double totalAmount = rs.getDouble("totalAmount");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                int isDelete = rs.getInt("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                int porter = rs.getInt("porter");
+                String status = rs.getString("status");
+
+                orders order = new orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, porter, status);
+                System.out.println(order);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        DAOOrders dao = new DAOOrders();
+
+        // 1. Thêm một đơn hàng mới
+//        orders newOrder = new orders( 1, 1, 1300.0, "2023-01-01", "2023-01-01", 1, 0, null, 0, 1, "Pending");
+//        int insertResult = dao.insertOrder(newOrder);
+//        System.out.println("Insert result: " + insertResult);
+
+//        // 2. Cập nhật thông tin đơn hàng
+//        orders orderToUpdate = new orders(1, 1, 1, 4000.0, "2023-01-02", "2023-01-02", 1, 0, null, 0, 1, "Completed");
+//        int updateResult = dao.updateOrder(orderToUpdate);
+//        System.out.println("Update result: " + updateResult);
+//
+//        // 3. Xóa một đơn hàng
+          int removeResult = dao.removeOrder(3); // Giả sử ID của đơn hàng cần xóa
+//        System.out.println("Remove result: " + removeResult);
+
+        // 4. Liệt kê tất cả đơn hàng
+        dao.listAll();
+    }
+}

@@ -1,0 +1,146 @@
+package DAO;
+
+import DAL.DBContext;
+import Entity.debtRecords;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DAODebtRecords extends DBContext {
+
+    public Vector<debtRecords> getDeptRecords(String sql) {
+        Vector<debtRecords> vector = new Vector<debtRecords>();
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                double amount = rs.getDouble("amount");
+                String paymentStatus = rs.getString("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                String createBy = rs.getString("createBy");
+                int isDelete = rs.getInt("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                String deleteBy = rs.getString("deleteBy");
+
+                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                vector.add(record);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return vector;
+    }
+
+    public int insertDeptRecord(debtRecords record) {
+        int n = 0;
+        String sql = "INSERT INTO debtRecords (customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, record.getCustomerID());
+            pre.setInt(2, record.getOrderID());
+            pre.setDouble(3, record.getAmount());
+            pre.setString(4, record.getPaymentStatus());
+            pre.setString(5, record.getCreateAt());
+            pre.setString(6, record.getUpdateAt());
+            pre.setString(7, record.getCreateBy());
+            pre.setInt(8, record.getIsDelete());
+            pre.setString(9, record.getDeleteAt());
+            pre.setString(10, record.getDeleteBy());
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+
+    public int updateDeptRecord(debtRecords record) {
+        int n = 0;
+        String sql = "UPDATE debtRecords SET customerID=?, orderID=?, amount=?, paymentStatus=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE debtID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, record.getCustomerID());
+            pre.setInt(2, record.getOrderID());
+            pre.setDouble(3, record.getAmount());
+            pre.setString(4, record.getPaymentStatus());
+            pre.setString(5, record.getCreateAt());
+            pre.setString(6, record.getUpdateAt());
+            pre.setString(7, record.getCreateBy());
+            pre.setInt(8, record.getIsDelete());
+            pre.setString(9, record.getDeleteAt());
+            pre.setString(10, record.getDeleteBy());
+            pre.setInt(11, record.getDebtID());
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+
+    public int removeDeptRecord(int debtID) {
+        int n = 0;
+        String sql = "DELETE FROM debtRecords WHERE debtID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, debtID);
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+
+    public void listAll() {
+        String sql = "SELECT * FROM debtRecords"; // Cập nhật tên bảng
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                double amount = rs.getDouble("amount");
+                String paymentStatus = rs.getString("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                String createBy = rs.getString("createBy");
+                int isDelete = rs.getInt("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                String deleteBy = rs.getString("deleteBy");
+
+                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                System.out.println(record);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void main(String[] args) {
+        DAODebtRecords dao = new DAODebtRecords();
+
+        // 1. Thêm một bản ghi nợ mới
+//        deptRecords newRecord = new deptRecords( 3, 1, 500.0, "0", "2023-01-01", "2023-01-01", "1", 0, null, null);
+//        int insertResult = dao.insertDeptRecord(newRecord);
+//        System.out.println("Insert result: " + insertResult);
+//
+//        // 2. Cập nhật thông tin bản ghi nợ
+//        deptRecords recordToUpdate = new deptRecords(3, 1, 1001, 1000.0, "1", "2023-01-02", "2023-01-02", "1", 0, null, null);
+//        int updateResult = dao.updateDeptRecord(recordToUpdate);
+//        System.out.println("Update result: " + updateResult);
+////
+//        // 3. Xóa một bản ghi nợ
+        int removeResult = dao.removeDeptRecord(5); // Giả sử ID của bản ghi nợ cần xóa
+//        System.out.println("Remove result: " + removeResult);
+
+        // 4. Liệt kê tất cả bản ghi nợ
+        dao.listAll();
+    }
+}
