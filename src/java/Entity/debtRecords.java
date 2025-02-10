@@ -13,7 +13,7 @@ public class debtRecords {
     private int customerID;
     private int orderID;
     private double amount; 
-    private String paymentStatus;
+    private int paymentStatus;
     private String createAt; 
     private String updateAt; 
     private String createBy;
@@ -21,7 +21,7 @@ public class debtRecords {
     private String deleteAt; 
     private String deleteBy;
 
-    public debtRecords(int debtID, int customerID, int orderID, double amount, String paymentStatus, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public debtRecords(int debtID, int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
         this.debtID = debtID;
         this.customerID = customerID;
         this.orderID = orderID;
@@ -38,7 +38,7 @@ public class debtRecords {
     public debtRecords() {
     }
 
-    public debtRecords(int customerID, int orderID, double amount, String paymentStatus, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public debtRecords(int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
         this.customerID = customerID;
         this.orderID = orderID;
         this.amount = amount;
@@ -83,11 +83,11 @@ public class debtRecords {
         this.amount = amount;
     }
 
-    public String getPaymentStatus() {
+    public int getPaymentStatus() {
         return paymentStatus;
     }
 
-    public void setPaymentStatus(String paymentStatus) {
+    public void setPaymentStatus(int paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 

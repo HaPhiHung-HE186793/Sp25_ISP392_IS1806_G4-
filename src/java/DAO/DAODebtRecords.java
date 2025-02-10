@@ -6,6 +6,8 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +24,7 @@ public class DAODebtRecords extends DBContext {
                 int customerID = rs.getInt("customerID");
                 int orderID = rs.getInt("orderID");
                 double amount = rs.getDouble("amount");
-                String paymentStatus = rs.getString("paymentStatus");
+                int paymentStatus = rs.getInt("paymentStatus");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 String createBy = rs.getString("createBy");
@@ -47,7 +49,7 @@ public class DAODebtRecords extends DBContext {
             pre.setInt(1, record.getCustomerID());
             pre.setInt(2, record.getOrderID());
             pre.setDouble(3, record.getAmount());
-            pre.setString(4, record.getPaymentStatus());
+            pre.setInt(4, record.getPaymentStatus());
             pre.setString(5, record.getCreateAt());
             pre.setString(6, record.getUpdateAt());
             pre.setString(7, record.getCreateBy());
@@ -69,7 +71,7 @@ public class DAODebtRecords extends DBContext {
             pre.setInt(1, record.getCustomerID());
             pre.setInt(2, record.getOrderID());
             pre.setDouble(3, record.getAmount());
-            pre.setString(4, record.getPaymentStatus());
+            pre.setInt(4, record.getPaymentStatus());
             pre.setString(5, record.getCreateAt());
             pre.setString(6, record.getUpdateAt());
             pre.setString(7, record.getCreateBy());
@@ -97,31 +99,60 @@ public class DAODebtRecords extends DBContext {
         return n;
     }
 
-    public void listAll() {
-        String sql = "SELECT * FROM debtRecords"; // Cập nhật tên bảng
-        try {
-            Statement state = conn.createStatement();
-            ResultSet rs = state.executeQuery(sql);
-            while (rs.next()) {
-                int debtID = rs.getInt("debtID");
-                int customerID = rs.getInt("customerID");
-                int orderID = rs.getInt("orderID");
-                double amount = rs.getDouble("amount");
-                String paymentStatus = rs.getString("paymentStatus");
-                String createAt = rs.getString("createAt");
-                String updateAt = rs.getString("updateAt");
-                String createBy = rs.getString("createBy");
-                int isDelete = rs.getInt("isDelete");
-                String deleteAt = rs.getString("deleteAt");
-                String deleteBy = rs.getString("deleteBy");
+//    public void listAll() {
+//        String sql = "SELECT * FROM debtRecords"; // Cập nhật tên bảng
+//        try {
+//            Statement state = conn.createStatement();
+//            ResultSet rs = state.executeQuery(sql);
+//            while (rs.next()) {
+//                int debtID = rs.getInt("debtID");
+//                int customerID = rs.getInt("customerID");
+//                int orderID = rs.getInt("orderID");
+//                double amount = rs.getDouble("amount");
+//                String paymentStatus = rs.getString("paymentStatus");
+//                String createAt = rs.getString("createAt");
+//                String updateAt = rs.getString("updateAt");
+//                String createBy = rs.getString("createBy");
+//                int isDelete = rs.getInt("isDelete");
+//                String deleteAt = rs.getString("deleteAt");
+//                String deleteBy = rs.getString("deleteBy");
+//
+//                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+//                System.out.println(record);
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
-                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-                System.out.println(record);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+    
+    public List<debtRecords> listAll() {
+    List<debtRecords> list = new ArrayList<>();
+    String sql = "SELECT * FROM debtRecords"; 
+    try {
+        Statement state = conn.createStatement();
+        ResultSet rs = state.executeQuery(sql);
+        while (rs.next()) {
+            int debtID = rs.getInt("debtID");
+            int customerID = rs.getInt("customerID");
+            int orderID = rs.getInt("orderID");
+            double amount = rs.getDouble("amount");
+            int paymentStatus = rs.getInt("paymentStatus");
+            String createAt = rs.getString("createAt");
+            String updateAt = rs.getString("updateAt");
+            String createBy = rs.getString("createBy");
+            int isDelete = rs.getInt("isDelete");
+            String deleteAt = rs.getString("deleteAt");
+            String deleteBy = rs.getString("deleteBy");
+
+            debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            list.add(record);
         }
+    } catch (SQLException ex) {
+        Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
     }
+    return list;
+}
 
     public static void main(String[] args) {
         DAODebtRecords dao = new DAODebtRecords();
