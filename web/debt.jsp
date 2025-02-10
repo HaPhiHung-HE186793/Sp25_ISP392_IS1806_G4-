@@ -78,9 +78,9 @@
                     <table>
                         <thead id="table-header">
                             <tr>
-                                <th>Mã trung gian</th>
-                                <th>Trạng thái</th>
-                                <th>Người bán</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th></th>
                                 <th>Chủ đề</th>
                                 <th>Phương thức</th>
                                 <th>Công khai</th>
