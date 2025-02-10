@@ -20,6 +20,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 public class DAOCustomers extends DBContext {
     public Vector<customers> getCustomers(String sql) {
     Vector<customers> vector = new Vector<customers>();
@@ -105,7 +107,36 @@ public class DAOCustomers extends DBContext {
     }
     return n;
 }
-     public void listAll() {
+//     public void listAll() {
+//    String sql = "SELECT * FROM customers"; // Cập nhật tên bảng
+//    try {
+//        Statement state = conn.createStatement();
+//        ResultSet rs = state.executeQuery(sql);
+//        while (rs.next()) {
+//            int customerID = rs.getInt("customerID");
+//            String name = rs.getString("name");
+//            String email = rs.getString("email");
+//            String phone = rs.getString("phone");
+//            String address = rs.getString("address");
+//            double totalDebt = rs.getDouble("totalDebt"); // Sử dụng double cho tổng nợ
+//            String createAt = rs.getString("createAt");
+//            String updateAt = rs.getString("updateAt");
+//            String createBy = rs.getString("createBy");
+//            int isDelete = rs.getInt("isDelete"); // Giả sử isDelete là kiểu int
+//            String deleteAt = rs.getString("deleteAt");
+//            String deleteBy = rs.getString("deleteBy");
+//
+//            customers customer = new customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+//            System.out.println(customer);
+//        }
+//    } catch (SQLException ex) {
+//        ex.printStackTrace();
+//    } 
+//}
+//     
+     
+     public List<customers> listAll() {
+    List<customers> list = new ArrayList<>();
     String sql = "SELECT * FROM customers"; // Cập nhật tên bảng
     try {
         Statement state = conn.createStatement();
@@ -125,12 +156,15 @@ public class DAOCustomers extends DBContext {
             String deleteBy = rs.getString("deleteBy");
 
             customers customer = new customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-            System.out.println(customer);
+            list.add(customer); // Thêm vào danh sách thay vì in ra
         }
     } catch (SQLException ex) {
         ex.printStackTrace();
     } 
+    return list; // Trả về danh sách khách hàng
 }
+
+     
      public static void main(String[] args) {
     DAOCustomers dao = new DAOCustomers();
 
