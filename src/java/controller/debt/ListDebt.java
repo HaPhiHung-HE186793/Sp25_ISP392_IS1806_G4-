@@ -38,7 +38,7 @@ public class ListDebt extends HttpServlet {
             DAOCustomers dao = new DAOCustomers();
         
         List<customers> listCutomers = dao.listAll();
-        request.setAttribute("", listCutomers);
+        request.setAttribute("listCustomers", listCutomers);
         request.getRequestDispatcher("debt.jsp").forward(request, response);
         
         }
