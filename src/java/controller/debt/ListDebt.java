@@ -5,12 +5,18 @@
 
 package controller.debt;
 
+import DAO.DAOCustomers;
+import DAO.DAODebtRecords;
+import Entity.customers;
+import Entity.debtRecords;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -29,16 +35,12 @@ public class ListDebt extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ListDebt</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ListDebt at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            DAOCustomers dao = new DAOCustomers();
+        
+        List<customers> listCutomers = dao.listAll();
+        request.setAttribute("", listCutomers);
+        request.getRequestDispatcher("debt.jsp").forward(request, response);
+        
         }
     } 
 
