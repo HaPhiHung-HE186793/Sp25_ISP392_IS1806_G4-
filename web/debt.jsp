@@ -1,4 +1,4 @@
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,6 +73,9 @@
                         <input type="text" placeholder="Đến">
                         <button>Bỏ lọc</button>
                         <button>Thu gọn</button>
+
+                        <button class="addNewDebt js-open-newDebt">Thêm người nợ</button>
+
                     </div>
 
                     <table>
@@ -80,81 +83,114 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th></th>
-                                <th>Chủ đề</th>
-                                <th>Phương thức</th>
-                                <th>Công khai</th>
-                                <th>Giá tiền</th>
-                                <th>Ảnh</th>
-                                <th>Hành động</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>TotalDebt</th>
+                                <th>CreateAt</th>
+                                <th>UpdateAt</th>
+                                <th>CreateBy</th>
+                                <th>DeleteAt</th>
+                                <th>DeleteBy</th>
+                                <th>IsDelete</th>
+
                             </tr>
                         </thead>
-                            <tbody id="table-tbody">
-
+                        <tbody id="table-tbody">
+                            <c:forEach items="${listCustomers}" var="o">
                                 <tr class="no-rows">
-                                                                    <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
-                                                                     <td >1</td>
-                                                                    <td >2</td>
-                                                                    <td >3</td>
-                                                                    <td >4</td>
-                                                                    <td >5</td>
-                                                                    <td >No rows found</td> 
+                                    <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
+                                    <td >${o.getCustomerID()}</td>
+                                    <td >${o.getName()}</td>
+                                    <td >${o.getEmail()}</td>
+                                    <td >${o.getPhone()}</td>
+                                    <td >${o.getAddress()}</td>
+                                    <td >${o.getTotalDebt()}</td>
+                                    <td >${o.getCreateAt()}</td>
+                                    <td >${o.getUpdateAt()}</td>
+                                    <td >${o.getCreateBy()}</td>
+                                    <td >${o.getDeleteAt()}</td>
+                                    <td >${o.getDeleteBy()}</td>
+                                    <td >${o.getIsDelete()}</td>
+
                                 </tr>
-                            </tbody>
+                            </c:forEach>   
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        
-    </div>
+
+
     </body>
-    
-    
+
+    <div class="newDebt">
+        <div class="newDebt-container">
+            <button class="newDebt-add">
+                 Thêm mới 
+            </button>
+            <button class="newDebt-close js-close-newDebt">
+                 close
+            </button>
+            <div class="newDebt-header">Thông tin người nợ</div>
+            <div class="newDebt-body">
+                
+                
+            <table>
+                        <thead id="newDebt-tableHeader">
+                        </thead>
+                        <tbody class="newDebt-tableTbody">                            
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
+                                    <td ><input class="newDebt-input" type="text" placeholder="Nguyen Van A"> </td>                                    
+                                </tr>                            
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text"> Địa chỉ:</div></td>
+                                    <td ><textarea class="newDebt-input" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
+                                </tr>                                   
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text"> SĐT:</div></td>
+                                    <td ><input class="newDebt-input" type="number" > </td>                                    
+                                </tr>                                   
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text"> Email:</div></td>
+                                    <td ><input class="newDebt-input" type="text" > </td>                                    
+                                </tr>                                   
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text"> Tổng nợ:</div></td>
+                                    <td ><input class="newDebt-input newDebt-total" type="number" placeholder="0" readonly> </td>                                    
+                                </tr>                                                           
+                        </tbody>
+                    </table>
+            
+            </div>
+        </div>
+    </div>
 
     <script>
         // Lấy tbody
-        
-        // Kiểm tra nếu có dữ liệu để hiển thị
-        if (data.length > 0) {
-            // Xóa các hàng "No rows found" nếu có
-            const noRows = document.querySelectorAll('.no-rows');
-            noRows.forEach(row => row.remove());
 
-            // Tạo các hàng dữ liệu
-            data.forEach(item => {
-                const row = document.createElement("tr");
-
-                // Tạo các ô trong hàng
-                row.innerHTML = `
-          <td>${item.maTrungGian}</td>
-          <td>${item.trangThai}</td>
-          <td>${item.nguoiBan}</td>
-          <td>${item.chuDe}</td>
-          <td>${item.phuongThuc}</td>
-          <td>${item.congKhai}</td>
-          <td>${item.giaTien}</td>
-          <td><img src="${item.anh}" alt="Ảnh" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
-          <td><button style="padding: 5px 10px; border: none; background-color: #d9534f; color: white; border-radius: 4px; cursor: pointer;">Hành động</button></td>
-        `;
-
-                tbody.appendChild(row);
-            });
-        } else {
-            // Nếu không có dữ liệu, hiển thị thông báo "No rows found"
-            const row = document.createElement("tr");
-            row.className = "no-rows";
-
-            const cell = document.createElement("td");
-            cell.colSpan = document.querySelectorAll("thead th").length;
-            cell.style.textAlign = "center";
-            cell.textContent = "No rows found";
-
-            row.appendChild(cell);
-            tbody.appendChild(row);
+        const openAddNewDebt = document.querySelector('.js-open-newDebt');//dung de lay ten class//
+        const newDebt = document.querySelector('.newDebt');
+        const closeNewDebt = document.querySelector('.js-close-newDebt');
+        //ham hien thi//
+        function showAddNewDebt() {
+            newDebt.classList.add('open');
         }
-        
-        
-        
+        //ham an//
+        function hideAddNewDebt() {
+            newDebt.classList.remove('open');
+                const inputs = newDebt.querySelectorAll('input,textarea');
+    inputs.forEach(input => input.value = '');
+        }
+
+       
+        openAddNewDebt.addEventListener('click', showAddNewDebt);
+
+
+        closeNewDebt.addEventListener('click', hideAddNewDebt);
+
+
 
 
     </script>
