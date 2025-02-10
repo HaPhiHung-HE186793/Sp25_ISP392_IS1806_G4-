@@ -124,7 +124,35 @@ public class DAODebtRecords extends DBContext {
 //            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
+    
+    
+    public List<debtRecords> listAllbyName(String name) {
+    List<debtRecords> list = new ArrayList<>();
+    String sql = "SELECT * FROM debtRecords "; 
+    try {
+        Statement state = conn.createStatement();
+        ResultSet rs = state.executeQuery(sql);
+        while (rs.next()) {
+            int debtID = rs.getInt("debtID");
+            int customerID = rs.getInt("customerID");
+            int orderID = rs.getInt("orderID");
+            double amount = rs.getDouble("amount");
+            int paymentStatus = rs.getInt("paymentStatus");
+            String createAt = rs.getString("createAt");
+            String updateAt = rs.getString("updateAt");
+            String createBy = rs.getString("createBy");
+            int isDelete = rs.getInt("isDelete");
+            String deleteAt = rs.getString("deleteAt");
+            String deleteBy = rs.getString("deleteBy");
 
+            debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            list.add(record);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return list;
+}
     
     public List<debtRecords> listAll() {
     List<debtRecords> list = new ArrayList<>();
