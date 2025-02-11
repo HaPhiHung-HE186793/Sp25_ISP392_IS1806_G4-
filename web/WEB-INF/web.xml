@@ -4,6 +4,14 @@
         <servlet-name>ListDebt</servlet-name>
         <servlet-class>controller.debt.ListDebt</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>createUser</servlet-name>
+        <servlet-class>controller.user.createUser</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>listUsers</servlet-name>
+        <servlet-class>controller.user.listUsers</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
         <url-pattern>/forgotpass</url-pattern>
@@ -19,5 +27,13 @@
     <servlet-mapping>
         <servlet-name>ListDebt</servlet-name>
         <url-pattern>/ListDebt</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>createUser</servlet-name>
+        <url-pattern>/createuser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>listUsers</servlet-name>
+        <url-pattern>/listusers</url-pattern>
     </servlet-mapping>
 </web-app>
