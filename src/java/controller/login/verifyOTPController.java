@@ -93,12 +93,12 @@ public class verifyOTPController extends HttpServlet {
                 int roleID = (Integer) session.getAttribute("roleID"); // Sửa thành int roleID
                 String createAt = (String) session.getAttribute("createAt"); // Thêm nếu có
                 String updateAt = (String) session.getAttribute("updateAt"); // Thêm nếu có
-                String createBy = (String) session.getAttribute("createBy"); // Thêm nếu có
-                String isDelete = (String) session.getAttribute("isDelete"); // Thêm nếu có
+                int createBy = (Integer) session.getAttribute("createBy"); // Thêm nếu có
+                Boolean isDelete = (Boolean) session.getAttribute("isDelete"); // Thêm nếu có
                 String deleteAt = (String) session.getAttribute("deleteAt"); // Thêm nếu có
-                String deleteBy = (String) session.getAttribute("deleteBy"); // Thêm nếu có // Retrieve dob from session               
+                int deleteBy = (Integer) session.getAttribute("deleteBy"); // Thêm nếu có // Retrieve dob from session               
                 DAOUser dao = new DAOUser();
-                User user = new User( userName, userPassword, email, roleID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                User user = new User(ID, userName, userPassword, email, roleID, email, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
 
            if (enteredOTP.equals(storedOTP)) {
             // OTP verified, redirect to login page
