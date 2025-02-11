@@ -32,7 +32,7 @@ public class DAODebtRecords extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 String deleteBy = rs.getString("deleteBy");
 
-                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, debtID, true, deleteAt, isDelete);
                 vector.add(record);
             }
         } catch (SQLException ex) {
@@ -52,10 +52,10 @@ public class DAODebtRecords extends DBContext {
             pre.setInt(4, record.getPaymentStatus());
             pre.setString(5, record.getCreateAt());
             pre.setString(6, record.getUpdateAt());
-            pre.setString(7, record.getCreateBy());
-            pre.setInt(8, record.getIsDelete());
+            pre.setInt(7, record.getCreateBy());
+            pre.setBoolean(8, record.isIsDelete());
             pre.setString(9, record.getDeleteAt());
-            pre.setString(10, record.getDeleteBy());
+            pre.setInt(10, record.getDeleteBy());
             n = pre.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
@@ -74,10 +74,10 @@ public class DAODebtRecords extends DBContext {
             pre.setInt(4, record.getPaymentStatus());
             pre.setString(5, record.getCreateAt());
             pre.setString(6, record.getUpdateAt());
-            pre.setString(7, record.getCreateBy());
-            pre.setInt(8, record.getIsDelete());
+            pre.setInt(7, record.getCreateBy());
+            pre.setBoolean(8, record.isIsDelete());
             pre.setString(9, record.getDeleteAt());
-            pre.setString(10, record.getDeleteBy());
+            pre.setInt(10, record.getDeleteBy());
             pre.setInt(11, record.getDebtID());
             n = pre.executeUpdate();
         } catch (SQLException ex) {
@@ -140,10 +140,10 @@ public class DAODebtRecords extends DBContext {
             int paymentStatus = rs.getInt("paymentStatus");
             String createAt = rs.getString("createAt");
             String updateAt = rs.getString("updateAt");
-            String createBy = rs.getString("createBy");
-            int isDelete = rs.getInt("isDelete");
+            int createBy = rs.getInt("createBy");
+            Boolean isDelete = rs.getBoolean("isDelete");
             String deleteAt = rs.getString("deleteAt");
-            String deleteBy = rs.getString("deleteBy");
+            int deleteBy = rs.getInt("deleteBy");
 
             debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             list.add(record);
@@ -168,10 +168,10 @@ public class DAODebtRecords extends DBContext {
             int paymentStatus = rs.getInt("paymentStatus");
             String createAt = rs.getString("createAt");
             String updateAt = rs.getString("updateAt");
-            String createBy = rs.getString("createBy");
-            int isDelete = rs.getInt("isDelete");
+             int createBy = rs.getInt("createBy");
+            Boolean isDelete = rs.getBoolean("isDelete");
             String deleteAt = rs.getString("deleteAt");
-            String deleteBy = rs.getString("deleteBy");
+            int deleteBy = rs.getInt("deleteBy");
 
             debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             list.add(record);
