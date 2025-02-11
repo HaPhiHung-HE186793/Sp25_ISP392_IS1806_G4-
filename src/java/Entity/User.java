@@ -17,49 +17,21 @@ public class User {
     private String image;
     private String createAt;
     private String updateAt;
-    private String createBy;
-    private String isDelete;
+    private int createBy;
+    private Boolean isDelete;
     private String deleteAt;
-    private String deleteBy;
+    private int deleteBy;
 
-    
     public User() {
     }
 
-    public User(String userName, String userPassword, String email, int roleID, String image, String createAt, String updateAt, String createBy, String isDelete, String deleteAt, String deleteBy) {
-        this.userName = userName;
-        this.userPassword = userPassword;
-        this.email = email;
-        this.roleID = roleID;
-        this.image = image;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.createBy = createBy;
-        this.isDelete = isDelete;
-        this.deleteAt = deleteAt;
-        this.deleteBy = deleteBy;
-    }
-    
-    public User(int ID, String userName, String userPassword, String email, int roleID, String image, String createAt, String updateAt, String createBy, String isDelete, String deleteAt, String deleteBy) {
+    public User(int ID, String userName, String userPassword, String email, int roleID, String image, String createAt, String updateAt, int createBy, Boolean isDelete, String deleteAt, int deleteBy) {
         this.ID = ID;
         this.userName = userName;
         this.userPassword = userPassword;
         this.email = email;
         this.roleID = roleID;
         this.image = image;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.createBy = createBy;
-        this.isDelete = isDelete;
-        this.deleteAt = deleteAt;
-        this.deleteBy = deleteBy;
-    }
-    
-    public User(String userName, String userPassword, String email, int roleID, String createAt, String updateAt, String createBy, String isDelete, String deleteAt, String deleteBy) {
-        this.userName = userName;
-        this.userPassword = userPassword;
-        this.email = email;
-        this.roleID = roleID;
         this.createAt = createAt;
         this.updateAt = updateAt;
         this.createBy = createBy;
@@ -68,20 +40,6 @@ public class User {
         this.deleteBy = deleteBy;
     }
 
-    public User(int ID, String userName, String userPassword, String email, int roleID, String createAt, String updateAt, String createBy, String isDelete, String deleteAt, String deleteBy) {
-        this.ID = ID;
-        this.userName = userName;
-        this.userPassword = userPassword;
-        this.email = email;
-        this.roleID = roleID;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.createBy = createBy;
-        this.isDelete = isDelete;
-        this.deleteAt = deleteAt;
-        this.deleteBy = deleteBy;
-    }
-    
     public int getID() {
         return ID;
     }
@@ -89,7 +47,6 @@ public class User {
     public void setID(int ID) {
         this.ID = ID;
     }
-
 
     public String getUserName() {
         return userName;
@@ -130,7 +87,7 @@ public class User {
     public void setImage(String image) {
         this.image = image;
     }
-    
+
     public String getCreateAt() {
         return createAt;
     }
@@ -147,19 +104,19 @@ public class User {
         this.updateAt = updateAt;
     }
 
-    public String getCreateBy() {
+    public int getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(int createBy) {
         this.createBy = createBy;
     }
 
-    public String getIsDelete() {
+    public Boolean getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(String isDelete) {
+    public void setIsDelete(Boolean isDelete) {
         this.isDelete = isDelete;
     }
 
@@ -171,19 +128,20 @@ public class User {
         this.deleteAt = deleteAt;
     }
 
-    public String getDeleteBy() {
+    public int getDeleteBy() {
         return deleteBy;
     }
 
-    public void setDeleteBy(String deleteBy) {
+    public void setDeleteBy(int deleteBy) {
         this.deleteBy = deleteBy;
     }
 
     @Override
     public String toString() {
-        return "User{" + " userName=" + userName + ", userPassword=" + userPassword + ", email=" + email + ", roleID=" + roleID + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
+        return "User{" + "ID=" + ID + ", userName=" + userName + ", userPassword=" + userPassword + ", email=" + email + ", roleID=" + roleID + ", image=" + image + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
     }
+
     
-   
+    
     
 }

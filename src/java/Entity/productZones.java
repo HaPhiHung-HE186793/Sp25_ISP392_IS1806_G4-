@@ -14,14 +14,14 @@ public class productZones {
     private String createAt; 
     private String updateAt; 
     private int createBy; 
-    private int isDelete; 
+    private boolean isDelete; 
     private String deleteAt; 
     private int deleteBy;
 
     public productZones() {
     }
 
-    public productZones(int productID, int zoneID, String createAt, String updateAt, int createBy, int isDelete, String deleteAt, int deleteBy) {
+    public productZones(int productID, int zoneID, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.productID = productID;
         this.zoneID = zoneID;
         this.createAt = createAt;
@@ -72,11 +72,11 @@ public class productZones {
         this.createBy = createBy;
     }
 
-    public int getIsDelete() {
+    public boolean isIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
 
@@ -95,5 +95,6 @@ public class productZones {
     public void setDeleteBy(int deleteBy) {
         this.deleteBy = deleteBy;
     }
+
     
 }

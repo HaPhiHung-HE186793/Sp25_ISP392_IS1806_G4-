@@ -17,12 +17,15 @@ public class customers {
     private double totalDebt;  
     private String createAt;   
     private String updateAt;   
-    private String createBy;
-    private int isDelete;  
+    private int createBy;
+    private boolean isDelete;  
     private String deleteAt;   
-    private String deleteBy;
+    private int deleteBy;
 
-    public customers(int customerID, String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public customers() {
+    }
+
+    public customers(int customerID, String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.customerID = customerID;
         this.name = name;
         this.email = email;
@@ -37,12 +40,7 @@ public class customers {
         this.deleteBy = deleteBy;
     }
 
-    
-
-    public customers() {
-    }
-
-    public customers(String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public customers(String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -55,8 +53,6 @@ public class customers {
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
     }
-
-    
 
     public int getCustomerID() {
         return customerID;
@@ -122,23 +118,21 @@ public class customers {
         this.updateAt = updateAt;
     }
 
-    public String getCreateBy() {
+    public int getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(int createBy) {
         this.createBy = createBy;
     }
 
-    public int getIsDelete() {
+    public boolean isIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
-
-   
 
     public String getDeleteAt() {
         return deleteAt;
@@ -148,17 +142,14 @@ public class customers {
         this.deleteAt = deleteAt;
     }
 
-    public String getDeleteBy() {
+    public int getDeleteBy() {
         return deleteBy;
     }
 
-    public void setDeleteBy(String deleteBy) {
+    public void setDeleteBy(int deleteBy) {
         this.deleteBy = deleteBy;
     }
 
-    @Override
-    public String toString() {
-        return "customers{" + "customerID=" + customerID + ", name=" + name + ", email=" + email + ", phone=" + phone + ", address=" + address + ", totalDebt=" + totalDebt + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
-    }
+    
     
 }
