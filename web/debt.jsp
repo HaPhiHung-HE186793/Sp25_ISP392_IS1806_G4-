@@ -132,33 +132,35 @@
             <button class="newDebt-close js-close-newDebt">
                  close
             </button>
-            <div class="newDebt-header">Thông tin người nợ</div>
-            <div class="newDebt-body">
-                
-                
+            <div class="newDebt-note"> Thêm khách hàng thành công!</div>
+            <div class="newDebt-header">Thông tin người nợ
+            </div>
+
+            <div class="newDebt-body">                                
             <table>
                         <thead id="newDebt-tableHeader">
                         </thead>
-                        <tbody class="newDebt-tableTbody">                            
+                        <tbody class="newDebt-tableTbody">
+                                
                                 <tr class="newDebt-tableTbody-tr">
                                     <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
-                                    <td ><input class="newDebt-input" type="text" placeholder="Nguyen Van A"> </td>                                    
+                                    <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A"> </td>                                    
                                 </tr>                            
                                 <tr class="newDebt-tableTbody-tr">
                                     <td ><div class="newDebt-text"> Địa chỉ:</div></td>
-                                    <td ><textarea class="newDebt-input" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
+                                    <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
                                 </tr>                                   
                                 <tr class="newDebt-tableTbody-tr">
                                     <td ><div class="newDebt-text"> SĐT:</div></td>
-                                    <td ><input class="newDebt-input" type="number" > </td>                                    
+                                    <td ><input class="newDebt-input" name="phone" type="number" > </td>                                    
                                 </tr>                                   
                                 <tr class="newDebt-tableTbody-tr">
                                     <td ><div class="newDebt-text"> Email:</div></td>
-                                    <td ><input class="newDebt-input" type="text" > </td>                                    
+                                    <td ><input class="newDebt-input" name="email" type="text" > </td>                                    
                                 </tr>                                   
                                 <tr class="newDebt-tableTbody-tr">
                                     <td ><div class="newDebt-text"> Tổng nợ:</div></td>
-                                    <td ><input class="newDebt-input newDebt-total" type="number" placeholder="0" readonly> </td>                                    
+                                    <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    
                                 </tr>                                                           
                         </tbody>
                     </table>
@@ -181,7 +183,7 @@
         function hideAddNewDebt() {
             newDebt.classList.remove('open');
                 const inputs = newDebt.querySelectorAll('input,textarea');
-    inputs.forEach(input => input.value = '');
+            inputs.forEach(input => input.value = '');
         }
 
        
