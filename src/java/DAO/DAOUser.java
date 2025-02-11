@@ -16,6 +16,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -117,8 +119,35 @@ public class DAOUser extends DBContext {
         return n;
     }
 
-    public Vector<User> getUsers(String sql) {
-    Vector<User> vector = new Vector<User>();
+//    public Vector<User> getUsers(String sql) {
+//    Vector<User> vector = new Vector<User>();
+//    try {
+//        Statement state = conn.createStatement();
+//        ResultSet rs = state.executeQuery(sql);
+//        while (rs.next()) {
+//            int userID = rs.getInt("ID");
+//            String username = rs.getString("userName");
+//            String password = rs.getString("userPassword");
+//            String email = rs.getString("email");
+//            int roleID = rs.getInt("roleID"); // Giả sử role là kiểu int
+//            String image = rs.getString("image");
+//            String createAt = rs.getString("createAt");
+//            String updateAt = rs.getString("updateAt");
+//            int createBy = rs.getInt("createBy");
+//            Boolean isDelete = rs.getBoolean("isDelete");
+//            String deleteAt = rs.getString("deleteAt");
+//            int deleteBy = rs.getInt("deleteBy");
+//
+//            User user = new User(roleID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+//            vector.add(user);
+//        }
+//    } catch (SQLException ex) {
+//        ex.printStackTrace();
+//    }
+//    return vector;
+//}
+    public List<User> getUsers(String sql) {
+    List<User> list = new ArrayList<>();
     try {
         Statement state = conn.createStatement();
         ResultSet rs = state.executeQuery(sql);
@@ -137,12 +166,12 @@ public class DAOUser extends DBContext {
             int deleteBy = rs.getInt("deleteBy");
 
             User user = new User(roleID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-            vector.add(user);
+            list.add(user);
         }
     } catch (SQLException ex) {
         ex.printStackTrace();
     }
-    return vector;
+    return list;
 }
     public void listAll() {
         String sql = "SELECT * FROM Users";
@@ -176,7 +205,7 @@ public class DAOUser extends DBContext {
       DAOUser dao = new DAOUser();
 
      //1. Thêm một người dùng mới
-        User newUser = new User( "minh", "password123", "quangminhh0301@gmail.com", 1,"minh.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
+        User newUser = new User( "minh", "password123", "quangminhh030@gmail.com", 1,"minh.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
         int insertResult = dao.insertUser(newUser);
         System.out.println("Insert result: " + insertResult);
 
