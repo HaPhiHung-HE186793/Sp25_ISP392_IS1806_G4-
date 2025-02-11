@@ -40,6 +40,20 @@ public class User {
         this.deleteBy = deleteBy;
     }
 
+    public User(String userName, String userPassword, String email, int roleID, String image, String createAt, String updateAt, int createBy, Boolean isDelete, String deleteAt, int deleteBy) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.email = email;
+        this.roleID = roleID;
+        this.image = image;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+    }
+    
     public int getID() {
         return ID;
     }
