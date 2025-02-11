@@ -69,10 +69,10 @@ public class DAOUser extends DBContext {
         pre.setString(5, user.getImage());
         pre.setString(6, user.getCreateAt()); // createAt
         pre.setString(7, user.getUpdateAt()); // updateAt
-        pre.setString(8, user.getCreateBy()); // createBy
-        pre.setString(9, user.getIsDelete()); // isDelete
+        pre.setInt(8, user.getCreateBy()); // createBy
+        pre.setBoolean(9, user.getIsDelete()); // isDelete
         pre.setString(10, user.getDeleteAt()); // deleteAt
-        pre.setString(11, user.getDeleteBy()); // deleteBy
+        pre.setInt(11, user.getDeleteBy()); // deleteBy
         n = pre.executeUpdate();
     } catch (SQLException ex) {
         Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,10 +92,10 @@ public class DAOUser extends DBContext {
         pre.setString(5, user.getImage());
         pre.setString(6, user.getCreateAt()); // createAt
         pre.setString(7, user.getUpdateAt()); // updateAt
-        pre.setString(8, user.getCreateBy()); // createBy
-        pre.setString(9, user.getIsDelete()); // isDelete
+        pre.setInt(8, user.getCreateBy()); // createBy
+        pre.setBoolean(9, user.getIsDelete()); // isDelete
         pre.setString(10, user.getDeleteAt()); // deleteAt
-        pre.setString(11, user.getDeleteBy()); // deleteBy
+        pre.setInt(11, user.getDeleteBy()); // deleteBy
         pre.setInt(12, user.getID()); // userID
         n = pre.executeUpdate();
     } catch (SQLException ex) {
@@ -131,10 +131,10 @@ public class DAOUser extends DBContext {
             String image = rs.getString("image");
             String createAt = rs.getString("createAt");
             String updateAt = rs.getString("updateAt");
-            String createBy = rs.getString("createBy");
-            String isDelete = rs.getString("isDelete");
+            int createBy = rs.getInt("createBy");
+            Boolean isDelete = rs.getBoolean("isDelete");
             String deleteAt = rs.getString("deleteAt");
-            String deleteBy = rs.getString("deleteBy");
+            int deleteBy = rs.getInt("deleteBy");
 
             User user = new User(roleID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             vector.add(user);
@@ -158,10 +158,10 @@ public class DAOUser extends DBContext {
             String image = rs.getString("image");
             String createAt = rs.getString("createAt");
             String updateAt = rs.getString("updateAt");
-            String createBy = rs.getString("createBy");
-            String isDelete = rs.getString("isDelete");
+            int createBy = rs.getInt("createBy");
+            Boolean isDelete = rs.getBoolean("isDelete");
             String deleteAt = rs.getString("deleteAt");
-            String deleteBy = rs.getString("deleteBy");
+            int deleteBy = rs.getInt("deleteBy");
 
             User user = new User(roleID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
                 System.out.println(user);
@@ -176,7 +176,7 @@ public class DAOUser extends DBContext {
       DAOUser dao = new DAOUser();
 
      //1. Thêm một người dùng mới
-        User newUser = new User( "quinh", "password123", "quangminhh0301@gmail.com", 1,"minh.jsp" ,"2023-01-01", "2023-01-01", "1", "0", null, null);
+        User newUser = new User( "minh", "password123", "quangminhh0301@gmail.com", 1,"minh.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
         int insertResult = dao.insertUser(newUser);
         System.out.println("Insert result: " + insertResult);
 
@@ -189,10 +189,10 @@ public class DAOUser extends DBContext {
 //        userToUpdate.setImage("minh.jsp");
 //        userToUpdate.setCreateAt("2023-01-01 00:00:00.000"); // Giữ nguyên createAt
 //        userToUpdate.setUpdateAt("2023-01-01 00:00:00.000"); // Giữ nguyên updateAt
-//        userToUpdate.setCreateBy("1"); // Giữ nguyên createBy
-//        userToUpdate.setIsDelete("0"); // Giữ nguyên isDelete
+//        userToUpdate.setCreateBy(1); // Giữ nguyên createBy
+//        userToUpdate.setIsDelete(false); // Giữ nguyên isDelete
 //        userToUpdate.setDeleteAt(null); // Giữ nguyên deleteAt
-//        userToUpdate.setDeleteBy(null); // Giữ nguyên deleteBy
+//        userToUpdate.setDeleteBy(0); // Giữ nguyên deleteBy
 //        int updateResult = dao.updateUser(userToUpdate);
 //        System.out.println("Update result: " + updateResult);
 
