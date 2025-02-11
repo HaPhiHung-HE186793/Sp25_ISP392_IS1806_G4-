@@ -20,9 +20,38 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 public class DAOProduct extends DBContext {
-    public Vector<products> getProducts(String sql) {
-        Vector<products> vector = new Vector<products>();
+//    public Vector<products> getProducts(String sql) {
+//        Vector<products> vector = new Vector<products>();
+//        try {
+//            Statement state = conn.createStatement();
+//            ResultSet rs = state.executeQuery(sql);
+//            while (rs.next()) {
+//                int productID = rs.getInt("productID");
+//                String productName = rs.getString("productName");
+//                String description = rs.getString("description");
+//                double price = rs.getDouble("price");
+//                int quantity = rs.getInt("quantity");
+//                String image = rs.getString("image");
+//                String createAt = rs.getString("createAt");
+//                String updateAt = rs.getString("updateAt");
+//                int createBy = rs.getInt("createBy");
+//                Boolean isDelete = rs.getBoolean("isDelete");
+//                String deleteAt = rs.getString("deleteAt");
+//                int deleteBy = rs.getInt("deleteBy");
+//
+//                products product = new products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+//                vector.add(product);
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return vector;
+//    }
+      public List<products> getProducts(String sql) {
+        List<products> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -41,12 +70,12 @@ public class DAOProduct extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
 
                 products product = new products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-                vector.add(product);
+                list.add(product);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return vector;
+        return list;
     }
 
     public int removeProduct(int productID) {
