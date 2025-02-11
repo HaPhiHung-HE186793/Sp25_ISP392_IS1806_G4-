@@ -147,7 +147,7 @@ public class DAOCustomers extends DBContext {
     System.out.println("Insert result: " + insertResult);
 
     // 2. Cập nhật thông tin khách hàng
-//    customers customerToUpdate = new customers(3, "Nguyễn Thu B", "nguyenvanb@gmail.com", "0987654321", "456 Đường XYZ", 2000.0, "2023-01-02", "2023-01-02", "1", 0, null, null);
+//    customers customerToUpdate = new customers(3, "Nguyễn Thu B", "nguyenvanb@gmail.com", "0987654321", "456 Đường XYZ", 2000.0, "2023-01-02", "2023-01-02", 1, false, null, 0);
 //    int updateResult = dao.updateCustomer(customerToUpdate);
 //    System.out.println("Update result: " + updateResult);
 
