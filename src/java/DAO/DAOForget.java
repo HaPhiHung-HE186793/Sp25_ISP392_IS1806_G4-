@@ -28,10 +28,10 @@ public class DAOForget extends DBContext {
                 user.setRoleID(rs.getInt("roleID")); 
                 user.setCreateAt(rs.getString("createAt")); 
                 user.setUpdateAt(rs.getString("updateAt")); 
-                user.setCreateBy(rs.getString("createBy")); 
-                user.setIsDelete(rs.getString("isDelete")); 
+                user.setCreateBy(rs.getInt("createBy")); 
+                user.setIsDelete(rs.getBoolean("isDelete")); 
                 user.setDeleteAt(rs.getString("deleteAt"));
-                user.setDeleteBy(rs.getString("deleteBy")); 
+                user.setDeleteBy(rs.getInt("deleteBy")); 
             
                 return user;
             }
