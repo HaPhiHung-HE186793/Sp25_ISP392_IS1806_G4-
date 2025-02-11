@@ -186,12 +186,12 @@ public class DAODebtRecords extends DBContext {
         DAODebtRecords dao = new DAODebtRecords();
 
         // 1. Thêm một bản ghi nợ mới
-//        deptRecords newRecord = new deptRecords( 3, 1, 500.0, "0", "2023-01-01", "2023-01-01", "1", 0, null, null);
+//        deptRecords newRecord = new deptRecords( 3, 1, 500.0, "0", "2023-01-01", "2023-01-01", "1", false, null, 0);
 //        int insertResult = dao.insertDeptRecord(newRecord);
 //        System.out.println("Insert result: " + insertResult);
 //
 //        // 2. Cập nhật thông tin bản ghi nợ
-//        deptRecords recordToUpdate = new deptRecords(3, 1, 1001, 1000.0, "1", "2023-01-02", "2023-01-02", "1", 0, null, null);
+//        deptRecords recordToUpdate = new deptRecords(3, 1, 1001, 1000.0, "1", "2023-01-02", "2023-01-02", "1", false, null, 0);
 //        int updateResult = dao.updateDeptRecord(recordToUpdate);
 //        System.out.println("Update result: " + updateResult);
 ////
