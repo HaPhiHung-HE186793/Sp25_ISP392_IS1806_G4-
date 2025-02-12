@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class productZones {
+public class ProductZones {
     private int productID;
     private int zoneID;
     private String createAt; 
@@ -18,10 +18,10 @@ public class productZones {
     private String deleteAt; 
     private int deleteBy;
 
-    public productZones() {
+    public ProductZones() {
     }
 
-    public productZones(int productID, int zoneID, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public ProductZones(int productID, int zoneID, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.productID = productID;
         this.zoneID = zoneID;
         this.createAt = createAt;

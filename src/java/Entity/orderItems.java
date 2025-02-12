@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class orderItems {
+public class OrderItems {
     private int orderitemID;
     private int orderID;
     private int productID;
@@ -18,10 +18,10 @@ public class orderItems {
     private int quantity;
     private String description;
 
-    public orderItems() {
+    public OrderItems() {
     }
 
-    public orderItems(int orderitemID, int orderID, int productID, String productName, double price, double unitPrice, int quantity, String description) {
+    public OrderItems(int orderitemID, int orderID, int productID, String productName, double price, double unitPrice, int quantity, String description) {
         this.orderitemID = orderitemID;
         this.orderID = orderID;
         this.productID = productID;
@@ -32,7 +32,7 @@ public class orderItems {
         this.description = description;
     }
 
-    public orderItems(int orderID, int productID, String productName, double price, double unitPrice, int quantity, String description) {
+    public OrderItems(int orderID, int productID, String productName, double price, double unitPrice, int quantity, String description) {
         this.orderID = orderID;
         this.productID = productID;
         this.productName = productName;

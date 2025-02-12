@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class debtRecords {
+public class DebtRecords {
     private int debtID;
     private int customerID;
     private int orderID;
@@ -21,7 +21,7 @@ public class debtRecords {
     private String deleteAt; 
     private int deleteBy;
 
-    public debtRecords(int debtID, int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public DebtRecords(int debtID, int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.debtID = debtID;
         this.customerID = customerID;
         this.orderID = orderID;
@@ -35,7 +35,7 @@ public class debtRecords {
         this.deleteBy = deleteBy;
     }
 
-    public debtRecords(int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public DebtRecords(int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.customerID = customerID;
         this.orderID = orderID;
         this.amount = amount;
@@ -50,7 +50,7 @@ public class debtRecords {
     
     
 
-    public debtRecords() {
+    public DebtRecords() {
     }
 
     public int getDebtID() {

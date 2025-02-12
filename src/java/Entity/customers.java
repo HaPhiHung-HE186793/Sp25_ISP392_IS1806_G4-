@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class customers {
+public class Customers {
     private int customerID;
     private String name;
     private String email;
@@ -22,10 +22,10 @@ public class customers {
     private String deleteAt;   
     private int deleteBy;
 
-    public customers() {
+    public Customers() {
     }
 
-    public customers(int customerID, String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Customers(int customerID, String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.customerID = customerID;
         this.name = name;
         this.email = email;
@@ -40,7 +40,7 @@ public class customers {
         this.deleteBy = deleteBy;
     }
 
-    public customers(String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Customers(String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.name = name;
         this.email = email;
         this.phone = phone;

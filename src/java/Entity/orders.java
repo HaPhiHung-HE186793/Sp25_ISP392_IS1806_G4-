@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class orders {
+public class Orders {
     private int orderID;
     private int customerID;
     private int userID;
@@ -22,10 +22,10 @@ public class orders {
     private int porter; 
     private String status;
 
-    public orders() {
+    public Orders() {
     }
 
-    public orders(int orderID, int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int porter, String status) {
+    public Orders(int orderID, int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int porter, String status) {
         this.orderID = orderID;
         this.customerID = customerID;
         this.userID = userID;
@@ -40,7 +40,7 @@ public class orders {
         this.status = status;
     }
 
-    public orders(int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int porter, String status) {
+    public Orders(int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int porter, String status) {
         this.customerID = customerID;
         this.userID = userID;
         this.totalAmount = totalAmount;

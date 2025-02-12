@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class products {
+public class Products {
     private int productID;
     private String productName;
     private String description;
@@ -22,10 +22,10 @@ public class products {
     private String deleteAt; 
     private int deleteBy;
 
-    public products() {
+    public Products() {
     }
 
-    public products(int productID, String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Products(int productID, String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.productID = productID;
         this.productName = productName;
         this.description = description;
@@ -40,7 +40,7 @@ public class products {
         this.deleteBy = deleteBy;
     }
 
-    public products(String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Products(String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.productName = productName;
         this.description = description;
         this.price = price;
