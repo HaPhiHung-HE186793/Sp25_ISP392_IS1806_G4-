@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class productZones_123 {
+public class ProductZones {
     private int productID;
     private int zoneID;
     private String createAt; 

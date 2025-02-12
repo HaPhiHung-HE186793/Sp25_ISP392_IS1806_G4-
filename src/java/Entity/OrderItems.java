@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class orderItems_123 {
+public class OrderItems {
     private int orderitemID;
     private int orderID;
     private int productID;

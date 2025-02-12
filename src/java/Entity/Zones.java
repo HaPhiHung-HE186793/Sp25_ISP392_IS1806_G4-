@@ -8,7 +8,7 @@ package Entity;
  *
  * @author ADMIN
  */
-public class zones_123 {
+public class Zones {
     private int zoneID;
     private String zoneName;
     private String createAt; // Có thể sử dụng LocalDateTime nếu cần
