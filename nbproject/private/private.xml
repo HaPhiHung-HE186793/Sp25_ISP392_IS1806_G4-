@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/assets/css/style.css</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOCustomers.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/loginController.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOUser.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/User.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/customers.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/MailUtil.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/debt.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/AddNewCustomerDebt.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/ListDebt.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/login.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/debtRecords.java</file>
+        </group>
+    </open-files>
+</project-private>
