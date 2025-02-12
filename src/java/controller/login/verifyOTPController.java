@@ -1,4 +1,4 @@
-package controller;
+package controller.login;
 
 import DAO.DAOUser;
 import java.io.IOException;
