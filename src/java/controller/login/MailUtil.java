@@ -1,4 +1,4 @@
-package controller;
+package controller.login;
 
 import jakarta.mail.Session;
 import java.util.Properties;
