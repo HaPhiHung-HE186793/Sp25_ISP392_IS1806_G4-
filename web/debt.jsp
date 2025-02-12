@@ -61,7 +61,16 @@
 
 
                 <div class="table-container">
-                    <h3>Sản phẩm</h3>
+                    <div class="table-header">
+                        <h3>Sản phẩm</h3>
+                        <c:if test="${message == 'success'}">
+                        <div class="newDebt-notification">Thêm khách hàng thành công!</div>
+                        </c:if>
+
+                        <c:if test="${message == 'error'}">
+                        <div class="newDebt-notificationError">Thêm khách hàng thất bại.</div>
+                        </c:if>
+                    </div>
                     <div class="filters">
                         <select>
                             <option value="">Trạng thái</option>
@@ -69,6 +78,7 @@
                             <option value="">Z->A</option>
 
                         </select>
+                        <input type="text" placeholder="Search">
                         <input type="text" placeholder="Từ">
                         <input type="text" placeholder="Đến">
                         <button>Bỏ lọc</button>
@@ -127,44 +137,44 @@
     <div class="newDebt">
         <div class="newDebt-container">
             <button class="newDebt-add">
-                 Thêm mới 
+                Thêm mới 
             </button>
             <button class="newDebt-close js-close-newDebt">
-                 close
+                close
             </button>
-            <div class="newDebt-note"> Thêm khách hàng thành công!</div>
+
             <div class="newDebt-header">Thông tin người nợ
             </div>
 
             <div class="newDebt-body">                                
-            <table>
-                        <thead id="newDebt-tableHeader">
-                        </thead>
-                        <tbody class="newDebt-tableTbody">
-                                
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
-                                    <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A"> </td>                                    
-                                </tr>                            
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Địa chỉ:</div></td>
-                                    <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
-                                </tr>                                   
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> SĐT:</div></td>
-                                    <td ><input class="newDebt-input" name="phone" type="number" > </td>                                    
-                                </tr>                                   
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Email:</div></td>
-                                    <td ><input class="newDebt-input" name="email" type="text" > </td>                                    
-                                </tr>                                   
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Tổng nợ:</div></td>
-                                    <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    
-                                </tr>                                                           
-                        </tbody>
-                    </table>
-            
+                <table>
+                    <thead id="newDebt-tableHeader">
+                    </thead>
+                    <tbody class="newDebt-tableTbody">
+
+                        <tr class="newDebt-tableTbody-tr">
+                            <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
+                            <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A"> </td>                                    
+                        </tr>                            
+                        <tr class="newDebt-tableTbody-tr">
+                            <td ><div class="newDebt-text"> Địa chỉ:</div></td>
+                            <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
+                        </tr>                                   
+                        <tr class="newDebt-tableTbody-tr">
+                            <td ><div class="newDebt-text"> SĐT:</div></td>
+                            <td ><input class="newDebt-input" name="phone" type="number" > </td>                                    
+                        </tr>                                   
+                        <tr class="newDebt-tableTbody-tr">
+                            <td ><div class="newDebt-text"> Email:</div></td>
+                            <td ><input class="newDebt-input" name="email" type="text" > </td>                                    
+                        </tr>                                   
+                        <tr class="newDebt-tableTbody-tr">
+                            <td ><div class="newDebt-text"> Tổng nợ:</div></td>
+                            <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    
+                        </tr>                                                           
+                    </tbody>
+                </table>
+
             </div>
         </div>
     </div>
@@ -182,11 +192,11 @@
         //ham an//
         function hideAddNewDebt() {
             newDebt.classList.remove('open');
-                const inputs = newDebt.querySelectorAll('input,textarea');
+            const inputs = newDebt.querySelectorAll('input,textarea');
             inputs.forEach(input => input.value = '');
         }
 
-       
+
         openAddNewDebt.addEventListener('click', showAddNewDebt);
 
 

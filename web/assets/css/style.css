@@ -361,6 +361,7 @@ button:hover {
     background-color: rgba(169, 169, 169, 0.4);
 }
 
+/*<<<<<<< Updated upstream*/
 .pagination {
     display: flex; /* Hiển thị các nút trên một hàng */
     justify-content: center; /* Căn giữa các nút */
@@ -387,6 +388,22 @@ button:hover {
     background-color: #007bff;
     color: white;
     border-color: #007bff;
+/*=======*/
+.table-header{
+    display:flex;
+}
+
+.newDebt-notification {
+    color: greenyellow;
+    margin: 15px;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.newDebt-notificationError {
+    color: red;
+    margin: 15px;
+    transition: opacity 0.5s ease-in-out;
+/*>>>>>>> Stashed changes*/
 }
 
 @keyframes modalFadeIn {

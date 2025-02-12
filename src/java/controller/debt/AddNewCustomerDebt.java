@@ -64,10 +64,12 @@ public class AddNewCustomerDebt extends HttpServlet {
 
             int result = dao.insertCustomer(customer);
             if (result > 0) {
-                out.println("Thêm khách hàng thành công!");
+                request.setAttribute("message", "success");
             } else {
-                out.println("Thêm khách hàng thất bại.");
+                request.setAttribute("message", "error");
             }
+                    request.getRequestDispatcher("ListDebt").forward(request, response);
+
         }
     }
 

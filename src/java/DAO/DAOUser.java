@@ -325,11 +325,17 @@ public class DAOUser extends DBContext {
       DAOUser dao = new DAOUser();
 
      //1. Thêm một người dùng mới
-//        User newUser = new User( "nhat", "123", "anh13.9.04@gmail.com", 1,"nhat.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
+//<<<<<<< Updated upstream
+////        User newUser = new User( "nhat", "123", "anh13.9.04@gmail.com", 1,"nhat.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
+////        int insertResult = dao.insertUser(newUser);
+////        System.out.println("Insert result: " + insertResult);
+//String a = "nhat";
+//System.out.println(dao.getUsersByRoleAndKeyword(1, a));
+//=======
+//        User newUser = new User( "hung", "password123", "hunghphe186793@fpt.edu.vn", 1,"hung.jsp" ,"2023-01-01", "2023-01-01", "1", "0", null, null);
 //        int insertResult = dao.insertUser(newUser);
 //        System.out.println("Insert result: " + insertResult);
-String a = "nhat";
-System.out.println(dao.getUsersByRoleAndKeyword(1, a));
+//>>>>>>> Stashed changes
 
 //        User userToUpdate = new User();
 //        userToUpdate.setID(2); // ID của người dùng cần cập nhật
