@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.orders;
+import Entity.Orders;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -72,8 +72,8 @@ public class DAOOrders extends DBContext{
 //        }
 //        return vector;
 //    }
-  public List<orders> getOrders(String sql) {
-        List<orders> list = new ArrayList<>();
+  public List<Orders> getOrders(String sql) {
+        List<Orders> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -91,7 +91,7 @@ public class DAOOrders extends DBContext{
                 int porter = rs.getInt("porter");
                 String status = rs.getString("status");
 
-                orders order = new orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, true, deleteAt, isDelete, porter, status);
+                Orders order = new Orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, true, deleteAt, isDelete, porter, status);
                 list.add(order);
             }
         } catch (SQLException ex) {
@@ -112,7 +112,7 @@ public class DAOOrders extends DBContext{
         return n;
     }
 
-    public int updateOrder(orders order) {
+    public int updateOrder(Orders order) {
         int n = 0;
         String sql = "UPDATE orders SET customerID=?, userID=?, totalAmount=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=?, porter=?, status=? WHERE orderID=?";
         try {
@@ -136,7 +136,7 @@ public class DAOOrders extends DBContext{
         return n;
     }
 
-    public int insertOrder(orders order) {
+    public int insertOrder(Orders order) {
         int n = 0;
         String sql = "INSERT INTO orders (customerID, userID, totalAmount, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, porter, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -178,7 +178,7 @@ public class DAOOrders extends DBContext{
                 int porter = rs.getInt("porter");
                 String status = rs.getString("status");
 
-                orders order = new orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, porter, status);
+                Orders order = new Orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, porter, status);
                 System.out.println(order);
             }
         } catch (SQLException ex) {

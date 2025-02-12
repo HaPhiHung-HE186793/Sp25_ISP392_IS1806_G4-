@@ -7,8 +7,8 @@ package controller.debt;
 
 import DAO.DAOCustomers;
 import DAO.DAODebtRecords;
-import Entity.customers;
-import Entity.debtRecords;
+import Entity.Customers;
+import Entity.DebtRecords;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -37,7 +37,7 @@ public class ListDebt extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             DAOCustomers dao = new DAOCustomers();
         
-        List<customers> listCutomers = dao.listAll();
+        List<Customers> listCutomers = dao.listAll();
         request.setAttribute("listCustomers", listCutomers);
         request.getRequestDispatcher("debt.jsp").forward(request, response);
         

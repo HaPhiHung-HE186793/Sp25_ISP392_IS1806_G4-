@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.products;
+import Entity.Products;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
@@ -25,8 +25,8 @@ import java.util.List;
 public class DAOProduct extends DBContext {
      public static DAOProduct INSTANCE= new DAOProduct();
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
-   public List<products> searchProductsByName(String keyword) {
-        List<products> productsList = new ArrayList<>();
+   public List<Products> searchProductsByName(String keyword) {
+        List<Products> productsList = new ArrayList<>();
         String sql = "SELECT * FROM products WHERE LOWER(productName) LIKE LOWER(?) AND isDelete = 0";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -34,7 +34,7 @@ public class DAOProduct extends DBContext {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    products product = new products();
+                    Products product = new Products();
                     product.setProductID(rs.getInt("productID"));
                     product.setProductName(rs.getString("productName"));
                     product.setDescription(rs.getString("description"));
@@ -86,8 +86,8 @@ public class DAOProduct extends DBContext {
 //        }
 //        return vector;
 //    }
-      public List<products> getProducts(String sql) {
-        List<products> list = new ArrayList<>();
+      public List<Products> getProducts(String sql) {
+        List<Products> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -105,7 +105,7 @@ public class DAOProduct extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
-                products product = new products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Products product = new Products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
                 list.add(product);
             }
         } catch (SQLException ex) {
@@ -127,7 +127,7 @@ public class DAOProduct extends DBContext {
         return n;
     }
 
-    public int updateProduct(products product) {
+    public int updateProduct(Products product) {
         int n = 0;
         String sql = "UPDATE products SET productName=?, description=?, price=?, quantity=?, image=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE productID=?";
         try {
@@ -151,7 +151,7 @@ public class DAOProduct extends DBContext {
         return n;
     }
 
-    public int insertProduct(products product) {
+    public int insertProduct(Products product) {
         int n = 0;
         String sql = "INSERT INTO products (productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -193,7 +193,7 @@ public class DAOProduct extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
-                products product = new products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Products product = new Products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
                 System.out.println(product);
             }
         } catch (SQLException ex) {

@@ -1,7 +1,7 @@
 package DAO;
 
 import DAL.DBContext;
-import Entity.orderItems;
+import Entity.OrderItems;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 
 public class DAOOrderItems extends DBContext {
     
-    public Vector<orderItems> getOrderItems(String sql) {
-        Vector<orderItems> vector = new Vector<orderItems>();
+    public Vector<OrderItems> getOrderItems(String sql) {
+        Vector<OrderItems> vector = new Vector<OrderItems>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -27,7 +27,7 @@ public class DAOOrderItems extends DBContext {
                 int quantity = rs.getInt("quantity");
                 String description = rs.getString("description");
 
-                orderItems orderItem = new orderItems(orderitemID, orderID, productID, productName, price, unitPrice, quantity, description);
+                OrderItems orderItem = new OrderItems(orderitemID, orderID, productID, productName, price, unitPrice, quantity, description);
                 vector.add(orderItem);
             }
         } catch (SQLException ex) {
@@ -49,7 +49,7 @@ public class DAOOrderItems extends DBContext {
         return n;
     }
 
-    public int updateOrderItem(orderItems orderItem) {
+    public int updateOrderItem(OrderItems orderItem) {
         int n = 0;
         String sql = "UPDATE OrderItems SET orderID=?, productID=?, productName=?, price=?, unitPrice=?, quantity=?, description=? WHERE orderitemID=?";
         try {
@@ -69,7 +69,7 @@ public class DAOOrderItems extends DBContext {
         return n;
     }
 
-    public int insertOrderItem(orderItems orderItem) {
+    public int insertOrderItem(OrderItems orderItem) {
         int n = 0;
         String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity, description) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -103,7 +103,7 @@ public class DAOOrderItems extends DBContext {
                 int quantity = rs.getInt("quantity");
                 String description = rs.getString("description");
 
-                orderItems orderItem = new orderItems(orderitemID, orderID, productID, productName, price, unitPrice, quantity, description);
+                OrderItems orderItem = new OrderItems(orderitemID, orderID, productID, productName, price, unitPrice, quantity, description);
                 System.out.println(orderItem);
             }
         } catch (SQLException ex) {

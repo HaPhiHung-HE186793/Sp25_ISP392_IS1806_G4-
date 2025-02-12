@@ -6,7 +6,7 @@
 package controller.order;
 
 import DAO.DAOProduct;
-import Entity.products;
+import Entity.Products;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -66,7 +66,7 @@ public class SearchProductServlet extends HttpServlet {
          }else{
              request.setAttribute("id1", 0);
          
-         List<products> products = DAOProduct.INSTANCE.searchProductsByName(searchProduct);
+         List<Products> products = DAOProduct.INSTANCE.searchProductsByName(searchProduct);
          
          
         request.setAttribute("products", products);

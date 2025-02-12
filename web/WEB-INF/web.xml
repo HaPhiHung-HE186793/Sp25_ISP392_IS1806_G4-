@@ -29,12 +29,12 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>loginController</servlet-name>
+        <servlet-name>LoginController</servlet-name>
         <url-pattern>/loginURL</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>verifyOTPController</servlet-name>
+        <servlet-name>VerifyOTPController</servlet-name>
         <url-pattern>/verifyOTP</url-pattern>
     </servlet-mapping>
 

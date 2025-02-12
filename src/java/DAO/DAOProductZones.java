@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.productZones; // Giả sử lớp Product đã được định nghĩa
+import Entity.ProductZones; // Giả sử lớp Product đã được định nghĩa
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,8 +45,8 @@ public class DAOProductZones extends DBContext {
 //        }
 //        return vector;
 //    }
-      public List<productZones> getProducts(String sql) {
-        List<productZones> list = new ArrayList<>();
+      public List<ProductZones> getProducts(String sql) {
+        List<ProductZones> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -60,7 +60,7 @@ public class DAOProductZones extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
-                productZones product = new productZones(productID, zoneID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                ProductZones product = new ProductZones(productID, zoneID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
                 list.add(product);
             }
         } catch (SQLException ex) {
@@ -82,7 +82,7 @@ public class DAOProductZones extends DBContext {
         return n;
     }
 
-    public int updateProduct(productZones productZones) {
+    public int updateProduct(ProductZones productZones) {
         int n = 0;
         String sql = "UPDATE ProductZones SET createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE productID=? AND zoneID=?";
         try {
@@ -102,7 +102,7 @@ public class DAOProductZones extends DBContext {
         return n;
     }
 
-    public int insertProduct(productZones productZones) {
+    public int insertProduct(ProductZones productZones) {
         int n = 0;
         String sql = "INSERT INTO ProductZones (productID, zoneID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -137,7 +137,7 @@ public class DAOProductZones extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
-                productZones productZones = new productZones(productID, zoneID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                ProductZones productZones = new ProductZones(productID, zoneID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
                 System.out.println(productZones);
             }
         } catch (SQLException ex) {
@@ -149,7 +149,7 @@ public class DAOProductZones extends DBContext {
         DAOProductZones dao = new DAOProductZones();
 
         // 1. Thêm một sản phẩm mới
-        productZones newProduct = new productZones(3, 2, "2023-02-01", "2023-01-01", 1, false, null, 0);
+        ProductZones newProduct = new ProductZones(3, 2, "2023-02-01", "2023-01-01", 1, false, null, 0);
         int insertResult = dao.insertProduct(newProduct);
         System.out.println("Insert result: " + insertResult);
 

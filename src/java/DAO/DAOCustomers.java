@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.customers;
+import Entity.Customers;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
@@ -26,8 +26,8 @@ public class DAOCustomers extends DBContext {
     
     public static DAOCustomers INSTANCE= new DAOCustomers();
     
-     public List<customers> findByPhone(String searchPhone) {
-        List<customers> customers = new ArrayList<>();
+     public List<Customers> findByPhone(String searchPhone) {
+        List<Customers> customers = new ArrayList<>();
         String sql = "SELECT * FROM customers WHERE phone LIKE ? AND isDelete = 0";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -35,7 +35,7 @@ public class DAOCustomers extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                customers customer = new customers(
+                Customers customer = new Customers(
                     rs.getInt("customerID"),
                     rs.getString("name"),
                     rs.getString("email"),
@@ -57,8 +57,8 @@ public class DAOCustomers extends DBContext {
 
         return customers;
     }
-    public Vector<customers> getCustomers(String sql) {
-    Vector<customers> vector = new Vector<customers>();
+    public Vector<Customers> getCustomers(String sql) {
+    Vector<Customers> vector = new Vector<Customers>();
     try {
         Statement state = conn.createStatement();
         ResultSet rs = state.executeQuery(sql);
@@ -76,7 +76,7 @@ public class DAOCustomers extends DBContext {
             String deleteAt = rs.getString("deleteAt");
             int deleteBy = rs.getInt("deleteBy");
 
-            customers customer = new customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             vector.add(customer);
         }
     } catch (SQLException ex) {
@@ -96,7 +96,7 @@ public class DAOCustomers extends DBContext {
         }
         return n;
     }
-     public int updateCustomer(customers customer) {
+     public int updateCustomer(Customers customer) {
     int n = 0;
     String sql = "UPDATE customers SET name=?, email=?, phone=?, address=?, totalDebt=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE customerID=?";
     try {
@@ -120,7 +120,7 @@ public class DAOCustomers extends DBContext {
     return n;
 }
      
-     public int insertCustomer(customers customer) {
+     public int insertCustomer(Customers customer) {
     int n = 0;
     String sql = "INSERT INTO customers (name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     try {
@@ -145,8 +145,8 @@ public class DAOCustomers extends DBContext {
 }  
 //=======
      
-      public List<customers> listAll() {
-    List<customers> list = new ArrayList<>();
+      public List<Customers> listAll() {
+    List<Customers> list = new ArrayList<>();
     String sql = "SELECT * FROM customers"; // Cập nhật tên bảng
     try {
         Statement state = conn.createStatement();
@@ -165,7 +165,7 @@ public class DAOCustomers extends DBContext {
             String deleteAt = rs.getString("deleteAt");
             String deleteBy = rs.getString("deleteBy");
 
-            customers customer = new customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, isDelete, true, deleteAt, isDelete);
+            Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, isDelete, true, deleteAt, isDelete);
             list.add(customer); // Thêm vào danh sách thay vì in ra
         }
     } catch (SQLException ex) {

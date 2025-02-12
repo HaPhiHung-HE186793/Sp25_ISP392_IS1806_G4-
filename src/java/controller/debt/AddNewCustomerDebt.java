@@ -5,7 +5,7 @@
 package controller.debt;
 
 import DAO.DAOCustomers;
-import Entity.customers;
+import Entity.Customers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -58,7 +58,7 @@ public class AddNewCustomerDebt extends HttpServlet {
             String deleteAt = null;
             String deleteBy = null;
 
-            customers customer = new customers(name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            Customers customer = new Customers(name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             DAOCustomers dao = new DAOCustomers();
             dao.insertCustomer(customer);
 

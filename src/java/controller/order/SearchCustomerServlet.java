@@ -6,7 +6,7 @@
 package controller.order;
 
 import DAO.DAOCustomers;
-import Entity.customers;
+import Entity.Customers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -65,7 +65,7 @@ public class SearchCustomerServlet extends HttpServlet {
          }else{
              request.setAttribute("id", 0);
          
-         List<customers> customers = DAOCustomers.INSTANCE.findByPhone(searchPhone);
+         List<Customers> customers = DAOCustomers.INSTANCE.findByPhone(searchPhone);
 
         request.setAttribute("customers", customers);
          }

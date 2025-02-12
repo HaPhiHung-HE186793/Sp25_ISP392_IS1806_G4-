@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.zones; 
+import Entity.Zones; 
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,8 +45,8 @@ public class DAOZones extends DBContext {
 //        }
 //        return vector;
 //    }
-     public List<zones> getZones(String sql) {
-        List<zones> list = new ArrayList<>();
+     public List<Zones> getZones(String sql) {
+        List<Zones> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -60,7 +60,7 @@ public class DAOZones extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
-                zones zone = new zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Zones zone = new Zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
                 list.add(zone);
             }
         } catch (SQLException ex) {
@@ -82,7 +82,7 @@ public class DAOZones extends DBContext {
         return n;
     }
 
-    public int updateZone(zones zone) {
+    public int updateZone(Zones zone) {
         int n = 0;
         String sql = "UPDATE zones SET zoneName=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE zoneID=?";
         try {
@@ -102,7 +102,7 @@ public class DAOZones extends DBContext {
         return n;
     }
 
-    public int insertZone(zones zone) {
+    public int insertZone(Zones zone) {
         int n = 0;
         String sql = "INSERT INTO zones (zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -136,7 +136,7 @@ public class DAOZones extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
-                zones zone = new zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Zones zone = new Zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
                 System.out.println(zone);
             }
         } catch (SQLException ex) {
@@ -148,7 +148,7 @@ public class DAOZones extends DBContext {
         DAOZones dao = new DAOZones();
 
         // 1. Thêm một khu vực mới
-        zones newZone = new zones( "Zone C", "2023-01-01", "2023-01-01", 1, false, null, 0);
+        Zones newZone = new Zones( "Zone C", "2023-01-01", "2023-01-01", 1, false, null, 0);
         int insertResult = dao.insertZone(newZone);
         System.out.println("Insert result: " + insertResult);
 

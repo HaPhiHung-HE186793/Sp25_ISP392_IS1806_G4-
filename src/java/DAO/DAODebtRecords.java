@@ -1,7 +1,7 @@
 package DAO;
 
 import DAL.DBContext;
-import Entity.debtRecords;
+import Entity.DebtRecords;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 
 public class DAODebtRecords extends DBContext {
 
-    public Vector<debtRecords> getDeptRecords(String sql) {
-        Vector<debtRecords> vector = new Vector<debtRecords>();
+    public Vector<DebtRecords> getDeptRecords(String sql) {
+        Vector<DebtRecords> vector = new Vector<DebtRecords>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -32,7 +32,7 @@ public class DAODebtRecords extends DBContext {
                 String deleteAt = rs.getString("deleteAt");
                 String deleteBy = rs.getString("deleteBy");
 
-                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, debtID, true, deleteAt, isDelete);
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, debtID, true, deleteAt, isDelete);
                 vector.add(record);
             }
         } catch (SQLException ex) {
@@ -41,7 +41,7 @@ public class DAODebtRecords extends DBContext {
         return vector;
     }
 
-    public int insertDeptRecord(debtRecords record) {
+    public int insertDeptRecord(DebtRecords record) {
         int n = 0;
         String sql = "INSERT INTO debtRecords (customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -63,7 +63,7 @@ public class DAODebtRecords extends DBContext {
         return n;
     }
 
-    public int updateDeptRecord(debtRecords record) {
+    public int updateDeptRecord(DebtRecords record) {
         int n = 0;
         String sql = "UPDATE debtRecords SET customerID=?, orderID=?, amount=?, paymentStatus=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE debtID=?";
         try {
@@ -126,8 +126,8 @@ public class DAODebtRecords extends DBContext {
 //    }
     
     
-    public List<debtRecords> listAllbyName(String name) {
-    List<debtRecords> list = new ArrayList<>();
+    public List<DebtRecords> listAllbyName(String name) {
+    List<DebtRecords> list = new ArrayList<>();
     String sql = "SELECT * FROM debtRecords "; 
     try {
         Statement state = conn.createStatement();
@@ -145,7 +145,7 @@ public class DAODebtRecords extends DBContext {
             String deleteAt = rs.getString("deleteAt");
             int deleteBy = rs.getInt("deleteBy");
 
-            debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             list.add(record);
         }
     } catch (SQLException ex) {
@@ -154,8 +154,8 @@ public class DAODebtRecords extends DBContext {
     return list;
 }
     
-    public List<debtRecords> listAll() {
-    List<debtRecords> list = new ArrayList<>();
+    public List<DebtRecords> listAll() {
+    List<DebtRecords> list = new ArrayList<>();
     String sql = "SELECT * FROM debtRecords"; 
     try {
         Statement state = conn.createStatement();
@@ -173,7 +173,7 @@ public class DAODebtRecords extends DBContext {
             String deleteAt = rs.getString("deleteAt");
             int deleteBy = rs.getInt("deleteBy");
 
-            debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             list.add(record);
         }
     } catch (SQLException ex) {
