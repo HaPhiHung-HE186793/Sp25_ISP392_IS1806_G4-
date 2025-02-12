@@ -1,4 +1,4 @@
-package controller;
+package controller.login;
 
 import DAO.DAOForget;
 import jakarta.servlet.ServletException;
