@@ -16,12 +16,12 @@ public class debtRecords {
     private int paymentStatus;
     private String createAt; 
     private String updateAt; 
-    private String createBy;
-    private int isDelete; 
+    private int createBy;
+    private boolean isDelete; 
     private String deleteAt; 
-    private String deleteBy;
+    private int deleteBy;
 
-    public debtRecords(int debtID, int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public debtRecords(int debtID, int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.debtID = debtID;
         this.customerID = customerID;
         this.orderID = orderID;
@@ -35,10 +35,7 @@ public class debtRecords {
         this.deleteBy = deleteBy;
     }
 
-    public debtRecords() {
-    }
-
-    public debtRecords(int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public debtRecords(int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.customerID = customerID;
         this.orderID = orderID;
         this.amount = amount;
@@ -49,6 +46,11 @@ public class debtRecords {
         this.isDelete = isDelete;
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
+    }
+    
+    
+
+    public debtRecords() {
     }
 
     public int getDebtID() {
@@ -107,19 +109,19 @@ public class debtRecords {
         this.updateAt = updateAt;
     }
 
-    public String getCreateBy() {
+    public int getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(int createBy) {
         this.createBy = createBy;
     }
 
-    public int getIsDelete() {
+    public boolean isIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
 
@@ -131,12 +133,14 @@ public class debtRecords {
         this.deleteAt = deleteAt;
     }
 
-    public String getDeleteBy() {
+    public int getDeleteBy() {
         return deleteBy;
     }
 
-    public void setDeleteBy(String deleteBy) {
+    public void setDeleteBy(int deleteBy) {
         this.deleteBy = deleteBy;
     }
+
+    
     
 }

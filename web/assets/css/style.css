@@ -361,6 +361,33 @@ button:hover {
     background-color: rgba(169, 169, 169, 0.4);
 }
 
+.pagination {
+    display: flex; /* Hiển thị các nút trên một hàng */
+    justify-content: center; /* Căn giữa các nút */
+    list-style: none; /* Bỏ dấu chấm nếu có */
+    padding: 0;
+}
+
+.pagination li {
+    display: inline-block; /* Đảm bảo các nút không xuống dòng */
+    margin: 5px; /* Tạo khoảng cách giữa các nút */
+}
+
+.pagination .page-link {
+    display: inline-block;
+    padding: 8px 12px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
 
 @keyframes modalFadeIn {
     from{

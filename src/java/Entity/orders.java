@@ -16,7 +16,7 @@ public class orders {
     private String createAt; 
     private String updateAt; 
     private int createBy;
-    private int isDelete; 
+    private boolean isDelete; 
     private String deleteAt; 
     private int deleteBy;
     private int porter; 
@@ -24,9 +24,8 @@ public class orders {
 
     public orders() {
     }
-    
-    
-    public orders(int orderID, int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, int isDelete, String deleteAt, int deleteBy, int porter, String status) {
+
+    public orders(int orderID, int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int porter, String status) {
         this.orderID = orderID;
         this.customerID = customerID;
         this.userID = userID;
@@ -41,7 +40,7 @@ public class orders {
         this.status = status;
     }
 
-    public orders(int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, int isDelete, String deleteAt, int deleteBy, int porter, String status) {
+    public orders(int customerID, int userID, double totalAmount, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int porter, String status) {
         this.customerID = customerID;
         this.userID = userID;
         this.totalAmount = totalAmount;
@@ -111,11 +110,11 @@ public class orders {
         this.createBy = createBy;
     }
 
-    public int getIsDelete() {
+    public boolean isIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
 
@@ -150,5 +149,8 @@ public class orders {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    
+    
     
 }

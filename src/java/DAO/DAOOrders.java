@@ -10,6 +10,7 @@ package DAO;
  */
 import DAL.DBContext;
 import Entity.orders;
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
@@ -20,9 +21,59 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 public class DAOOrders extends DBContext{
-     public Vector<orders> getOrders(String sql) {
-        Vector<orders> vector = new Vector<orders>();
+    
+    public static DAOOrders INSTANCE= new DAOOrders();
+    
+    public int createOrder(int customerId, int userId, BigDecimal totalAmount, int porter, String status) throws SQLException {
+        String sql = "INSERT INTO orders (customerID, userID, totalAmount, porter, status) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, customerId);
+            stmt.setInt(2, userId);
+            stmt.setBigDecimal(3, totalAmount);
+            stmt.setInt(4, porter);
+            stmt.setString(5, status);
+            stmt.executeUpdate();
+            
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // Trả về orderID vừa tạo
+                }
+            }
+        }
+        return -1; // Trả về -1 nếu không tạo được
+    }
+//     public Vector<orders> getOrders(String sql) {
+//        Vector<orders> vector = new Vector<orders>();
+//        try {
+//            Statement state = conn.createStatement();
+//            ResultSet rs = state.executeQuery(sql);
+//            while (rs.next()) {
+//                int orderID = rs.getInt("orderID");
+//                int customerID = rs.getInt("customerID");
+//                int userID = rs.getInt("userID");
+//                double totalAmount = rs.getDouble("totalAmount");
+//                String createAt = rs.getString("createAt");
+//                String updateAt = rs.getString("updateAt");
+//                int createBy = rs.getInt("createBy");
+//                int isDelete = rs.getInt("isDelete");
+//                String deleteAt = rs.getString("deleteAt");
+//                Boolean deleteBy = rs.getBoolean("deleteBy");
+//                int porter = rs.getInt("porter");
+//                String status = rs.getString("status");
+//
+//                orders order = new orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, true, deleteAt, isDelete, porter, status);
+//                vector.add(order);
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return vector;
+//    }
+  public List<orders> getOrders(String sql) {
+        List<orders> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -36,19 +87,18 @@ public class DAOOrders extends DBContext{
                 int createBy = rs.getInt("createBy");
                 int isDelete = rs.getInt("isDelete");
                 String deleteAt = rs.getString("deleteAt");
-                int deleteBy = rs.getInt("deleteBy");
+                Boolean deleteBy = rs.getBoolean("deleteBy");
                 int porter = rs.getInt("porter");
                 String status = rs.getString("status");
 
-                orders order = new orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, porter, status);
-                vector.add(order);
+                orders order = new orders(orderID, customerID, userID, totalAmount, createAt, updateAt, createBy, true, deleteAt, isDelete, porter, status);
+                list.add(order);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return vector;
+        return list;
     }
-
     public int removeOrder(int orderID) {
         int n = 0;
         String sql = "DELETE FROM orders WHERE orderID=?";
@@ -73,7 +123,7 @@ public class DAOOrders extends DBContext{
             pre.setString(4, order.getCreateAt());
             pre.setString(5, order.getUpdateAt());
             pre.setInt(6, order.getCreateBy());
-            pre.setInt(7, order.getIsDelete());
+            pre.setBoolean(7, order.isIsDelete());
             pre.setString(8, order.getDeleteAt());
             pre.setInt(9, order.getDeleteBy());
             pre.setInt(10, order.getPorter());
@@ -97,7 +147,7 @@ public class DAOOrders extends DBContext{
             pre.setString(4, order.getCreateAt());
             pre.setString(5, order.getUpdateAt());
             pre.setInt(6, order.getCreateBy());
-            pre.setInt(7, order.getIsDelete());
+            pre.setBoolean(7, order.isIsDelete());
             pre.setString(8, order.getDeleteAt());
             pre.setInt(9, order.getDeleteBy());
             pre.setInt(10, order.getPorter());
@@ -122,7 +172,7 @@ public class DAOOrders extends DBContext{
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
-                int isDelete = rs.getInt("isDelete");
+                Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
                 int porter = rs.getInt("porter");
@@ -140,12 +190,12 @@ public class DAOOrders extends DBContext{
         DAOOrders dao = new DAOOrders();
 
         // 1. Thêm một đơn hàng mới
-//        orders newOrder = new orders( 1, 1, 1300.0, "2023-01-01", "2023-01-01", 1, 0, null, 0, 1, "Pending");
+//        orders newOrder = new orders( 1, 1, 1300.0, "2023-01-01", "2023-01-01", 1, false, null, 0, 1, "Pending");
 //        int insertResult = dao.insertOrder(newOrder);
 //        System.out.println("Insert result: " + insertResult);
 
 //        // 2. Cập nhật thông tin đơn hàng
-//        orders orderToUpdate = new orders(1, 1, 1, 4000.0, "2023-01-02", "2023-01-02", 1, 0, null, 0, 1, "Completed");
+//        orders orderToUpdate = new orders(1, 1, 1, 4000.0, "2023-01-02", "2023-01-02", 1, false, null, 0, 1, "Completed");
 //        int updateResult = dao.updateOrder(orderToUpdate);
 //        System.out.println("Update result: " + updateResult);
 //

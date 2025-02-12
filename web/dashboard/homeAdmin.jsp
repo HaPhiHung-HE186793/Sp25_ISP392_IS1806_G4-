@@ -36,7 +36,7 @@
                 <a href="#">Trang chủ</a>
                 <a href="#">Sổ ghi nợ</a>
                 <a href="#">Quản lý kho</a>
-                <a href="#">Tạo hóa đơn</a>
+                <a href="CreateOrderServlet">Tạo hóa đơn</a>
                 <a href="#">Danh sách hóa đơn</a>
                 <a href="#">Liên hệ</a>                
 <!--                 Thêm các mục dài để hiển thị thanh trượt 

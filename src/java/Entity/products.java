@@ -17,15 +17,15 @@ public class products {
     private String image;
     private String createAt; 
     private String updateAt; 
-    private String createBy;
-    private int isDelete; 
+    private int createBy;
+    private boolean isDelete; 
     private String deleteAt; 
-    private String deleteBy;
+    private int deleteBy;
 
     public products() {
     }
 
-    public products(int productID, String productName, String description, double price, int quantity, String image, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public products(int productID, String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.productID = productID;
         this.productName = productName;
         this.description = description;
@@ -40,7 +40,7 @@ public class products {
         this.deleteBy = deleteBy;
     }
 
-    public products(String productName, String description, double price, int quantity, String image, String createAt, String updateAt, String createBy, int isDelete, String deleteAt, String deleteBy) {
+    public products(String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.productName = productName;
         this.description = description;
         this.price = price;
@@ -118,19 +118,19 @@ public class products {
         this.updateAt = updateAt;
     }
 
-    public String getCreateBy() {
+    public int getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(int createBy) {
         this.createBy = createBy;
     }
 
-    public int getIsDelete() {
+    public boolean isIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
 
@@ -142,17 +142,13 @@ public class products {
         this.deleteAt = deleteAt;
     }
 
-    public String getDeleteBy() {
+    public int getDeleteBy() {
         return deleteBy;
     }
 
-    public void setDeleteBy(String deleteBy) {
+    public void setDeleteBy(int deleteBy) {
         this.deleteBy = deleteBy;
     }
 
-    @Override
-    public String toString() {
-        return "products{" + "productID=" + productID + ", productName=" + productName + ", description=" + description + ", price=" + price + ", quantity=" + quantity + ", image=" + image + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
-    }
     
 }

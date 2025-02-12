@@ -14,14 +14,39 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DAOZones extends DBContext {
 
-    public Vector<zones> getZones(String sql) {
-        Vector<zones> vector = new Vector<zones>();
+//    public Vector<zones> getZones(String sql) {
+//        Vector<zones> vector = new Vector<zones>();
+//        try {
+//            Statement state = conn.createStatement();
+//            ResultSet rs = state.executeQuery(sql);
+//            while (rs.next()) {
+//                int zoneID = rs.getInt("zoneID");
+//                String zoneName = rs.getString("zoneName");
+//                String createAt = rs.getString("createAt");
+//                String updateAt = rs.getString("updateAt");
+//                int createBy = rs.getInt("createBy");
+//                Boolean isDelete = rs.getBoolean("isDelete");
+//                String deleteAt = rs.getString("deleteAt");
+//                int deleteBy = rs.getInt("deleteBy");
+//
+//                zones zone = new zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+//                vector.add(zone);
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return vector;
+//    }
+     public List<zones> getZones(String sql) {
+        List<zones> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -31,17 +56,17 @@ public class DAOZones extends DBContext {
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
-                int isDelete = rs.getInt("isDelete");
+                Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
                 zones zone = new zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-                vector.add(zone);
+                list.add(zone);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return vector;
+        return list;
     }
 
     public int removeZone(int zoneID) {
@@ -66,7 +91,7 @@ public class DAOZones extends DBContext {
             pre.setString(2, zone.getCreateAt());
             pre.setString(3, zone.getUpdateAt());
             pre.setInt(4, zone.getCreateBy());
-            pre.setInt(5, zone.getIsDelete());
+            pre.setBoolean(5, zone.isIsDelete());
             pre.setString(6, zone.getDeleteAt());
             pre.setInt(7, zone.getDeleteBy());
             pre.setInt(8, zone.getZoneID());
@@ -86,7 +111,7 @@ public class DAOZones extends DBContext {
             pre.setString(2, zone.getCreateAt());
             pre.setString(3, zone.getUpdateAt());
             pre.setInt(4, zone.getCreateBy());
-            pre.setInt(5, zone.getIsDelete());
+            pre.setBoolean(5, zone.isIsDelete());
             pre.setString(6, zone.getDeleteAt());
             pre.setInt(7, zone.getDeleteBy());
             n = pre.executeUpdate();
@@ -107,7 +132,7 @@ public class DAOZones extends DBContext {
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
-                int isDelete = rs.getInt("isDelete");
+                Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
@@ -123,12 +148,12 @@ public class DAOZones extends DBContext {
         DAOZones dao = new DAOZones();
 
         // 1. Thêm một khu vực mới
-//        zones newZone = new zones( "Zone C", "2023-01-01", "2023-01-01", 1, 0, null, 0);
-//        int insertResult = dao.insertZone(newZone);
-//        System.out.println("Insert result: " + insertResult);
+        zones newZone = new zones( "Zone C", "2023-01-01", "2023-01-01", 1, false, null, 0);
+        int insertResult = dao.insertZone(newZone);
+        System.out.println("Insert result: " + insertResult);
 
 //        // 2. Cập nhật thông tin khu vực
-//        zones zoneToUpdate = new zones(2, "Zone AB", "2023-01-02", "2023-01-02", 1, 0, null, 0);
+//        zones zoneToUpdate = new zones(2, "Zone AB", "2023-01-02", "2023-01-02", 1, false, null, 0);
 //        int updateResult = dao.updateZone(zoneToUpdate);
 //        System.out.println("Update result: " + updateResult);
 //

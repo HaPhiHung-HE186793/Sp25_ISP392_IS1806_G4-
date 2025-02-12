@@ -14,14 +14,14 @@ public class zones {
     private String createAt; // Có thể sử dụng LocalDateTime nếu cần
     private String updateAt; // Có thể sử dụng LocalDateTime nếu cần
     private int createBy;
-    private int isDelete; // Giả sử isDelete là kiểu int
+    private boolean isDelete; // Giả sử isDelete là kiểu int
     private String deleteAt; // Có thể sử dụng LocalDateTime nếu cần
     private int deleteBy;
 
     public zones() {
     }
 
-    public zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, int isDelete, String deleteAt, int deleteBy) {
+    public zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.zoneID = zoneID;
         this.zoneName = zoneName;
         this.createAt = createAt;
@@ -32,7 +32,7 @@ public class zones {
         this.deleteBy = deleteBy;
     }
 
-    public zones(String zoneName, String createAt, String updateAt, int createBy, int isDelete, String deleteAt, int deleteBy) {
+    public zones(String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.zoneName = zoneName;
         this.createAt = createAt;
         this.updateAt = updateAt;
@@ -82,11 +82,11 @@ public class zones {
         this.createBy = createBy;
     }
 
-    public int getIsDelete() {
+    public boolean isIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
 
@@ -105,5 +105,7 @@ public class zones {
     public void setDeleteBy(int deleteBy) {
         this.deleteBy = deleteBy;
     }
+
+    
     
 }

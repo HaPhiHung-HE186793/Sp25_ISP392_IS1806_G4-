@@ -14,14 +14,39 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DAOProductZones extends DBContext {
 
-    public Vector<productZones> getProducts(String sql) {
-        Vector<productZones> vector = new Vector<productZones>();
+//    public Vector<productZones> getProducts(String sql) {
+//        Vector<productZones> vector = new Vector<productZones>();
+//        try {
+//            Statement state = conn.createStatement();
+//            ResultSet rs = state.executeQuery(sql);
+//            while (rs.next()) {
+//                int productID = rs.getInt("productID");
+//                int zoneID = rs.getInt("zoneID");
+//                String createAt = rs.getString("createAt");
+//                String updateAt = rs.getString("updateAt");
+//                int createBy = rs.getInt("createBy");
+//                Boolean isDelete = rs.getBoolean("isDelete");
+//                String deleteAt = rs.getString("deleteAt");
+//                int deleteBy = rs.getInt("deleteBy");
+//
+//                productZones product = new productZones(productID, zoneID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+//                vector.add(product);
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return vector;
+//    }
+      public List<productZones> getProducts(String sql) {
+        List<productZones> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
@@ -31,19 +56,18 @@ public class DAOProductZones extends DBContext {
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
-                int isDelete = rs.getInt("isDelete");
+                Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
                 productZones product = new productZones(productID, zoneID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-                vector.add(product);
+                list.add(product);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return vector;
+        return list;
     }
-
     public int removeProduct(int productID, int zoneID) {
         int n = 0;
         String sql = "DELETE FROM ProductZones WHERE productID=? AND zoneID=?";
@@ -66,7 +90,7 @@ public class DAOProductZones extends DBContext {
             pre.setString(1, productZones.getCreateAt());
             pre.setString(2, productZones.getUpdateAt());
             pre.setInt(3, productZones.getCreateBy());
-            pre.setInt(4, productZones.getIsDelete());
+            pre.setBoolean(4, productZones.isIsDelete());
             pre.setString(5, productZones.getDeleteAt());
             pre.setInt(6, productZones.getDeleteBy());
             pre.setInt(7, productZones.getProductID());
@@ -88,7 +112,7 @@ public class DAOProductZones extends DBContext {
             pre.setString(3, productZones.getCreateAt());
             pre.setString(4, productZones.getUpdateAt());
             pre.setInt(5, productZones.getCreateBy());
-            pre.setInt(6, productZones.getIsDelete());
+            pre.setBoolean(6, productZones.isIsDelete());
             pre.setString(7, productZones.getDeleteAt());
             pre.setInt(8, productZones.getDeleteBy());
             n = pre.executeUpdate();
@@ -109,7 +133,7 @@ public class DAOProductZones extends DBContext {
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
-                int isDelete = rs.getInt("isDelete");
+                Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
 
@@ -125,12 +149,12 @@ public class DAOProductZones extends DBContext {
         DAOProductZones dao = new DAOProductZones();
 
         // 1. Thêm một sản phẩm mới
-//        productZones newProduct = new productZones(3, 2, "2023-01-01", "2023-01-01", 1, 0, null, 0);
-//        int insertResult = dao.insertProduct(newProduct);
-//        System.out.println("Insert result: " + insertResult);
+        productZones newProduct = new productZones(3, 2, "2023-02-01", "2023-01-01", 1, false, null, 0);
+        int insertResult = dao.insertProduct(newProduct);
+        System.out.println("Insert result: " + insertResult);
 
 //        // 2. Cập nhật thông tin sản phẩm
-//        productZones productToUpdate = new productZones(3, 2, "2024-01-02", "2023-01-02", 1, 0, null, 0);
+//        productZones productToUpdate = new productZones(3, 2, "2024-01-02", "2023-01-02", 1, false, null, 0);
 //        int updateResult = dao.updateProduct(productToUpdate);
 //        System.out.println("Update result: " + updateResult);
 //
