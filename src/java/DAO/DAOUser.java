@@ -96,7 +96,8 @@ public class DAOUser extends DBContext {
     try {
         PreparedStatement pre = conn.prepareStatement(sql);
         pre.setString(1, user.getUserName()); // userName
-        pre.setString(2, user.getUserPassword()); // userPassword
+       // pre.setString(2, user.getUserPassword()); // userPassword
+        pre.setString(2, hashPassword(user.getUserPassword()));
         pre.setString(3, user.getEmail()); // email
         pre.setInt(4, user.getRoleID()); // roleID
         pre.setString(5, user.getImage());
@@ -326,9 +327,9 @@ public class DAOUser extends DBContext {
 
      //1. Thêm một người dùng mới
 //<<<<<<< Updated upstream
-////        User newUser = new User( "nhat", "123", "anh13.9.04@gmail.com", 1,"nhat.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
-////        int insertResult = dao.insertUser(newUser);
-////        System.out.println("Insert result: " + insertResult);
+        User newUser = new User( "nhat", "123", "admin@gmail.com", 2,"nhat.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
+        int insertResult = dao.insertUser(newUser);
+        System.out.println("Insert result: " + insertResult);
 //String a = "nhat";
 //System.out.println(dao.getUsersByRoleAndKeyword(1, a));
 //=======
