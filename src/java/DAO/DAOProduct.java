@@ -23,6 +23,42 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 public class DAOProduct extends DBContext {
+     public static DAOProduct INSTANCE= new DAOProduct();
+    // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
+   public List<products> searchProductsByName(String keyword) {
+        List<products> productsList = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE LOWER(productName) LIKE LOWER(?) AND isDelete = 0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword.toLowerCase() + "%"); // Chuyển keyword thành chữ thường
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    products product = new products();
+                    product.setProductID(rs.getInt("productID"));
+                    product.setProductName(rs.getString("productName"));
+                    product.setDescription(rs.getString("description"));
+                    product.setPrice(rs.getDouble("price"));
+                    product.setQuantity(rs.getInt("quantity"));
+                    product.setImage(rs.getString("image"));
+
+                    // Giữ nguyên getString như yêu cầu
+                    product.setCreateAt(rs.getString("createAt"));
+                    product.setUpdateAt(rs.getString("updateAt"));
+                    product.setCreateBy(rs.getInt("createBy"));
+                    product.setIsDelete(rs.getBoolean("isDelete"));
+                    product.setDeleteAt(rs.getString("deleteAt"));
+                    product.setDeleteBy(rs.getInt("deleteBy"));
+
+                    productsList.add(product);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return productsList;
+    }
 //    public Vector<products> getProducts(String sql) {
 //        Vector<products> vector = new Vector<products>();
 //        try {

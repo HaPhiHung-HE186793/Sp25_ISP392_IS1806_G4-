@@ -24,6 +24,37 @@ import java.util.List;
  * @author ADMIN
  */
 public class DAOUser extends DBContext {
+    
+     public User getCurrentUser(String email) {
+    String sql = "SELECT * FROM Users WHERE email = ?";
+    User user = null;
+
+    try {
+        PreparedStatement pre = conn.prepareStatement(sql);
+        pre.setString(1, email);
+        ResultSet rs = pre.executeQuery();
+
+        if (rs.next()) {
+            int userID = rs.getInt("ID");
+            String username = rs.getString("userName");
+            String password = rs.getString("userPassword");
+            int roleID = rs.getInt("roleID");
+            String image = rs.getString("image");
+            String createAt = rs.getString("createAt");
+            String updateAt = rs.getString("updateAt");
+            int createBy = rs.getInt("createBy");
+            Boolean isDelete = rs.getBoolean("isDelete");
+            String deleteAt = rs.getString("deleteAt");
+            int deleteBy = rs.getInt("deleteBy");
+
+            user = new User(userID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace(); // In lỗi ra console nếu có lỗi xảy ra
+    }
+
+    return user; // Trả về user nếu tìm thấy, nếu không thì null
+}
     private String hashPassword(String password) {
     try {
         MessageDigest md = MessageDigest.getInstance("SHA-256"); // Sử dụng SHA-256

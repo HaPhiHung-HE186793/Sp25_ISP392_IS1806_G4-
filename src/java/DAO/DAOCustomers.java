@@ -23,6 +23,40 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 public class DAOCustomers extends DBContext {
+    
+    public static DAOCustomers INSTANCE= new DAOCustomers();
+    
+     public List<customers> findByPhone(String searchPhone) {
+        List<customers> customers = new ArrayList<>();
+        String sql = "SELECT * FROM customers WHERE phone LIKE ? AND isDelete = 0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + searchPhone + "%"); // Tìm số điện thoại chứa searchPhone
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                customers customer = new customers(
+                    rs.getInt("customerID"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getDouble("totalDebt"),
+                    rs.getString("createAt"),
+                    rs.getString("updateAt"),
+                    rs.getInt("createBy"),
+                    rs.getBoolean("isDelete"),
+                    rs.getString("deleteAt"),
+                    rs.getInt("deleteBy")
+                );
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return customers;
+    }
     public Vector<customers> getCustomers(String sql) {
     Vector<customers> vector = new Vector<customers>();
     try {

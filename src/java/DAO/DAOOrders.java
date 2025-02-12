@@ -10,6 +10,7 @@ package DAO;
  */
 import DAL.DBContext;
 import Entity.orders;
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
@@ -23,6 +24,27 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 public class DAOOrders extends DBContext{
+    
+    public static DAOOrders INSTANCE= new DAOOrders();
+    
+    public int createOrder(int customerId, int userId, BigDecimal totalAmount, int porter, String status) throws SQLException {
+        String sql = "INSERT INTO orders (customerID, userID, totalAmount, porter, status) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, customerId);
+            stmt.setInt(2, userId);
+            stmt.setBigDecimal(3, totalAmount);
+            stmt.setInt(4, porter);
+            stmt.setString(5, status);
+            stmt.executeUpdate();
+            
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // Trả về orderID vừa tạo
+                }
+            }
+        }
+        return -1; // Trả về -1 nếu không tạo được
+    }
 //     public Vector<orders> getOrders(String sql) {
 //        Vector<orders> vector = new Vector<orders>();
 //        try {

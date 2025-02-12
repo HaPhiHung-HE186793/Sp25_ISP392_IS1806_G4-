@@ -28,6 +28,7 @@
         <servlet-name>ListDebt</servlet-name>
         <url-pattern>/ListDebt</url-pattern>
     </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>createUser</servlet-name>
         <url-pattern>/createuser</url-pattern>
@@ -35,5 +36,30 @@
     <servlet-mapping>
         <servlet-name>listUsers</servlet-name>
         <url-pattern>/listusers</url-pattern>
+
+    <servlet>
+        <servlet-name>CreateOrderServlet</servlet-name>
+        <servlet-class>controller.order.CreateOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchCustomerServlet</servlet-name>
+        <servlet-class>controller.order.SearchCustomerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchProductServlet</servlet-name>
+        <servlet-class>controller.order.SearchProductServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreateOrderServlet</servlet-name>
+        <url-pattern>/CreateOrderServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchCustomerServlet</servlet-name>
+        <url-pattern>/SearchCustomerServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchProductServlet</servlet-name>
+        <url-pattern>/SearchProductServlet</url-pattern>
+
     </servlet-mapping>
 </web-app>
