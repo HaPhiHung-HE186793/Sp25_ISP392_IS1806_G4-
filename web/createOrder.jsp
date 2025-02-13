@@ -215,28 +215,31 @@
                             <br><br>
 
                             <h3 style="color: red">Chi Tiết Đơn Hàng</h3>
-                            <table id="orderItems">
+                            
+                            <table id="orderItems" border="1" width="100%" cellspacing="0" cellpadding="10">
                                 <thead>
-                                    <tr>
-                                        <th>Sản Phẩm</th>
-                                        <th>Số Lượng</th>
-                                        <th>Đơn Giá</th>
-                                        <th>Discount (%)</th>
-                                        <th>Thành Tiền</th>
-                                        <th>Thao Tác</th>
+                                    <tr align="center">
+                                        <th width="20%">Sản Phẩm</th>
+                                        <th width="15%">Số Lượng</th>
+                                        <th width="15%">Đơn Giá</th>
+                                        <th width="15%">Discount (%)</th>
+                                        <th width="20%">Thành Tiền</th>
+                                        <th width="15%">Thao Tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- Các dòng sản phẩm sẽ được thêm vào đây -->
+                                    
                                 </tbody>
                                 <tfoot>
-                                    <tr>
-                                        <td colspan="3"><strong>Tổng cộng:</strong></td>
+                                    <tr align="center">
+                                        <td colspan="4"><strong>Tổng cộng:</strong></td>
                                         <td><input type="number" id="totalOrderPrice" name="totalOrderPrice" readonly></td>
                                         <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
+
                             <br><br>
 
                             <button type="submit">Tạo Hóa Đơn</button>
