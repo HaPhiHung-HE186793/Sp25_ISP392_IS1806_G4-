@@ -4,7 +4,9 @@
  */
 package utils;
 
+import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
@@ -18,15 +20,14 @@ import java.util.Random;
  * @author admin
  */
 public class mail {
-
+    // Email credentials
+    protected static final String username = "esmartlearnisp@gmail.com";
+    protected static final String password = "cpqt hzfi czfh zupm"; // Application password
+    
     // Method to send OTP via email
     public static void sendOTP(String to, String otp) {
         String subject = "Your OTP Code";
-        String content = "Your OTP code is: " + otp + ". This code is valid for 5 minutes.";
-
-        // Email credentials
-        String username = "esmartlearnisp@gmail.com";
-        String password = "cpqt hzfi czfh zupm"; // Application password
+        String content = "Your OTP code is: " + otp + ". This code is valid for 5 minutes.";        
 
         // Properties for Gmail
         Properties props = new Properties();
@@ -59,5 +60,59 @@ public class mail {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private boolean sendEmail(String toEmail, String subject, String content) {
+        try {
+            Properties props = new Properties();
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            message.setFrom(new InternetAddress(username));
+            message.setSubject(subject);
+            message.setText(content);
+
+            Transport.send(message);
+            return true;
+        } catch (MessagingException e) {
+            return false;
+        }
+    }
+    
+    public boolean sendMailVerify(String toEmail, String code) {
+        String subject = "Email Verification";
+        String content = "Registered successfully. Please verify your account using this code: " + code;
+        return sendEmail(toEmail, subject, content);
+    }
+
+    public boolean sendMailResetPassword(String toEmail, String code) {
+        String subject = "Password Reset Request";
+        String content = "You have requested to reset your password. Use this code to reset your password: " + code
+                + "\n\nIf you didn't request this, please ignore this email.";
+        return sendEmail(toEmail, subject, content);
+    }
+
+    public boolean sendPasswordChangeConfirmation(String toEmail) {
+        String subject = "Password Change Confirmation";
+        String content = "Your password has been successfully changed.\n\n"
+                + "If you did not make this change, please contact our support team immediately.";
+        return sendEmail(toEmail, subject, content);
+    }
+
+    public boolean sendPasswordForUser(String toEmail, String password) {
+        String subject = "You have been created an account!";
+        String content = "Use: " + password + " to sign in!";        
+        return sendEmail(toEmail, subject, content);
     }
 }
