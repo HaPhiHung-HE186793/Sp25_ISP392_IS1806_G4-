@@ -53,10 +53,10 @@ public class AddNewCustomerDebt extends HttpServlet {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String createAt = now.format(formatter);  // Thời gian hiện tại
             String updateAt = createAt;  // Ban đầu updateAt cũng là thời gian hiện tại
-            String createBy = (String) session.getAttribute("userName");
-            int isDelete = 0;
+            int createBy =  Integer.parseInt((String) session.getAttribute(session.getId()));
+            boolean isDelete = false;
             String deleteAt = null;
-            String deleteBy = null;
+            Integer deleteBy = null;
 
             Customers customer = new Customers(name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
             DAOCustomers dao = new DAOCustomers();
