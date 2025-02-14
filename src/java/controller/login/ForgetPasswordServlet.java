@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import Entity.User;
+import model.User;
 
 @WebServlet(name = "ForgetPasswordServlet", urlPatterns = {"/forgotpass"})
 public class ForgetPasswordServlet extends HttpServlet {

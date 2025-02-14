@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import DAO.DAOUser;
-import Entity.Pagination.Pagination;
-import Entity.User;
+import model.pagination.Pagination;
+import model.User;
 
 /**
  *

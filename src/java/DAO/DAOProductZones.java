@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.ProductZones; // Giả sử lớp Product đã được định nghĩa
+import model.ProductZones; // Giả sử lớp Product đã được định nghĩa
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -5,7 +5,7 @@
 package controller.user;
 
 import DAO.DAOUser;
-import Entity.User;
+import model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

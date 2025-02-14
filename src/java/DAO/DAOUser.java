@@ -5,7 +5,7 @@
 package DAO;
 
 import DAL.DBContext;
-import Entity.User;
+import model.User;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;

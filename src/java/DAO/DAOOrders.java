@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.Orders;
+import model.Orders;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

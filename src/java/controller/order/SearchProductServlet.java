@@ -6,7 +6,7 @@
 package controller.order;
 
 import DAO.DAOProduct;
-import Entity.Products;
+import model.Products;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

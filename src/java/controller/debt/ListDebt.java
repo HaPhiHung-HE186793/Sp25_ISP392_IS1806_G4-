@@ -7,8 +7,8 @@ package controller.debt;
 
 import DAO.DAOCustomers;
 import DAO.DAODebtRecords;
-import Entity.Customers;
-import Entity.DebtRecords;
+import model.Customers;
+import model.DebtRecords;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

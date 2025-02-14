@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.Zones; 
+import model.Zones; 
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

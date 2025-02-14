@@ -1,7 +1,7 @@
 package DAO;
 
 import DAL.DBContext;
-import Entity.OrderItems;
+import model.OrderItems;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

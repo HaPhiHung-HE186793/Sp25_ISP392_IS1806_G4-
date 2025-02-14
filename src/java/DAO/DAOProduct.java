@@ -9,7 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
-import Entity.Products;
+import model.Products;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Statement;
