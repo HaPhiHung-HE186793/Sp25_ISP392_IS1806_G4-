@@ -6,6 +6,7 @@
 package controller.login;
 
 import DAO.DAOUser;
+import Entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -49,13 +50,14 @@ public class loginController extends HttpServlet {
              else if (service.equals("loginUser")) {
     String userName = request.getParameter("user");
     String pass = request.getParameter("pass");
-    int roleID = dao.login(userName, pass); // Get the user's role
+    User user = dao.login(userName, pass); // Get the user's role
     
-    if (roleID != -1) {
-        session.setAttribute("userName", userName);
-        session.setAttribute("roleID", roleID); // Store role in session
+    if (user != null) {
+        session.setAttribute("user", user); // Lưu user vào session
+        session.setAttribute("userID", user.getID()); 
+        session.setAttribute("roleID", user.getRoleID());
         
-        switch (roleID) {
+        switch (user.getRoleID()) {
     case 1: 
         dao.dispatch(request, response, "/dashboard/homeAdmin.jsp");
         break;
