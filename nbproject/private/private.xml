@@ -3,30 +3,36 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/assets/css/style.css</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/customers_123.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOCustomers.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/loginController.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOUser.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOProductZones.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/User.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/list_users.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/Customers.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/utils/mail.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/nbproject/build-impl.xml</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/products_123.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/orderItems_123.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/debtRecords_123.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/MailUtil.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/homeAdmin.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/ProductZones.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/createOrder.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/debt.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/ForgetPasswordServlet.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/productZones_123.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/orders_123.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/AddNewCustomerDebt.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/verifyOTPController.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/DebtRecords.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOOrderItems.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/ListDebt.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/Zones.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/assets/css/style.css</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOCustomers.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/loginController.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/Products.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/User.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/nbproject/build-impl.xml</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/OrderItems.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/MailUtil.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/ForgetPasswordServlet.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/Orders.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/verifyOTPController.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/Component/pagination.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/edit_product.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/login.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/Entity/zones_123.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/Component/menu.jsp</file>
         </group>
     </open-files>
 </project-private>
