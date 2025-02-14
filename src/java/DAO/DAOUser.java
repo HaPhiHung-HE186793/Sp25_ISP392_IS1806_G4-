@@ -69,44 +69,53 @@ public class DAOUser extends DBContext {
         return null;
     }
 }
-      public int login(String email, String password) {
-    String sql = "SELECT roleID FROM Users WHERE email=? AND userPassword=?";
+public User login(String email, String password) {
+    String sql = "SELECT * FROM Users WHERE email=? AND userPassword=?";
     String hashedPassword = hashPassword(password); // Hash the password
 
-    try {
-        PreparedStatement pre = conn.prepareStatement(sql);
+    try (PreparedStatement pre = conn.prepareStatement(sql)) {
         pre.setString(1, email);
-        pre.setString(2, hashedPassword); // Use the hashed password
+        pre.setString(2, hashedPassword);
         ResultSet rs = pre.executeQuery();
         
         if (rs.next()) {
-            return rs.getInt("roleID");
+            return new User(
+                rs.getInt("ID"),
+                rs.getString("userName"),
+                rs.getString("userPassword"),
+                rs.getString("email"),
+                rs.getInt("roleID"),
+                rs.getString("image"),
+                rs.getString("createAt"),
+                rs.getString("updateAt"),
+                rs.getInt("createBy"),
+                rs.getBoolean("isDelete"),
+                rs.getString("deleteAt"),
+                rs.getInt("deleteBy")
+            );
         }
     } catch (SQLException ex) {
         Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
     }
-    
-    return -1; // Return null if login fails
+     return null; // Trả về null nếu không tìm thấy user
 }
 
-
-    public int insertUser(User user) {
+     public int insertUser(User user) {
     int n = 0;
-    String sql = "INSERT INTO Users (userName, userPassword, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Users (userName, userPassword, email, roleID, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     try {
         PreparedStatement pre = conn.prepareStatement(sql);
         pre.setString(1, user.getUserName()); // userName
        // pre.setString(2, user.getUserPassword()); // userPassword
         pre.setString(2, hashPassword(user.getUserPassword()));
         pre.setString(3, user.getEmail()); // email
-        pre.setInt(4, user.getRoleID()); // roleID
-        pre.setString(5, user.getImage());
-        pre.setString(6, user.getCreateAt()); // createAt
-        pre.setString(7, user.getUpdateAt()); // updateAt
-        pre.setInt(8, user.getCreateBy()); // createBy
-        pre.setBoolean(9, user.getIsDelete()); // isDelete
-        pre.setString(10, user.getDeleteAt()); // deleteAt
-        pre.setInt(11, user.getDeleteBy()); // deleteBy
+        pre.setInt(4, user.getRoleID()); // roleID       
+        pre.setString(5, user.getCreateAt()); // createAt
+        pre.setString(6, user.getUpdateAt()); // updateAt
+        pre.setInt(7, user.getCreateBy()); // createBy
+        pre.setBoolean(8, user.getIsDelete()); // isDelete
+        pre.setString(9, user.getDeleteAt()); // deleteAt
+        pre.setInt(10, user.getDeleteBy()); // deleteBy
         n = pre.executeUpdate();
     } catch (SQLException ex) {
         Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,6 +123,22 @@ public class DAOUser extends DBContext {
     return n;
 }
 
+    public int insertNewUser(User user) {
+    int n = 0;
+    String sql = "INSERT INTO Users (userName, userPassword, email, roleID, createBy) VALUES (?, ?, ?, ?, ?)";
+    try {
+        PreparedStatement pre = conn.prepareStatement(sql);
+        pre.setString(1, user.getUserName()); // userName
+        pre.setString(2, hashPassword(user.getUserPassword())); // userPassword
+        pre.setString(3, user.getEmail()); // email
+        pre.setInt(4, user.getRoleID()); // roleID
+        pre.setInt(5, user.getCreateBy()); // createBy
+        n = pre.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return n;
+}
     public int updateUser(User user) {
     int n = 0;
     String sql = "UPDATE users SET userName=?, userPassword=?, email=?, roleID=?, image=? ,createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE ID=?";
@@ -320,6 +345,27 @@ public class DAOUser extends DBContext {
     }
     return usersList;
 }
+    
+    public boolean isEmailExists(String email) {
+    if (conn == null) { // Kiểm tra kết nối trước khi thực hiện truy vấn
+        System.out.println("Database connection is NULL!");
+        return false;
+    }
+    String query = "SELECT COUNT(*) FROM Users WHERE email = ? AND isDelete = 0";
+    try (PreparedStatement ps = conn.prepareStatement(query)) {
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true;
+            }
+        
+    } catch (SQLException e) {
+        System.out.println("Error in isEmailExists: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return false;
+}
+
 
 
     public static void main(String[] args) {
@@ -327,11 +373,17 @@ public class DAOUser extends DBContext {
 
      //1. Thêm một người dùng mới
 //<<<<<<< Updated upstream
-        User newUser = new User( "nhat", "123", "admin@gmail.com", 2,"nhat.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
-        int insertResult = dao.insertUser(newUser);
-        System.out.println("Insert result: " + insertResult);
+
+////        User newUser = new User( "nhat", "123", "anh13.9.04@gmail.com", 1,"nhat.jsp" ,"2023-01-01", "2023-01-01", 1, false, null, 0);
+//        int insertResult = dao.insertUser(newUser);
+////        System.out.println("Insert result: " + insertResult);
+
 //String a = "nhat";
 //System.out.println(dao.getUsersByRoleAndKeyword(1, a));
+if (dao.isEmailExists("anh13.9.04@gmail.com")) {
+            System.out.println("Email đã tồn tại!");
+        }
+else System.out.println("khong ton tai");
 //=======
 //        User newUser = new User( "hung", "password123", "hunghphe186793@fpt.edu.vn", 1,"hung.jsp" ,"2023-01-01", "2023-01-01", "1", "0", null, null);
 //        int insertResult = dao.insertUser(newUser);
@@ -362,5 +414,4 @@ public class DAOUser extends DBContext {
  //       dao.listAll();
 
 }
-
 }
