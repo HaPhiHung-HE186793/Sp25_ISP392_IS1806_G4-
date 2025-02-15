@@ -7,6 +7,9 @@ package controller.order;
 
 import DAO.DAOCustomers;
 import model.Customers;
+import DAO.DAOProduct;
+import model.Customers;
+import model.Products;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,7 +22,7 @@ import java.util.List;
  *
  * @author Admin
  */
-public class SearchCustomerServlet extends HttpServlet {
+public class SearchServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,10 +39,10 @@ public class SearchCustomerServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SearchCustomerServlet</title>");  
+            out.println("<title>Servlet SearchServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SearchCustomerServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet SearchServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,6 +59,22 @@ public class SearchCustomerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        String searchProduct = request.getParameter("searchProduct");
+        
+        if(searchProduct.equals("")){
+             
+             request.setAttribute("id1", 0);
+             
+         
+         }else{
+             request.setAttribute("id1", 0);
+         
+         List<Products> products = DAOProduct.INSTANCE.searchProductsByName(searchProduct);
+         
+         
+        request.setAttribute("products", products);
+         }
+        
          String searchPhone = request.getParameter("searchCustomer");
          
          if(searchPhone.equals("")){
@@ -71,8 +90,6 @@ public class SearchCustomerServlet extends HttpServlet {
          }
         
         request.getRequestDispatcher("createOrder.jsp").forward(request, response);
-        
-        
         
     } 
 

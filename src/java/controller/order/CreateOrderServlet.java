@@ -4,6 +4,7 @@
  */
 package controller.order;
 
+import DAO.DAOOrderItems;
 import DAO.DAOOrders;
 import DAO.DAOUser;
 import model.User;
@@ -81,49 +82,77 @@ public class CreateOrderServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String userName = (String) session.getAttribute("userName");
-
-        // Lấy thông tin đơn hàng
+         //Lấy thông tin đơn hàng
         int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
 
         DAOUser daoUser = new DAOUser();
 
         User currentUser = daoUser.getCurrentUser(userName);
-
         int userId = currentUser.getCreateBy();
-
         int porter = Integer.parseInt(request.getParameter("porter"));
-        String status = request.getParameter("status");
+
+        Double totalDiscount = Double.parseDouble(request.getParameter("totalDiscount"));
+        String status;
+
+        if (totalDiscount >= 200000) {
+
+            status = "Tổng tiền đã giảm : " + totalDiscount + request.getParameter("status");
+        } else {
+            status = request.getParameter("status");
+        }
+
         BigDecimal totalOrderPrice = new BigDecimal(request.getParameter("totalOrderPrice")); // Tổng tiền
-        
-        DAOOrders DAOOrders =new DAOOrders();
+       
+
+
         try {
-            int orderId = DAOOrders.createOrder(customerId, userId,totalOrderPrice, porter, status);
+
+            int orderId = DAOOrders.INSTANCE.createOrder(customerId,userId,userId, totalOrderPrice, porter, status);
+
+            if (orderId != -1) {
+                String[] productIds = request.getParameterValues("productID");
+                String[] productNames = request.getParameterValues("productName");
+                String[] totalPrices = request.getParameterValues("totalPrice");
+                String[] unitPrices = request.getParameterValues("unitPrice");
+                String[] quantities = request.getParameterValues("quantity");
+
+                if (productIds != null) {
+                    for (int i = 0; i < productIds.length; i++) {
+                        int productID = Integer.parseInt(productIds[i]);
+                        String productName = productNames[i];
+                        BigDecimal price = new BigDecimal(totalPrices[i]);
+                        BigDecimal unitPrice = new BigDecimal(unitPrices[i]);
+                        int quantity = Integer.parseInt(quantities[i]);
+
+                        if (quantity <= 0) {
+                            request.setAttribute("ms", "Số lượng sản phẩm không hợp lệ!");
+                            request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+                            return;  // Dừng ngay sau khi forward
+                        }
+                        
+
+                        boolean success = DAOOrderItems.INSTANCE.createOrderItem(orderId, productID, productName, price, unitPrice, quantity);
+
+                        if (!success) {
+                            request.setAttribute("ms", "Không đủ số lượng sản phẩm trong kho!");
+                            request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+                            return;  // Dừng ngay sau khi forward
+                        }
+                    }
+                }
+                request.setAttribute("ms", "Tạo đơn hàng thành công");
+            } else {
+                request.setAttribute("ms", "Tạo đơn hàng thất bại");
+            }
         } catch (SQLException ex) {
             Logger.getLogger(CreateOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("ms", "Lỗi khi tạo đơn hàng, vui lòng thử lại.");
+            request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+            return;  // Dừng ngay sau khi forward
         }
-        
-        
-        
 
-        // Lấy danh sách sản phẩm
-        String[] productNames = request.getParameterValues("productName");
-        String[] quantities = request.getParameterValues("quantity");
-        String[] unitPrices = request.getParameterValues("unitPrice");
-        String[] totalPrices = request.getParameterValues("totalPrice");
-        String[] discounts = request.getParameterValues("discount");
-
-        // Kiểm tra dữ liệu
-        if (productNames != null && quantities != null && unitPrices != null && totalPrices != null) {
-            for (int i = 0; i < productNames.length; i++) {
-                String productName = productNames[i];
-                int quantity = Integer.parseInt(quantities[i]);
-                double unitPrice = Double.parseDouble(unitPrices[i]);
-                double totalPrice = Double.parseDouble(totalPrices[i]);
-
-                // TODO: Lưu dữ liệu vào cơ sở dữ liệu (sử dụng DAO)
-                System.out.println("Sản phẩm: " + productName + ", Số lượng: " + quantity + ", Đơn giá: " + unitPrice + ", Thành tiền: " + totalPrice);
-            }
-        }
+// Nếu đã forward trước đó, thì sẽ không đến được đây
+        request.getRequestDispatcher("createOrder.jsp").forward(request, response);
 
     }
 

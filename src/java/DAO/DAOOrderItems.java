@@ -2,6 +2,8 @@ package DAO;
 
 import DAL.DBContext;
 import model.OrderItems;
+
+import java.math.BigDecimal;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +13,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DAOOrderItems extends DBContext {
-    
+
+    public static DAOOrderItems INSTANCE = new DAOOrderItems();
+
+    public boolean createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity) {
+        String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderID);
+            ps.setInt(2, productID);
+            ps.setString(3, productName);
+            ps.setBigDecimal(4, price);
+            ps.setBigDecimal(5, unitPrice);
+            ps.setInt(6, quantity);
+            
+
+            int rowsAffected = ps.executeUpdate();
+
+            // Nếu thêm OrderItem thành công, cập nhật số lượng sản phẩm
+            if (rowsAffected > 0) {
+                return DAOProduct.INSTANCE.updateProductQuantity(productID, quantity);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public Vector<OrderItems> getOrderItems(String sql) {
         Vector<OrderItems> vector = new Vector<OrderItems>();
         try {
@@ -118,7 +146,6 @@ public class DAOOrderItems extends DBContext {
 //        orderItems newOrderItem = new orderItems( 1, 2, "Product b", 100.0, 95.0, 2, "Description of Product A");
 //        int insertResult = dao.insertOrderItem(newOrderItem);
 //        System.out.println("Insert result: " + insertResult);
-
         // 2. Cập nhật thông tin mục đơn hàng
 //        orderItems orderItemToUpdate = new orderItems(1, 1, 1, "Product A Updated", 120.0, 115.0, 3, "Updated description");
 //        int updateResult = dao.updateOrderItem(orderItemToUpdate);

@@ -27,15 +27,18 @@ public class DAOOrders extends DBContext{
     
     public static DAOOrders INSTANCE= new DAOOrders();
     
-    public int createOrder(int customerId, int userId, BigDecimal totalAmount, int porter, String status) throws SQLException {
-        String sql = "INSERT INTO orders (customerID, userID, totalAmount, porter, status) VALUES (?, ?, ?, ?, ?)";
+    public int createOrder(int customerId,int userID,int createBy,BigDecimal totalAmount, int porter, String status) throws SQLException {
+        String sql = "INSERT INTO orders (customerID,userID,createBy, totalAmount, porter, status) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, customerId);
-            stmt.setInt(2, userId);
-            stmt.setBigDecimal(3, totalAmount);
-            stmt.setInt(4, porter);
-            stmt.setString(5, status);
+            stmt.setInt(2, userID);
+            stmt.setInt(3, createBy);
+            
+            stmt.setBigDecimal(4, totalAmount);
+            stmt.setInt(5, porter);
+            stmt.setString(6, status);
             stmt.executeUpdate();
+            
             
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {

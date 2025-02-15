@@ -22,10 +22,29 @@ import java.util.logging.Logger;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
 public class DAOProduct extends DBContext {
-     public static DAOProduct INSTANCE= new DAOProduct();
+
+    public static DAOProduct INSTANCE = new DAOProduct();
+
+    public boolean updateProductQuantity(int productID, int quantitySold) {
+        String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ? AND quantity >= ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quantitySold);
+            ps.setInt(2, productID);
+            ps.setInt(3, quantitySold); // Đảm bảo không trừ âm số lượng
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
-   public List<Products> searchProductsByName(String keyword) {
+    public List<Products> searchProductsByName(String keyword) {
         List<Products> productsList = new ArrayList<>();
         String sql = "SELECT * FROM products WHERE LOWER(productName) LIKE LOWER(?) AND isDelete = 0";
 
@@ -86,7 +105,8 @@ public class DAOProduct extends DBContext {
 //        }
 //        return vector;
 //    }
-      public List<Products> getProducts(String sql) {
+
+    public List<Products> getProducts(String sql) {
         List<Products> list = new ArrayList<>();
         try {
             Statement state = conn.createStatement();
@@ -208,7 +228,6 @@ public class DAOProduct extends DBContext {
 //        products newProduct = new products( "Sản phẩm D", "Mô tả sản phẩm A", 100.0, 10, "imageA.jpg", "2023-01-01", "2023-01-01", 1, false, null, 0);
 //        int insertResult = dao.insertProduct(newProduct);
 //        System.out.println("Insert result: " + insertResult);
-
 //        // 2. Cập nhật thông tin sản phẩm
 //        products productToUpdate = new products(2, "Sản phẩm B Phụ", "Mô tả sản phẩm B", 150.0, 20, "imageB.jpg", "2023-01-02", "2023-01-02",1, false, null, 0);
 //        int updateResult = dao.updateProduct(productToUpdate);
@@ -217,8 +236,7 @@ public class DAOProduct extends DBContext {
 //        // 3. Xóa một sản phẩm
 //        int removeResult = dao.removeProduct(4); // Giả sử ID của sản phẩm cần xóa
 //        System.out.println("Remove result: " + removeResult);
-
         // 4. Liệt kê tất cả sản phẩm
-      dao.listAll();
+        dao.listAll();
     }
 }
