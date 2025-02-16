@@ -58,6 +58,11 @@ public class loginController extends HttpServlet {
         session.setAttribute("userID", user.getID()); 
         session.setAttribute("roleID", user.getRoleID());
         session.setAttribute("username", user.getUserName());
+        if (user.getIsDelete()) {
+           request.setAttribute("message", "Your account has been banned.");
+           dao.dispatch(request, response, "/login.jsp");
+           return;
+            }
         switch (user.getRoleID()) {
     case 1: 
         dao.dispatch(request, response, "/debt.jsp");
