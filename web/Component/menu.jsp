@@ -6,8 +6,13 @@
     </div>
 
 
+<<<<<<< HEAD
      <div class="balance">
         <a href="loginURL?service=logoutUser">LogOut</a>
+=======
+      <div class="balance">
+        <a href="${loginURL}?service=logoutUser">LogOut</a>
+>>>>>>> 267868a (them duong dan cua controllershoworder)
     </div>
 
 </div>
