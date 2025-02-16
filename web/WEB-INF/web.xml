@@ -88,6 +88,7 @@
         <servlet-name>ControllerOrderDetail</servlet-name>
         <url-pattern>/URLOrderDetail</url-pattern>
     </servlet-mapping>
+<<<<<<< HEAD
     <servlet-mapping>
         <servlet-name>ListCustomer</servlet-name>
         <url-pattern>/ListCustomer</url-pattern>
@@ -104,4 +105,6 @@
         <servlet-name>ListDebtCustomer</servlet-name>
         <url-pattern>/ListDebtCustomer</url-pattern>
     </servlet-mapping>
+=======
+>>>>>>> b17cf9b (them mapping cua controllershoworder)
 </web-app>
