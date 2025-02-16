@@ -20,20 +20,20 @@
         <div id="main">
             <jsp:include page="/Component/menu.jsp"></jsp:include>
 
-            <div class="main-content">
-                <div class="notification">
-                    Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
-                </div>
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
+                    </div>
 
 
-                <div class="table-container">
-                    <h3>Danh sách người dùng</h3>
-                    <div class="filters">
-                        <form method="post" action="listusers">
-                            <label for="role">Role:</label>
-                            <select name="role" id="role" onchange="this.form.submit()">
-                                <option value="">All</option>
-                                <option value="1" ${selectedRole == 1 ? 'selected' : ''}>Admin</option>
+                    <div class="table-container">
+                        <h3>Danh sách người dùng</h3>
+                        <div class="filters">
+                            <form method="post" action="listusers">
+                                <label for="role">Chức Năng:</label>
+                                <select name="role" id="role" onchange="this.form.submit()">
+                                    <option value="">Tất cả</option>
+                                    <option value="1" ${selectedRole == 1 ? 'selected' : ''}>Admin</option>
                                 <option value="2" ${selectedRole == 2 ? 'selected' : ''}>Chủ cửa hàng</option>
                                 <option value="3" ${selectedRole == 3 ? 'selected' : ''}>Nhân viên bán hàng</option>
                             </select>
@@ -55,13 +55,12 @@
                                 <th>User Name</th>
                                 <th>Role</th>
                                 <th>Email</th>
-                                <th>Image</th>
                                 <th>Date Created</th>
                                 <th>Creator</th>                           
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
-                            <c:forEach items="${U}" var="u">
+                            <c:forEach items="${U}" var="u" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" >
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
 
@@ -75,8 +74,7 @@
                                             <c:otherwise>Không xác định</c:otherwise>
                                         </c:choose>
                                     </td>
-                                    <td>${u.getEmail()}</td>                                   
-                                    <td><img class="mt-2" style="border: solid #f5f2f2; border-radius: 20px" src="${u.getImage()}" width="200" height="200" alt="alt"/></td>
+                                    <td>${u.getEmail()}</td>                                                                    
                                     <td>${u.getCreateAt()}</td>
                                     <td><c:forEach var="creator" items="${U}">
                                             <c:if test="${creator.getID() == u.getCreateBy()}">
@@ -90,6 +88,8 @@
                 </div>
             </div>
         </div>
+
+
         <%@include file="Component/pagination.jsp" %>
 
     </body>
