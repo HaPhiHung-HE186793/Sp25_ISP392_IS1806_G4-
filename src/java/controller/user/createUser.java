@@ -44,7 +44,7 @@ public class createUser extends HttpServlet {
         List<String> errors = new ArrayList<>();
 
         // Lấy dữ liệu từ form
-        String userName = request.getParameter("username");
+        String userName = request.getParameter("userName");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String roleParam = request.getParameter("roleID");
@@ -93,7 +93,7 @@ public class createUser extends HttpServlet {
         // Nếu có lỗi, quay lại trang addCustomer.jsp với danh sách lỗi và dữ liệu đã nhập
         if (!errors.isEmpty()) {
             request.setAttribute("errors", errors);
-            request.setAttribute("username", userName);
+            request.setAttribute("userName", userName);
             request.setAttribute("email", email);
             request.getRequestDispatcher("createUser.jsp").forward(request, response);
             return;
