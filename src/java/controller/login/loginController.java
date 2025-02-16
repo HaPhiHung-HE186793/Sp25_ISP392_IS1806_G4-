@@ -57,7 +57,7 @@ public class loginController extends HttpServlet {
         session.setAttribute("user", user); // Lưu user vào session
         session.setAttribute("userID", user.getID()); 
         session.setAttribute("roleID", user.getRoleID());
-        
+        session.setAttribute("username", user.getUserName());
         switch (user.getRoleID()) {
     case 1: 
         dao.dispatch(request, response, "/dashboard/home.jsp");
