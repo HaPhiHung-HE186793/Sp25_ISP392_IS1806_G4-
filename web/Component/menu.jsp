@@ -13,6 +13,7 @@
     <div class="logo">Bảng Điều Khiển</div>
     <a href="#">Trang chủ</a>
     <a href="#">Hồ sơ người dùng</a>
+    <a href="CreateOrderServlet">Tạo hóa đơn</a>
     <a href="#">Sản phẩm</a>
     <a href="#">Quản lý kho</a>
     <a href="#">Quản lý thanh toán</a>

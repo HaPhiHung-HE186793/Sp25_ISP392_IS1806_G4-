@@ -25,18 +25,18 @@ import java.util.List;
  */
 public class DAOUser extends DBContext {
     
-     public User getCurrentUser(String email) {
-    String sql = "SELECT * FROM Users WHERE email = ?";
+     public User getCurrentUser(String userName) {
+    String sql = "SELECT * FROM Users WHERE userName = ?";
     User user = null;
 
     try {
         PreparedStatement pre = conn.prepareStatement(sql);
-        pre.setString(1, email);
+        pre.setString(1, userName);
         ResultSet rs = pre.executeQuery();
 
         if (rs.next()) {
             int userID = rs.getInt("ID");
-            String username = rs.getString("userName");
+            String email = rs.getString("email");
             String password = rs.getString("userPassword");
             int roleID = rs.getInt("roleID");
             String image = rs.getString("image");
@@ -47,7 +47,7 @@ public class DAOUser extends DBContext {
             String deleteAt = rs.getString("deleteAt");
             int deleteBy = rs.getInt("deleteBy");
 
-            user = new User(userID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            user = new User(userID, userName, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
         }
     } catch (SQLException ex) {
         ex.printStackTrace(); // In lỗi ra console nếu có lỗi xảy ra
