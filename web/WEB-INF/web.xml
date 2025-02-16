@@ -60,4 +60,16 @@
         <servlet-name>SearchServlet</servlet-name>
         <url-pattern>/SearchServlet</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ControllerOrder</servlet-name>
+        <servlet-class>controller.showOrder.ControllerOrder</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ControllerOrder</servlet-name>
+        <url-pattern>/URLOrder</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ControllerOrderDetail</servlet-name>
+        <url-pattern>/URLOrderDetail</url-pattern>
+    </servlet-mapping>
 </web-app>
