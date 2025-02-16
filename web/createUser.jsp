@@ -3,7 +3,7 @@
     Created on : 12 thg 2, 2025, 13:23:18
     Author     : nguyenanh
 --%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label">User Name</label>
+                        <label class="form-label">Họ Và Tên</label>
                         <input name="username" id="username" type="text" 
                                class="form-control" placeholder="UserName:" value="${username}">
                     </div>
@@ -26,14 +26,14 @@
 
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label">Your Email</label>
+                        <label class="form-label">Email</label>
                         <input name="email" id="email" type="email" class="form-control" placeholder="Your email:" value="${email}">
                     </div> 
                 </div><!--end col-->
                 <div class="mb-3">
-                    <label class="form-label">Password</label>
+                    <label class="form-label">Mật Khẩu</label>
                     <input name="password" id="password" type="password" 
-                           class="form-control" placeholder="Enter your password">
+                           class="form-control" placeholder="Nhập mật khẩu" required="">
                 </div>
 
 
@@ -43,19 +43,16 @@
                         <div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="roleID" value="1" id="admin" required>
-                                <label class="form-check-label" for="admin">
                                     Admin
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="roleID" value="2" id="store_owner">
-                                <label class="form-check-label" for="store_owner">
                                     Chủ Cửa Hàng
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="roleID" value="3" id="employee">
-                                <label class="form-check-label" for="employee">
                                     Nhân Viên
                                 </label>
                             </div>
