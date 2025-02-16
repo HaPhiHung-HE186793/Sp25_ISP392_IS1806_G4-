@@ -68,22 +68,17 @@ public class listUsers extends HttpServlet {
         HttpSession session = request.getSession();
         List<User> U = dao.listUsers();
 
-        int currentPage = 1;
-        int totalPage = (int) Math.ceil((double) U.size() / 1); // Số trang dựa trên tổng dữ liệu
-        // Kiểm tra nếu có giá trị cp trên URL
-        if (request.getParameter("cp") != null) {
-            try {
-                int cp = Integer.parseInt(request.getParameter("cp"));
-                if (cp > 0 && cp <= totalPage) {
-                    currentPage = cp;
-                }
-            } catch (NumberFormatException e) {
-                // Nếu cp không hợp lệ, giữ nguyên trang 1
-            }
+        //seting pagination
+        //check page
+        //at the first time
+        if (session.getAttribute("page") == null) {
+            Page = new Pagination(U.size(), 10, 1);
+            session.setAttribute("page", Page);
+        } else if (request.getParameter("cp") != null) {
+            int cp = Integer.parseInt(request.getParameter("cp"));
+            Page = new Pagination(U.size(), 10, cp);
+            session.setAttribute("page", Page);
         }
-        // Cập nhật session với trang hợp lệ
-        Page = new Pagination(U.size(), 1, currentPage);
-        session.setAttribute("page", Page);
 
         session.setAttribute("U", U);
         request.getRequestDispatcher("list_users.jsp").forward(request, response);
