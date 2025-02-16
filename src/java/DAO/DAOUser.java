@@ -162,7 +162,33 @@ public User login(String email, String password) {
     }
     return n;
 }
+public int banUserByEmail(String email) {
+    String sql = "UPDATE Users SET isDelete = ? WHERE email = ?";
+    int result = 0;
 
+    try (PreparedStatement pre = conn.prepareStatement(sql)) {
+        pre.setBoolean(1, true); // Đặt isDelete thành true để ban người dùng
+        pre.setString(2, email);
+        result = pre.executeUpdate(); // Thực thi cập nhật
+    } catch (SQLException ex) {
+        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return result; // Trả về số hàng bị ảnh hưởng
+}
+public boolean isUserBanned(int userId) {
+        String sql = "SELECT isDelete FROM Users WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("isDelete");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 //    public int removeUser(int userID) {
 //        int n = 0;
 //        String sql = "DELETE FROM Users WHERE ID=?";
