@@ -19,8 +19,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label">Họ Và Tên</label>
-                        <input name="username" id="username" type="text" 
-                               class="form-control" placeholder="UserName:" value="${username}">
+                        <input name="userName" id="userName" type="text" 
+                               class="form-control" placeholder="UserName:" value="${userName}">
                     </div>
                 </div><!--end col-->   
 
