@@ -96,7 +96,7 @@ public class CreateOrderServlet extends HttpServlet {
 
         if (totalDiscount >= 200000) {
 
-            status = "Tổng tiền đã giảm : " + totalDiscount + request.getParameter("status");
+            status = "Tổng tiền đã giảm : " + totalDiscount +"<br>"+ request.getParameter("status");
         } else {
             status = request.getParameter("status");
         }
@@ -115,6 +115,7 @@ public class CreateOrderServlet extends HttpServlet {
                 String[] totalPrices = request.getParameterValues("totalPrice");
                 String[] unitPrices = request.getParameterValues("unitPrice");
                 String[] quantities = request.getParameterValues("quantity");
+                 String[] descriptions = request.getParameterValues("description");
 
                 if (productIds != null) {
                     for (int i = 0; i < productIds.length; i++) {
@@ -130,8 +131,9 @@ public class CreateOrderServlet extends HttpServlet {
                             return;  // Dừng ngay sau khi forward
                         }
                         
+                        String description = descriptions[i];
 
-                        boolean success = DAOOrderItems.INSTANCE.createOrderItem(orderId, productID, productName, price, unitPrice, quantity);
+                        boolean success = DAOOrderItems.INSTANCE.createOrderItem(orderId, productID, productName, price, unitPrice, quantity,description);
 
                         if (!success) {
                             request.setAttribute("ms", "Không đủ số lượng sản phẩm trong kho!");

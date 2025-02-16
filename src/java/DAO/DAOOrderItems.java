@@ -16,8 +16,8 @@ public class DAOOrderItems extends DBContext {
 
     public static DAOOrderItems INSTANCE = new DAOOrderItems();
 
-    public boolean createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity) {
-        String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+    public boolean createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity,String description) {
+        String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity, description) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderID);
@@ -26,6 +26,7 @@ public class DAOOrderItems extends DBContext {
             ps.setBigDecimal(4, price);
             ps.setBigDecimal(5, unitPrice);
             ps.setInt(6, quantity);
+            ps.setString(7, description);
             
 
             int rowsAffected = ps.executeUpdate();

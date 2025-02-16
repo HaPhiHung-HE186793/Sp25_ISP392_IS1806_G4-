@@ -73,21 +73,14 @@ public class SearchServlet extends HttpServlet {
          
          
         request.setAttribute("products", products);
+        
          }
         
-         String searchPhone = request.getParameter("searchCustomer");
+        // Lấy lại danh sách khách hàng để không bị mất sau khi tìm sản phẩm
+    List<Customers> customers = DAOCustomers.INSTANCE.listAll();
+    request.setAttribute("customers", customers);
+        
          
-         if(searchPhone.equals("")){
-             request.setAttribute("id", 0);
-             
-         
-         }else{
-             request.setAttribute("id", 0);
-         
-         List<Customers> customers = DAOCustomers.INSTANCE.findByPhone(searchPhone);
-
-        request.setAttribute("customers", customers);
-         }
         
         request.getRequestDispatcher("createOrder.jsp").forward(request, response);
         
@@ -103,7 +96,21 @@ public class SearchServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+       String searchPhone = request.getParameter("searchCustomer");
+         
+         if(searchPhone.equals("")){
+             request.setAttribute("id", 0);
+             
+         
+         }else{
+             request.setAttribute("id", 0);
+         
+         List<Customers> customers = DAOCustomers.INSTANCE.findByPhone(searchPhone);
+
+        request.setAttribute("customers", customers);
+         }
+        
+        request.getRequestDispatcher("createOrder.jsp").forward(request, response);
     }
 
     /** 

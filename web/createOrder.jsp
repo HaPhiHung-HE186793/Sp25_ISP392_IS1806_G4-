@@ -32,19 +32,26 @@
 
 
 
-                <div class="table-container">
-                    <h3>Sản phẩm</h3>
+                 <div class="table-container">
+
+
+
                     <div class="filters">
                         <form action="SearchServlet" method="GET">
-                            <!-- Ô tìm sản phẩm -->
-                            <label for="searchProduct">Tìm sản phẩm:</label>
-                            <input type="text" name="searchProduct"  placeholder="Nhập tên sản phẩm...">
 
-                            <!-- Ô tìm khách hàng -->
-                            <label for="searchCustomer">Tìm khách hàng:</label>
-                            <input type="text" name="searchCustomer"  placeholder="Nhập số điện thoại...">
 
+                            <label for="searchProduct">Tìm sản phẩm :</label>
+                            <input type="text" name="searchProduct" placeholder="Nhập tên sản phẩm...">
                             <button type="submit">Tìm</button>
+
+                        </form>
+                        <br>
+                        <form action="SearchServlet" method="POST">
+
+                            <label for="searchCustomer">Tìm khách hàng:</label>
+                            <input type="number" name="searchCustomer" placeholder="Nhập số điện thoại...">
+                            <button type="submit">Tìm</button>
+
                         </form>
                     </div>
 
@@ -92,7 +99,7 @@
 
 
 
-                        <form action="CreateOrderServlet" method="post">
+                        <form id="orderForm" action="CreateOrderServlet" method="post">
 
                             <label for="orderDate">Ngày tạo đơn:</label>
                             <input type="date" id="orderDate" name="orderDate" readonly >
@@ -103,31 +110,47 @@
 
                             <label for="customerID">Khách Hàng:</label>
                             <select id="customerID" name="customerId" required>
-
                                 <c:if test="${not empty customers}">
                                     <c:forEach var="customer" items="${customers}">
-                                        <option value="${customer.customerID}">${customer.name} - ${customer.phone}</option>
+                                        <option value="${customer.customerID}" ${customer.customerID == param.selectedCustomerId ? 'selected' : ''}>
+                                            ${customer.name} - ${customer.phone}
+                                        </option>
                                     </c:forEach>
                                 </c:if>
-
-
-
                             </select>
+
 
                             <br>
 
                             <c:if test="${id==0}">
                                 <c:choose>
                                     <c:when test="${not empty customers}">
-
+                                        <!-- Danh sách có khách hàng, không cần hiển thị thông báo lỗi -->
                                     </c:when>
                                     <c:otherwise>
                                         <p style="color: red; font-style: italic;">Không tìm thấy khách hàng</p>
                                     </c:otherwise>
                                 </c:choose>
-
-
                             </c:if>
+
+                            <script>
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let customerSelect = document.getElementById("customerID");
+                                    let savedCustomerId = sessionStorage.getItem("selectedCustomerId");
+
+                                    if (savedCustomerId) {
+                                        customerSelect.value = savedCustomerId;
+                                    }
+
+                                    customerSelect.addEventListener("change", function () {
+                                        sessionStorage.setItem("selectedCustomerId", customerSelect.value);
+                                    });
+                                });
+
+
+                            </script>        
+
 
 
 
@@ -138,7 +161,7 @@
 
                             <p>${sessionScope.userName}</p>
 
-                            <br>
+                            
 
                             <label for="porter">Số Người Bốc Vác:</label>
                             <input type="number" id="porter" name="porter" required
@@ -155,16 +178,17 @@
 
                             <h3 style="color: red">Chi Tiết Đơn Hàng</h3>
 
-                            <table id="orderItems" border="1" width="100%" cellspacing="0" cellpadding="10">
+                            <table id="orderItems" border="1" width="100%" cellspacing="0" cellpadding="5">
                                 <thead>
                                     <tr>
                                         <th width="20%">Sản Phẩm</th>
                                         <th width="10%">Đơn vị</th>
-                                        <th width="15%">Số Lượng</th>
-                                        <th width="15%">Đơn Giá</th>
-                                        <th width="15%">Giảm Giá (VND/kg)</th>
+                                        <th width="10%">Số Lượng</th>
+                                        <th width="10%">Đơn Giá</th>
+                                        <th width="10%">Giảm Giá (VND/kg)</th>
                                         <th width="15%">Thành Tiền</th>
-                                        <th width="15%">Thao Tác</th>
+                                        <th width="15%">Chú Thích</th>
+                                        <th width="10%">Thao Tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -187,10 +211,21 @@
                             <button type="submit">Tạo Hóa Đơn</button>
 
                             <script>
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    document.getElementById("orderForm").addEventListener("submit", function () {
+                                        sessionStorage.clear(); // Xóa toàn bộ dữ liệu trong sessionStorage
+                                    });
+                                });
+
+                            </script>
+
+                            <script>
                                 document.addEventListener("DOMContentLoaded", function () {
                                     var today = new Date();
                                     var formattedDate = today.toISOString().split('T')[0]; // Chuyển thành YYYY-MM-DD
                                     document.getElementById("orderDate").value = formattedDate;
+                                    loadOrderFromSessionStorage();
                                 });
                             </script>
                             <script>
@@ -204,6 +239,7 @@
                                     var cell5 = newRow.insertCell(4);
                                     var cell6 = newRow.insertCell(5);
                                     var cell7 = newRow.insertCell(6);
+                                    var cell8 = newRow.insertCell(7);
                                     // Hiển thị tên sản phẩm
                                     cell1.innerHTML =
                                             '<input type="hidden" name="productID" value="' + productID + '">' +
@@ -227,8 +263,10 @@
                                     cell5.innerHTML = '<input type="number" name="discount" class="discount" value="0" min="0">';
                                     // Thành tiền (tự động cập nhật)
                                     cell6.innerHTML = '<input type="number" name="totalPrice" class="totalPrice" readonly>';
+                                    // Nút chú thích
+                                    cell7.innerHTML = '<input type="text" name="description" class="description">';
                                     // Nút xóa
-                                    cell7.innerHTML = '<button type="button" onclick="deleteRow(this)">Xóa</button>';
+                                    cell8.innerHTML = '<button type="button" onclick="deleteRow(this)">Xóa</button>';
                                     // Gắn sự kiện tính toán tổng tiền
                                     var quantityInput = cell3.querySelector('.quantity');
                                     var unitTypeInput = cell2.querySelector('.unitType');
@@ -244,20 +282,22 @@
 
                                         totalPriceInput.value = totalPrice.toFixed(2);
                                         updateTotalOrderPrice();
+                                        saveOrderToSessionStorage();
                                     }
 
                                     quantityInput.addEventListener('input', recalculate);
                                     unitTypeInput.addEventListener('change', recalculate);
                                     discountInput.addEventListener('input', recalculate);
-                                    
+
                                     recalculate();
-                                    
+
                                 }
 
                                 function deleteRow(button) {
                                     var row = button.parentNode.parentNode;
                                     row.parentNode.removeChild(row);
                                     updateTotalOrderPrice();
+                                    saveOrderToSessionStorage();
                                 }
 
                                 function updateTotalOrderPrice() {
@@ -278,6 +318,34 @@
                                     });
                                     document.getElementById("totalOrderPrice").value = total.toFixed(2);
                                     document.getElementById("totalDiscount").value = totalDiscount.toFixed(2);
+                                }
+
+                                function saveOrderToSessionStorage() {
+                                    var orderItems = [];
+                                    document.querySelectorAll("#orderItems tbody tr").forEach(row => {
+                                        var productID = row.querySelector("input[name='productID']").value;
+                                        var productName = row.querySelector("input[name='productName']").value;
+                                        var unitType = row.querySelector(".unitType").value;
+                                        var quantity = row.querySelector(".quantity").value;
+                                        var unitPrice = row.querySelector(".unitPrice").value;
+                                        var discount = row.querySelector(".discount").value;
+                                        var totalPrice = row.querySelector(".totalPrice").value;
+                                        orderItems.push({productID, productName, unitType, quantity, unitPrice, discount, totalPrice});
+                                    });
+                                    sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
+                                }
+
+                                function loadOrderFromSessionStorage() {
+                                    var orderItems = JSON.parse(sessionStorage.getItem("orderItems")) || [];
+                                    orderItems.forEach(item => {
+                                        addProductToOrder(item.productID, item.productName, parseFloat(item.unitPrice));
+                                        var lastRow = document.querySelector("#orderItems tbody tr:last-child");
+                                        lastRow.querySelector(".unitType").value = item.unitType;
+                                        lastRow.querySelector(".quantity").value = item.quantity;
+                                        lastRow.querySelector(".discount").value = item.discount;
+                                        lastRow.querySelector(".totalPrice").value = item.totalPrice;
+                                    });
+                                    updateTotalOrderPrice();
                                 }
 
                             </script>
