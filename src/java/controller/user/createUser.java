@@ -113,7 +113,7 @@ public class createUser extends HttpServlet {
         sendEmail.sendPasswordForUser(email, password);
 
         request.setAttribute("success", "Thêm thành công!");
-        request.setAttribute("fullName", userName);
+        request.setAttribute("username", userName);
         request.setAttribute("email", email);
         request.getRequestDispatcher("createUser.jsp").forward(request, response);
     }
