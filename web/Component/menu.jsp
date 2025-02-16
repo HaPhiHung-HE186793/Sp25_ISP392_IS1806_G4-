@@ -6,7 +6,9 @@
     </div>
 
 
-    <div class="balance">Login  </div>
+     <div class="balance">
+        <a href="loginURL?service=logoutUser">LogOut</a>
+    </div>
 
 </div>
 <div class="sidebar">
@@ -16,7 +18,7 @@
     <a href="CreateOrderServlet">Tạo hóa đơn</a>
     <a href="#">Sản phẩm</a>
     <a href="#">Quản lý kho</a>
-    <a href="#">Quản lý thanh toán</a>
+    <a href="URLOrder?service=listshow">Quản lý thanh toán</a>
     <a href="#">Trung gian</a>
     <a href="#">Dịch vụ</a>
     <!-- Thêm các mục dài để hiển thị thanh trượt -->
