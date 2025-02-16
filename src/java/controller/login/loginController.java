@@ -59,13 +59,13 @@ public class loginController extends HttpServlet {
         
         switch (user.getRoleID()) {
     case 1: 
-        dao.dispatch(request, response, "/dashboard/homeAdmin.jsp");
+        dao.dispatch(request, response, "/dashboard/home.jsp");
         break;
     case 2: 
-        dao.dispatch(request, response, "/dashboard/homeOwner.jsp");
+        dao.dispatch(request, response, "/dashboard/home.jsp");
         break;
     case 3: // Sửa thành int
-        dao.dispatch(request, response, "/dashboard/homeStaff.jsp");
+        dao.dispatch(request, response, "/dashboard/home.jsp");
         break;
     default:
         request.setAttribute("message", "Invalid role.");
