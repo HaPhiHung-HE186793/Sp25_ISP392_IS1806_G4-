@@ -15,24 +15,24 @@
 
     <body>
         <div id="main">
-            
-<jsp:include page="/Component/menu.jsp"></jsp:include>
 
-            <div class="main-content">
-                <div class="notification">
-                    Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
-                </div>
+            <jsp:include page="/Component/menu.jsp"></jsp:include>
+
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
+                    </div>
 
 
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3>Sản phẩm</h3>
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Sản phẩm</h3>
                         <c:if test="${message == 'success'}">
-                        <div class="newDebt-notification">Thêm khách hàng thành công!</div>
+                            <div class="newDebt-notification">Thêm khách hàng thành công!</div>
                         </c:if>
 
                         <c:if test="${message == 'error'}">
-                        <div class="newDebt-notificationError">Thêm khách hàng thất bại.</div>
+                            <div class="newDebt-notificationError">Thêm khách hàng thất bại.</div>
                         </c:if>
                     </div>
                     <div class="filters">

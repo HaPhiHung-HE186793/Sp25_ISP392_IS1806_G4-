@@ -60,7 +60,7 @@ public class loginController extends HttpServlet {
         session.setAttribute("username", user.getUserName());
         switch (user.getRoleID()) {
     case 1: 
-        dao.dispatch(request, response, "/dashboard/home.jsp");
+        dao.dispatch(request, response, "/debt.jsp");
         break;
     case 2: 
         dao.dispatch(request, response, "/dashboard/home.jsp");
