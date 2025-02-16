@@ -52,11 +52,11 @@
                         <thead id="table-header">
                             <tr>
                                 <th>ID</th>
-                                <th>User Name</th>
-                                <th>Role</th>
+                                <th>Tên</th>
+                                <th>Chức năng</th>
                                 <th>Email</th>
-                                <th>Date Created</th>
-                                <th>Creator</th>                           
+                                <th>Ngày tạo</th>
+                                <th>Người tạo</th>                           
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
