@@ -36,6 +36,7 @@ public class loginController extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session=request.getSession(true);
+        session.setMaxInactiveInterval(30 * 60);
         DAOUser dao = new DAOUser();
         String service = request.getParameter("service");
         if (service == null) { 
