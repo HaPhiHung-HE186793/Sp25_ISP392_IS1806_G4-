@@ -73,7 +73,7 @@ public class createUser extends HttpServlet {
         HttpSession session = request.getSession();
         Integer createBy = (Integer) session.getAttribute("userID");
         if (createBy == null) {
-            response.sendRedirect("login.jsp"); // Chuyển hướng về trang đăng nhập nếu chưa có userID
+            response.sendRedirect("/login/login.jsp"); // Chuyển hướng về trang đăng nhập nếu chưa có userID
             return;
         }
 
@@ -95,7 +95,7 @@ public class createUser extends HttpServlet {
             request.setAttribute("errors", errors);
             request.setAttribute("userName", userName);
             request.setAttribute("email", email);
-            request.getRequestDispatcher("createUser.jsp").forward(request, response);
+            request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
             return;
         }
 
@@ -115,7 +115,7 @@ public class createUser extends HttpServlet {
         request.setAttribute("success", "Thêm thành công!");
         request.setAttribute("username", userName);
         request.setAttribute("email", email);
-        request.getRequestDispatcher("createUser.jsp").forward(request, response);
+        request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
     }
 
     /**
@@ -156,7 +156,7 @@ public class createUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("createUser.jsp").forward(request, response);
+        request.getRequestDispatcher("user/createUser.jsp").forward(request, response);
     }
 
     /**

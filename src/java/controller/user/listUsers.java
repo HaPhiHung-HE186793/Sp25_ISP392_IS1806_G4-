@@ -81,7 +81,7 @@ public class listUsers extends HttpServlet {
         }
 
         session.setAttribute("U", U);
-        request.getRequestDispatcher("list_users.jsp").forward(request, response);
+        request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
 
     }
 
@@ -116,7 +116,7 @@ public class listUsers extends HttpServlet {
         request.setAttribute("U", filteredUsers);
         request.setAttribute("selectedRole", role);
         request.setAttribute("keyword", keyword);
-        request.getRequestDispatcher("list_users.jsp").forward(request, response);
+        request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
     }
 
     /**

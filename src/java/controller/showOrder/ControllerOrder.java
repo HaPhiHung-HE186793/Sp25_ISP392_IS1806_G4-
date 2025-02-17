@@ -117,7 +117,7 @@ public class ControllerOrder extends HttpServlet {
             request.setAttribute("sortColumn", sortColumn);
             request.setAttribute("sortOrder", sortOrder); // Gửi thứ tự sắp xếp đến JSP
             request.setAttribute("totalAmount", totalAmount); // Gửi tổng giá tiền đến JSP
-            RequestDispatcher dispth = request.getRequestDispatcher("showOrder.jsp");
+            RequestDispatcher dispth = request.getRequestDispatcher("order/showOrder.jsp");
             dispth.forward(request, response);
         }
     }
