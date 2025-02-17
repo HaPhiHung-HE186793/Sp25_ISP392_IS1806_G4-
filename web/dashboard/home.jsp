@@ -38,10 +38,11 @@
                                 <option value="">Z->A</option>
 
                             </select>
-                            <input type="text" placeholder="Từ">
-                            <input type="text" placeholder="Đến">
+                            <form action="ListRice" method="get">
+                                <input type="text" name="search" placeholder="Nhập">
                             <button>Bỏ lọc</button>
-                            <button>Thu gọn</button>
+                            <button type="submit">Tìm kiếm</button>
+                            </form>
                             <a href="./dashboard/insert_product.jsp"><button>Thêm gạo</button></a>
                             <a href="/DemoISP/ListProductCheckIs"><button>Thêm check</button></a>
                         </div>
@@ -59,8 +60,6 @@
                                     <th>Cập nhật lần cuối </th>
                                     <th>Tạo bởi</th>
                                     <th>Trạng thái</th>
-                                    <th>Xóa ở</th>
-                                    <th>Xóa bởi</th>
                                 </tr>
                             </thead>
                         <c:forEach items="${products}" var="p">
@@ -76,8 +75,6 @@
                                     <td>${p.getUpdateAt()}</td>
                                     <td>${p.getCreateBy()}</td>
                                     <td>${p.isIsDelete()}</td> <%-- Still display the isDelete value --%>
-                                    <td>${p.getDeleteAt()}</td>
-                                    <td>${p.getDeleteBy()}</td>
                                     <td>
                                         <c:if test="${not p.isIsDelete()}"> <%-- Delete link only if not deleted --%>
                                             <a href="DeleteProduct?productID=${p.getProductID()}" 
