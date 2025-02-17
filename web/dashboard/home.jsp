@@ -43,6 +43,7 @@
                             <button>Bỏ lọc</button>
                             <button>Thu gọn</button>
                             <a href="./dashboard/insert_product.jsp"><button>Thêm gạo</button></a>
+                            <a href="/DemoISP/ListProductCheckIs"><button>Thêm check</button></a>
                         </div>
 
                         <table>
