@@ -20,6 +20,22 @@
         <servlet-name>SearchServlet</servlet-name>
         <servlet-class>controller.order.SearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ListCustomer</servlet-name>
+        <servlet-class>controller.customer.ListCustomer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddCustomer</servlet-name>
+        <servlet-class>controller.customer.AddCustomer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateCustomer</servlet-name>
+        <servlet-class>controller.customer.UpdateCustomer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListDebtCustomer</servlet-name>
+        <servlet-class>controller.debt.ListDebtCustomer</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
         <url-pattern>/forgotpass</url-pattern>
@@ -71,5 +87,21 @@
     <servlet-mapping>
         <servlet-name>ControllerOrderDetail</servlet-name>
         <url-pattern>/URLOrderDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListCustomer</servlet-name>
+        <url-pattern>/ListCustomer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddCustomer</servlet-name>
+        <url-pattern>/AddCustomer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCustomer</servlet-name>
+        <url-pattern>/UpdateCustomer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListDebtCustomer</servlet-name>
+        <url-pattern>/ListDebtCustomer</url-pattern>
     </servlet-mapping>
 </web-app>
