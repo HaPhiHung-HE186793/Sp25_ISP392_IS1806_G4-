@@ -56,7 +56,9 @@
                                 <th>Chức năng</th>
                                 <th>Email</th>
                                 <th>Ngày tạo</th>
-                                <th>Người tạo</th>                           
+                                <th>Trạng thái</th> 
+                                <th>Người tạo</th> 
+                                <th style="border-left: 1px solid black;">Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
@@ -75,12 +77,39 @@
                                         </c:choose>
                                     </td>
                                     <td>${u.getEmail()}</td>                                                                    
-                                    <td>${u.getCreateAt()}</td>
+                                    <td>
+                                        <span>${u.getCreateAt().substring(0, 10)}</span><br>
+                                        <span>${u.getCreateAt().substring(11)}</span>
+                                    </td>
+                                    <td>${u.getIsDelete() ? "Đã khóa" : "Hoạt động"}</td>
                                     <td><c:forEach var="creator" items="${U}">
                                             <c:if test="${creator.getID() == u.getCreateBy()}">
                                                 ${creator.getUserName()}
                                             </c:if>
-                                        </c:forEach></td>
+                                        </c:forEach>
+                                    </td>
+                                    <td style="border-left: 1px solid black; display: flex; align-items: center;">
+                                        <button onclick="updateUser(${u.getID()})" 
+                                                style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: #5bc0de; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                            Update
+                                        </button>
+                                        <c:choose>
+                                            <c:when test="${u.getIsDelete()}">
+                                                <button onclick="toggleUserStatus(${u.getID()}, false)" 
+                                                        style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                                    Mở khóa
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button onclick="toggleUserStatus(${u.getID()}, true)" 
+                                                        style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: red; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                                    Khóa
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+
+
                                 </tr>
                             </c:forEach>   
                         </tbody>
@@ -90,7 +119,7 @@
         </div>
 
 
-        <%@include file="Component/pagination.jsp" %>
+        <%@include file="/Component/pagination.jsp" %>
 
     </body>
 
@@ -102,7 +131,7 @@
             <button class="newDebt-close js-close-newDebt">
                 close
             </button>
-            <div class="newDebt-header">Thông tin người nợ</div>
+            <div class="newDebt-header">Thông tin người dùng</div>
             <div class="newDebt-body">
 
 
@@ -111,25 +140,36 @@
                     </thead>
                     <tbody class="newDebt-tableTbody">                            
                         <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
+                            <td ><div class="newDebt-text"> Họ và tên:</div></td>
                             <td ><input class="newDebt-input" type="text" placeholder="Nguyen Van A"> </td>                                    
                         </tr>                            
                         <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Địa chỉ:</div></td>
-                            <td ><textarea class="newDebt-input" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
-                        </tr>                                   
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> SĐT:</div></td>
-                            <td ><input class="newDebt-input" type="number" > </td>                                    
-                        </tr>                                   
+                            <td ><div class="newDebt-text"> Mật khẩu:</div></td>
+                            <td ><input name="password" id="password" type="password" 
+                                        class="newDebt-input" placeholder="Nhập mật khẩu" required=""><br></td>                                    
+                        </tr>       
                         <tr class="newDebt-tableTbody-tr">
                             <td ><div class="newDebt-text"> Email:</div></td>
-                            <td ><input class="newDebt-input" type="text" > </td>                                    
-                        </tr>                                   
+                            <td ><input name="email" id="email" type="email" class="newDebt-input" placeholder="@example.com" value="${email}"></td>                                    
+                        </tr> 
                         <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Tổng nợ:</div></td>
-                            <td ><input class="newDebt-input newDebt-total" type="number" placeholder="0" readonly> </td>                                    
-                        </tr>                                                           
+                            <td ><div class="newDebt-text"> Chức năng:</div></td>
+                            <td >
+                                <div class="form-check">
+                                    <input class="newDebt-input" type="radio" name="roleID" value="1" id="admin" required>
+                                    Admin
+                                </div>
+                                <div class="form-check">
+                                    <input class="newDebt-input" type="radio" name="roleID" value="2" id="store_owner">
+                                    Chủ Cửa Hàng
+                                </div>
+                                <div class="form-check">
+                                    <input class="newDebt-input" type="radio" name="roleID" value="3" id="employee">
+                                    Nhân Viên
+                                </div>
+                            </td>                                    
+                        </tr>                                   
+
                     </tbody>
                 </table>
 
