@@ -45,7 +45,7 @@ public class loginController extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
              if (service.equals("logoutUser")) {
                 session.invalidate();
-                dao.dispatch(request, response, "login.jsp");
+                dao.dispatch(request, response, "/login/login.jsp");
             } 
 
              else if (service.equals("loginUser")) {
@@ -60,7 +60,7 @@ public class loginController extends HttpServlet {
         session.setAttribute("username", user.getUserName());
         if (user.getIsDelete()) {
            request.setAttribute("message", "Your account has been banned.");
-           dao.dispatch(request, response, "/login.jsp");
+           dao.dispatch(request, response, "/login/login.jsp");
            return;
             }
         switch (user.getRoleID()) {
@@ -75,12 +75,12 @@ public class loginController extends HttpServlet {
         break;
     default:
         request.setAttribute("message", "Invalid role.");
-        dao.dispatch(request, response, "/login.jsp");
+        dao.dispatch(request, response, "/login/login.jsp");
         break;
 }
     } else {
         request.setAttribute("message", "Your username or password is invalid.");
-        dao.dispatch(request, response, "/login.jsp");
+        dao.dispatch(request, response, "/login/login.jsp");
     }
 }
 }

@@ -106,7 +106,7 @@ public class verifyOTPController extends HttpServlet {
         } else {
             // Invalid OTP, display error message
             request.setAttribute("error", "Invalid OTP");
-            request.getRequestDispatcher("verifyOTP.jsp").forward(request, response);
+            request.getRequestDispatcher("/login/verifyOTP.jsp").forward(request, response);
         }
             }
     }

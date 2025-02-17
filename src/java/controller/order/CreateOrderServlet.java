@@ -65,7 +65,7 @@ public class CreateOrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+        request.getRequestDispatcher("/order/createOrder.jsp").forward(request, response);
     }
 
     /**
@@ -127,7 +127,7 @@ public class CreateOrderServlet extends HttpServlet {
 
                         if (quantity <= 0) {
                             request.setAttribute("ms", "Số lượng sản phẩm không hợp lệ!");
-                            request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+                            request.getRequestDispatcher("/order/createOrder.jsp").forward(request, response);
                             return;  // Dừng ngay sau khi forward
                         }
                         
@@ -137,7 +137,7 @@ public class CreateOrderServlet extends HttpServlet {
 
                         if (!success) {
                             request.setAttribute("ms", "Không đủ số lượng sản phẩm trong kho!");
-                            request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+                            request.getRequestDispatcher("/order/createOrder.jsp").forward(request, response);
                             return;  // Dừng ngay sau khi forward
                         }
                     }
@@ -149,12 +149,12 @@ public class CreateOrderServlet extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(CreateOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
             request.setAttribute("ms", "Lỗi khi tạo đơn hàng, vui lòng thử lại.");
-            request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+            request.getRequestDispatcher("/order/createOrder.jsp").forward(request, response);
             return;  // Dừng ngay sau khi forward
         }
 
 // Nếu đã forward trước đó, thì sẽ không đến được đây
-        request.getRequestDispatcher("createOrder.jsp").forward(request, response);
+        request.getRequestDispatcher("/order/createOrder.jsp").forward(request, response);
 
     }
 
