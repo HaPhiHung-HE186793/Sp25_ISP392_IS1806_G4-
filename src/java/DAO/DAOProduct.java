@@ -194,7 +194,34 @@ public class DAOProduct extends DBContext {
         return n;
     }
 
-    public void listAll() {
+//    public void listAll() {
+//        String sql = "SELECT * FROM products"; // Cập nhật tên bảng
+//        try {
+//            Statement state = conn.createStatement();
+//            ResultSet rs = state.executeQuery(sql);
+//            while (rs.next()) {
+//                int productID = rs.getInt("productID");
+//                String productName = rs.getString("productName");
+//                String description = rs.getString("description");
+//                double price = rs.getDouble("price");
+//                int quantity = rs.getInt("quantity");
+//                String image = rs.getString("image");
+//                String createAt = rs.getString("createAt");
+//                String updateAt = rs.getString("updateAt");
+//                int createBy = rs.getInt("createBy");
+//                Boolean isDelete = rs.getBoolean("isDelete");
+//                String deleteAt = rs.getString("deleteAt");
+//                int deleteBy = rs.getInt("deleteBy");
+//
+//                Products product = new Products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+//                System.out.println(product);
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
+    public List<Products> listAll() {
+        List<Products> list = new ArrayList<>();
         String sql = "SELECT * FROM products"; // Cập nhật tên bảng
         try {
             Statement state = conn.createStatement();
@@ -214,11 +241,12 @@ public class DAOProduct extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
 
                 Products product = new Products(productID, productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-                System.out.println(product);
+                list.add(product);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return list;
     }
 
     public static void main(String[] args) {
