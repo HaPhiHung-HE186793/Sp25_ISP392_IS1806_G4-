@@ -81,7 +81,7 @@ public class CreateOrderServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("userName");
+        String userName = (String) session.getAttribute("username");
          //Lấy thông tin đơn hàng
         int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
 
