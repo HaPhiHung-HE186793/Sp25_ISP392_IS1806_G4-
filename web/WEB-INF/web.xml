@@ -20,7 +20,9 @@
         <url-pattern>/AddCustomer</url-pattern>
         <url-pattern>/UpdateCustomer</url-pattern>
         <url-pattern>/ListDebtCustomer</url-pattern>
-        
+        <url-pattern>/ListProducts</url-pattern>
+        <url-pattern>/CreateProduct</url-pattern>
+        <url-pattern>/DeleteProduct</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -61,6 +63,18 @@
     <servlet>
         <servlet-name>ListDebtCustomer</servlet-name>
         <servlet-class>controller.debt.ListDebtCustomer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListProducts</servlet-name>
+        <servlet-class>controller.products.ListProducts</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateProduct</servlet-name>
+        <servlet-class>controller.products.CreateProduct</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteProduct</servlet-name>
+        <servlet-class>controller.products.DeleteProduct</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -129,5 +143,17 @@
     <servlet-mapping>
         <servlet-name>ListDebtCustomer</servlet-name>
         <url-pattern>/ListDebtCustomer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListProducts</servlet-name>
+        <url-pattern>/ListProducts</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateProduct</servlet-name>
+        <url-pattern>/CreateProduct</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteProduct</servlet-name>
+        <url-pattern>/DeleteProduct</url-pattern>
     </servlet-mapping>
 </web-app>
