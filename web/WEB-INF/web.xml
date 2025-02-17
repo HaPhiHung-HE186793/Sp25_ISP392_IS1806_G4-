@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>/LoginURL</url-pattern>
+        <url-pattern>/URLOrder</url-pattern>
+        <url-pattern>/ListDebt</url-pattern>
+        <url-pattern>/createuser</url-pattern>
+        <url-pattern>/listusers</url-pattern>
+        <url-pattern>/createuser</url-pattern>
+        <url-pattern>/CreateOrderServlet</url-pattern>
+        <url-pattern>/AddNewCustomerDebt</url-pattern>
+        <url-pattern>/SearchServlet</url-pattern>
+        <url-pattern>/URLOrderDetail</url-pattern>
+        <url-pattern>/ListCustomer</url-pattern>
+        <url-pattern>/AddCustomer</url-pattern>
+        <url-pattern>/UpdateCustomer</url-pattern>
+        <url-pattern>/ListDebtCustomer</url-pattern>
+        
+    </filter-mapping>
+    <servlet>
+        <servlet-name>loginController</servlet-name>
+        <servlet-class>controller.login.loginController</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>ListDebt</servlet-name>
         <servlet-class>controller.debt.ListDebt</servlet-class>
