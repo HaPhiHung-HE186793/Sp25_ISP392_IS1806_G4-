@@ -87,11 +87,13 @@ public class ListDebt extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        DAODebtRecords dao = new DAODebtRecords();
-        DAOCustomers daoC = new DAOCustomers();
-        
-        int 
-        
+//        DAODebtRecords dao = new DAODebtRecords();
+//        DAOCustomers daoC = new DAOCustomers();
+//        
+//        int 
+          
+
+
     }
 
     /**

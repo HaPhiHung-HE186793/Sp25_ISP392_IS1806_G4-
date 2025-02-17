@@ -26,6 +26,81 @@ public class DAOCustomers extends DBContext {
     
     public static DAOCustomers INSTANCE= new DAOCustomers();
     
+        // Danh sách kết quả tìm kiếm hiện tại để cộng dồn tiêu chí
+    private List<Customers> currentSearchResults = new ArrayList<>();
+        // Tìm kiếm theo tiêu chí động và cộng dồn
+    public List<Customers> searchCustomers(String name, String phone, String fromDate, String toDate) {
+        String sql = "SELECT * FROM customers WHERE isDelete = 0";
+        List<String> filters = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+
+        if (name != null && !name.isEmpty()) {
+            filters.add("name LIKE ?");
+            params.add("%" + name + "%");
+        }
+        if (phone != null && !phone.isEmpty()) {
+            filters.add("phone LIKE ?");
+            params.add("%" + phone + "%");
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            filters.add("createAt >= ?");
+            params.add(fromDate);
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            filters.add("createAt <= ?");
+            params.add(toDate);
+        }
+
+        if (!filters.isEmpty()) {
+            sql += " AND " + String.join(" AND ", filters);
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            List<Customers> results = new ArrayList<>();
+            while (rs.next()) {
+                Customers customer = new Customers(
+                    rs.getInt("customerID"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getDouble("totalDebt"),
+                    rs.getString("createAt"),
+                    rs.getString("updateAt"),
+                    rs.getInt("createBy"),
+                    rs.getBoolean("isDelete"),
+                    rs.getString("deleteAt"),
+                    rs.getInt("deleteBy")
+                );
+                results.add(customer);
+            }
+            
+            if (!currentSearchResults.isEmpty()) {
+                results.retainAll(currentSearchResults); // Giữ lại phần giao giữa kết quả cũ và mới
+            }
+            currentSearchResults = results; // Cập nhật danh sách hiện tại
+            
+            return results;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    // Xóa tiêu chí tìm kiếm, làm mới danh sách tìm kiếm
+    public void resetSearch() {
+        currentSearchResults.clear();
+    }
+
+
+    
+    
+    
      public List<Customers> findByPhone(String searchPhone) {
         List<Customers> customers = new ArrayList<>();
         String sql = "SELECT * FROM customers WHERE phone LIKE ? AND isDelete = 0";
@@ -84,6 +159,9 @@ public class DAOCustomers extends DBContext {
     }
     return vector;
 }
+    
+    
+    
      public int removeCustomer(int customerID) {
         int n = 0;
         String sql = "DELETE FROM customers WHERE customerID=?";

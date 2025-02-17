@@ -65,7 +65,8 @@ public class loginController extends HttpServlet {
             }
         switch (user.getRoleID()) {
     case 1: 
-        dao.dispatch(request, response, "dashboard/home.jsp");
+
+        dao.dispatch(request, response,"dashboard/home.jsp");
         break;
     case 2: 
         dao.dispatch(request, response,"dashboard/home.jsp");

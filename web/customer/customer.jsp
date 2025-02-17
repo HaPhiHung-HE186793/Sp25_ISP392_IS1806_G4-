@@ -26,7 +26,7 @@
 
                     <div class="table-container">
                         <div class="table-header">
-                            <h3>Sản phẩm</h3>
+                            <h3>Khách hàng</h3>
                         <c:if test="${message == 'success'}">
                             <div class="newDebt-notification">Thêm khách hàng thành công!</div>
                         </c:if>
@@ -36,13 +36,14 @@
                         </c:if>
                     </div>
                     <div class="filters">
-                        <select>
+<!--                        <select>
                             <option value="">Trạng thái</option>
                             <option value="">A->Z</option>
                             <option value="">Z->A</option>
 
-                        </select>
-                        <input type="text" placeholder="Search">
+                        </select>-->
+                        <input type="text" placeholder="Tìm kiếm">
+                        <input type="number" placeholder="Số điện thoại">
                         <input type="text" placeholder="Từ">
                         <input type="text" placeholder="Đến">
                         <button>Bỏ lọc</button>
@@ -56,22 +57,22 @@
                         <thead id="table-header">
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
+                                <th>Tên</th>
                                 <th>Email</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>TotalDebt</th>
-                                <th>CreateAt</th>
-                                <th>UpdateAt</th>
-                                <th>CreateBy</th>
-                                <th>DeleteAt</th>
-                                <th>DeleteBy</th>
-                                <th>IsDelete</th>
+                                <th>Sđt</th>
+                                <th>Địa chỉ</th>
+                                <th>Tổng nợ</th>
+                                <th>Ngày tạo</th>
+                                <th>Ngày cập nhật</th>
+                                <th>Người tạo</th>
+                                <th>Ngày xóa </th>
+                                <th>Người xóa</th>
+                                <th>Chức năng</th>
 
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
-                            <c:forEach items="${listDebt}" var="o">
+                            <c:forEach items="${listCustomer}" var="o">
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getCustomerID()}</td>
@@ -99,6 +100,7 @@
     </body>
 
     <div class="newDebt">
+        <form action="ListCustomer" method="post" >
         <div class="newDebt-container">
             <button class="newDebt-add">
                 Thêm mới 
@@ -110,23 +112,23 @@
             <div class="newDebt-header">Thông tin người nợ
             </div>
 
-            <div class="newDebt-body">                                
+            <div class="newDebt-body"> 
                 <table>
                     <thead id="newDebt-tableHeader">
                     </thead>
                     <tbody class="newDebt-tableTbody">
-
+                        
                         <tr class="newDebt-tableTbody-tr">
                             <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
-                            <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A"> </td>                                    
+                            <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A" required> </td>                                    
                         </tr>                            
                         <tr class="newDebt-tableTbody-tr">
                             <td ><div class="newDebt-text"> Địa chỉ:</div></td>
                             <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
                         </tr>                                   
                         <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> SĐT:</div></td>
-                            <td ><input class="newDebt-input" name="phone" type="number" > </td>                                    
+                            <td ><div class="newDebt-text"> SĐT (*):</div></td>
+                            <td ><input class="newDebt-input" name="phone" type="number" required> </td>                                    
                         </tr>                                   
                         <tr class="newDebt-tableTbody-tr">
                             <td ><div class="newDebt-text"> Email:</div></td>
@@ -135,12 +137,14 @@
                         <tr class="newDebt-tableTbody-tr">
                             <td ><div class="newDebt-text"> Tổng nợ:</div></td>
                             <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    
-                        </tr>                                                           
+                        </tr>  
+                        
                     </tbody>
                 </table>
 
             </div>
         </div>
+        </form>
     </div>
 
     <script>
