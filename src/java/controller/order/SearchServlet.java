@@ -82,7 +82,7 @@ public class SearchServlet extends HttpServlet {
         
          
         
-        request.getRequestDispatcher("/order/createOrder.jsp").forward(request, response);
+        request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
         
     } 
 
@@ -110,7 +110,7 @@ public class SearchServlet extends HttpServlet {
         request.setAttribute("customers", customers);
          }
         
-        request.getRequestDispatcher("/order/createOrder.jsp").forward(request, response);
+        request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
     }
 
     /** 

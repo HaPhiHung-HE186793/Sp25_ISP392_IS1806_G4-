@@ -60,27 +60,27 @@ public class loginController extends HttpServlet {
         session.setAttribute("username", user.getUserName());
         if (user.getIsDelete()) {
            request.setAttribute("message", "Your account has been banned.");
-           dao.dispatch(request, response, "/login/login.jsp");
+           dao.dispatch(request, response, "login/login.jsp");
            return;
             }
         switch (user.getRoleID()) {
     case 1: 
-        dao.dispatch(request, response, "/debt.jsp");
+        dao.dispatch(request, response, "dashboard/debt.jsp");
         break;
     case 2: 
-        dao.dispatch(request, response, "/dashboard/home.jsp");
+        dao.dispatch(request, response, "dashboard/home.jsp");
         break;
     case 3: // Sửa thành int
-        dao.dispatch(request, response, "/dashboard/home.jsp");
+        dao.dispatch(request, response, "dashboard/home.jsp");
         break;
     default:
         request.setAttribute("message", "Invalid role.");
-        dao.dispatch(request, response, "/login/login.jsp");
+        dao.dispatch(request, response, "login/login.jsp");
         break;
 }
     } else {
         request.setAttribute("message", "Your username or password is invalid.");
-        dao.dispatch(request, response, "/login/login.jsp");
+        dao.dispatch(request, response, "login/login.jsp");
     }
 }
 }

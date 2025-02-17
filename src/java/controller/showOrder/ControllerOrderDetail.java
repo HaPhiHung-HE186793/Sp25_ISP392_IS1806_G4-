@@ -63,7 +63,7 @@ public class ControllerOrderDetail extends HttpServlet {
                  request.setAttribute("papeTitle", "Orders manage");
                //call jsp (view)
                 RequestDispatcher dispth
-                        =request.getRequestDispatcher("/order/orderItemList.jsp");
+                        =request.getRequestDispatcher("order/orderItemList.jsp");
                 //run jsp
                dispth.forward(request, response);
               // response.sendRedirect("URLOrder");

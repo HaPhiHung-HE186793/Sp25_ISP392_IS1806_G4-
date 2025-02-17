@@ -156,7 +156,7 @@ public class createUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
+        request.getRequestDispatcher("user/createUser.jsp").forward(request, response);
     }
 
     /**

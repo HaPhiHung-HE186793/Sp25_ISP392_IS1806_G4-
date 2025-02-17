@@ -102,11 +102,11 @@ public class verifyOTPController extends HttpServlet {
 
            if (enteredOTP.equals(storedOTP)) {
             // OTP verified, redirect to login page
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("login/login.jsp");
         } else {
             // Invalid OTP, display error message
             request.setAttribute("error", "Invalid OTP");
-            request.getRequestDispatcher("/login/verifyOTP.jsp").forward(request, response);
+            request.getRequestDispatcher("login/verifyOTP.jsp").forward(request, response);
         }
             }
     }
