@@ -124,69 +124,75 @@ public class DAODebtRecords extends DBContext {
 //            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
-    
-    
-    public List<DebtRecords> listAllbyName(String name) {
-    List<DebtRecords> list = new ArrayList<>();
-    String sql = "SELECT * FROM debtRecords "; 
-    try {
-        Statement state = conn.createStatement();
-        ResultSet rs = state.executeQuery(sql);
-        while (rs.next()) {
-            int debtID = rs.getInt("debtID");
-            int customerID = rs.getInt("customerID");
-            int orderID = rs.getInt("orderID");
-            double amount = rs.getDouble("amount");
-            int paymentStatus = rs.getInt("paymentStatus");
-            String createAt = rs.getString("createAt");
-            String updateAt = rs.getString("updateAt");
-            int createBy = rs.getInt("createBy");
-            Boolean isDelete = rs.getBoolean("isDelete");
-            String deleteAt = rs.getString("deleteAt");
-            int deleteBy = rs.getInt("deleteBy");
+    public List<DebtRecords> listAllbyName(String id) {
+        List<DebtRecords> list = new ArrayList<>();
+        String sql = " SELECT * FROM debtRecords d \n"
+                + " join customers c on d.customerID=c.customerID\n"
+                + " where c.customerID = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, id); // Truyền tham số vào dấu ?
+            ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
 
-            DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-            list.add(record);
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                double amount = rs.getDouble("amount");
+                int paymentStatus = rs.getInt("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                list.add(record);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        return list;
     }
-    return list;
-}
-    
+
     public List<DebtRecords> listAll() {
-    List<DebtRecords> list = new ArrayList<>();
-    String sql = "SELECT * FROM debtRecords"; 
-    try {
-        Statement state = conn.createStatement();
-        ResultSet rs = state.executeQuery(sql);
-        while (rs.next()) {
-            int debtID = rs.getInt("debtID");
-            int customerID = rs.getInt("customerID");
-            int orderID = rs.getInt("orderID");
-            double amount = rs.getDouble("amount");
-            int paymentStatus = rs.getInt("paymentStatus");
-            String createAt = rs.getString("createAt");
-            String updateAt = rs.getString("updateAt");
-             int createBy = rs.getInt("createBy");
-            Boolean isDelete = rs.getBoolean("isDelete");
-            String deleteAt = rs.getString("deleteAt");
-            int deleteBy = rs.getInt("deleteBy");
+        List<DebtRecords> list = new ArrayList<>();
+        String sql = "SELECT * FROM debtRecords";
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                double amount = rs.getDouble("amount");
+                int paymentStatus = rs.getInt("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
 
-            DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-            list.add(record);
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                list.add(record);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        return list;
     }
-    return list;
-}
 
-    public static void main(String[] args) {
-        DAODebtRecords dao = new DAODebtRecords();
-
+//    public static void main(String[] args) {
+//        DAODebtRecords dao = new DAODebtRecords();
+//
+//        List<DebtRecords> list = dao.listAllbyName("21");
+//        for (DebtRecords o : list) {
+//            System.out.println(o.toString());
+//        }
         // 1. Thêm một bản ghi nợ mới
-//        deptRecords newRecord = new deptRecords( 3, 1, 500.0, "0", "2023-01-01", "2023-01-01", "1", false, null, 0);
+//        DebtRecords newRecord = new DebtRecords(21, 1, 0, 0, "2023-01-02", "2023-01-02", 0, true, "2023-01-02", 0);
 //        int insertResult = dao.insertDeptRecord(newRecord);
 //        System.out.println("Insert result: " + insertResult);
 //
@@ -196,10 +202,10 @@ public class DAODebtRecords extends DBContext {
 //        System.out.println("Update result: " + updateResult);
 ////
 //        // 3. Xóa một bản ghi nợ
-        int removeResult = dao.removeDeptRecord(5); // Giả sử ID của bản ghi nợ cần xóa
+//        int removeResult = dao.removeDeptRecord(5); // Giả sử ID của bản ghi nợ cần xóa
 //        System.out.println("Remove result: " + removeResult);
 
         // 4. Liệt kê tất cả bản ghi nợ
-        dao.listAll();
-    }
+//        dao.listAll();
+//    }
 }

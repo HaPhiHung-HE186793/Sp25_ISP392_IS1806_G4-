@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>/LoginURL</url-pattern>
+        <url-pattern>/URLOrder</url-pattern>
+        <url-pattern>/ListDebt</url-pattern>
+        <url-pattern>/createuser</url-pattern>
+        <url-pattern>/listusers</url-pattern>
+        <url-pattern>/createuser</url-pattern>
+        <url-pattern>/CreateOrderServlet</url-pattern>
+        <url-pattern>/AddNewCustomerDebt</url-pattern>
+        <url-pattern>/SearchServlet</url-pattern>
+        <url-pattern>/URLOrderDetail</url-pattern>
+        <url-pattern>/ListCustomer</url-pattern>
+        <url-pattern>/AddCustomer</url-pattern>
+        <url-pattern>/UpdateCustomer</url-pattern>
+        <url-pattern>/ListDebtCustomer</url-pattern>
+        <url-pattern>/ListProducts</url-pattern>
+        <url-pattern>/CreateProduct</url-pattern>
+        <url-pattern>/DeleteProduct</url-pattern>
+        <url-pattern>/CheckIsDelete</url-pattern>
+        <url-pattern>/ListProductCheckIs</url-pattern>
+        <url-pattern>/SearchProducts</url-pattern>
+    </filter-mapping>
+    <servlet>
+        <servlet-name>loginController</servlet-name>
+        <servlet-class>controller.login.loginController</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>ListDebt</servlet-name>
         <servlet-class>controller.debt.ListDebt</servlet-class>
@@ -35,6 +66,30 @@
     <servlet>
         <servlet-name>ListDebtCustomer</servlet-name>
         <servlet-class>controller.debt.ListDebtCustomer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListProducts</servlet-name>
+        <servlet-class>controller.products.ListProducts</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateProduct</servlet-name>
+        <servlet-class>controller.products.CreateProduct</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteProduct</servlet-name>
+        <servlet-class>controller.products.DeleteProduct</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckIsDelete</servlet-name>
+        <servlet-class>controller.products.CheckIsDelete</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListProductCheckIs</servlet-name>
+        <servlet-class>controller.products.ListProductCheckIs</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchProducts</servlet-name>
+        <servlet-class>controller.products.SearchProducts</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -105,6 +160,33 @@
         <servlet-name>ListDebtCustomer</servlet-name>
         <url-pattern>/ListDebtCustomer</url-pattern>
     </servlet-mapping>
+<<<<<<< HEAD
 =======
 >>>>>>> b17cf9b (them mapping cua controllershoworder)
+=======
+    <servlet-mapping>
+        <servlet-name>ListProducts</servlet-name>
+        <url-pattern>/ListProducts</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateProduct</servlet-name>
+        <url-pattern>/CreateProduct</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteProduct</servlet-name>
+        <url-pattern>/DeleteProduct</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckIsDelete</servlet-name>
+        <url-pattern>/CheckIsDelete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListProductCheckIs</servlet-name>
+        <url-pattern>/ListProductCheckIs</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchProducts</servlet-name>
+        <url-pattern>/SearchProducts</url-pattern>
+    </servlet-mapping>
+>>>>>>> 78b7f86cdf0107bbd1f3700e282817d766c50fbc
 </web-app>

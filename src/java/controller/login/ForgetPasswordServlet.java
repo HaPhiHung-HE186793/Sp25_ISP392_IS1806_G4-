@@ -102,7 +102,7 @@ if ("4".equals(step)) {
         boolean isUpdated = dao.updatePassword(email, hashedPassword);
         
         if (isUpdated) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("login/login.jsp");
         } else {
             request.setAttribute("errorMessage", "Failed to update password. Please try again.");
             request.setAttribute("email", email);

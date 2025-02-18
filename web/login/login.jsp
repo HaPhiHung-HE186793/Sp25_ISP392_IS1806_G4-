@@ -96,11 +96,11 @@
         %>
         <p class="message"><%= message %></p>
         <% } %>
-        <form action="loginURL" method="POST">            
+        <form action="<%=request.getContextPath()%>/loginURL?loginUser" method="POST">            
             <input type="email" name="user" placeholder="Username" required>
             <input type="password" name="pass" placeholder="Password" required>
             <input type="submit" name="submit" value="Login">
-            <input type="button" class="forgot-password" value="Forgot Password?" onclick="window.location.href='forgetpass/ForgetPassword.jsp'">
+            <input type="button" class="forgot-password" value="Forgot Password?" onclick="window.location.href='<%= request.getContextPath() %>/forgetpass/ForgetPassword.jsp'">
             <input type="hidden" name="service" value="loginUser">
         </form>
     </div>

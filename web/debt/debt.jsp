@@ -6,7 +6,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <title>Bảng Điều Khiển</title>
 
@@ -26,7 +26,9 @@
 
                     <div class="table-container">
                         <div class="table-header">
-                            <h3>Sản phẩm</h3>
+                            <h3>Chi tiết công nợ</h3>
+                            <h3>Người nợ: ${customers.getName()}</h3>
+
                         <c:if test="${message == 'success'}">
                             <div class="newDebt-notification">Thêm khách hàng thành công!</div>
                         </c:if>
@@ -48,7 +50,6 @@
                         <button>Bỏ lọc</button>
                         <button>Thu gọn</button>
 
-                        <button class="addNewDebt js-open-newDebt">Thêm người nợ</button>
 
                     </div>
 
@@ -56,37 +57,27 @@
                         <thead id="table-header">
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>TotalDebt</th>
-                                <th>CreateAt</th>
-                                <th>UpdateAt</th>
-                                <th>CreateBy</th>
-                                <th>DeleteAt</th>
-                                <th>DeleteBy</th>
-                                <th>IsDelete</th>
+                                <th>Tên</th>
+                                <th>Số tiền</th>
+                                <th>Loại nợ</th>
+                                <th>thời gian tạo</th>
+                                <th>Ngày lập phiếu</th>
+                                <th>Hành động</th>
 
                             </tr>
                         </thead>
+
                         <tbody id="table-tbody">
-                            <c:forEach items="${listCustomers}" var="o">
+                            <c:forEach items="${listCustomer}" var="o">
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
-                                    <td >${o.getCustomerID()}</td>
-                                    <td >${o.getName()}</td>
-                                    <td >${o.getEmail()}</td>
-                                    <td >${o.getPhone()}</td>
-                                    <td >${o.getAddress()}</td>
-                                    <td >${o.getTotalDebt()}</td>
+                                    <td >${o.getDebtID()}</td>
+                                    <td >${o.getAmount()}</td>
+                                    <td >${o.getPaymentStatus()}</td>
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
-                                    <td >${o.getCreateBy()}</td>
-                                    <td >${o.getDeleteAt()}</td>
-                                    <td >${o.getDeleteBy()}</td>
-                                    <td >${o.getIsDelete()}</td>
-
+                                    <td >${o.getUpdateAt()}</td>
+                                    <td ><button class="addNewDebt js-open-newDebt">Thêm người nợ</button></td>
                                 </tr>
                             </c:forEach>   
                         </tbody>

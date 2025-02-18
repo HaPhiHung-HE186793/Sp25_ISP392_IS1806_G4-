@@ -18,13 +18,15 @@
 </div>
 <div class="sidebar">
     <div class="logo">Bảng Điều Khiển</div>
-    <a href="#">Trang chủ</a>
+
+    <a href="ListProducts">Trang chủ</a>
+
     <a href="#">Hồ sơ người dùng</a>
     <a href="CreateOrderServlet">Tạo hóa đơn</a>
     <a href="#">Sản phẩm</a>
     <a href="#">Quản lý kho</a>
     <a href="URLOrder?service=listshow">Quản lý thanh toán</a>
-    <a href="#">Trung gian</a>
+    <a href="ListCustomer">Quản lý khách hàng</a>
     <a href="#">Dịch vụ</a>
     <!-- Thêm các mục dài để hiển thị thanh trượt -->
     <a href="#">Báo cáo tài chính</a>

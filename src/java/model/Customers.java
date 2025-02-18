@@ -40,20 +40,6 @@ public class Customers {
         this.deleteBy = deleteBy;
     }
 
-    public Customers(String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.totalDebt = totalDebt;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.createBy = createBy;
-        this.isDelete = isDelete;
-        this.deleteAt = deleteAt;
-        this.deleteBy = deleteBy;
-    }
-
     public int getCustomerID() {
         return customerID;
     }
@@ -150,6 +136,11 @@ public class Customers {
         this.deleteBy = deleteBy;
     }
 
-    
+    @Override
+    public String toString() {
+        return "Customers{" + "customerID=" + customerID + ", name=" + name + ", email=" + email + ", phone=" + phone + ", address=" + address + ", totalDebt=" + totalDebt + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
+    }
+
+  
     
 }

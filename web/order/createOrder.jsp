@@ -159,7 +159,7 @@
 
                             <label for="userID">Người Tạo:</label>
 
-                            <p>${sessionScope.userName}</p>
+                            <p>${sessionScope.username}</p>
 
                             
 

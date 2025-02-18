@@ -45,7 +45,7 @@ public class loginController extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
              if (service.equals("logoutUser")) {
                 session.invalidate();
-                dao.dispatch(request, response, "/login/login.jsp");
+                dao.dispatch(request, response, "login/login.jsp");
             } 
 
              else if (service.equals("loginUser")) {
@@ -65,13 +65,15 @@ public class loginController extends HttpServlet {
             }
         switch (user.getRoleID()) {
     case 1: 
-        dao.dispatch(request, response, "dashboard/debt.jsp");
+
+        dao.dispatch(request, response, "ListProducts");
+
         break;
     case 2: 
-        dao.dispatch(request, response, "dashboard/home.jsp");
+        dao.dispatch(request, response,"ListProducts");
         break;
     case 3: // Sửa thành int
-        dao.dispatch(request, response, "dashboard/home.jsp");
+        dao.dispatch(request, response, "ListProducts");
         break;
     default:
         request.setAttribute("message", "Invalid role.");

@@ -37,11 +37,14 @@ public class CreateProduct extends HttpServlet {
             // ... (error handling)
         }
         int quantity = 0;
+<<<<<<< HEAD
         try {
             quantity = Integer.parseInt(request.getParameter("quantity"));
         } catch (NumberFormatException e) {
             // ... (error handling)
         }
+=======
+>>>>>>> 78b7f86cdf0107bbd1f3700e282817d766c50fbc
         
         String imageName = request.getParameter("image"); // To store ONLY the image file name
 
