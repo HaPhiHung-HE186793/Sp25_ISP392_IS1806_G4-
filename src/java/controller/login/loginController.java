@@ -59,7 +59,7 @@ public class loginController extends HttpServlet {
         session.setAttribute("roleID", user.getRoleID());
         session.setAttribute("username", user.getUserName());
         if (user.getIsDelete()) {
-           request.setAttribute("message", "Your account has been banned.");
+           request.setAttribute("message", "Tài khoản của bạn đã bị cấm.");
            dao.dispatch(request, response, "login/login.jsp");
            return;
             }
@@ -81,7 +81,7 @@ public class loginController extends HttpServlet {
         break;
 }
     } else {
-        request.setAttribute("message", "Your username or password is invalid.");
+        request.setAttribute("message", "Email hoặc mật khẩu không đúng.");
         dao.dispatch(request, response, "login/login.jsp");
     }
 }
