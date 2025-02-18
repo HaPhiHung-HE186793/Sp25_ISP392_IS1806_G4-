@@ -8,7 +8,7 @@
 
 
       <div class="balance">
-        <a href="${loginURL}?service=logoutUser">LogOut</a>
+        <a href="${loginURL}?service=logoutUser" style="color: wheat;">LogOut</a>
     </div>
 
 </div>

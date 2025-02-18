@@ -30,11 +30,11 @@
                             <h3>Người nợ: ${customers.getName()}</h3>
 
                         <c:if test="${message == 'success'}">
-                            <div class="newDebt-notification">Thêm khách hàng thành công!</div>
+                            <div class="newDebt-notification">Thêm nợ thành công </div>
                         </c:if>
 
                         <c:if test="${message == 'error'}">
-                            <div class="newDebt-notificationError">Thêm khách hàng thất bại.</div>
+                            <div class="newDebt-notificationError">Thêm nợ thất bại.</div>
                         </c:if>
                     </div>
                     <div class="filters">
@@ -115,12 +115,19 @@
                     <tbody class="newDebt-tableTbody">
 
                         <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
-                            <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A"> </td>                                    
+                            <td ><div class="newDebt-text"> Số tiền(*):</div></td>
+                            <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A" required> </td>                                    
                         </tr>                            
                         <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Địa chỉ:</div></td>
-                            <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
+                            <td ><div class="newDebt-text"> Loại nợ:</div></td>
+                            <td >
+                                <select name="typeDebt" class="newDebt-input" required>
+                                    <option value="0">Vay nợ</option>
+                                    <option value="1">Trả nợ</option>
+                                    <option value="2">Đi vay</option>
+                                    <option value="3">Đi trả</option>
+                                </select>
+                            </td>
                         </tr>                                   
                         <tr class="newDebt-tableTbody-tr">
                             <td ><div class="newDebt-text"> SĐT:</div></td>
