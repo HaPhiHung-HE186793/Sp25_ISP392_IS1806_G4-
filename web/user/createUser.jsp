@@ -8,78 +8,117 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <title>Create User</title>
     </head>
+
     <body>
-        <!--form add customer-->
-        <form class="mt-4" action="createuser" method="POST" enctype="multipart/form-data">
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Họ Và Tên</label>
-                        <input name="userName" id="userName" type="text" 
-                               class="form-control" placeholder="UserName:" value="${userName}">
+        <div id="main">
+            <jsp:include page="/Component/menu.jsp"></jsp:include>
+
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
                     </div>
-                </div><!--end col-->   
 
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input name="email" id="email" type="email" class="form-control" placeholder="Your email:" value="${email}">
-                    </div> 
-                </div><!--end col-->
-                <div class="mb-3">
-                    <label class="form-label">Mật Khẩu</label>
-                    <input name="password" id="password" type="password" 
-                           class="form-control" placeholder="Nhập mật khẩu" required="">
+                    <div class="table-container">
+                        <h3>Danh sách người dùng</h3>
+
+                    <c:choose>
+                        <c:when test="${not empty errors}">
+                            <div class="notification" id="errorNotification" style="color: red;">
+                                <c:forEach var="error" items="${errors}">
+                                    <p>${error}</p>
+                                </c:forEach>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="notification" id="errorNotification" style="display: none;"></div>
+                        </c:otherwise>
+                    </c:choose> 
+                    <c:choose>
+                        <c:when test="${not empty success}">
+                            <div class="notification" id="messageNotification" style="color: green;">
+                                ${success}
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="notification" id="messageNotification" style="display: none;"></div>
+                        </c:otherwise>
+                    </c:choose>
+
+
+                    <table>
+                        <thead id="table-header">
+                            <tr>
+                                <th>Tên</th>                               
+                                <th>Email</th>
+                                <th>Mật Khẩu</th>
+                                <th>Chức năng</th>
+                                <th style="border-left: 1px solid black;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-tbody">
+                            <tr>
+                        <form action="createuser" method="POST" enctype="multipart/form-data">
+                            <td>
+                                <input name="userName" id="userName" type="text" 
+                                       placeholder="Tên của bạn" value="${userName}">
+                            </td>
+                            <td>
+                                <input name="email" id="email" type="email" 
+                                       placeholder="Email của bạn" value="${email}">
+                            </td> 
+                            <td>
+                                <input name="password" id="password" type="password" 
+                                       placeholder="Nhập mật khẩu" required>
+                            </td>
+                            <td>
+                                <div>
+                                    <input type="radio" name="roleID" value="1" id="admin" required>
+                                    <label for="admin">Admin</label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="roleID" value="2" id="store_owner">
+                                    <label for="store_owner">Chủ Cửa Hàng</label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="roleID" value="3" id="employee">
+                                    <label for="employee">Nhân Viên</label>
+                                </div>
+                            </td>
+                            <td style="border-left: 1px solid black;">                                    
+                                <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+                            </td>
+                        </form>
+                        </tr>
+                        </tbody>
+                    </table>                   
                 </div>
-
-
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Chức Năng</label>
-                        <div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="roleID" value="1" id="admin" required>
-                                    Admin
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="roleID" value="2" id="store_owner">
-                                    Chủ Cửa Hàng
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="roleID" value="3" id="employee">
-                                    Nhân Viên
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>       
-
-                <!-- Hiển thị thông báo lỗi chung -->
-                <c:if test="${not empty errors}">
-                    <div class="alert alert-danger mt-3">
-
-                        <c:forEach var="error" items="${errors}">
-                            <p>${error}</p>
-                        </c:forEach>
-
-                    </div>
-                </c:if>
-
-                <!-- End Error Message -->
-
-                <!-- Hiển thị thông báo thành công nếu có -->
-                <c:if test="${not empty success}">
-                    <div class="alert alert-success mt-3">${success}</div>
-                </c:if>  
-            </div><!--end row-->
-
-            <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
-        </form>
+                <button onclick="window.location.href = 'listusers'"  
+                        style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                    Quay về danh sách người dùng
+                </button>
+            </div>                                
+        </div>
     </body>
+    <script>
+        // Hàm ẩn thông báo sau 3 giây
+        function hideNotification(notificationId) {
+            setTimeout(function () {
+                var notification = document.getElementById(notificationId);
+                if (notification) {
+                    notification.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
+
+        hideNotification('errorNotification');
+        hideNotification('messageNotification');
+
+    </script>
 </html>
