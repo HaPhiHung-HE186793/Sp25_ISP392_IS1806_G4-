@@ -141,6 +141,11 @@ public class DebtRecords {
         this.deleteBy = deleteBy;
     }
 
+    @Override
+    public String toString() {
+        return "DebtRecords{" + "debtID=" + debtID + ", customerID=" + customerID + ", orderID=" + orderID + ", amount=" + amount + ", paymentStatus=" + paymentStatus + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
+    }
+
     
     
 }

@@ -20,50 +20,94 @@
 
     <body>
         <div id="main">
-           <jsp:include page="/Component/menu.jsp"></jsp:include>
+            <jsp:include page="/Component/menu.jsp"></jsp:include>
 
 
-            <div class="main-content">
-                <div class="notification">
-                    Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
-                </div>
-
-
-                <div class="table-container">
-                    <h3>Sản phẩm</h3>
-                    <div class="filters">
-                        <select>
-                            <option value="">Trạng thái</option>
-                            <option value="">A->Z</option>
-                            <option value="">Z->A</option>
-
-                        </select>
-                        <input type="text" placeholder="Từ">
-                        <input type="text" placeholder="Đến">
-                        <button>Bỏ lọc</button>
-                        <button>Thu gọn</button>
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
                     </div>
 
-                    <table>
-                        <thead id="table-header">
-                            <tr>
-                                <th>Mã sản phẩm</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Người bán</th>
-                                <th>Chủ đề</th>
-                                <th>Phương thức</th>
-                                <th>Công khai</th>
-                                <th>Giá tiền</th>
-                                <th>Ảnh</th>
-                                <th>Nơi chứa sản phẩm</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-tbody">
 
-                            <tr class="no-rows">
+                    <div class="table-container">
+                        <h3>Sản phẩm</h3>
+                        <div class="filters">
+                            <select>
+                                <option value="">Trạng thái</option>
+                                <option value="">A->Z</option>
+                                <option value="">Z->A</option>
 
-                            </tr>
-                        </tbody>
+                            </select>
+                            <input type="text" placeholder="Từ">
+                            <input type="text" placeholder="Đến">
+                            <button>Bỏ lọc</button>
+                            <button>Thu gọn</button>
+                            <a href="insert_product.jsp"><button>Thêm gạo</button></a>
+                        </div>
+
+                        <table>
+                            <thead id="table-header">
+                                <tr>
+                                    <th>Mã gạo</th>
+                                    <th>Tên gạo</th>
+                                    <th>Mô tả</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Ảnh</th>
+                                    <th>Thời gian tạo</th>
+                                    <th>Cập nhật lần cuối </th>
+                                    <th>Tạo bởi</th>
+                                    <th>Trạng thái</th>
+                                    <th>Xóa ở</th>
+                                    <th>Xóa bởi</th>
+                                </tr>
+                            </thead>
+                        <c:forEach items="${products}" var="p">
+                            <tbody id="table-tbody">
+
+                                <tr class="no-rows">
+                                    <td>
+                                        ${p.getProductID()}
+                                    </td>
+                                    <td>
+                                        ${p.getProductName()}
+                                    </td>
+                                    <td>
+                                        ${p.getDescription()}
+                                    </td>
+                                    <td>
+                                        ${p.getPrice()}
+                                    </td>
+                                    <td>
+                                        ${p.getQuantity()}
+                                    </td>
+                                    <td>
+                                        ${p.getImage()}
+                                    </td>
+                                    <td>
+                                        ${p.getCreateAt()}
+                                    </td>
+                                    <td>
+                                        ${p.getUpdateAt()}
+                                    </td>
+                                    <td>
+                                        ${p.getCreateBy()}
+                                    </td>
+                                    <td>
+                                        ${p.isIsDelete()}
+                                    </td>
+                                    <td>
+                                        ${p.getDeleteAt()}
+                                    </td>
+                                    <td>
+                                        ${p.getDeleteBy()}
+                                    </td>
+                                    <td>
+                                        <a href="DeleteProduct?productID=${p.getProductID()}" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a> <%-- Delete link --%>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </c:forEach>
                     </table>
                 </div>
             </div>

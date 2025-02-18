@@ -47,9 +47,6 @@ public class ListCustomer extends HttpServlet {
         DAOCustomers dao = new DAOCustomers();
         HttpSession session = request.getSession();
         List<Customers> listCustomer = dao.listAll();
-        request.setAttribute("message", "");
-        User user = (User) session.getAttribute("user");
-        request.setAttribute("user", user);
         request.setAttribute("listCustomer", listCustomer);
         request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
         
@@ -67,22 +64,27 @@ public class ListCustomer extends HttpServlet {
     throws ServletException, IOException {
 
         
-        // Lấy các tham số tìm kiếm từ request (từ form hoặc API call)
-        String name = request.getParameter("name");
-        String phone = request.getParameter("phone");
-        String fromDate = request.getParameter("fromDate");
-        String toDate = request.getParameter("toDate");
-
-        // Gọi phương thức tìm kiếm trong DAO
-        DAOCustomers dao = DAOCustomers.INSTANCE;
-        List<Customers> results = dao.searchCustomers(name, phone, fromDate, toDate);
-
-        // Lưu kết quả vào request để chuyển tiếp tới JSP (hoặc trang web khác)
-        request.setAttribute("customersList", results);
+//        // Lấy các tham số tìm kiếm từ request (từ form hoặc API call)
+//        String name = request.getParameter("name");
+//        String phone = request.getParameter("phone");
+//        String fromDate = request.getParameter("fromDate");
+//        String toDate = request.getParameter("toDate");
+//
+//        // Gọi phương thức tìm kiếm trong DAO
+//        DAOCustomers dao = DAOCustomers.INSTANCE;
+//        List<Customers> results = dao.searchCustomers(name, phone, fromDate, toDate);
+//
+//        // Lưu kết quả vào request để chuyển tiếp tới JSP (hoặc trang web khác)
+//        request.setAttribute("customersList", results);
+//        
+//        // Chuyển tiếp kết quả tìm kiếm tới một JSP để hiển thị (hoặc có thể gửi lại JSON)
+//        request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
         
-        // Chuyển tiếp kết quả tìm kiếm tới một JSP để hiển thị (hoặc có thể gửi lại JSON)
+         DAOCustomers dao = new DAOCustomers();
+        HttpSession session = request.getSession();
+        List<Customers> listCustomer = dao.listAll();
+        request.setAttribute("listCustomer", listCustomer);
         request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
-        
     }
 
     /** 

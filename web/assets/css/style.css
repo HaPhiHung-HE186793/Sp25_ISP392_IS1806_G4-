@@ -282,7 +282,7 @@ button:hover {
     width: 900px;
     max-width: 700px;
     background-color: #fbfbfb;
-    min-height: 500px;
+    min-height: 550px;
     position: relative;
     animation: modalFadeIn ease 0.7s;  /* dùng để chuyển động với EASE là kiểu tốc độ nhanh dần với Time là 0.7s */
 
@@ -334,7 +334,7 @@ button:hover {
     margin-left: 13px;
     width: 672px;
     margin-top: -13px;
-    height: 395px;
+    height: 460px;
     /* background-color: #000; */
     border: 1px solid #bbb;
 }

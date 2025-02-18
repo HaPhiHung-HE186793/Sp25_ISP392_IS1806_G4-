@@ -31,47 +31,7 @@ public class AddNewCustomerDebt extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            session.setMaxInactiveInterval(Integer.MAX_VALUE);
-            /* TODO output your page here. You may use following sample code. */
-            String name = request.getParameter("name");
-            String address = request.getParameter("address");
-            String phone = request.getParameter("phone");
-            String email = request.getParameter("email");
-            String totalDebtStr = request.getParameter("total");
-            double totalDebt = 0.0;
-            try {
-                totalDebt = Double.parseDouble(totalDebtStr);
-            } catch (NumberFormatException e) {
-                e.printStackTrace(); // In lỗi nếu có
-            }
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String createAt = now.format(formatter);  // Thời gian hiện tại
-            String updateAt = createAt;  // Ban đầu updateAt cũng là thời gian hiện tại
-            int createBy =  Integer.parseInt((String) session.getAttribute(session.getId()));
-            boolean isDelete = false;
-            String deleteAt = null;
-            Integer deleteBy = null;
 
-            Customers customer = new Customers(name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-            DAOCustomers dao = new DAOCustomers();
-            dao.insertCustomer(customer);
-
-            int result = dao.insertCustomer(customer);
-            if (result > 0) {
-                request.setAttribute("message", "success");
-            } else {
-                request.setAttribute("message", "error");
-            }
-                    request.getRequestDispatcher("ListDebt").forward(request, response);
-
-        }
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -85,7 +45,7 @@ public class AddNewCustomerDebt extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     /**
@@ -99,7 +59,7 @@ public class AddNewCustomerDebt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+       
     }
 
     /**
