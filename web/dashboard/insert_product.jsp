@@ -24,20 +24,20 @@
             <jsp:include page="/Component/menu.jsp"></jsp:include>
 
 
-            <div class="main-content">
-                <div class="notification">
-                    Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
-                </div>
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
+                    </div>
 
 
-                <div class="table-container">
-                    <h3>New product</h3>
-                    <form method="post" action="/DemoISP/CreateProduct"> 
-                        Tên sản phẩm: <input type="text" name="productName" required><br>
-                        Mô tả: <textarea name="description" rows="4" cols="50" required></textarea><br>
-                        Giá: <input type="number" name="price" min="0" required><br>
-                        Ảnh: <input type="text" name="image"><br> 
-                        Tạo bởi (User ID): <input type="number" name="createBy" required><br>
+                    <div class="table-container">
+                        <h3>New product</h3>
+                        <form method="post" action="/DemoISP/CreateProduct"> 
+                            Tên sản phẩm: <input type="text" name="productName" required><br>
+                            Mô tả: <textarea name="description" rows="4" cols="50" required></textarea><br>
+                            Giá: <input type="number" name="price" min="0" required><br>
+                            Ảnh: <input type="text" name="image"><br> 
+                            Tạo bởi (User ID): <input type="hidden" name="createBy" value= ${sessionScope.userID} required> ${sessionScope.userID}<br>
                         <input type="submit" value="Lưu">
                     </form>
 
