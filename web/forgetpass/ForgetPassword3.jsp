@@ -61,16 +61,16 @@
     </head>
     <body>
         <div class="container">
-            <h2>Forget Password</h2>
-            <p>Enter the code</p>
+            <h2>Quên mật khẩu</h2>
+            <p>Nhập mã xác nhận</p>
             <form action="<%= request.getContextPath() %>/forgotpass" method="POST">
-                <input type="text" name="otp" placeholder="Enter the code" required />
+                <input type="text" name="otp" placeholder="Nhập mã xác nhận" required />
                 <br /><br />
                 <input type="hidden" name="step" value="3" />
-                <input type="submit" value="Next" />
+                <input type="submit" value="Tiếp theo" />
 
                 <!-- Resend OTP button -->
-                <button type="button" onclick="resendOTP()">Resend OTP</button>
+                <button type="button" onclick="resendOTP()">Gửi lại OTP</button>
                 <!-- Hiển thị thông báo lỗi nếu có -->
                 <span class="error-message">
                     <%= request.getAttribute("errorMessage") != null ? request.getAttribute("errorMessage") : "" %>
