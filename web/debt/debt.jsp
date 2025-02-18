@@ -50,6 +50,7 @@
                         <button>Bỏ lọc</button>
                         <button>Thu gọn</button>
 
+                        <button class="addNewDebt js-open-newDebt">Tạo phiếu nợ</button>
 
                     </div>
 
@@ -57,9 +58,8 @@
                         <thead id="table-header">
                             <tr>
                                 <th>ID</th>
-                                <th>Tên</th>
+                                <th>Trạng thái</th>
                                 <th>Số tiền</th>
-                                <th>Loại nợ</th>
                                 <th>thời gian tạo</th>
                                 <th>Ngày lập phiếu</th>
                                 <th>Hành động</th>
@@ -72,10 +72,17 @@
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getDebtID()}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${o.getPaymentStatus() == 0}">Vay nợ</c:when>
+                                            <c:when test="${o.getPaymentStatus() == 1}">Trả nợ</c:when>
+                                            <c:when test="${o.getPaymentStatus() == 2}">Đi vay</c:when>
+                                            <c:when test="${o.getPaymentStatus() == 3}">Đi trả</c:when>
+                                            <c:otherwise>Không xác định</c:otherwise>
+                                        </c:choose>
+                                    </td>
                                     <td >${o.getAmount()}</td>
-                                    <td >${o.getPaymentStatus()}</td>
                                     <td >${o.getCreateAt()}</td>
-                                    <td >${o.getUpdateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
                                     <td ><button class="addNewDebt js-open-newDebt">Thêm người nợ</button></td>
                                 </tr>
@@ -98,7 +105,7 @@
                 close
             </button>
 
-            <div class="newDebt-header">Thông tin người nợ
+            <div class="newDebt-header">Chi tiết nợ
             </div>
 
             <div class="newDebt-body">                                
@@ -120,9 +127,9 @@
                             <td ><input class="newDebt-input" name="phone" type="number" > </td>                                    
                         </tr>                                   
                         <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Email:</div></td>
-                            <td ><input class="newDebt-input" name="email" type="text" > </td>                                    
-                        </tr>                                   
+                            <td><div class="newDebt-text">Ngày & Giờ:</div></td>
+                            <td><input class="newDebt-input newDebt-date" name="dateTime" type="datetime-local"></td>
+                        </tr>                                  
                         <tr class="newDebt-tableTbody-tr">
                             <td ><div class="newDebt-text"> Tổng nợ:</div></td>
                             <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    

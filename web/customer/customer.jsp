@@ -82,7 +82,7 @@
                                     <td >${o.getTotalDebt()}</td>
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
-                                    <td>${o.getCreateBy() != null ? o.getCreateBy() : 'Không có dữ liệu'}</td>
+                                    <td>${o.getCreateBy()}</td>
 
                                     <td> 
                                         <a href="ListDebtCustomer">

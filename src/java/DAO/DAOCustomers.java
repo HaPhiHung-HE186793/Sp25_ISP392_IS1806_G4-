@@ -272,10 +272,40 @@ public class DAOCustomers extends DBContext {
 
     public List<Customers> listAll() {
         List<Customers> list = new ArrayList<>();
-        String sql = "SELECT * FROM customers"; // Cập nhật tên bảng
+        String sql = "SELECT * FROM customers "; // Cập nhật tên bảng
         try {
-            Statement state = conn.createStatement();
+                       Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                int customerID = rs.getInt("customerID");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                double totalDebt = rs.getDouble("totalDebt"); // Sử dụng double cho tổng nợ
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete"); // Giả sử isDelete là kiểu int
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+
+                Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                list.add(customer); // Thêm vào danh sách thay vì in ra
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list; // Trả về danh sách khách hàng
+    }
+    
+        public List<Customers> listAllDebt(int id) {
+        List<Customers> list = new ArrayList<>();
+        String sql = "SELECT * FROM customers where createBy = ?"; // Cập nhật tên bảng
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, id); // Truyền tham số vào dấu ?
+            ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
             while (rs.next()) {
                 int customerID = rs.getInt("customerID");
                 String name = rs.getString("name");
