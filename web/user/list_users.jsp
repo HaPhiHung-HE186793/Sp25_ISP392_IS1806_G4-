@@ -5,6 +5,9 @@
 --%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="model.User" %>
+<%@ page import="DAO.DAOUser" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,7 +16,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
-        <title>Create User</title>
+        <title>List User</title>
     </head>
 
     <body>
@@ -44,8 +47,32 @@
                         </form>
 
 
-                        <button class="addNewDebt js-open-newDebt">Tạo tài khoản mới</button>
+                        <div>
+                        <button class="addNewDebt" onclick="window.location = 'createuser'">Tạo tài khoản mới</button>
+                        </div>
+                        <div>
+                        <c:choose>
+                            <c:when test="${not empty error}">
+                                <div class="notification2" id="errorNotification" style="color: red;">
+                                    ${error}
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="notification2" id="errorNotification" style="display: none;"></div>
+                            </c:otherwise>
+                        </c:choose>
 
+                        <c:choose>
+                            <c:when test="${not empty mess}">
+                                <div class="notification2" id="messageNotification" style="color: green;">
+                                    ${mess}
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="notification2" id="messageNotification" style="display: none;"></div>
+                            </c:otherwise>
+                        </c:choose>
+                        </div>
                     </div>
 
                     <table>
@@ -82,34 +109,29 @@
                                         <span>${u.getCreateAt().substring(11)}</span>
                                     </td>
                                     <td>${u.getIsDelete() ? "Đã khóa" : "Hoạt động"}</td>
-                                    <td><c:forEach var="creator" items="${U}">
-                                            <c:if test="${creator.getID() == u.getCreateBy()}">
-                                                ${creator.getUserName()}
-                                            </c:if>
-                                        </c:forEach>
+                                    <td>
+                                        ${u.getCreatorName()}
                                     </td>
                                     <td style="border-left: 1px solid black; display: flex; align-items: center;">
-                                        <button onclick="updateUser(${u.getID()})" 
+                                        <button onclick="window.location.href = 'listusers?id=${u.getID()}'"  
                                                 style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: #5bc0de; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                                            Update
+                                            Chỉnh sửa
                                         </button>
                                         <c:choose>
                                             <c:when test="${u.getIsDelete()}">
-                                                <button onclick="toggleUserStatus(${u.getID()}, false)" 
+                                                <button onclick="window.location.href = 'listusers?unlockid=${u.getID()}'"
                                                         style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
                                                     Mở khóa
                                                 </button>
                                             </c:when>
                                             <c:otherwise>
-                                                <button onclick="toggleUserStatus(${u.getID()}, true)" 
+                                                <button onclick="window.location.href = 'listusers?blockid=${u.getID()}'" 
                                                         style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: red; color: white; border: none; border-radius: 5px; cursor: pointer;">
                                                     Khóa
                                                 </button>
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
-
-
                                 </tr>
                             </c:forEach>   
                         </tbody>
@@ -178,29 +200,19 @@
     </div>
 
     <script>
-        // Lấy tbody
 
-        const openAddNewDebt = document.querySelector('.js-open-newDebt');//dung de lay ten class//
-        const newDebt = document.querySelector('.newDebt');
-        const closeNewDebt = document.querySelector('.js-close-newDebt');
-        //ham hien thi//
-        function showAddNewDebt() {
-            newDebt.classList.add('open');
-        }
-        //ham an//
-        function hideAddNewDebt() {
-            newDebt.classList.remove('open');
-            const inputs = newDebt.querySelectorAll('input,textarea');
-            inputs.forEach(input => input.value = '');
+        // Hàm ẩn thông báo sau 3 giây
+        function hideNotification(notificationId) {
+            setTimeout(function () {
+                var notification = document.getElementById(notificationId);
+                if (notification) {
+                    notification.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
         }
 
-
-        openAddNewDebt.addEventListener('click', showAddNewDebt);
-
-
-        closeNewDebt.addEventListener('click', hideAddNewDebt);
-
-
+        hideNotification('errorNotification');
+        hideNotification('messageNotification');
 
 
     </script>
