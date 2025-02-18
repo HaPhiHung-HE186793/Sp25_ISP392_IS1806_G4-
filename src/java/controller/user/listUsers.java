@@ -69,7 +69,7 @@ public class listUsers extends HttpServlet {
         Integer roleID = (Integer) session.getAttribute("roleID");
         Integer userID = (Integer) session.getAttribute("userID");
         if (roleID != 1) {
-            response.sendRedirect("dashboard/home.jsp"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
             return;
         }
         String error = null;
@@ -82,7 +82,7 @@ public class listUsers extends HttpServlet {
                 error = "Không được phép chỉnh sửa admin khác.";
             } else {
                 request.setAttribute("u", U);
-                request.getRequestDispatcher("updateUser.jsp").forward(request, response);
+                request.getRequestDispatcher("user/updateUser.jsp").forward(request, response);
             }
         }
         //block user
