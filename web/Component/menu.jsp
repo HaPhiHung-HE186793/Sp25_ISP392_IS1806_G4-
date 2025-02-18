@@ -15,14 +15,13 @@
 <div class="sidebar">
     <div class="logo">Bảng Điều Khiển</div>
 
-    <a href="ListProducts">Trang chủ</a>
-
+    <a href="<%=request.getContextPath()%>/ListProducts">Trang chủ</a>
+    <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
     <a href="#">Hồ sơ người dùng</a>
-    <a href="CreateOrderServlet">Tạo hóa đơn</a>
-    <a href="#">Sản phẩm</a>
+    <a href="<%=request.getContextPath()%>/CreateOrderServlet">Tạo hóa đơn</a>
     <a href="#">Quản lý kho</a>
-    <a href="URLOrder?service=listshow">Quản lý thanh toán</a>
-    <a href="ListCustomer">Quản lý khách hàng</a>
+    <a href="<%=request.getContextPath()%>/URLOrder?service=listshow">Quản lý thanh toán</a>
+    <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý khách hàng</a>
     <a href="#">Dịch vụ</a>
     <!-- Thêm các mục dài để hiển thị thanh trượt -->
     <a href="#">Báo cáo tài chính</a>

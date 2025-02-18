@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-
     <filter>
         <filter-name>LoginFilter</filter-name>
         <filter-class>filter.LoginFilter</filter-class>
@@ -26,9 +25,8 @@
         <url-pattern>/CheckIsDelete</url-pattern>
         <url-pattern>/ListProductCheckIs</url-pattern>
         <url-pattern>/SearchProducts</url-pattern>
-        <url-pattern>/updateuser</url-pattern> <!-- Thêm từ bản 1 -->
+        <url-pattern>/updateuser</url-pattern>
     </filter-mapping>
-
     <servlet>
         <servlet-name>loginController</servlet-name>
         <servlet-class>controller.login.loginController</servlet-class>
@@ -92,24 +90,22 @@
     <servlet>
         <servlet-name>SearchProducts</servlet-name>
         <servlet-class>controller.products.SearchProducts</servlet-class>
-    </servlet>
+    </servlet>    
     <servlet>
-        <servlet-name>CreateOrderServlet</servlet-name>
-        <servlet-class>controller.order.CreateOrderServlet</servlet-class>
+        <servlet-name>updateUser</servlet-name>
+        <servlet-class>controller.user.updateUser</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>ControllerOrder</servlet-name>
-        <servlet-class>controller.showOrder.ControllerOrder</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ControllerOrderDetail</servlet-name>
-        <servlet-class>controller.showOrder.ControllerOrderDetail</servlet-class>
-    </servlet>
-
-    <!-- Thêm các servlet-mapping bị thiếu từ bản 1 -->
+    <servlet-mapping>
+        <servlet-name>ForgetPasswordServlet</servlet-name>
+        <url-pattern>/forgotpass</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>loginController</servlet-name>
         <url-pattern>/loginURL</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>verifyOTPController</servlet-name>
+        <url-pattern>/verifyOTP</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ListDebt</servlet-name>
@@ -123,6 +119,35 @@
         <servlet-name>listUsers</servlet-name>
         <url-pattern>/listusers</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>CreateOrderServlet</servlet-name>
+        <servlet-class>controller.order.CreateOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreateOrderServlet</servlet-name>
+        <url-pattern>/CreateOrderServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddNewCustomerDebt</servlet-name>
+        <url-pattern>/AddNewCustomerDebt</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/SearchServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ControllerOrder</servlet-name>
+        <servlet-class>controller.showOrder.ControllerOrder</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ControllerOrder</servlet-name>
+        <url-pattern>/URLOrder</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ControllerOrderDetail</servlet-name>
+        <url-pattern>/URLOrderDetail</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>ListCustomer</servlet-name>
         <url-pattern>/ListCustomer</url-pattern>
@@ -139,6 +164,7 @@
         <servlet-name>ListDebtCustomer</servlet-name>
         <url-pattern>/ListDebtCustomer</url-pattern>
     </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>ListProducts</servlet-name>
         <url-pattern>/ListProducts</url-pattern>
@@ -164,15 +190,10 @@
         <url-pattern>/SearchProducts</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>CreateOrderServlet</servlet-name>
-        <url-pattern>/CreateOrderServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ControllerOrder</servlet-name>
-        <url-pattern>/URLOrder</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ControllerOrderDetail</servlet-name>
-        <url-pattern>/URLOrderDetail</url-pattern>
+        <servlet-name>updateUser</servlet-name>
+        <url-pattern>/updateuser</url-pattern>
     </servlet-mapping>
 </web-app>
+
+
+
