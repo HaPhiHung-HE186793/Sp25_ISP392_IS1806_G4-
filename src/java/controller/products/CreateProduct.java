@@ -37,6 +37,7 @@ public class CreateProduct extends HttpServlet {
             // ... (error handling)
         }
         int quantity = 0;
+
         
         String imageName = request.getParameter("image"); // To store ONLY the image file name
 

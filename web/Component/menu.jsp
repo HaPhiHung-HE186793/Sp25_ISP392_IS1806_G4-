@@ -6,8 +6,9 @@
     </div>
 
 
-     <div class="balance">
-        <a href="loginURL?service=logoutUser">LogOut</a>
+
+      <div class="balance">
+        <a href="${loginURL}?service=logoutUser">LogOut</a>
     </div>
 
 </div>

@@ -10,11 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+
 @WebServlet(name = "DeleteProduct", urlPatterns = {"/DeleteProduct"}) // Correct URL mapping
 public class DeleteProduct extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         String productIDStr = request.getParameter("productID");
 
         if (productIDStr != null && !productIDStr.isEmpty()) {
