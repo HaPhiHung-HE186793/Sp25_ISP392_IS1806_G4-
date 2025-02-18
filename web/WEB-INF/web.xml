@@ -26,6 +26,7 @@
         <url-pattern>/CheckIsDelete</url-pattern>
         <url-pattern>/ListProductCheckIs</url-pattern>
         <url-pattern>/SearchProducts</url-pattern>
+        <url-pattern>/updateuser</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -80,6 +81,7 @@
         <servlet-class>controller.products.DeleteProduct</servlet-class>
     </servlet>
     <servlet>
+
         <servlet-name>CheckIsDelete</servlet-name>
         <servlet-class>controller.products.CheckIsDelete</servlet-class>
     </servlet>
@@ -90,6 +92,9 @@
     <servlet>
         <servlet-name>SearchProducts</servlet-name>
         <servlet-class>controller.products.SearchProducts</servlet-class>
+        <servlet-name>updateuser</servlet-name>
+        <servlet-class>controller.user.updateUser</servlet-class>
+        
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -160,10 +165,6 @@
         <servlet-name>ListDebtCustomer</servlet-name>
         <url-pattern>/ListDebtCustomer</url-pattern>
     </servlet-mapping>
-<<<<<<< HEAD
-=======
->>>>>>> b17cf9b (them mapping cua controllershoworder)
-=======
     <servlet-mapping>
         <servlet-name>ListProducts</servlet-name>
         <url-pattern>/ListProducts</url-pattern>
@@ -177,6 +178,7 @@
         <url-pattern>/DeleteProduct</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+
         <servlet-name>CheckIsDelete</servlet-name>
         <url-pattern>/CheckIsDelete</url-pattern>
     </servlet-mapping>
@@ -188,5 +190,8 @@
         <servlet-name>SearchProducts</servlet-name>
         <url-pattern>/SearchProducts</url-pattern>
     </servlet-mapping>
->>>>>>> 78b7f86cdf0107bbd1f3700e282817d766c50fbc
+
+        <servlet-name>updateuser</servlet-name>
+        <url-pattern>/updateUser</url-pattern>
+    </servlet-mapping>
 </web-app>
