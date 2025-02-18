@@ -59,7 +59,7 @@ public class ControllerOrderDetail extends HttpServlet {
           list = dao.getOrderItems("select * from OrderItems where orderId =" + orderId);
           }
                 request.setAttribute("data",list);
-                request.setAttribute("tableTitle", "List of Orders");
+                request.setAttribute("tableTitle", "Danh sách sản phẩm trong hóa đơn");
                  request.setAttribute("papeTitle", "Orders manage");
                //call jsp (view)
                 RequestDispatcher dispth
