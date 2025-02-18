@@ -162,6 +162,40 @@ public User login(String email, String password) {
     }
     return n;
 }
+    public int updateUser2(User user) {
+    int n = 0;
+    String sql = "UPDATE Users SET userName = ?, userPassword = ?, email = ?, roleID = ?, updateAt = CURRENT_TIMESTAMP, createBy = ? WHERE ID = ?";
+    try (PreparedStatement pre = conn.prepareStatement(sql)) {
+        pre.setString(1, user.getUserName()); // userName
+        pre.setString(2, hashPassword(user.getUserPassword())); // userPassword (hashed)
+        pre.setString(3, user.getEmail()); // email
+        pre.setInt(4, user.getRoleID()); // roleID
+        pre.setInt(5, user.getCreateBy()); // createBy (người chỉnh sửa)
+        pre.setInt(6, user.getID()); // ID của user cần cập nhật
+        
+        n = pre.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return n;
+}
+    public int updateUser3(User user) {
+    int n = 0;
+    String sql = "UPDATE Users SET userName = ?, email = ?, roleID = ?, updateAt = CURRENT_TIMESTAMP, createBy = ? WHERE ID = ?";
+    try (PreparedStatement pre = conn.prepareStatement(sql)) {
+        pre.setString(1, user.getUserName()); // userName
+        pre.setString(2, user.getEmail()); // email
+        pre.setInt(3, user.getRoleID()); // roleID
+        pre.setInt(4, user.getCreateBy()); // createBy (người chỉnh sửa)
+        pre.setInt(5, user.getID()); // ID của user cần cập nhật
+        
+        n = pre.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return n;
+}
+
 public int banUserByEmail(String email) {
     String sql = "UPDATE Users SET isDelete = ? WHERE email = ?";
     int result = 0;

@@ -4,14 +4,131 @@
     Author     : nguyenanh
 --%>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
+        <title>Update User</title>
     </head>
+
     <body>
-        <h1>Hello World!</h1>
+
+        <div id="main">
+            <jsp:include page="/Component/menu.jsp"></jsp:include>
+
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
+                    </div>
+
+                    <div class="table-container">
+                        <h3>Cập nhật tài khoản</h3>
+
+                    <c:choose>
+                        <c:when test="${not empty errors}">
+                            <div class="notification" id="errorNotification" style="color: red;">
+                                <c:forEach var="error" items="${errors}">
+                                    <p>${error}</p>
+                                </c:forEach>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="notification" id="errorNotification" style="display: none;"></div>
+                        </c:otherwise>
+                    </c:choose> 
+                    <c:choose>
+                        <c:when test="${not empty success}">
+                            <div class="notification" id="messageNotification" style="color: green;">
+                                ${success}
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="notification" id="messageNotification" style="display: none;"></div>
+                        </c:otherwise>
+                    </c:choose>
+
+
+                    <table>
+                        <thead id="table-header">
+                            <tr>
+                                <th>Tên</th>                               
+                                <th>Email</th>
+                                <th>Mật khẩu mới</th>
+                                <th>Xác minh mật khẩu</th>
+                                <th>Chức năng</th>
+                                <th style="border-left: 1px solid black;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-tbody">
+                            <tr>
+                        <form action="updateuser" method="POST">
+                            <td>
+                                <input name="userName" id="userName" type="text" 
+                                       placeholder="Tên của bạn" value="${user.getUserName()}">
+                                <input hidden name="userid" value="${user.getID()}">
+                            </td>
+                            <td>
+                                <input name="email" id="email" type="email" 
+                                       placeholder="Email của bạn" value="${user.getEmail()}">
+                            </td> 
+                            <td>
+                                <input name="password" id="password" type="password" 
+                                       placeholder="Mật khẩu mới">
+                            </td>
+                            <td>
+                                <input name="cfpass" id="cfpass" type="password" 
+                                       placeholder="Xác nhận mật khẩu">
+                            </td>
+                            <td>
+                                <div>
+                                    <input type="radio" name="roleID" value="1" id="admin" 
+                                           ${user.getRoleID() == 1 ? "checked" : ""} required>
+                                    <label for="admin">Admin</label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="roleID" value="2" id="store_owner" 
+                                           ${user.getRoleID() == 2 ? "checked" : ""}>
+                                    <label for="store_owner">Chủ Cửa Hàng</label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="roleID" value="3" id="employee" 
+                                           ${user.getRoleID() == 3 ? "checked" : ""}>
+                                    <label for="employee">Nhân Viên</label>
+                                </div>
+                            </td>
+                            <td style="border-left: 1px solid black;">                                    
+                                <button type="submit" class="btn btn-primary">Cập nhật người dùng</button>
+                            </td>
+                        </form>
+                        </tr>
+                        </tbody>
+                    </table>                   
+                </div>
+                <button onclick="window.location.href = 'listusers'"  
+                        style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                    Quay về danh sách người dùng
+                </button>
+            </div>                                
+        </div>
     </body>
+    <script>
+        // Hàm ẩn thông báo sau 3 giây
+        function hideNotification(notificationId) {
+            setTimeout(function () {
+                var notification = document.getElementById(notificationId);
+                if (notification) {
+                    notification.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
+
+        hideNotification('errorNotification');
+        hideNotification('messageNotification');
+
+    </script>
 </html>

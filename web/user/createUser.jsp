@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="table-container">
-                        <h3>Danh sách người dùng</h3>
+                        <h3>Tạo tài khoản mới</h3>
 
                     <c:choose>
                         <c:when test="${not empty errors}">

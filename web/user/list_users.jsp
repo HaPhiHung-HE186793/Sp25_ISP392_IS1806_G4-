@@ -35,7 +35,7 @@
                             <form method="post" action="listusers">
                                 <label for="role">Chức Năng:</label>
                                 <select name="role" id="role" onchange="this.form.submit()">
-                                    <option value="">Tất cả</option>
+                                    <option value="0">Tất cả</option>
                                     <option value="1" ${selectedRole == 1 ? 'selected' : ''}>Admin</option>
                                 <option value="2" ${selectedRole == 2 ? 'selected' : ''}>Chủ cửa hàng</option>
                                 <option value="3" ${selectedRole == 3 ? 'selected' : ''}>Nhân viên bán hàng</option>
@@ -115,7 +115,7 @@
                                     <td style="border-left: 1px solid black; display: flex; align-items: center;">
                                         <button onclick="window.location.href = 'listusers?id=${u.getID()}'"  
                                                 style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: #5bc0de; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                                            Chỉnh sửa
+                                            Cập nhật
                                         </button>
                                         <c:choose>
                                             <c:when test="${u.getIsDelete()}">

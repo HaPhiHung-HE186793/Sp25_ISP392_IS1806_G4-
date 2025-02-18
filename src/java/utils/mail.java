@@ -103,10 +103,16 @@ public class mail {
         return sendEmail(toEmail, subject, content);
     }
 
-    public boolean sendPasswordChangeConfirmation(String toEmail) {
+    public boolean sendPasswordChangeConfirmation(String toEmail, String password) {
         String subject = "Password Change Confirmation";
         String content = "Your password has been successfully changed.\n\n"
-                + "If you did not make this change, please contact our support team immediately.";
+                + "Use: " + password + " to sign in!";
+        return sendEmail(toEmail, subject, content);
+    }
+    public boolean sendEmailChangeConfirmation(String toEmail,String newEmail) {
+        String subject = "Email Change Confirmation";
+        String content = "Your email has been successfully changed.\n\n"
+                + "Use: " + newEmail + " to sign in!";
         return sendEmail(toEmail, subject, content);
     }
 
