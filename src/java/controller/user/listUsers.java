@@ -66,8 +66,44 @@ public class listUsers extends HttpServlet {
 
         //processRequest(request, response);
         HttpSession session = request.getSession();
-        List<User> U = dao.listUsers();
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        Integer userID = (Integer) session.getAttribute("userID");
+        if (roleID != 1) {
+            response.sendRedirect("dashboard/home.jsp"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
+        String error = null;
+        //update users
+        if (request.getParameter("id") != null) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            User U = dao.getUserbyID(id);
+            // Không cho phép chỉnh sửa admin khác
+            if (U.getRoleID() == 1) {
+                error = "Không được phép chỉnh sửa admin khác.";
+            } else {
+                request.setAttribute("u", U);
+                request.getRequestDispatcher("updateUser.jsp").forward(request, response);
+            }
+        }
+        //block user
+        if (request.getParameter("blockid") != null) {
+            int blockid = Integer.parseInt(request.getParameter("blockid"));
+            User U = dao.getUserbyID(blockid);
+            if (U.getRoleID() == 1) {
+                error = "Không được phép khóa tài khoản admin khác.";
+            } else {
+                Integer deleteBy = (Integer) session.getAttribute("userID");
+                dao.blockUserByID(blockid, deleteBy);
+            }
+        }
+        //unlock user
+        if (request.getParameter("unlockid") != null) {
+            int unlockid = Integer.parseInt(request.getParameter("unlockid"));
+            Integer createBy = (Integer) session.getAttribute("userID");
+            dao.unlockUserByID(unlockid, createBy);
+        }
 
+        List<User> U = dao.listUsers();
         //seting pagination
         //check page
         //at the first time
@@ -80,6 +116,13 @@ public class listUsers extends HttpServlet {
             session.setAttribute("page", Page);
         }
 
+        for (User user : U) {
+            User u = dao.getUserbyID(user.getCreateBy());
+            String creatorName = u.getUserName();
+            user.setCreatorName(creatorName);
+        }
+
+        request.setAttribute("error", error);
         session.setAttribute("U", U);
         request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
 
@@ -97,7 +140,8 @@ public class listUsers extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<User> filteredUsers;
+        List<User> filteredUsers = null;
+        String mess = null;
         String roleParam = request.getParameter("role");
         String keyword = request.getParameter("keyword");
         Integer role = (roleParam != null && !roleParam.isEmpty()) ? Integer.parseInt(roleParam) : null;
@@ -109,10 +153,19 @@ public class listUsers extends HttpServlet {
             filteredUsers = dao.getUsersByRole(role);
         } else if (keyword != null && !keyword.isEmpty()) {
             filteredUsers = dao.getUsersByKeyword(keyword);
-        } else {
+        }
+        if (filteredUsers.isEmpty()) {
+            mess = "Không tìm thấy người dùng nào.";
             filteredUsers = dao.listUsers(); // Lấy toàn bộ danh sách nếu không có lọc
         }
 
+        for (User user : filteredUsers) {
+            User u = dao.getUserbyID(user.getCreateBy());
+            String creatorName = u.getUserName();
+            user.setCreatorName(creatorName);
+        }
+
+        request.setAttribute("mess", mess);
         request.setAttribute("U", filteredUsers);
         request.setAttribute("selectedRole", role);
         request.setAttribute("keyword", keyword);
