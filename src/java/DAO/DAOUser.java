@@ -256,6 +256,62 @@ public boolean isUserBanned(int userId) {
     }
     return list;
 }
+    
+    public User getUserbyID(int id) {
+    User user = null;  // Khởi tạo biến user là null
+    String sql = "SELECT * FROM users WHERE ID = " + id;  // Câu truy vấn tìm user theo ID
+    try {
+        Statement state = conn.createStatement();
+        ResultSet rs = state.executeQuery(sql);
+        
+        // Kiểm tra nếu có kết quả trả về từ cơ sở dữ liệu
+        if (rs.next()) {
+            int userID = rs.getInt("ID");
+            String username = rs.getString("userName");
+            String password = rs.getString("userPassword");
+            String email = rs.getString("email");
+            int roleID = rs.getInt("roleID"); // Giả sử role là kiểu int
+            String image = rs.getString("image");
+            String createAt = rs.getString("createAt");
+            String updateAt = rs.getString("updateAt");
+            int createBy = rs.getInt("createBy");
+            Boolean isDelete = rs.getBoolean("isDelete");
+            String deleteAt = rs.getString("deleteAt");
+            int deleteBy = rs.getInt("deleteBy");
+
+            // Tạo đối tượng User từ dữ liệu truy vấn
+            user = new User(userID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return user;  // Trả về đối tượng user nếu tìm thấy, hoặc null nếu không tìm thấy
+}
+    public void blockUserByID(int id, int deleteByID) {
+    String updateSql = "UPDATE users SET isDelete = 1, deleteBy = ?, deleteAt = CURRENT_TIMESTAMP WHERE ID = ?";
+    try {
+        PreparedStatement updateStmt = conn.prepareStatement(updateSql);
+        updateStmt.setInt(1, deleteByID);
+        updateStmt.setInt(2, id);
+        updateStmt.executeUpdate();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+}
+
+    public void unlockUserByID(int id, int createByID) {
+    String updateSql = "UPDATE users SET isDelete = 0, deleteBy = NULL, deleteAt = NULL, createBy = ?, updateAt = CURRENT_TIMESTAMP WHERE ID = ?";
+    try {
+        PreparedStatement updateStmt = conn.prepareStatement(updateSql);
+        updateStmt.setInt(1, createByID);
+        updateStmt.setInt(2, id);
+        updateStmt.executeUpdate();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+}
+
+    
     public List<User> listUsers() {
         String sql = "SELECT * FROM Users";
          List<User> UsersList = new ArrayList<User>();
@@ -318,10 +374,10 @@ public boolean isUserBanned(int userId) {
     public List<User> getUsersByKeyword(String keyword) {
     String sql = "SELECT * FROM Users WHERE userName LIKE ? OR email LIKE ?";
     List<User> usersList = new ArrayList<>();
-    
+    String trimmedKeyword = keyword.trim();
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setString(1, "%" + keyword + "%"); // Tìm kiếm username chứa keyword
-        ps.setString(2, "%" + keyword + "%"); // Tìm kiếm email chứa keyword
+        ps.setString(1, "%" + trimmedKeyword + "%"); // Tìm kiếm username chứa keyword
+        ps.setString(2, "%" + trimmedKeyword + "%"); // Tìm kiếm email chứa keyword
         ResultSet rs = ps.executeQuery();
         
         while (rs.next()) {
@@ -396,7 +452,7 @@ public boolean isUserBanned(int userId) {
 
     public static void main(String[] args) {
       DAOUser dao = new DAOUser();
-
+      
      //1. Thêm một người dùng mới
 //<<<<<<< Updated upstream
 
@@ -406,10 +462,10 @@ public boolean isUserBanned(int userId) {
 
 //String a = "nhat";
 //System.out.println(dao.getUsersByRoleAndKeyword(1, a));
-if (dao.isEmailExists("anh13.9.04@gmail.com")) {
-            System.out.println("Email đã tồn tại!");
-        }
-else System.out.println("khong ton tai");
+//if (dao.isEmailExists("anh13.9.04@gmail.com")) {
+//            System.out.println("Email đã tồn tại!");
+//        }
+//else System.out.println("khong ton tai");
 //=======
 //        User newUser = new User( "hung", "password123", "hunghphe186793@fpt.edu.vn", 1,"hung.jsp" ,"2023-01-01", "2023-01-01", "1", "0", null, null);
 //        int insertResult = dao.insertUser(newUser);
