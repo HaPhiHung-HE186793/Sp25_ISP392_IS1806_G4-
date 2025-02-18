@@ -104,12 +104,12 @@ if ("4".equals(step)) {
         if (isUpdated) {
             response.sendRedirect("login/login.jsp");
         } else {
-            request.setAttribute("errorMessage", "Failed to update password. Please try again.");
+            request.setAttribute("errorMessage", "Cập nhật mật khẩu thất bại. Hãy thử lại.");
             request.setAttribute("email", email);
             request.getRequestDispatcher("forgetpass/ForgetPassword4.jsp").forward(request, response);
         }
     } else {
-        request.setAttribute("errorMessage", "Passwords do not match. Please try again.");
+        request.setAttribute("errorMessage", "Mật khẩu không giống nhau. Hãy thử lại.");
         request.setAttribute("email", email);
         request.getRequestDispatcher("forgetpass/ForgetPassword4.jsp").forward(request, response);
     }
