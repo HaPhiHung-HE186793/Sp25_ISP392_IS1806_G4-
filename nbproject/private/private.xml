@@ -3,16 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/debt/debt.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/model/Customers.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/model/DebtRecords.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOCustomers.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/ListDebtCustomer.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/AddNewCustomerDebt.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/customer/ListCustomer.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/customer/AddCustomer.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAODebtRecords.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/customer/customer.jsp</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/user/list_users.jsp</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/controller/user/listUsers.java</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/assets/css/style.css</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/model/User.java</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/user/createUser.jsp</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/DAO/DAOUser.java</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/controller/user/createUser.java</file>
+            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/Component/menu.jsp</file>
         </group>
     </open-files>
 </project-private>
