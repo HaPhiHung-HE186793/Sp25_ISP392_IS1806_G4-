@@ -38,11 +38,13 @@
                                 <option value="">Z->A</option>
 
                             </select>
-                            <input type="text" placeholder="Từ">
-                            <input type="text" placeholder="Đến">
+                            <form action="ListRice" method="get">
+                                <input type="text" name="search" placeholder="Nhập">
                             <button>Bỏ lọc</button>
-                            <button>Thu gọn</button>
-                            <a href="insert_product.jsp"><button>Thêm gạo</button></a>
+                            <button type="submit">Tìm kiếm</button>
+                            </form>
+                            <a href="./dashboard/insert_product.jsp"><button>Thêm gạo</button></a>
+                            <a href="/DemoISP/ListProductCheckIs"><button>Thêm check</button></a>
                         </div>
 
                         <table>
@@ -58,55 +60,31 @@
                                     <th>Cập nhật lần cuối </th>
                                     <th>Tạo bởi</th>
                                     <th>Trạng thái</th>
-                                    <th>Xóa ở</th>
-                                    <th>Xóa bởi</th>
                                 </tr>
                             </thead>
                         <c:forEach items="${products}" var="p">
-                            <tbody id="table-tbody">
-
+                            <c:if test="${not p.isIsDelete()}"> <%-- Only show if isDelete is false --%>
                                 <tr class="no-rows">
+                                    <td>${p.getProductID()}</td>
+                                    <td>${p.getProductName()}</td>
+                                    <td>${p.getDescription()}</td>
+                                    <td>${p.getPrice()}</td>
+                                    <td>${p.getQuantity()}</td>
+                                    <td>${p.getImage()}</td>
+                                    <td>${p.getCreateAt()}</td>
+                                    <td>${p.getUpdateAt()}</td>
+                                    <td>${p.getCreateBy()}</td>
+                                    <td>${p.isIsDelete()}</td> <%-- Still display the isDelete value --%>
                                     <td>
-                                        ${p.getProductID()}
-                                    </td>
-                                    <td>
-                                        ${p.getProductName()}
-                                    </td>
-                                    <td>
-                                        ${p.getDescription()}
-                                    </td>
-                                    <td>
-                                        ${p.getPrice()}
-                                    </td>
-                                    <td>
-                                        ${p.getQuantity()}
-                                    </td>
-                                    <td>
-                                        ${p.getImage()}
-                                    </td>
-                                    <td>
-                                        ${p.getCreateAt()}
-                                    </td>
-                                    <td>
-                                        ${p.getUpdateAt()}
-                                    </td>
-                                    <td>
-                                        ${p.getCreateBy()}
-                                    </td>
-                                    <td>
-                                        ${p.isIsDelete()}
-                                    </td>
-                                    <td>
-                                        ${p.getDeleteAt()}
-                                    </td>
-                                    <td>
-                                        ${p.getDeleteBy()}
-                                    </td>
-                                    <td>
-                                        <a href="DeleteProduct?productID=${p.getProductID()}" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a> <%-- Delete link --%>
+                                        <c:if test="${not p.isIsDelete()}"> <%-- Delete link only if not deleted --%>
+                                            <a href="DeleteProduct?productID=${p.getProductID()}" 
+                                               onclick="return confirm('Are you sure you want to delete this product?')">
+                                                Delete
+                                            </a>
+                                        </c:if>
                                     </td>
                                 </tr>
-                            </tbody>
+                            </c:if> <%-- End of the if condition --%>
                         </c:forEach>
                     </table>
                 </div>

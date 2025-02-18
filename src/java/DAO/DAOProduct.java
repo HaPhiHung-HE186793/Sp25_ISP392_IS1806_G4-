@@ -170,6 +170,19 @@ public class DAOProduct extends DBContext {
         }
         return n;
     }
+    
+     public int updateIsDelete(int productID, boolean isDelete) {
+        int n = 0;
+        String sql = "UPDATE products SET isDelete=? WHERE productID=?";
+        try (PreparedStatement pre = conn.prepareStatement(sql)) { // Try-with-resources
+            pre.setBoolean(1, isDelete);
+            pre.setInt(2, productID);
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+     }
 
     public int insertProduct(Products product) {
         int n = 0;
