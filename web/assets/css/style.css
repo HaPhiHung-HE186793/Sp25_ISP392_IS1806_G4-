@@ -118,6 +118,15 @@ body {
     font-size: 14px;
 }
 
+.notification2{
+    padding: 10px;
+    background-color: #333;
+    color: red;
+    text-align: center;
+    margin: 0px 1px;
+    font-size: 14px;
+}
+
 .table-container {
     background-color: #222;
     padding: 20px;
@@ -405,7 +414,13 @@ button:hover {
     transition: opacity 0.5s ease-in-out;
 /*>>>>>>> Stashed changes*/
 }
+.newUser {
+    display: none; /* Ẩn form mặc định */
+}
 
+.newUser.open {
+    display: block; /* Khi có lớp 'open', form sẽ hiển thị */
+}
 @keyframes modalFadeIn {
     from{
         opacity: 0;
