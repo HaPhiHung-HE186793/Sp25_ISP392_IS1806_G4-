@@ -13,11 +13,9 @@
 </div>
 <div class="sidebar">
     <div class="logo">Bảng Điều Khiển</div>
-<<<<<<< HEAD
-    <a href="#">Trang chủ</a>           
-=======
+
     <a href="ListProducts">Trang chủ</a>
->>>>>>> origin/main
+
     <a href="#">Hồ sơ người dùng</a>
     <a href="CreateOrderServlet">Tạo hóa đơn</a>
     <a href="#">Sản phẩm</a>
