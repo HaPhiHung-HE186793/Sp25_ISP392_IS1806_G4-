@@ -21,6 +21,7 @@ public class User {
     private Boolean isDelete;
     private String deleteAt;
     private int deleteBy;
+    String creatorName;
 
     public User() {
     }
@@ -150,6 +151,15 @@ public class User {
         this.deleteBy = deleteBy;
     }
 
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    
     @Override
     public String toString() {
         return "User{" + "ID=" + ID + ", userName=" + userName + ", userPassword=" + userPassword + ", email=" + email + ", roleID=" + roleID + ", image=" + image + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
