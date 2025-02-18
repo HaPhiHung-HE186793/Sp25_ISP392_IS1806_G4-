@@ -108,25 +108,25 @@
         <div class="main-content">
             <h3><%= request.getAttribute("tableTitle") %></h3>
             <div>
-                <label for="customerName">Tên Khách Hàng:</label>
+                <label for="customerName">Tên khách hàng:</label>
                 <input type="text" id="customerName" placeholder="Enter customer name" value="<%= customerName != null ? customerName : "" %>">
                 
                 <label for="datePicker">Ngày</label>
                 <input type="date" id="datePicker" value="<%= selectedDate != null ? selectedDate : "" %>">
                 
-                <button class="action-button" onclick="performSearch()">Search</button>
-                <button class="action-button" onclick="resetFilters()">Reset</button>
+                <button class="action-button" onclick="performSearch()">Tìm kiếm</button>
+                <button class="action-button" onclick="resetFilters()">Đặt lại</button>
             </div>
             <div>
-                <label for="sortColumn">Sắp Xếp:</label>
+                <label for="sortColumn">Sắp xếp:</label>
                 <select id="sortColumn">
-                    <option value="0" <%= "0".equals(sortColumn) ? "selected" : "" %>>Order ID</option>
-                    <option value="1" <%= "1".equals(sortColumn) ? "selected" : "" %>>Customer Name</option>
-                    <option value="2" <%= "2".equals(sortColumn) ? "selected" : "" %>>Create By</option>
-                    <option value="3" <%= "3".equals(sortColumn) ? "selected" : "" %>>Total Amount</option>
-                    <option value="4" <%= "4".equals(sortColumn) ? "selected" : "" %>>Create At</option>
-                    <option value="5" <%= "5".equals(sortColumn) ? "selected" : "" %>>Update At</option>
-                    <option value="6" <%= "6".equals(sortColumn) ? "selected" : "" %>>Porter</option>
+                    <option value="0" <%= "0".equals(sortColumn) ? "selected" : "" %>>Mã hóa đơn</option>
+                    <option value="1" <%= "1".equals(sortColumn) ? "selected" : "" %>>Tên khách hàng</option>
+                    <option value="2" <%= "2".equals(sortColumn) ? "selected" : "" %>>Người tạo</option>
+                    <option value="3" <%= "3".equals(sortColumn) ? "selected" : "" %>>Tổng giá tiền</option>
+                    <option value="4" <%= "4".equals(sortColumn) ? "selected" : "" %>>Ngày tạo</option>
+                    <option value="5" <%= "5".equals(sortColumn) ? "selected" : "" %>>Ngày cập nhật</option>
+                    <option value="6" <%= "6".equals(sortColumn) ? "selected" : "" %>>Cửu vạn</option>
                 </select>
                 <button class="action-button" onclick="performSort()">Sort</button>
             </div>
@@ -134,15 +134,15 @@
                 <table id="orderTable" data-sort-order="asc">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Customer Name</th>
-                            <th>Create By</th>
-                            <th>Total Amount</th>
-                            <th>Create At</th>
-                            <th>Update At</th>
-                            <th>Porter</th>
-                            <th>Status</th>
-                            <th>Details</th>
+                            <th>Mã hóa đơn</th>
+                            <th>Tên khách hàng</th>
+                            <th>Người tạo</th>
+                            <th>Tổng giá tiền</th>
+                            <th>Ngày tạo</th>
+                            <th>Ngày cập nhật</th>
+                            <th>Cửu vạn</th>
+                            <th>Trạng thái</th>
+                            <th>Chi tiết</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -161,7 +161,7 @@
                             <td><%= showOrder.getPorter() %></td>
                             <td><%= showOrder.getStatus() %></td>
                             <td>
-                                <button class="action-button" onclick="window.location.href='URLOrderDetail?service=listOrderItem&orderId=<%= showOrder.getOrderID() %>'">Details</button>
+                                <button class="action-button" onclick="window.location.href='URLOrderDetail?service=listOrderItem&orderId=<%= showOrder.getOrderID() %>'">Chi tiết</button>
                             </td>
                         </tr>
                         <%
@@ -180,7 +180,7 @@
             <div class="total-amount">Tổng doanh thu: <%= totalAmount %></div>
             <div class="pagination" aria-label="Quiz Pagination">
             <% if (currentPage > 1) { %>
-                <a href="URLOrder?page=<%= currentPage - 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Previous Page">&laquo; Previous</a>
+                <a href="URLOrder?page=<%= currentPage - 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Previous Page">&laquo; Trước</a>
             <% } %>
 
             <% for (int i = 1; i <= totalPages; i++) { %>
@@ -188,7 +188,7 @@
             <% } %>
 
             <% if (currentPage < totalPages) { %>
-                <a href="URLOrder?page=<%= currentPage + 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Next Page">Next &raquo;</a>
+                <a href="URLOrder?page=<%= currentPage + 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
             <% } %>
             </div>
         </div>
