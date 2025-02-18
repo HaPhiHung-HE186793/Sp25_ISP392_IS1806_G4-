@@ -140,7 +140,7 @@ public class listUsers extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession();
         List<User> filteredUsers = null;
         String mess = null;
         String roleParam = request.getParameter("role");
@@ -169,6 +169,22 @@ public class listUsers extends HttpServlet {
             String creatorName = u.getUserName();
             user.setCreatorName(creatorName);
         }
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+    int totalUsers = filteredUsers.size();
+    int pageSize = 10;
+    int currentPage = 1;
+    
+    if (request.getParameter("cp") != null) {
+        currentPage = Integer.parseInt(request.getParameter("cp"));
+    }
+
+    Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+    session.setAttribute("page", page);
+
+    // Lấy danh sách user theo trang hiện tại
+    int startIndex = page.getStartItem();
+    int endIndex = Math.min(startIndex + pageSize, totalUsers);
+    List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
 
         request.setAttribute("mess", mess);
         request.setAttribute("U", filteredUsers);
