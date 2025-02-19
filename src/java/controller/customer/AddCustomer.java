@@ -77,6 +77,8 @@ public class AddCustomer extends HttpServlet {
         } catch (NumberFormatException e) {
             e.printStackTrace(); // In lỗi nếu có
         }
+        
+        
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createAt = now.format(formatter);  // Thời gian hiện tại
