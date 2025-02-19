@@ -35,7 +35,7 @@
                                 <button type="submit">Tìm kiếm</button>
                             </form>
 
-                        <c:if test="${(sessionScope.roleID == 2 && sessionScope.roleID == 3)}"> <%-- Check if roleID is 1 --%>
+                        <c:if test="${sessionScope.roleID == 2 || sessionScope.roleID == 3}"> <%-- Check if roleID is 1 --%>
                             <a href="./dashboard/insert_product.jsp"><button>Thêm gạo</button></a>
                             <a href="/DemoISP/ListProductCheckIs"><button>Thêm check</button></a>
                         </c:if> <%-- End of roleID check for buttons --%>
@@ -52,7 +52,7 @@
                                 <th>Số lượng</th>
                                 <th>Ảnh</th>
 
-                                <c:if test="${(sessionScope.roleID == 2 && sessionScope.roleID == 3)}"> <%-- Check if roleID is 1 --%>
+                                <c:if test="${(sessionScope.roleID == 2 || sessionScope.roleID == 3)}"> <%-- Check if roleID is 1 --%>
                                     <th>Thời gian tạo</th>
                                     <th>Cập nhật lần cuối </th>
                                     <th>Tạo bởi</th>
@@ -72,7 +72,7 @@
                                         <td>${p.getQuantity()}</td>
                                         <td><img src="${p.getImage()}"></td>
 
-                                        <c:if test="${(sessionScope.roleID == 2 && sessionScope.roleID == 3)}"> <%-- Check if roleID is 1 --%>
+                                        <c:if test="${(sessionScope.roleID == 2 || sessionScope.roleID == 3)}"> <%-- Check if roleID is 1 --%>
                                             <td>${p.getCreateAt()}</td>
                                             <td>${p.getUpdateAt()}</td>
                                             <td>${p.getCreateBy()}</td>
@@ -80,7 +80,7 @@
 
                                         </c:if> <%-- End of roleID check for table data --%>
 
-                                        <c:if test="${(sessionScope.roleID == 2 && sessionScope.roleID == 3)}"> <%-- Check if roleID is 1 --%>
+                                        <c:if test="${(sessionScope.roleID == 2 || sessionScope.roleID == 3)}"> <%-- Check if roleID is 1 --%>
                                             <td><a href="UpdateProduct?productID=${p.getProductID()}"><button>Sửa</button></a></td>
                                         </c:if> <%-- End of roleID check for table data --%>
 
