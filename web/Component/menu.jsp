@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <div class="header">
     <div class="name-project">
@@ -19,15 +20,9 @@
     <div class="logo">Bảng Điều Khiển</div>
 
     <a href="<%=request.getContextPath()%>/ListProducts">Danh sách sản phẩm</a>
-<% 
-    Object roleObj = session.getAttribute("roleID");
-    int role = (roleObj != null) ? Integer.parseInt(roleObj.toString()) : -1; // -1 si roleID est null
-    if (role == 1) { 
-%>
+    <c:if test="${sessionScope.roleID==1}">
     <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
-<% 
-    } 
-%>
+    </c:if>
 
 
     <a href="<%=request.getContextPath()%>/CreateOrderServlet">Tạo hóa đơn</a>

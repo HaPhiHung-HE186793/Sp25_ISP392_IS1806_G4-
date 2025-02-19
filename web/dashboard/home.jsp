@@ -35,7 +35,7 @@
                                 <button type="submit">Tìm kiếm</button>
                             </form>
 
-                        <c:if test="${sessionScope.roleID == 2 || sessionScope.roleID == 3}"> <%-- Check if roleID is 1 --%>
+                        <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
                             <a href="./dashboard/insert_product.jsp"><button>Thêm gạo</button></a>
                             <a href="/DemoISP/ListProductCheckIs"><button>Thêm check</button></a>
                         </c:if> <%-- End of roleID check for buttons --%>
