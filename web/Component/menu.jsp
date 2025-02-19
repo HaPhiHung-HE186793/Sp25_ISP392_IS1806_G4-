@@ -8,9 +8,10 @@
 
 
       <div class="balance">
-
-        <a href="<%=request.getContextPath()%>/loginURL?service=logoutUser">LogOut</a>
-
+        <form action="<%=request.getContextPath()%>/loginURL?logoutUser" method="POST">                      
+            <input type="submit" name="submit" value="Đăng xuất">          
+            <input type="hidden" name="service" value="logoutUser">
+        </form>
     </div>
 
 </div>
