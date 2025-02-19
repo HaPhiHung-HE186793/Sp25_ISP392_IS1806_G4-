@@ -15,7 +15,7 @@
 <div class="sidebar">
     <div class="logo">Bảng Điều Khiển</div>
 
-    <a href="<%=request.getContextPath()%>/ListProducts">Trang chủ</a>
+    <a href="<%=request.getContextPath()%>/ListProducts">Danh sách sản phẩm</a>
     <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
     <a href="#">Hồ sơ người dùng</a>
     <a href="<%=request.getContextPath()%>/CreateOrderServlet">Tạo hóa đơn</a>
