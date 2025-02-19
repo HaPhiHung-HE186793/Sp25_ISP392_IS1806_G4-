@@ -27,45 +27,32 @@ public class DAOCustomers extends DBContext {
 
     public static DAOCustomers INSTANCE = new DAOCustomers();
 
-    // Danh sách kết quả tìm kiếm hiện tại để cộng dồn tiêu chí
-    private List<Customers> currentSearchResults = new ArrayList<>();
-    // Tìm kiếm theo tiêu chí động và cộng dồn
-
-    public List<Customers> searchCustomers(String name, String phone, String fromDate, String toDate) {
-        String sql = "SELECT * FROM customers WHERE isDelete = 0";
-        List<String> filters = new ArrayList<>();
-        List<Object> params = new ArrayList<>();
-
+    public List<Customers> searchCustomers(String name, String phone) {
+        List<Customers> customers = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM customers WHERE isDelete = 0");
         if (name != null && !name.isEmpty()) {
-            filters.add("name LIKE ?");
-            params.add("%" + name + "%");
+            sql.append(" AND name LIKE ?");
         }
         if (phone != null && !phone.isEmpty()) {
-            filters.add("phone LIKE ?");
-            params.add("%" + phone + "%");
+            sql.append(" AND phone LIKE ?");
         }
-        if (fromDate != null && !fromDate.isEmpty()) {
-            filters.add("createAt >= ?");
-            params.add(fromDate);
-        }
-        if (toDate != null && !toDate.isEmpty()) {
-            filters.add("createAt <= ?");
-            params.add(toDate);
-        }
+//        if (fromDate != null && !fromDate.isEmpty()) sql.append(" AND createAt >= ?");
+//        if (toDate != null && !toDate.isEmpty()) sql.append(" AND createAt <= ?");
 
-        if (!filters.isEmpty()) {
-            sql += " AND " + String.join(" AND ", filters);
-        }
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            for (int i = 0; i < params.size(); i++) {
-                ps.setObject(i + 1, params.get(i));
+        try (PreparedStatement pre = conn.prepareStatement(sql.toString())) {
+            int index = 1;
+            if (name != null && !name.isEmpty()) {
+                pre.setString(index++, "%" + name + "%");
             }
+            if (phone != null && !phone.isEmpty()) {
+                pre.setString(index++, "%" + phone + "%");
+            }
+//            if (fromDate != null && !fromDate.isEmpty()) pre.setString(index++, fromDate);
+//            if (toDate != null && !toDate.isEmpty()) pre.setString(index++, toDate);
 
-            ResultSet rs = ps.executeQuery();
-            List<Customers> results = new ArrayList<>();
+            ResultSet rs = pre.executeQuery();
             while (rs.next()) {
-                Customers customer = new Customers(
+                customers.add(new Customers(
                         rs.getInt("customerID"),
                         rs.getString("name"),
                         rs.getString("email"),
@@ -78,25 +65,12 @@ public class DAOCustomers extends DBContext {
                         rs.getBoolean("isDelete"),
                         rs.getString("deleteAt"),
                         rs.getInt("deleteBy")
-                );
-                results.add(customer);
+                ));
             }
-
-            if (!currentSearchResults.isEmpty()) {
-                results.retainAll(currentSearchResults); // Giữ lại phần giao giữa kết quả cũ và mới
-            }
-            currentSearchResults = results; // Cập nhật danh sách hiện tại
-
-            return results;
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
         }
-    }
-
-    // Xóa tiêu chí tìm kiếm, làm mới danh sách tìm kiếm
-    public void resetSearch() {
-        currentSearchResults.clear();
+        return customers;
     }
 
     public Customers getCustomer(String id) {
@@ -121,7 +95,7 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
 
                 return new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-              
+
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -135,6 +109,38 @@ public class DAOCustomers extends DBContext {
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + searchPhone + "%"); // Tìm số điện thoại chứa searchPhone
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Customers customer = new Customers(
+                        rs.getInt("customerID"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("address"),
+                        rs.getDouble("totalDebt"),
+                        rs.getString("createAt"),
+                        rs.getString("updateAt"),
+                        rs.getInt("createBy"),
+                        rs.getBoolean("isDelete"),
+                        rs.getString("deleteAt"),
+                        rs.getInt("deleteBy")
+                );
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return customers;
+    }
+
+    public List<Customers> findByName(String name) {
+        List<Customers> customers = new ArrayList<>();
+        String sql = "SELECT * FROM customers WHERE name LIKE ? AND isDelete = 0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + name + "%"); // Tìm số điện thoại chứa searchPhone
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -204,7 +210,7 @@ public class DAOCustomers extends DBContext {
 
     public int updateCustomer(Customers customer) {
         int n = 0;
-        String sql = "UPDATE customers SET name=?, email=?, phone=?, address=?, totalDebt=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE customerID=?";
+        String sql = "UPDATE customers SET name=?, email=?, phone=?, address=?, totalDebt=?, updateAt=?, isDelete=? WHERE customerID=?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, customer.getName()); // name
@@ -212,13 +218,9 @@ public class DAOCustomers extends DBContext {
             pre.setString(3, customer.getPhone()); // phone
             pre.setString(4, customer.getAddress()); // address
             pre.setDouble(5, customer.getTotalDebt()); // totalDebt
-            pre.setString(6, customer.getCreateAt()); // createAt
-            pre.setString(7, customer.getUpdateAt()); // updateAt
-            pre.setInt(8, customer.getCreateBy()); // createBy
-            pre.setBoolean(9, customer.isIsDelete()); // isDelete
-            pre.setString(10, customer.getDeleteAt()); // deleteAt
-            pre.setInt(11, customer.getDeleteBy()); // deleteBy
-            pre.setInt(12, customer.getCustomerID()); // customerID
+            pre.setString(6, customer.getUpdateAt()); // updateAt
+            pre.setBoolean(7, customer.isIsDelete()); // isDelete
+            pre.setInt(8, customer.getCustomerID()); // customerID
             n = pre.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DAOCustomers.class.getName()).log(Level.SEVERE, null, ex);
@@ -274,7 +276,7 @@ public class DAOCustomers extends DBContext {
         List<Customers> list = new ArrayList<>();
         String sql = "SELECT * FROM customers "; // Cập nhật tên bảng
         try {
-                       Statement state = conn.createStatement();
+            Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
             while (rs.next()) {
                 int customerID = rs.getInt("customerID");
@@ -298,8 +300,8 @@ public class DAOCustomers extends DBContext {
         }
         return list; // Trả về danh sách khách hàng
     }
-    
-        public List<Customers> listAllDebt(int id) {
+
+    public List<Customers> listAllDebt(int id) {
         List<Customers> list = new ArrayList<>();
         String sql = "SELECT * FROM customers where createBy = ?"; // Cập nhật tên bảng
         try {
@@ -329,12 +331,121 @@ public class DAOCustomers extends DBContext {
         return list; // Trả về danh sách khách hàng
     }
 
+    public List<Customers> listCustomersByRole(int userID, int roleID) {
+        List<Customers> list = new ArrayList<>();
+        String sql = "";
+
+        if (roleID == 1) { // Nếu là Admin
+            sql = "SELECT * \n"
+                    + "FROM customers c \n"
+                    + "WHERE createBy = ? \n"
+                    + "   OR createBy IN (\n"
+                    + "       SELECT u.ID \n"
+                    + "       FROM users u\n"
+                    + "       JOIN orders o ON o.userID = u.ID \n"
+                    + "       JOIN customers c2 ON c2.customerID = o.customerID\n"
+                    + "       WHERE u.roleID = 1 AND c2.createBy = ?\n"
+                    + "   )";
+
+        } else if (roleID == 2) { // Nếu là Owner
+            sql = "SELECT * FROM customers WHERE createBy = ?";
+        }
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, userID);
+            if (roleID == 1) {
+                pre.setInt(2, userID);
+            }
+
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                int customerID = rs.getInt("customerID");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                double totalDebt = rs.getDouble("totalDebt");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+
+                Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                list.add(customer);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+
+    
+    
+    public List<Customers> listCustomersByRoleSearchName(int userID, int roleID, String name) {
+    List<Customers> list = new ArrayList<>();
+    String sql = "";
+
+    if (roleID == 1) { // Nếu là Admin
+        sql = "SELECT * \n"
+                + "FROM customers c \n"
+                + "WHERE (createBy = ? \n"
+                + "   OR createBy IN (\n"
+                + "       SELECT u.ID \n"
+                + "       FROM users u\n"
+                + "       JOIN orders o ON o.userID = u.ID \n"
+                + "       JOIN customers c2 ON c2.customerID = o.customerID\n"
+                + "       WHERE u.roleID = 1 AND c2.createBy = ?\n"
+                + "   ))"
+                + " AND name LIKE ?";
+    } else if (roleID == 2) { // Nếu là Owner
+        sql = "SELECT * FROM customers WHERE createBy = ? AND name LIKE ?";
+    }
+
+    try {
+        PreparedStatement pre = conn.prepareStatement(sql);
+        pre.setInt(1, userID);
+        if (roleID == 1) {
+            pre.setInt(2, userID);
+            pre.setString(3, "%" + name + "%"); // Tìm kiếm gần đúng theo tên
+        } else {
+            pre.setString(2, "%" + name + "%");
+        }
+
+        ResultSet rs = pre.executeQuery();
+        while (rs.next()) {
+            int customerID = rs.getInt("customerID");
+            String customerName = rs.getString("name");
+            String email = rs.getString("email");
+            String phone = rs.getString("phone");
+            String address = rs.getString("address");
+            double totalDebt = rs.getDouble("totalDebt");
+            String createAt = rs.getString("createAt");
+            String updateAt = rs.getString("updateAt");
+            int createBy = rs.getInt("createBy");
+            Boolean isDelete = rs.getBoolean("isDelete");
+            String deleteAt = rs.getString("deleteAt");
+            int deleteBy = rs.getInt("deleteBy");
+
+            Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+            list.add(customer);
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return list;
+}
+
+    
+
     public static void main(String[] args) {
         DAOCustomers dao = new DAOCustomers();
-//        List<Customers> list = dao.listAll();
-//        for (Customers o : list) {
-            System.out.println(dao.getCustomer("21"));
-//        }
+        List<Customers> list = dao.listCustomersByRoleSearchName(2, 1,"yah");
+        for (Customers o : list) {
+            System.out.println(o.toString());
+        }
 //
 //    // 1. Thêm một khách hàng mới
 //    Customers newCustomer = new Customers(3, "Nguyễn Thu B", "nguyenvanb@gmail.com", "0987654321", "456 Đường XYZ", 2000.0, "2023-01-02", "2023-01-02", 1, false, null, 0);
