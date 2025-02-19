@@ -39,7 +39,9 @@ public class DBContext {
         }
     }
     public DBContext() {
-        this("jdbc:sqlserver://10.211.55.3;databaseName=ISPG4NV1","sa","123");
+
+        this("jdbc:sqlserver://localhost:1433;databaseName=ISPG4NV1","sa","phanvilop6c");
+
     }
     public void dispatch(HttpServletRequest request, HttpServletResponse response, String page) {
     RequestDispatcher dispatcher = request.getRequestDispatcher(page);

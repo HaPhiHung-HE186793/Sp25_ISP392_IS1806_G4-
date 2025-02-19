@@ -10,24 +10,24 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "ListRice", urlPatterns = {"/ListRice"}) // Matches your form action
+@WebServlet(name = "ListRice", urlPatterns = {"/ListRice"})
 public class SearchProducts extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String keyword = request.getParameter("search"); // Get search term from form
+        String keywordName = request.getParameter("search"); // Get search term for name
+        String keywordDescription = request.getParameter("search2"); // Get search term for description
 
         DAOProduct dao = new DAOProduct();
         List<Products> productsList;
 
-        if (keyword != null && !keyword.isEmpty()) { // Check if keyword is not empty
-            productsList = dao.searchProductsByName(keyword); // Call search method
+        if ((keywordName != null && !keywordName.isEmpty()) || (keywordDescription != null && !keywordDescription.isEmpty())) {
+            productsList = dao.searchProducts(keywordName, keywordDescription); // New search method
         } else {
-            // If keyword is empty, retrieve all products (or a default set)
-            productsList = dao.listAll(); // You might need a getAllProducts() method in your DAO
+            productsList = dao.listAll();
         }
 
-        request.setAttribute("products", productsList); // Set the list in request scope
-        request.getRequestDispatcher("dashboard/home.jsp").forward(request, response); // Forward to your JSP
+        request.setAttribute("products", productsList);
+        request.getRequestDispatcher("dashboard/home.jsp").forward(request, response);
     }
 }
