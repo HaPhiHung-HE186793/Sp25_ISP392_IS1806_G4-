@@ -52,6 +52,8 @@ public class ListDebtCustomer extends HttpServlet {
         request.setAttribute("listCustomer", listCustomer);
         request.setAttribute("customers", customers);
 
+        
+        
         request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
     }
 
@@ -66,7 +68,15 @@ public class ListDebtCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+  DAODebtRecords dao = new DAODebtRecords();
+        DAOCustomers daoC = new DAOCustomers();
+        String customerid = request.getParameter("customerid");
+        Customers customers = daoC.getCustomer(customerid);
+        List<DebtRecords> listCustomer = dao.listAllbyName(customerid);
+        request.setAttribute("listCustomer", listCustomer);
+        request.setAttribute("customers", customers);
 
+        request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
     }
 
     /**

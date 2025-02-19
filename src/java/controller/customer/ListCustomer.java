@@ -46,8 +46,12 @@ public class ListCustomer extends HttpServlet {
             throws ServletException, IOException {
         DAOCustomers dao = new DAOCustomers();
         HttpSession session = request.getSession();
+        List<Customers> listCustomer = new ArrayList<>();
+        Integer role = (Integer) session.getAttribute("roleID");
         Integer createBy = (Integer) session.getAttribute("userID");
-        List<Customers> listCustomer = dao.listAllDebt(createBy);
+
+        listCustomer = dao.listCustomersByRole(createBy, role);
+
         request.setAttribute("listCustomer", listCustomer);
         request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
 
@@ -65,28 +69,22 @@ public class ListCustomer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-//        // Lấy các tham số tìm kiếm từ request (từ form hoặc API call)
-//        String name = request.getParameter("name");
-//        String phone = request.getParameter("phone");
-//        String fromDate = request.getParameter("fromDate");
-//        String toDate = request.getParameter("toDate");
-//
-//        // Gọi phương thức tìm kiếm trong DAO
-//        DAOCustomers dao = DAOCustomers.INSTANCE;
-//        List<Customers> results = dao.searchCustomers(name, phone, fromDate, toDate);
-//
-//        // Lưu kết quả vào request để chuyển tiếp tới JSP (hoặc trang web khác)
-//        request.setAttribute("customersList", results);
-//        
-//        // Chuyển tiếp kết quả tìm kiếm tới một JSP để hiển thị (hoặc có thể gửi lại JSON)
-//        request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
-               DAOCustomers dao = new DAOCustomers();
+        // Lấy các tham số từ request
+        String name = request.getParameter("name");
+
+        DAOCustomers dao = new DAOCustomers();
         HttpSession session = request.getSession();
+        List<Customers> listCustomer = new ArrayList<>();
+        int role = (Integer) session.getAttribute("roleID");
+        int createBy = (Integer) session.getAttribute("userID");
 
-        Integer createBy = (Integer) session.getAttribute("userID");
 
-        List<Customers> listCustomer = dao.listAllDebt(createBy);
-        request.setAttribute("listCustomer", listCustomer);
+        List<Customers> results = dao.listCustomersByRoleSearchName(createBy, role, name);
+
+        // Lưu kết quả vào request
+        request.setAttribute("listCustomer", results);
+
+        // Chuyển tiếp kết quả tới JSP
         request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
     }
 
@@ -98,6 +96,16 @@ public class ListCustomer extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+
     }// </editor-fold>
 
+    public static void main(String[] args) {
+        DAOCustomers dao = new DAOCustomers();
+        List<Customers> listCustomer = new ArrayList<>();
+
+        List<Customers> results = dao.listCustomersByRoleSearchName(2, 1, "yah");
+        for (Customers o : results) {
+            System.out.println(o.toString());
+        }
+    }
 }
