@@ -49,7 +49,7 @@
                             <thead id="table-header">
                                 <tr>
                                     <th>Tên gạo</th>
-                                    <th>Trạng thái isDelete</th>
+                                    <th>Ngừng bán</th>
                                 </tr>
                             </thead>
                         <c:forEach items="${products}" var="p">
