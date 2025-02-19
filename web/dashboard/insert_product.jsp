@@ -24,22 +24,46 @@
             <jsp:include page="/Component/menu.jsp"></jsp:include>
 
 
-            <div class="main-content">
-                <div class="notification">
-                    Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
-                </div>
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
+                    </div>
 
 
-                <div class="table-container">
-                    <h3>New product</h3>
-                    <form method="post" action="/DemoISP/CreateProduct"> 
-                        Tên sản phẩm: <input type="text" name="productName" required><br>
-                        Mô tả: <textarea name="description" rows="4" cols="50" required></textarea><br>
-                        Giá: <input type="number" name="price" min="0" required><br>
-                        Ảnh: <input type="text" name="image"><br> 
-                        Tạo bởi (User ID): <input type="number" name="createBy" required><br>
-                        <input type="submit" value="Lưu">
+                    <div class="table-container">
+                        <h3>New product</h3>
+                        <form method="post" action="/DemoISP/CreateProduct">
+                            <table>
+                                <tr>
+                                    <td>Tên sản phẩm:</td>
+                                    <td><input type="text" name="productName" required></td>
+                                </tr>
+                                <tr>
+                                    <td>Mô tả:</td>
+                                    <td><textarea name="description" rows="4" cols="50" required></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td>Giá:</td>
+                                    <td><input type="number" name="price" min="0" required></td>
+                                </tr>
+                                <tr>
+                                    <td>Ảnh:</td>
+                                    <td><input type="text" name="image"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tạo bởi (User ID):</td>
+                                    <td>
+                                        <input type="hidden" name="createBy" value="${sessionScope.userID}" required>
+                                    <span id="createByDisplay">${sessionScope.userID}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><button type="submit">Lưu</button></td>
+
+                            </tr>
+                        </table>
                     </form>
+
 
                 </div>
             </div>

@@ -51,15 +51,15 @@
     </head>
     <body>
         <div class="container">
-            <h2>Forget Password</h2>
-            <h3>Get a verification code</h3>
-            <p>Send verification to: <span class="email-display"><%= request.getAttribute("email") != null ? request.getAttribute("email") : ".........." %></span></p>
+            <h2>Quên mật khẩu</h2>
+            <h3>Lấy mã xác nhận</h3>
+            <p>Gửi mã xác nhận đến: <span class="email-display"><%= request.getAttribute("email") != null ? request.getAttribute("email") : ".........." %></span></p>
             
             <!-- Form gửi mã xác nhận -->
             <form action="<%= request.getContextPath() %>/forgotpass" method="POST">
                 <input type="hidden" name="email" value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" />
                 <input type="hidden" name="step" value="2" />
-                <input type="submit" value="Send" />
+                <input type="submit" value="Gửi" />
             </form>
         </div>
     </body>

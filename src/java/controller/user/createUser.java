@@ -40,7 +40,7 @@ public class createUser extends HttpServlet {
     DAO.DAOUser daou = new DAOUser();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
-    private void handleAddUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void AddUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> errors = new ArrayList<>();
 
         // Lấy dữ liệu từ form
@@ -73,7 +73,7 @@ public class createUser extends HttpServlet {
         HttpSession session = request.getSession();
         Integer createBy = (Integer) session.getAttribute("userID");
         if (createBy == null) {
-            response.sendRedirect("/login/login.jsp"); // Chuyển hướng về trang đăng nhập nếu chưa có userID
+            response.sendRedirect("/login/login.jsp");
             return;
         }
 
@@ -90,7 +90,7 @@ public class createUser extends HttpServlet {
             errors.add("Email đã tồn tại!");
         }
 
-        // Nếu có lỗi, quay lại trang addCustomer.jsp với danh sách lỗi và dữ liệu đã nhập
+        // Nếu có lỗi, quay lại trang createUser.jsp với danh sách lỗi và dữ liệu đã nhập
         if (!errors.isEmpty()) {
             request.setAttribute("errors", errors);
             request.setAttribute("userName", userName);
@@ -156,6 +156,12 @@ public class createUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if (roleID != 1) {
+            response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         request.getRequestDispatcher("user/createUser.jsp").forward(request, response);
     }
 
@@ -170,7 +176,7 @@ public class createUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        handleAddUser(request, response);
+        AddUser(request, response);
     }
 
     /**

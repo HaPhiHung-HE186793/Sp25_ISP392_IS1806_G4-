@@ -2,15 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/user/list_users.jsp</file>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/controller/user/listUsers.java</file>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/assets/css/style.css</file>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/model/User.java</file>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/user/createUser.jsp</file>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/DAO/DAOUser.java</file>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/src/java/controller/user/createUser.java</file>
-            <file>file:/Users/nguyenanh/Workspace/Project_ISP392/Sp25_ISP392_IS1806_G4/web/Component/menu.jsp</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

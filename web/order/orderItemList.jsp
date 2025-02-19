@@ -10,6 +10,25 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
     <title><%= request.getAttribute("papeTitle") %></title>
+    <style>
+        .btn {
+            padding: 5px 10px;
+            background-color: #c9302c; /* Màu nút */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none; /* Bỏ gạch chân */
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #b52a2a; /* Màu tối hơn khi hover */
+        }
+        .back-button {
+            text-align: right; /* Căn chỉnh nút về bên phải */
+            margin-top: 10px; /* Thêm khoảng cách phía trên nút */
+        }
+    </style>
 </head>
 
 <body>
@@ -26,14 +45,14 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>Order Item ID</th>
-                            <th>Order ID</th>
-                            <th>Product ID</th>
-                            <th>Product Name</th>
-                            <th>Price</th>
-                            <th>Unit Price</th>
-                            <th>Quantity</th>
-                            <th>Description</th>
+                            <th>ID</th>
+                            <th>Mã hóa đơn</th>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Mô tả</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,13 +76,16 @@
                         } else {
                         %>
                         <tr>
-                            <td colspan="8" style="text-align: center;">No rows found</td>
+                            <td colspan="8" style="text-align: center;">Không có bản ghi</td>
                         </tr>
                         <%
                         }
                         %>
                     </tbody>
                 </table>
+            </div>
+            <div class="back-button">
+                <a href="<%=request.getContextPath()%>/URLOrder?service=listshow" class="btn">Quay lại</a>
             </div>
         </div>
     </div>

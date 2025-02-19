@@ -78,11 +78,12 @@ public class listUsers extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             User U = dao.getUserbyID(id);
             // Không cho phép chỉnh sửa admin khác
-            if (U.getRoleID() == 1) {
+            if (U.getRoleID() == 1 && userID != U.getID()) {
                 error = "Không được phép chỉnh sửa admin khác.";
             } else {
                 request.setAttribute("u", U);
-                request.getRequestDispatcher("user/updateUser.jsp").forward(request, response);
+                session.setAttribute("userIdUpdate", U.getID());
+                request.getRequestDispatcher("updateuser").forward(request, response);
             }
         }
         //block user
@@ -139,7 +140,7 @@ public class listUsers extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession();
         List<User> filteredUsers = null;
         String mess = null;
         String roleParam = request.getParameter("role");
@@ -147,15 +148,19 @@ public class listUsers extends HttpServlet {
         Integer role = (roleParam != null && !roleParam.isEmpty()) ? Integer.parseInt(roleParam) : null;
 
         // Xử lý lọc
+        if (role == 0) {
+            filteredUsers = dao.listUsers();
+        } else 
         if (role != null && keyword != null && !keyword.isEmpty()) {
             filteredUsers = dao.getUsersByRoleAndKeyword(role, keyword);
         } else if (role != null) {
             filteredUsers = dao.getUsersByRole(role);
         } else if (keyword != null && !keyword.isEmpty()) {
             filteredUsers = dao.getUsersByKeyword(keyword);
-        }
-        if (filteredUsers.isEmpty()) {
-            mess = "Không tìm thấy người dùng nào.";
+        } else {
+            if (filteredUsers == null || filteredUsers.isEmpty()){
+                mess = "Không tìm thấy người dùng nào.";
+            }
             filteredUsers = dao.listUsers(); // Lấy toàn bộ danh sách nếu không có lọc
         }
 
@@ -164,6 +169,22 @@ public class listUsers extends HttpServlet {
             String creatorName = u.getUserName();
             user.setCreatorName(creatorName);
         }
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+    int totalUsers = filteredUsers.size();
+    int pageSize = 10;
+    int currentPage = 1;
+    
+    if (request.getParameter("cp") != null) {
+        currentPage = Integer.parseInt(request.getParameter("cp"));
+    }
+
+    Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+    session.setAttribute("page", page);
+
+    // Lấy danh sách user theo trang hiện tại
+    int startIndex = page.getStartItem();
+    int endIndex = Math.min(startIndex + pageSize, totalUsers);
+    List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
 
         request.setAttribute("mess", mess);
         request.setAttribute("U", filteredUsers);

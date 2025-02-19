@@ -95,7 +95,7 @@
                     <div class="form-container">
                         <h3 style="color: red">Tạo Hóa Đơn</h3>
 
-                        <p>Thông báo: ${requestScope.ms}</p>
+                        
 
 
 
@@ -122,15 +122,8 @@
 
                             <br>
 
-                            <c:if test="${id==0}">
-                                <c:choose>
-                                    <c:when test="${not empty customers}">
-                                        <!-- Danh sách có khách hàng, không cần hiển thị thông báo lỗi -->
-                                    </c:when>
-                                    <c:otherwise>
-                                        <p style="color: red; font-style: italic;">Không tìm thấy khách hàng</p>
-                                    </c:otherwise>
-                                </c:choose>
+                            <c:if test="${id == 0 && empty customers}">
+                                <p style="color: red; font-style: italic;">Không tìm thấy khách hàng</p>
                             </c:if>
 
                             <script>
@@ -168,6 +161,25 @@
                                    style="width: 40px; height: 25px; border: 2px solid #000; border-radius: 5px; padding: 5px; text-align: center;">
 
                             <br><br>
+                            
+                            
+                             <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let porter = document.getElementById("porter");
+                                    let savedPorter = sessionStorage.getItem("inputedPorter");
+
+                                    // Kiểm tra nếu có giá trị đã lưu trong sessionStorage
+                                    if (savedPorter) {
+                                        porter.value = savedPorter;
+                                    }
+
+                                    // Lắng nghe sự kiện input khi người dùng thay đổi giá trị
+                                    porter.addEventListener("input", function () {
+                                        // Lưu giá trị vào sessionStorage
+                                        sessionStorage.setItem("inputedPorter", porter.value);
+                                    });
+                                });
+                            </script>
 
                             <label for="status">Trạng Thái:</label><br><br>
                             <textarea id="status" name="status" rows="4" cols="40" required 
@@ -177,6 +189,8 @@
                             <br><br>
 
                             <h3 style="color: red">Chi Tiết Đơn Hàng</h3>
+                            
+                            <p style="color: hotpink">Thông báo: ${requestScope.ms}</p>
 
                             <table id="orderItems" border="1" width="100%" cellspacing="0" cellpadding="5">
                                 <thead>
@@ -222,8 +236,8 @@
 
                             <script>
                                 document.addEventListener("DOMContentLoaded", function () {
-                                    var today = new Date();
-                                    var formattedDate = today.toISOString().split('T')[0]; // Chuyển thành YYYY-MM-DD
+                                    let today = new Date();
+                                    let formattedDate = today.toISOString().split('T')[0]; // Chuyển thành YYYY-MM-DD
                                     document.getElementById("orderDate").value = formattedDate;
                                     loadOrderFromSessionStorage();
                                 });

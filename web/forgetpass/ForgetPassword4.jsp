@@ -58,20 +58,20 @@
     </head>
     <body>
         <div class="container">
-            <h2>Change Password</h2>
+            <h2>Thay đổi mật khẩu</h2>
             <form action="<%= request.getContextPath() %>/forgotpass" method="POST">
                 <table border="0">
                     <tr>
-                        <td>New password:</td>
+                        <td>Mật khẩu mới:</td>
                         <td><input type="password" name="password" value="" required/></td>
                     </tr>
                     <tr>
-                        <td>Re-enter:</td>
+                        <td>Nhập lại mật khẩu:</td>
                         <td><input type="password" name="passwordConfirm" value="" required/></td>
                     </tr>
                 </table>
                 <input type="hidden" name="step" value="4" />
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Gửi" />
 
                 <!-- Hiển thị thông báo lỗi nếu mật khẩu không khớp -->
                 <span class="error-message">

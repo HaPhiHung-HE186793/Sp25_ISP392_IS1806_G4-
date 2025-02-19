@@ -60,13 +60,13 @@
     </head>
     <body>
         <div class="container">
-            <h2>Forgot Password</h2>
-            <p>Please enter the email you use to register</p>
+            <h2>Quên mật khẩu</h2>
+            <p>Hãy nhập email mà bạn đã đăng ký</p>
             <form action="<%= request.getContextPath() %>/forgotpass" method="POST">
-                <input type="text" name="email" placeholder="Enter email" value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" required />
+                <input type="text" name="email" placeholder="Nhập email" value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" required />
                 <br />
                 <input type="hidden" name="step" value="1" />
-                <input type="submit" value="Next" />
+                <input type="submit" value="Tiếp theo" />
                 
                 <!-- Hiển thị thông báo lỗi nếu có -->
                 <span class="error-message">

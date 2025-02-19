@@ -78,6 +78,57 @@ public class DAOProduct extends DBContext {
 
         return productsList;
     }
+
+    public List<Products> searchProducts(String keywordName, String keywordDescription) {
+        List<Products> productsList = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE isDelete = 0 ";
+
+        List<String> conditions = new ArrayList<>();
+        if (keywordName != null && !keywordName.isEmpty()) {
+            conditions.add("LOWER(productName) LIKE LOWER(?)");
+        }
+        if (keywordDescription != null && !keywordDescription.isEmpty()) {
+            conditions.add("LOWER(description) LIKE LOWER(?)");
+        }
+
+        if (!conditions.isEmpty()) {
+            sql += " AND (" + String.join(" OR ", conditions) + ")";
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            int paramIndex = 1;
+
+            if (keywordName != null && !keywordName.isEmpty()) {
+                ps.setString(paramIndex++, "%" + keywordName.toLowerCase() + "%");
+            }
+            if (keywordDescription != null && !keywordDescription.isEmpty()) {
+                ps.setString(paramIndex++, "%" + keywordDescription.toLowerCase() + "%");
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Products product = new Products();
+                    product.setProductID(rs.getInt("productID"));
+                    product.setProductName(rs.getString("productName"));
+                    product.setDescription(rs.getString("description"));
+                    product.setPrice(rs.getDouble("price"));
+                    product.setQuantity(rs.getInt("quantity"));
+                    product.setImage(rs.getString("image"));
+                    product.setCreateAt(rs.getString("createAt"));
+                    product.setUpdateAt(rs.getString("updateAt"));
+                    product.setCreateBy(rs.getInt("createBy"));
+                    product.setIsDelete(rs.getBoolean("isDelete"));
+                    product.setDeleteAt(rs.getString("deleteAt"));
+                    product.setDeleteBy(rs.getInt("deleteBy"));
+
+                    productsList.add(product);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productsList;
+    }
 //    public Vector<products> getProducts(String sql) {
 //        Vector<products> vector = new Vector<products>();
 //        try {
@@ -170,8 +221,8 @@ public class DAOProduct extends DBContext {
         }
         return n;
     }
-    
-     public int updateIsDelete(int productID, boolean isDelete) {
+
+    public int updateIsDelete(int productID, boolean isDelete) {
         int n = 0;
         String sql = "UPDATE products SET isDelete=? WHERE productID=?";
         try (PreparedStatement pre = conn.prepareStatement(sql)) { // Try-with-resources
@@ -182,7 +233,7 @@ public class DAOProduct extends DBContext {
             Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
         return n;
-     }
+    }
 
     public int insertProduct(Products product) {
         int n = 0;
@@ -260,6 +311,35 @@ public class DAOProduct extends DBContext {
             ex.printStackTrace();
         }
         return list;
+    }
+
+    public Products getProductById(int productID) {
+        Products product = null;
+        String sql = "SELECT * FROM Products WHERE productID = ? AND isDelete = 0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    product = new Products();
+                    product.setProductID(rs.getInt("productID"));
+                    product.setProductName(rs.getString("productName"));
+                    product.setDescription(rs.getString("description"));
+                    product.setPrice(rs.getDouble("price"));
+                    product.setQuantity(rs.getInt("quantity"));
+                    product.setImage(rs.getString("image"));
+                    product.setCreateAt(rs.getString("createAt"));
+                    product.setUpdateAt(rs.getString("updateAt"));
+                    product.setCreateBy(rs.getInt("createBy"));
+                    product.setIsDelete(rs.getBoolean("isDelete"));
+                    product.setDeleteAt(rs.getString("deleteAt"));
+                    product.setDeleteBy(rs.getInt("deleteBy"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return product;
     }
 
     public static void main(String[] args) {

@@ -26,6 +26,7 @@
         <url-pattern>/ListProductCheckIs</url-pattern>
         <url-pattern>/SearchProducts</url-pattern>
         <url-pattern>/updateuser</url-pattern>
+        <url-pattern>/UpdateProducts</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -90,10 +91,14 @@
     <servlet>
         <servlet-name>SearchProducts</servlet-name>
         <servlet-class>controller.products.SearchProducts</servlet-class>
-    </servlet>    
+    </servlet>
     <servlet>
         <servlet-name>updateUser</servlet-name>
         <servlet-class>controller.user.updateUser</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateProducts</servlet-name>
+        <servlet-class>controller.products.UpdateProducts</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -147,7 +152,6 @@
         <servlet-name>ControllerOrderDetail</servlet-name>
         <url-pattern>/URLOrderDetail</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>ListCustomer</servlet-name>
         <url-pattern>/ListCustomer</url-pattern>
@@ -164,7 +168,6 @@
         <servlet-name>ListDebtCustomer</servlet-name>
         <url-pattern>/ListDebtCustomer</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>ListProducts</servlet-name>
         <url-pattern>/ListProducts</url-pattern>
@@ -193,7 +196,8 @@
         <servlet-name>updateUser</servlet-name>
         <url-pattern>/updateuser</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateProducts</servlet-name>
+        <url-pattern>/UpdateProducts</url-pattern>
+    </servlet-mapping>
 </web-app>
-
-
-
