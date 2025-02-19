@@ -70,7 +70,7 @@
                                         <td>${p.getDescription()}</td>
                                         <td>${p.getPrice()}</td>
                                         <td>${p.getQuantity()}</td>
-                                        <td>${p.getImage()}</td>
+                                        <td><img src="${p.getImage()}"></td>
 
                                         <c:if test="${sessionScope.roleID == 1}"> <%-- Check if roleID is 1 --%>
                                             <td>${p.getCreateAt()}</td>
