@@ -16,7 +16,14 @@ public class ControllerOrder extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        DAOShowOrder dao = new DAOShowOrder();
+       
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+     //   processRequest(request, response);
+      DAOShowOrder dao = new DAOShowOrder();
         String service = request.getParameter("service");
         if (service == null) {
             service = "listshow";
@@ -120,12 +127,6 @@ public class ControllerOrder extends HttpServlet {
             RequestDispatcher dispth = request.getRequestDispatcher("order/showOrder.jsp");
             dispth.forward(request, response);
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
     }
 
     @Override
