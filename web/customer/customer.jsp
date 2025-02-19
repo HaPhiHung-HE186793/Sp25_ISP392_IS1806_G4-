@@ -42,12 +42,15 @@
                                                     <option value="">Z->A</option>
                         
                                                 </select>-->
-                        <input type="text" placeholder="Tìm kiếm">
-                        <input type="number" placeholder="Số điện thoại">
-                        <input type="text" placeholder="Từ">
-                        <input type="text" placeholder="Đến">
-                        <button style="background-color: #5bc0de;">Lọc</button>
-                        <button>Bỏ lọc</button> 
+                        <form action="ListCustomer" method="post" >
+
+                            <input name="name" type="text" placeholder="Tìm kiếm">
+                        <!--<input type="number" placeholder="Số điện thoại">-->
+<!--                        <input type="date" placeholder="Từ">
+                        <input type="date" placeholder="Đến">-->
+                        <button style="background-color: #5bc0de;" >Lọc</button>
+                        </form>
+                        <button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</button> 
 
 
                         <button class="addNewDebt js-open-newDebt">Thêm người nợ</button>
@@ -65,7 +68,6 @@
                                 <th>Tổng nợ</th>
                                 <th>Ngày tạo</th>
                                 <th>Ngày cập nhật</th>
-                                <th>Người tạo</th>
                                 <th>Chức năng</th>
 
                             </tr>
@@ -82,10 +84,9 @@
                                     <td >${o.getTotalDebt()}</td>
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
-                                    <td>${o.getCreateBy()}</td>
 
                                     <td> 
-                                        <a href="ListDebtCustomer">
+                                        <a href="UpdateCustomer?customerid=${o.getCustomerID()}">
                                             <button class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700">Edit</button>
                                         </a>
                                         <a href="ListDebtCustomer?customerid=${o.getCustomerID()}">
@@ -189,6 +190,7 @@
         }, 5000); // 5000ms = 5 giây
 
 
+      
     </script>
 
 
