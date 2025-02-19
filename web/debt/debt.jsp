@@ -45,8 +45,8 @@
 
                         </select>
                         <input type="text" placeholder="Search">
-                        <input type="text" placeholder="Từ">
-                        <input type="text" placeholder="Đến">
+                        <input type="date" placeholder="Từ">
+                        <input type="date" placeholder="Đến">
                         <button>Bỏ lọc</button>
                         <button>Thu gọn</button>
 
@@ -62,7 +62,6 @@
                                 <th>Số tiền</th>
                                 <th>thời gian tạo</th>
                                 <th>Ngày lập phiếu</th>
-                                <th>Hành động</th>
 
                             </tr>
                         </thead>
@@ -84,7 +83,6 @@
                                     <td >${o.getAmount()}</td>
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
-                                    <td ><button class="addNewDebt js-open-newDebt">Thêm người nợ</button></td>
                                 </tr>
                             </c:forEach>   
                         </tbody>
@@ -97,54 +95,54 @@
     </body>
 
     <div class="newDebt">
+
         <div class="newDebt-container">
-            <button class="newDebt-add">
-                Thêm mới 
-            </button>
+
+
+
             <button class="newDebt-close js-close-newDebt">
                 close
             </button>
 
             <div class="newDebt-header">Chi tiết nợ
             </div>
+            <form action="AddNewCustomerDebt" method="post"  >
+                <button class="newDebt-add">
+                    Thêm mới 
+                </button>
+                <div class="newDebt-body" style="    height: 445px;">                                
+                    <table>
+                        <thead id="newDebt-tableHeader">
+                        </thead>
+                        <tbody class="newDebt-tableTbody">
+                            <tr>
+                                <td ><input class="newDebt-input" name="customerid" value="${customers.getCustomerID()}" type="hidden"> </td>                                    
+                            </tr>                               
+                            <tr class="newDebt-tableTbody-tr">
+                                <td ><div class="newDebt-text"> Loại nợ:</div></td>
+                                <td >
+                                    <select name="typeDebt" class="newDebt-input" required>
+                                        <option value="0">Vay nợ</option>
+                                        <option value="1">Trả nợ</option>
+                                        <option value="2">Đi vay</option>
+                                        <option value="3">Đi trả</option>
+                                    </select>
+                                </td>   
+                            </tr>                                                                     
+                            <tr class="newDebt-tableTbody-tr">
+                                <td><div class="newDebt-text">Ngày lập phiếu:</div></td>
+                                <td><input class="newDebt-input newDebt-date" name="dateTime" type="datetime-local"></td>
+                            </tr>                                  
+                            <tr class="newDebt-tableTbody-tr">
+                                <td ><div class="newDebt-text"> Số tiền:</div></td>
+                                <td ><input class="newDebt-input" name="debt" type="number" min="0"> </td>                                    
+                            </tr>                                                           
+                        </tbody>
+                    </table>
 
-            <div class="newDebt-body">                                
-                <table>
-                    <thead id="newDebt-tableHeader">
-                    </thead>
-                    <tbody class="newDebt-tableTbody">
+                </div>
+            </form>
 
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Số tiền(*):</div></td>
-                            <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A" required> </td>                                    
-                        </tr>                            
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Loại nợ:</div></td>
-                            <td >
-                                <select name="typeDebt" class="newDebt-input" required>
-                                    <option value="0">Vay nợ</option>
-                                    <option value="1">Trả nợ</option>
-                                    <option value="2">Đi vay</option>
-                                    <option value="3">Đi trả</option>
-                                </select>
-                            </td>
-                        </tr>                                   
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> SĐT:</div></td>
-                            <td ><input class="newDebt-input" name="phone" type="number" > </td>                                    
-                        </tr>                                   
-                        <tr class="newDebt-tableTbody-tr">
-                            <td><div class="newDebt-text">Ngày & Giờ:</div></td>
-                            <td><input class="newDebt-input newDebt-date" name="dateTime" type="datetime-local"></td>
-                        </tr>                                  
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Tổng nợ:</div></td>
-                            <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    
-                        </tr>                                                           
-                    </tbody>
-                </table>
-
-            </div>
         </div>
     </div>
 
