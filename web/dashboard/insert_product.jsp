@@ -6,8 +6,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../assets/css/style.css">
-        <link rel="stylesheet" href="../assets/fonts/themify-icons/themify-icons.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/themify-icons/themify-icons.css">
         <title>Bảng Điều Khiển</title>
         <style>
             .table-container form table {
@@ -61,29 +61,32 @@
                     </div>
 
                     <div class="table-container">
-                        <h3>New product</h3>
-                        <form method="post" action="/DemoISP/CreateProduct">
-                            <table>
-                                <tr>
-                                    <td>Tên sản phẩm:</td>
-                                    <td><input type="text" name="productName" required></td>
-                                </tr>
-                                <tr>
-                                    <td>Mô tả:</td>
-                                    <td><textarea name="description" rows="4" cols="50" required></textarea></td>
-                                </tr>
-                                <tr>
-                                    <td>Giá:</td>
-                                    <td><input type="number" name="price" min="0" required></td>
-                                </tr>
-                                <tr>
-                                    <td>Ảnh:</td>
-                                    <td><input type="text" name="image"></td>
-                                </tr>
-                                <tr>
-                                    <td>Tạo bởi (User ID):</td>
-                                    <td>
-                                        <input type="hidden" name="createBy" value="${sessionScope.userID}" required>
+                    <c:if test="${not empty message}">
+                        <p style="color: red;">${message}</p> <%-- Display error/success message --%>
+                    </c:if>
+                    <h3>New product</h3>
+                    <form method="post" action="/DemoISP/CreateProduct">
+                        <table>
+                            <tr>
+                                <td>Tên sản phẩm:</td>
+                                <td><input type="text" name="productName" required></td>
+                            </tr>
+                            <tr>
+                                <td>Mô tả:</td>
+                                <td><textarea name="description" rows="4" cols="50" required></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>Giá:</td>
+                                <td><input type="number" name="price" min="0" required></td>
+                            </tr>
+                            <tr>
+                                <td>Ảnh:</td>
+                                <td><input type="text" name="image"></td>
+                            </tr>
+                            <tr>
+                                <td>Tạo bởi (User ID):</td>
+                                <td>
+                                    <input type="hidden" name="createBy" value="${sessionScope.userID}" required>
                                     <span id="createByDisplay">${sessionScope.userID}</span>
                                 </td>
                             </tr>
