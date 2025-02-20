@@ -25,31 +25,33 @@
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
                     </div>
 
-                    <div class="table-container">
-                        <h3>Tạo tài khoản mới</h3>
+                    <div class="table-container" >
+                        <div style="display: flex">
+                            <h3 style="max-width: 29%;">Cập nhật tài khoản</h3>
 
-                    <c:choose>
-                        <c:when test="${not empty errors}">
-                            <div class="notification" id="errorNotification" style="color: red;">
-                                <c:forEach var="error" items="${errors}">
-                                    <p>${error}</p>
-                                </c:forEach>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="notification" id="errorNotification" style="display: none;"></div>
-                        </c:otherwise>
-                    </c:choose> 
-                    <c:choose>
-                        <c:when test="${not empty success}">
-                            <div class="notification" id="messageNotification" style="color: green;">
-                                ${success}
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="notification" id="messageNotification" style="display: none;"></div>
-                        </c:otherwise>
-                    </c:choose>
+                        <c:choose>
+                            <c:when test="${not empty errors}">
+                                <div class="notification" id="errorNotification" style="color: red; max-width: 29%;margin-left: 25%;padding: 0px 5px;">
+                                    <c:forEach var="error" items="${errors}">
+                                        <p>${error}</p>
+                                    </c:forEach>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="notification" id="errorNotification" style="display: none; max-width: 29%;"></div>
+                            </c:otherwise>
+                        </c:choose> 
+                        <c:choose>
+                            <c:when test="${not empty success}">
+                                <div class="notification" id="messageNotification" style="color: green; max-width: 29%;margin-left: 25%;">
+                                    ${success}
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="notification" id="messageNotification" style="display: none; max-width: 29%;"></div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
 
 
                     <table>
@@ -78,18 +80,22 @@
                                        placeholder="Nhập mật khẩu" required>
                             </td>
                             <td>
-                                <div>
-                                    <input type="radio" name="roleID" value="1" id="admin" required>
-                                    <label for="admin">Admin</label>
-                                </div>
-                                <div>
-                                    <input type="radio" name="roleID" value="2" id="store_owner">
-                                    <label for="store_owner">Chủ Cửa Hàng</label>
-                                </div>
-                                <div>
-                                    <input type="radio" name="roleID" value="3" id="employee">
-                                    <label for="employee">Nhân Viên</label>
-                                </div>
+                                <c:if test="${u.getRoleID() == 1}">
+                                    <div>
+                                        <input type="radio" name="roleID" value="1" id="admin" required>
+                                        <label for="admin">Admin</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" name="roleID" value="2" id="store_owner">
+                                        <label for="store_owner">Chủ Cửa Hàng</label>
+                                    </div>
+                                </c:if>
+                                <c:if test="${u.getRoleID() == 2}">
+                                    <div>
+                                        <input type="radio" name="roleID" value="3" id="employee">
+                                        <label for="employee">Nhân Viên</label>
+                                    </div>
+                                </c:if>
                             </td>
                             <td style="border-left: 1px solid black;">                                    
                                 <button type="submit" class="btn btn-primary">Tạo tài khoản</button>

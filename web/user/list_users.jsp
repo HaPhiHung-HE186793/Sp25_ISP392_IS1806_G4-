@@ -34,13 +34,16 @@
                         <h3>Danh sách người dùng</h3>
                         <div class="filters">
                             <form method="post" action="listusers">
+                                <c:if test="${user_current.getRoleID() == 1}">
                                 <label for="role">Chức Năng:</label>
                                 <select name="role" id="role" onchange="this.form.submit()">
+                                     <option value="-1" hidden ${selectedRole == -1 ? 'selected' : ''}>Tất cả</option>
                                     <option value="0">Tất cả</option>
                                     <option value="1" ${selectedRole == 1 ? 'selected' : ''}>Admin</option>
                                 <option value="2" ${selectedRole == 2 ? 'selected' : ''}>Chủ cửa hàng</option>
                                 <option value="3" ${selectedRole == 3 ? 'selected' : ''}>Nhân viên bán hàng</option>
                             </select>
+                                </c:if>
                             <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
 
                             <button type="submit">Tìm kiếm</button>
@@ -136,13 +139,16 @@
                                 </tr>
                             </c:forEach>   
                         </tbody>
-                    </table>                   
+                    </table>    
+                    <div style="margin-left: -220px;" >
+                    <%@include file="/Component/pagination.jsp" %>
+                    </div>
                 </div>
             </div>
         </div>
 
 
-        <%@include file="/Component/pagination.jsp" %>
+        
 
     </body>
 

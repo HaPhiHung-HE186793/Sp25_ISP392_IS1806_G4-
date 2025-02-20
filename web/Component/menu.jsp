@@ -23,6 +23,9 @@
     <c:if test="${sessionScope.roleID==1}">
     <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
     </c:if>
+    <c:if test="${sessionScope.roleID==2}">
+    <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
+    </c:if>
 
 
     <a href="<%=request.getContextPath()%>/CreateOrderServlet">Tạo hóa đơn</a>

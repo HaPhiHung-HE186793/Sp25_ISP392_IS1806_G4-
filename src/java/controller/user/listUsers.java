@@ -68,22 +68,41 @@ public class listUsers extends HttpServlet {
         HttpSession session = request.getSession();
         Integer roleID = (Integer) session.getAttribute("roleID");
         Integer userID = (Integer) session.getAttribute("userID");
-        if (roleID != 1) {
+        User user_current = (User) session.getAttribute("user");
+        if (roleID != 1 && roleID != 2) {
             response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
             return;
         }
         String error = null;
         //update users
+//        if (request.getParameter("id") != null) {
+//            int id = Integer.parseInt(request.getParameter("id"));
+//            User U = dao.getUserbyID(id);
+//            // Không cho phép chỉnh sửa admin khác
+//            if (U.getRoleID() == 1 && userID != U.getID()) {
+//                error = "Không được phép chỉnh sửa admin khác.";
+//            } else {
+//                request.setAttribute("u", U);
+//                session.setAttribute("userIdUpdate", U.getID());
+//                request.getRequestDispatcher("updateuser").forward(request, response);
+//            }
+//        }
         if (request.getParameter("id") != null) {
             int id = Integer.parseInt(request.getParameter("id"));
-            User U = dao.getUserbyID(id);
-            // Không cho phép chỉnh sửa admin khác
-            if (U.getRoleID() == 1 && userID != U.getID()) {
-                error = "Không được phép chỉnh sửa admin khác.";
-            } else {
-                request.setAttribute("u", U);
-                session.setAttribute("userIdUpdate", U.getID());
-                request.getRequestDispatcher("updateuser").forward(request, response);
+            User Users = dao.getUserbyID(id);
+            if (Users != null) {
+                // Không cho phép chỉnh sửa user cùng role
+                if (Users.getRoleID() == user_current.getRoleID() && user_current.getID() != Users.getID()) {
+                    error = "Không được phép chỉnh sửa.";
+                } else if (Users.getRoleID() == 3 && user_current.getRoleID() == 1) {
+                    error = "Không được phép chỉnh sửa.";
+                } else if (Users.getRoleID() == 1 && user_current.getRoleID() == 2) {
+                    error = "Không được phép chỉnh sửa.";
+                } else {
+                    request.setAttribute("u", Users);
+                    session.setAttribute("userIdUpdate", Users.getID());
+                    request.getRequestDispatcher("updateuser").forward(request, response);
+                }
             }
         }
         //block user
@@ -104,18 +123,24 @@ public class listUsers extends HttpServlet {
             dao.unlockUserByID(unlockid, createBy);
         }
 
-        List<User> U = dao.listUsers();
-        //seting pagination
-        //check page
-        //at the first time
-        if (session.getAttribute("page") == null) {
-            Page = new Pagination(U.size(), 10, 1);
-            session.setAttribute("page", Page);
-        } else if (request.getParameter("cp") != null) {
-            int cp = Integer.parseInt(request.getParameter("cp"));
-            Page = new Pagination(U.size(), 10, cp);
-            session.setAttribute("page", Page);
+        List<User> U = null;
+        if (roleID == 1) {
+            U = dao.listUsers();
+        } else {
+            U = dao.listUsersByOwner(user_current.getID());
         }
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = U.size();
+        int pageSize = 8;
+        int currentPage = 1;
+
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
+
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+        request.setAttribute("currentPageUrl", "listusers"); // Hoặc "products"
 
         for (User user : U) {
             User u = dao.getUserbyID(user.getCreateBy());
@@ -124,6 +149,7 @@ public class listUsers extends HttpServlet {
         }
 
         request.setAttribute("error", error);
+        request.setAttribute("user_current", user_current);
         session.setAttribute("U", U);
         request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
 
@@ -141,55 +167,96 @@ public class listUsers extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User user_current = (User) session.getAttribute("user");
         List<User> filteredUsers = null;
         String mess = null;
         String roleParam = request.getParameter("role");
         String keyword = request.getParameter("keyword");
         Integer role = (roleParam != null && !roleParam.isEmpty()) ? Integer.parseInt(roleParam) : null;
 
-        // Xử lý lọc
-        if (role == 0) {
+        //search
+        if (user_current.getRoleID() == 1) {
             filteredUsers = dao.listUsers();
-        } else 
-        if (role != null && keyword != null && !keyword.isEmpty()) {
-            filteredUsers = dao.getUsersByRoleAndKeyword(role, keyword);
-        } else if (role != null) {
-            filteredUsers = dao.getUsersByRole(role);
-        } else if (keyword != null && !keyword.isEmpty()) {
-            filteredUsers = dao.getUsersByKeyword(keyword);
         } else {
-            if (filteredUsers == null || filteredUsers.isEmpty()){
-                mess = "Không tìm thấy người dùng nào.";
-            }
-            filteredUsers = dao.listUsers(); // Lấy toàn bộ danh sách nếu không có lọc
+            filteredUsers = dao.listUsersByOwner(user_current.getID());
         }
 
+        if (role != null && role != -1) {
+            filteredUsers = dao.getUsersByRole(role, filteredUsers);
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            List<User> tempUsers = dao.getUsersByKeyword(keyword, filteredUsers);
+            if (!tempUsers.isEmpty()) {
+                filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
+            } else mess = "Không tìm thấy người dùng nào.";
+        }
+        if (filteredUsers == null || filteredUsers.isEmpty()) {
+            mess = "Không tìm thấy người dùng nào.";
+            System.out.println(mess);
+            filteredUsers = (user_current.getRoleID() == 1)
+                    ? dao.listUsers()
+                    : dao.listUsersByOwner(user_current.getID());
+
+        }
+
+//        if (user_current.getRoleID() == 1) {
+//            if (role != null && role == 0) {
+//                filteredUsers = dao.listUsers();
+//            } else if (role != -1 && keyword != null && !keyword.isEmpty()) {
+//                boolean[] isKeywordSearchEmpty = {false};
+//                filteredUsers = dao.getUsersByRoleAndKeyword(role, keyword, isKeywordSearchEmpty);
+//                if (isKeywordSearchEmpty[0]) {
+//                    mess = "Không tìm thấy người dùng nào.";
+//                }
+//            } else if (role != -1) {
+//                filteredUsers = dao.getUsersByRole(role);
+//            } else if (keyword != null && !keyword.isEmpty()) {
+//                filteredUsers = dao.getUsersByKeyword(keyword);
+//            }
+//            if (filteredUsers == null || filteredUsers.isEmpty()) {
+//                mess = "Không tìm thấy người dùng nào.";
+//                filteredUsers = dao.listUsers(); // Lấy toàn bộ danh sách nếu không có lọc
+//            }
+//        }
+//        if (user_current.getRoleID() == 2) {
+//            if (keyword != null && !keyword.isEmpty()) {
+//                filteredUsers = dao.getUsersByKeywordAndOwner(keyword, user_current.getID());
+//            }
+//            if (filteredUsers == null || filteredUsers.isEmpty()) {
+//                mess = "Không tìm thấy người dùng nào.";
+//                System.out.println(mess);
+//                filteredUsers = dao.listUsersByOwner(user_current.getID());
+//            }
+//        }
+        //lay ten creatrBy
         for (User user : filteredUsers) {
             User u = dao.getUserbyID(user.getCreateBy());
             String creatorName = u.getUserName();
             user.setCreatorName(creatorName);
         }
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-    int totalUsers = filteredUsers.size();
-    int pageSize = 10;
-    int currentPage = 1;
-    
-    if (request.getParameter("cp") != null) {
-        currentPage = Integer.parseInt(request.getParameter("cp"));
-    }
+        int totalUsers = filteredUsers.size();
+        int pageSize = 8;
+        int currentPage = 1;
 
-    Pagination page = new Pagination(totalUsers, pageSize, currentPage);
-    session.setAttribute("page", page);
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
+        request.setAttribute("currentPageUrl", "listusers"); // Hoặc "products"
 
-    // Lấy danh sách user theo trang hiện tại
-    int startIndex = page.getStartItem();
-    int endIndex = Math.min(startIndex + pageSize, totalUsers);
-    List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+
+        // Lấy danh sách user theo trang hiện tại
+        int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
 
         request.setAttribute("mess", mess);
         request.setAttribute("U", filteredUsers);
         request.setAttribute("selectedRole", role);
         request.setAttribute("keyword", keyword);
+        request.setAttribute("user_current", user_current);
         request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
     }
 
@@ -204,3 +271,24 @@ public class listUsers extends HttpServlet {
     }// </editor-fold>
 
 }
+//if (request.getParameter("id") != null) {
+//            int id = Integer.parseInt(request.getParameter("id"));
+//            User Users = dao.getUserbyID(id);
+//            // Không cho phép chỉnh sửa user cùng role
+//            if (Users.getRoleID() == user_current.getRoleID() && userID != Users.getID()) {
+//                error = "Không được phép chỉnh sửa.";
+//            } else  if(Users.getRoleID() == 3  && user_current.getRoleID() == 1) {
+//                error = "Không được phép chỉnh sửa.";
+//            } else {
+//                request.setAttribute("u", U);
+//                session.setAttribute("userIdUpdate", Users.getID());
+//                request.getRequestDispatcher("updateuser").forward(request, response);
+//            }
+//        }
+
+//List<User> U = dao.listUsers();
+//search theo role
+//U = dao.getSearchbyRole( roleId, U);
+//sau ddos search theo keyword
+//U = dao.getSearchByKey( key, U);
+// trong ham dao se tru di users trung lap

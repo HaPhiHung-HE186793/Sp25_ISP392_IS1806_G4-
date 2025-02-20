@@ -42,7 +42,8 @@ public class createUser extends HttpServlet {
 
     private void AddUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> errors = new ArrayList<>();
-
+        HttpSession session = request.getSession();
+        User user_current = (User) session.getAttribute("user");
         // Lấy dữ liệu từ form
         String userName = request.getParameter("userName");
         String email = request.getParameter("email");
@@ -70,7 +71,6 @@ public class createUser extends HttpServlet {
         }
 
         // lấy id của user hiện tại
-        HttpSession session = request.getSession();
         Integer createBy = (Integer) session.getAttribute("userID");
         if (createBy == null) {
             response.sendRedirect("/login/login.jsp");
@@ -95,6 +95,7 @@ public class createUser extends HttpServlet {
             request.setAttribute("errors", errors);
             request.setAttribute("userName", userName);
             request.setAttribute("email", email);
+            request.setAttribute("u", user_current);
             request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
             return;
         }
@@ -115,6 +116,7 @@ public class createUser extends HttpServlet {
         request.setAttribute("success", "Thêm thành công!");
         request.setAttribute("userName", userName);
         request.setAttribute("email", email);
+        request.setAttribute("u", user_current);
         request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
     }
 
@@ -158,10 +160,12 @@ public class createUser extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer roleID = (Integer) session.getAttribute("roleID");
-        if (roleID != 1) {
+        User user_current = (User) session.getAttribute("user");
+        if (roleID != 1 && roleID !=2) {
             response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
             return;
         }
+        request.setAttribute("u", user_current);
         request.getRequestDispatcher("user/createUser.jsp").forward(request, response);
     }
 
