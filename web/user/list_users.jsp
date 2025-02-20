@@ -22,7 +22,7 @@
 
     <body>
         <div id="main">
-            <jsp:include page="/Component/menu.jsp"></jsp:include>
+            <jsp:include page="/Component/menu.jsp"></jsp:include>   
 
                 <div class="main-content">
                     <div class="notification">
@@ -34,16 +34,16 @@
                         <h3>Danh sách người dùng</h3>
                         <div class="filters">
                             <form method="post" action="listusers">
-                                <c:if test="${user_current.getRoleID() == 1}">
+                            <c:if test="${user_current.getRoleID() == 1}">
                                 <label for="role">Chức Năng:</label>
                                 <select name="role" id="role" onchange="this.form.submit()">
-                                     <option value="-1" hidden ${selectedRole == -1 ? 'selected' : ''}>Tất cả</option>
+                                    <option value="-1" hidden ${selectedRole == -1 ? 'selected' : ''}>Tất cả</option>
                                     <option value="0">Tất cả</option>
                                     <option value="1" ${selectedRole == 1 ? 'selected' : ''}>Admin</option>
-                                <option value="2" ${selectedRole == 2 ? 'selected' : ''}>Chủ cửa hàng</option>
-                                <option value="3" ${selectedRole == 3 ? 'selected' : ''}>Nhân viên bán hàng</option>
-                            </select>
-                                </c:if>
+                                    <option value="2" ${selectedRole == 2 ? 'selected' : ''}>Chủ cửa hàng</option>
+                                    <option value="3" ${selectedRole == 3 ? 'selected' : ''}>Nhân viên bán hàng</option>
+                                </select>
+                            </c:if>
                             <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
 
                             <button type="submit">Tìm kiếm</button>
@@ -52,30 +52,30 @@
 
 
                         <div>
-                        <button class="addNewDebt" onclick="window.location = 'createuser'">Tạo tài khoản mới</button>
+                            <button class="addNewDebt" onclick="window.location = 'createuser'">Tạo tài khoản mới</button>
                         </div>
                         <div>
-                        <c:choose>
-                            <c:when test="${not empty error}">
-                                <div class="notification2" id="errorNotification" style="color: red;">
-                                    ${error}
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="notification2" id="errorNotification" style="display: none;"></div>
-                            </c:otherwise>
-                        </c:choose>
+                            <c:choose>
+                                <c:when test="${not empty error}">
+                                    <div class="notification2" id="errorNotification" style="color: red;">
+                                        ${error}
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="notification2" id="errorNotification" style="display: none;"></div>
+                                </c:otherwise>
+                            </c:choose>
 
-                        <c:choose>
-                            <c:when test="${not empty mess}">
-                                <div class="notification2" id="messageNotification" style="color: green;">
-                                    ${mess}
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="notification2" id="messageNotification" style="display: none;"></div>
-                            </c:otherwise>
-                        </c:choose>
+                            <c:choose>
+                                <c:when test="${not empty mess}">
+                                    <div class="notification2" id="messageNotification" style="color: green;">
+                                        ${mess}
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="notification2" id="messageNotification" style="display: none;"></div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
 
@@ -141,14 +141,14 @@
                         </tbody>
                     </table>    
                     <div style="margin-left: -220px;" >
-                    <%@include file="/Component/pagination.jsp" %>
+
                     </div>
                 </div>
             </div>
         </div>
+        <%@include file="/Component/pagination.jsp" %>
 
 
-        
 
     </body>
 

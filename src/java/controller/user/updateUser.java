@@ -74,6 +74,9 @@ public class updateUser extends HttpServlet {
             return;
         }
         Integer userid = (Integer) session.getAttribute("userIdUpdate");
+        if(userid == null){
+          response.sendRedirect("ListProducts");
+        }
         User user = daou.getUserbyID(userid);
         request.setAttribute("user_update", user);
         request.setAttribute("u", user_current);

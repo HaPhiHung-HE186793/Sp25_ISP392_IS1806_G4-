@@ -31,10 +31,11 @@
     <a href="<%=request.getContextPath()%>/CreateOrderServlet">Tạo hóa đơn</a>
     <a href="<%=request.getContextPath()%>/URLOrder?service=listshow">Quản lý thanh toán</a>
     <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý khách hàng</a>
-    <a href="#">Dịch vụ</a>  
+    
     <a href="#">Quản lý kho</a>
-    <a href="#">Hồ sơ người dùng</a>
+    <a href="updateprofile">Hồ sơ người dùng</a>
     <!-- Thêm các mục dài để hiển thị thanh trượt -->
+<!--    <a href="#">Dịch vụ</a>  
     <a href="#">Báo cáo tài chính</a>
     <a href="#">Báo cáo hàng hóa</a>
     <a href="#">Cài đặt hệ thống</a>
@@ -42,5 +43,5 @@
     <a href="#">Liên hệ</a>
     <a href="#">Phản hồi</a>
     <a href="#">Lập báo cáo</a>
-    <a href="#">Cài đặt bảo mật</a>
+    <a href="#">Cài đặt bảo mật</a>-->
 </div>

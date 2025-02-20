@@ -56,7 +56,7 @@ public class DAOUser extends DBContext {
         return user; // Trả về user nếu tìm thấy, nếu không thì null
     }
 
-    private String hashPassword(String password) {
+    public String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256"); // Sử dụng SHA-256
             md.update(password.getBytes());
@@ -101,6 +101,38 @@ public class DAOUser extends DBContext {
         }
         return null; // Trả về null nếu không tìm thấy user
     }
+    
+    public boolean updatePassword(int userId, String newPassword) {
+    String sql = "UPDATE Users SET userPassword = ? WHERE ID = ?";
+    String hashedPassword = hashPassword(newPassword); // Hash mật khẩu mới
+
+    try (PreparedStatement pre = conn.prepareStatement(sql)) {
+        pre.setString(1, hashedPassword);
+        pre.setInt(2, userId);
+
+        int rowsUpdated = pre.executeUpdate();
+        return rowsUpdated > 0; // Trả về true nếu cập nhật thành công
+    } catch (SQLException ex) {
+        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return false; // Trả về false nếu cập nhật thất bại
+}
+
+    
+    public boolean updateUserName(int userId, String newUserName) {
+    String sql = "UPDATE Users SET userName = ? WHERE ID = ?";
+
+    try (PreparedStatement pre = conn.prepareStatement(sql)) {
+        pre.setString(1, newUserName);
+        pre.setInt(2, userId);
+
+        int rowsUpdated = pre.executeUpdate();
+        return rowsUpdated > 0; // Trả về true nếu cập nhật thành công
+    } catch (SQLException ex) {
+        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return false; // Trả về false nếu cập nhật thất bại
+}
 
     public int insertUser(User user) {
         int n = 0;
