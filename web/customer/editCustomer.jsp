@@ -69,10 +69,15 @@
                             </tbody>
 
                         </table>
-                        <button class="table-update-add">
+                                <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">
+                        Quay lại
+                    </button>
+                        <button class="table-update-add" style="margin-left:10px;">
                             Cập nhật
                         </button>
+                                    
                     </form>
+
                 </div>
             </div>
         </div>
