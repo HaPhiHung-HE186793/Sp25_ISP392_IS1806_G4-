@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Customers;
 import model.DebtRecords;
+import model.pagination.Pagination;
 
 /**
  *
@@ -44,6 +45,8 @@ public class ListDebtCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+
         DAODebtRecords dao = new DAODebtRecords();
         DAOCustomers daoC = new DAOCustomers();
         String customerid = request.getParameter("customerid");
@@ -52,8 +55,19 @@ public class ListDebtCustomer extends HttpServlet {
         request.setAttribute("listCustomer", listCustomer);
         request.setAttribute("customers", customers);
 
-        
-        
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = listCustomer.size();
+        int pageSize = 10;
+        int currentPage = 1;
+
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
+
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+        request.setAttribute("currentPageUrl", "ListCustomer");
+
         request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
     }
 
@@ -68,11 +82,42 @@ public class ListDebtCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-  DAODebtRecords dao = new DAODebtRecords();
+        DAODebtRecords dao = new DAODebtRecords();
         DAOCustomers daoC = new DAOCustomers();
         String customerid = request.getParameter("customerid");
         Customers customers = daoC.getCustomer(customerid);
         List<DebtRecords> listCustomer = dao.listAllbyName(customerid);
+        
+        
+         // Lấy các tham số từ request
+        String name = request.getParameter("name");
+        String number = request.getParameter("number");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String sql = "";
+// Điều kiện name
+        if (name != null && !name.isEmpty()) {
+            sql += "AND c.name LIKE '%" + name + "%' ";
+        }
+
+// Điều kiện startDate
+        if (startDate != null && !startDate.isEmpty()) {
+            sql +=  "and CONVERT(date, c.createAt) >= '" + startDate + "' ";
+        }
+
+// Điều kiện endDate
+        if (endDate != null && !endDate.isEmpty()) {
+            sql += "and CONVERT(date, c.updateAt) <= '" + endDate + "' ";
+        }
+
+// Điều kiện number
+        if (number != null && !number.isEmpty()) {
+            sql += "and c.phone like '" + number + "%' ";
+        }
+        
+        
+        
+        
         request.setAttribute("listCustomer", listCustomer);
         request.setAttribute("customers", customers);
 
