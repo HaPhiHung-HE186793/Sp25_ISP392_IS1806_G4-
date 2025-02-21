@@ -53,7 +53,6 @@
 
                         <div>
                             <button class="addNewDebt" style="padding: 11px !important;" onclick="window.location = 'createuser'">Tạo tài khoản mới</button>
-                            <button class="addNewDebt" onclick="window.location = 'createuser'">Tạo tài khoản mới</button>
                         </div>
                         <div>
                             <c:choose>

@@ -39,21 +39,21 @@
                         </c:if>
                     </div>
                     <div class="filters">
-                        <form action="ListDebtCustomer" method="post" >
+<!--                        <form action="ListDebtCustomer" method="post" >
 
-                            <!--                        <select>
+                                                    <select>
                                                         <option value="">Trạng thái</option>
                                                         <option value="">A->Z</option>
                                                         <option value="">Z->A</option>
                             
-                                                    </select>-->
+                                                    </select>
                             <input name="name" type="text" placeholder="Tìm kiếm" value="${search}">
                             <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
                             <input name="startDate" type="date" value="${searchStartDate}">
-                            <input name="endDate" type="date" value="${searchEndDate}">
-                            <button style="background-color: #5bc0de;" >Lọc</button>
-                        </form>
-                        <button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</button> 
+                            <input name="endDate" type="date" value="${searchEndDate}">-->
+<!--                            <button style="background-color: #5bc0de;" >Lọc</button>-->
+                        <!--</form>-->
+                        <!--<button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</butto //n>--> 
 
                         <button class="addNewDebt js-open-newDebt">Tạo phiếu nợ</button>
 

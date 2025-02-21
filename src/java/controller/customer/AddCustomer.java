@@ -43,6 +43,7 @@ public class AddCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+            
         
             request.getRequestDispatcher("ListCustomer").forward(request, response);
 
@@ -61,7 +62,6 @@ public class AddCustomer extends HttpServlet {
             throws ServletException, IOException {
        
         HttpSession session = request.getSession();
-
 
         /* TODO output your page here. You may use following sample code. */
         String name = request.getParameter("name");

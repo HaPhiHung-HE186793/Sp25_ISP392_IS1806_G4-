@@ -50,7 +50,12 @@ public class ListDebtCustomer extends HttpServlet {
         DAODebtRecords dao = new DAODebtRecords();
         DAOCustomers daoC = new DAOCustomers();
         String customerid = request.getParameter("customerid");
+        
         Customers customers = daoC.getCustomer(customerid);
+        
+        if(customers ==null){
+            response.sendRedirect("ListDebtCustomer");
+        }
         List<DebtRecords> listCustomer = dao.listAllbyName(customerid);
         request.setAttribute("listCustomer", listCustomer);
         request.setAttribute("customers", customers);

@@ -69,6 +69,7 @@ public class AddNewCustomerDebt extends HttpServlet {
         int customerID = Integer.parseInt(request.getParameter("customerid"));
 
 
+
         double debt = Integer.parseInt(request.getParameter("debt"));
         int paymentStatus = Integer.parseInt(request.getParameter("typeDebt"));
         String updateAt = request.getParameter("dateTime");

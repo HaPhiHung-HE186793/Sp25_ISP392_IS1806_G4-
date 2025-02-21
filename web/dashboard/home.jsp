@@ -55,7 +55,7 @@
                                 <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
                                     <th>Thời gian tạo</th>
                                     <th>Cập nhật lần cuối </th>
-                                    <th>Tạo bởi</th>
+                                    
                                     <th>Ngừng bán</th>
                                     </c:if> <%-- End of roleID check for table headers --%>
 
@@ -75,7 +75,7 @@
                                         <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
                                             <td>${p.getCreateAt()}</td>
                                             <td>${p.getUpdateAt()}</td>
-                                            <td>${p.getCreateBy()}</td>
+                                            
                                             <td>${p.isIsDelete()}</td>
 
                                         </c:if> <%-- End of roleID check for table data --%>
