@@ -27,6 +27,7 @@ public class updateUser extends HttpServlet {
     DAO.DAOUser daou = new DAOUser();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
     mail sendEmail = new mail();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -67,13 +68,18 @@ public class updateUser extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer roleID = (Integer) session.getAttribute("roleID");
-        if (roleID != 1) {
+        User user_current = (User) session.getAttribute("user");
+        if (roleID != 1 && roleID != 2) {
             response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
             return;
         }
         Integer userid = (Integer) session.getAttribute("userIdUpdate");
+        if(userid == null){
+          response.sendRedirect("ListProducts");
+        }
         User user = daou.getUserbyID(userid);
-        request.setAttribute("user", user);
+        request.setAttribute("user_update", user);
+        request.setAttribute("u", user_current);
         request.getRequestDispatcher("user/updateUser.jsp").forward(request, response);
 
     }
@@ -92,13 +98,13 @@ public class updateUser extends HttpServlet {
         List<String> errors = new ArrayList<>();
         HttpSession session = request.getSession();
         Integer userid = (Integer) session.getAttribute("userIdUpdate");
-        
+        User user_current = (User) session.getAttribute("user");
         String userName = request.getParameter("userName");
         String email = request.getParameter("email");
         String newPassword = request.getParameter("password");
         String confirmPassword = request.getParameter("cfpass");
         String roleParam = request.getParameter("roleID");
- 
+
         //lay ra user khi chi update
         User u = daou.getUserbyID(userid);
         int roleID = 0; // Mặc định giá trị không hợp lệ
@@ -133,7 +139,7 @@ public class updateUser extends HttpServlet {
             errors.add("Vui lòng nhập email!");
         } else if (!Pattern.matches(EMAIL_REGEX, email)) {
             errors.add("Email không hợp lệ!");
-        } else {            
+        } else {
             if (daou.isEmailExists(email) && !u.getEmail().equals(email)) {
                 errors.add("Email đã tồn tại!");
             }
@@ -147,6 +153,9 @@ public class updateUser extends HttpServlet {
             request.setAttribute("errors", errors);
             request.setAttribute("userName", userName);
             request.setAttribute("email", email);
+            User user = daou.getUserbyID(userid);
+            request.setAttribute("user_update", user);
+            request.setAttribute("u", user_current);
             request.getRequestDispatcher("/user/updateUser.jsp").forward(request, response);
             return;
         }
@@ -161,11 +170,10 @@ public class updateUser extends HttpServlet {
             daou.updateUser2(newUser);
             //gửi email password được sinh ra cho người dùng           
             sendEmail.sendPasswordChangeConfirmation(email, newPassword);
-            if(!u.getEmail().equals(email)){
-            sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
+            if (!u.getEmail().equals(email)) {
+                sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
             }
-        }
-        else {
+        } else {
             User newUser = new User();
             newUser.setID(userid);
             newUser.setUserName(userName);
@@ -173,14 +181,15 @@ public class updateUser extends HttpServlet {
             newUser.setRoleID(roleID);
             newUser.setCreateBy(createBy);
             daou.updateUser3(newUser);
-            if(!u.getEmail().equals(email)){
-            sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
+            if (!u.getEmail().equals(email)) {
+                sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
             }
         }
 
         // lay ra user sau khi update
         User user = daou.getUserbyID(userid);
-        request.setAttribute("user", user);
+        request.setAttribute("user_update", user);
+        request.setAttribute("u", user_current);
         request.setAttribute("success", "Cập nhât thành công!");
         request.getRequestDispatcher("/user/updateUser.jsp").forward(request, response);
     }

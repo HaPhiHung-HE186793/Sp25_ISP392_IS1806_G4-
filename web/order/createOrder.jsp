@@ -24,36 +24,36 @@
             <jsp:include page="/Component/menu.jsp"></jsp:include>
 
 
-            <div class="main-content">
-                <div class="notification">
-                    Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
-                </div>
-
-
-
-
-                 <div class="table-container">
-
-
-
-                    <div class="filters">
-                        <form action="SearchServlet" method="GET">
-
-
-                            <label for="searchProduct">Tìm sản phẩm :</label>
-                            <input type="text" name="searchProduct" placeholder="Nhập tên sản phẩm...">
-                            <button type="submit">Tìm</button>
-
-                        </form>
-                        <br>
-                        <form action="SearchServlet" method="POST">
-
-                            <label for="searchCustomer">Tìm khách hàng:</label>
-                            <input type="number" name="searchCustomer" placeholder="Nhập số điện thoại...">
-                            <button type="submit">Tìm</button>
-
-                        </form>
+                <div class="main-content">
+                    <div class="notification">
+                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
                     </div>
+
+
+
+
+                    <div class="table-container">
+
+
+
+                        <div class="filters">
+                            <form action="SearchServlet" method="GET">
+
+
+                                <label for="searchProduct">Tìm sản phẩm :</label>
+                                <input type="text" name="searchProduct" placeholder="Nhập tên sản phẩm...">
+                                <button type="submit">Tìm</button>
+
+                            </form>
+                            <br>
+                            <form action="SearchServlet" method="POST">
+
+                                <label for="searchCustomer">Tìm khách hàng:</label>
+                                <input type="number" name="searchCustomer" placeholder="Nhập số điện thoại...">
+                                <button type="submit">Tìm</button>
+
+                            </form>
+                        </div>
 
                     <c:if test="${id1==0}">
                         <c:choose>
@@ -95,7 +95,7 @@
                     <div class="form-container">
                         <h3 style="color: red">Tạo Hóa Đơn</h3>
 
-                        
+
 
 
 
@@ -154,16 +154,16 @@
 
                             <p>${sessionScope.username}</p>
 
-                            
+
 
                             <label for="porter">Số Người Bốc Vác:</label>
                             <input type="number" id="porter" name="porter" required
                                    style="width: 40px; height: 25px; border: 2px solid #000; border-radius: 5px; padding: 5px; text-align: center;">
 
                             <br><br>
-                            
-                            
-                             <script>
+
+
+                            <script>
                                 document.addEventListener("DOMContentLoaded", function () {
                                     let porter = document.getElementById("porter");
                                     let savedPorter = sessionStorage.getItem("inputedPorter");
@@ -189,7 +189,7 @@
                             <br><br>
 
                             <h3 style="color: red">Chi Tiết Đơn Hàng</h3>
-                            
+
                             <p style="color: hotpink">Thông báo: ${requestScope.ms}</p>
 
                             <table id="orderItems" border="1" width="100%" cellspacing="0" cellpadding="5">
@@ -254,6 +254,7 @@
                                     var cell6 = newRow.insertCell(5);
                                     var cell7 = newRow.insertCell(6);
                                     var cell8 = newRow.insertCell(7);
+                                    var cell9 = newRow.insertCell(8); // Thêm cột ẩn để lưu totalWeight
                                     // Hiển thị tên sản phẩm
                                     cell1.innerHTML =
                                             '<input type="hidden" name="productID" value="' + productID + '">' +
@@ -281,11 +282,17 @@
                                     cell7.innerHTML = '<input type="text" name="description" class="description">';
                                     // Nút xóa
                                     cell8.innerHTML = '<button type="button" onclick="deleteRow(this)">Xóa</button>';
+
+                                    // Thêm input ẩn để lưu totalWeight
+                                    cell9.innerHTML = '<input type="hidden" name="totalWeight" class="totalWeight">';
+
+
                                     // Gắn sự kiện tính toán tổng tiền
                                     var quantityInput = cell3.querySelector('.quantity');
                                     var unitTypeInput = cell2.querySelector('.unitType');
                                     var discountInput = cell5.querySelector('.discount');
                                     var totalPriceInput = cell6.querySelector('.totalPrice');
+                                    var totalWeightInput = cell9.querySelector('.totalWeight'); // Lấy input ẩn totalWeight
                                     function recalculate() {
                                         var unitMultiplier = parseInt(unitTypeInput.value); // 1kg hoặc bao 10kg, 20kg, 50kg
                                         var quantity = parseFloat(quantityInput.value) || 1;
@@ -293,6 +300,8 @@
                                         var discount = parseFloat(discountInput.value) || 0;
                                         var totalDiscount = totalWeight * discount; // Tổng số tiền giảm
                                         var totalPrice = (totalWeight * pricePerKg) - totalDiscount; // Thành tiền sau giảm giá
+                                        // Cập nhật totalWeight vào input ẩn
+                                        totalWeightInput.value = totalWeight;
 
                                         totalPriceInput.value = totalPrice.toFixed(2);
                                         updateTotalOrderPrice();

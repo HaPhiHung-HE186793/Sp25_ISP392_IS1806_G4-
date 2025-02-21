@@ -20,6 +20,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -198,28 +200,45 @@ public class DAOProduct extends DBContext {
         return n;
     }
 
-    public int updateProduct(Products product) {
-        int n = 0;
-        String sql = "UPDATE products SET productName=?, description=?, price=?, quantity=?, image=?, createAt=?, updateAt=?, createBy=?, isDelete=?, deleteAt=?, deleteBy=? WHERE productID=?";
-        try {
-            PreparedStatement pre = conn.prepareStatement(sql);
-            pre.setString(1, product.getProductName());
-            pre.setString(2, product.getDescription());
-            pre.setDouble(3, product.getPrice());
-            pre.setInt(4, product.getQuantity());
-            pre.setString(5, product.getImage());
-            pre.setString(6, product.getCreateAt());
-            pre.setString(7, product.getUpdateAt());
-            pre.setInt(8, product.getCreateBy());
-            pre.setBoolean(9, product.isIsDelete());
-            pre.setString(10, product.getDeleteAt());
-            pre.setInt(11, product.getDeleteBy());
-            pre.setInt(12, product.getProductID());
-            n = pre.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
+    public boolean updateProduct(int productId, String productName, String description, double price, int quantity, String image, LocalDate updateAt) {
+        String sql = "UPDATE Products SET productName = ?, description = ?, price = ?, quantity = ?, image = ?, updateAt = ? WHERE productID = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, productName);
+            statement.setString(2, description);
+            statement.setDouble(3, price);
+            statement.setInt(4, quantity);
+            statement.setString(5, image);
+
+            // Format LocalDate to String for database (same as before)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String updateAtStr = updateAt.format(formatter);
+            statement.setString(6, updateAtStr);
+
+            statement.setInt(7, productId);
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return n;
+    }
+
+    public boolean isProductNameExists(String productName) {
+        String sql = "SELECT COUNT(*) FROM Products WHERE productName = ?"; // Assuming 'Products' is your table name
+        try ( // Your DBConnect class
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, productName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Return true if count > 0 (product exists)
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception appropriately (log it, etc.)
+        }
+        return false; // Return false if there's an error or product doesn't exist
     }
 
     public int updateIsDelete(int productID, boolean isDelete) {

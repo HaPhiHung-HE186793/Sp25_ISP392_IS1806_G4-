@@ -128,7 +128,7 @@
                     <option value="5" <%= "5".equals(sortColumn) ? "selected" : "" %>>Ngày cập nhật</option>
                     <option value="6" <%= "6".equals(sortColumn) ? "selected" : "" %>>Cửu vạn</option>
                 </select>
-                <button class="action-button" onclick="performSort()">Sort</button>
+                <button class="action-button" onclick="performSort()">Sắp xếp</button>
             </div>
             <div class="table-container">
                 <table id="orderTable" data-sort-order="asc">

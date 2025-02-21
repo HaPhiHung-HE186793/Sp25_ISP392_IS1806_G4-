@@ -40,20 +40,14 @@
                             </tr>
                             <tr>
                                 <td>Số lượng:</td>
-                                <td><input type="number" name="quantity" value="${product.quantity}" min="0" required></td>
+                                <td><input type="number" name="q" value="${product.quantity}" min="0" required></td>
                             </tr>
                             <tr>
                                 <td>Ảnh:</td>
                                 <td><input type="text" name="image" value="${product.image}"></td>
                             </tr>
                             <%-- Hidden fields --%>
-                            <input type="hidden" name="createAt" value="${product.createAt}">
                             <input type="hidden" name="updateAt" value="${product.updateAt}">
-                            <input type="hidden" name="createBy" value="${product.createBy}">
-                            <input type="hidden" name="isDelete" value="${product.isIsDelete()}">
-                            <input type="hidden" name="deleteAt" value="${product.deleteAt}">
-                            <input type="hidden" name="deleteBy" value="${product.deleteBy}">
-
                             <tr>
                                 <td colspan="2"><input type="submit" value="Lưu"></td>
                             </tr>

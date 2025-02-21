@@ -21,15 +21,16 @@ import model.Products;
  * @author ACER
  */
 public class CreateProduct extends HttpServlet {
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(Integer.MAX_VALUE);
         String productName = request.getParameter("productName");
         String description = request.getParameter("description");
+        String contextPath = request.getContextPath();
         double price = 0.0;
         try {
             price = Double.parseDouble(request.getParameter("price"));
@@ -38,7 +39,6 @@ public class CreateProduct extends HttpServlet {
         }
         int quantity = 0;
 
-        
         String imageName = request.getParameter("image"); // To store ONLY the image file name
 
         int createBy = 0;
@@ -47,29 +47,34 @@ public class CreateProduct extends HttpServlet {
         } catch (NumberFormatException e) {
             // ... (error handling)
         }
-        
+
         boolean isDelete = false; // nguoc lai neu o ben controller delete
-        
+
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createAt = now.format(formatter);
-        String updateAt = createAt; 
+        String updateAt = createAt;
         String deleteAt = null;
         Integer deleteBy = 0;
-        
+
         Products product = new Products(productName, description, price, quantity, imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy); // Use imageName here
         DAOProduct dao = new DAOProduct();
-        
+        if (dao.isProductNameExists(productName)) {
+            request.setAttribute("message", "error: Product name already exists");
+            request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
+            return; // Stop further processing
+        }
         int result = dao.insertProduct(product);
-        
+
         if (result > 0) {
             request.setAttribute("message", "success");
         } else {
             request.setAttribute("message", "error: Database insertion failed");
         }
-        
+
         request.getRequestDispatcher("ListProducts").forward(request, response);
     }
+
     public static void main(String[] args) {
         // Create sample product data
         String productName = "Test Product";
@@ -89,7 +94,7 @@ public class CreateProduct extends HttpServlet {
 
         Products product = new Products(productName, description, price, quantity, imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
 
-         // Create an instance of your servlet
+        // Create an instance of your servlet
         DAOProduct pro = new DAOProduct();
         int result = pro.insertProduct(product); // Call the helper method
 

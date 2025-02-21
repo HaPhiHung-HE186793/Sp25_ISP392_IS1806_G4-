@@ -26,32 +26,33 @@
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
                     </div>
 
-                    <div class="table-container">
-                        <h3>Cập nhật tài khoản</h3>
+                    <div class="table-container" >
+                        <div style="display: flex">
+                            <h3 style="max-width: 29%;">Cập nhật tài khoản</h3>
 
-                    <c:choose>
-                        <c:when test="${not empty errors}">
-                            <div class="notification" id="errorNotification" style="color: red;">
-                                <c:forEach var="error" items="${errors}">
-                                    <p>${error}</p>
-                                </c:forEach>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="notification" id="errorNotification" style="display: none;"></div>
-                        </c:otherwise>
-                    </c:choose> 
-                    <c:choose>
-                        <c:when test="${not empty success}">
-                            <div class="notification" id="messageNotification" style="color: green;">
-                                ${success}
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="notification" id="messageNotification" style="display: none;"></div>
-                        </c:otherwise>
-                    </c:choose>
-
+                        <c:choose>
+                            <c:when test="${not empty errors}">
+                                <div class="notification" id="errorNotification" style="color: red; max-width: 29%;margin-left: 25%;padding: 0px 5px;">
+                                    <c:forEach var="error" items="${errors}">
+                                        <p>${error}</p>
+                                    </c:forEach>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="notification" id="errorNotification" style="display: none; max-width: 29%;"></div>
+                            </c:otherwise>
+                        </c:choose> 
+                        <c:choose>
+                            <c:when test="${not empty success}">
+                                <div class="notification" id="messageNotification" style="color: green; max-width: 29%;margin-left: 25%;">
+                                    ${success}
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="notification" id="messageNotification" style="display: none; max-width: 29%;"></div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
 
                     <table>
                         <thead id="table-header">
@@ -69,37 +70,44 @@
                         <form action="updateuser" method="POST">
                             <td>
                                 <input name="userName" id="userName" type="text" 
-                                       placeholder="Tên của bạn" value="${user.getUserName()}">
-                                <input hidden name="userid" value="${user.getID()}">
+                                       placeholder="Tên của bạn" value="${user_update.getUserName()}">
+                                <input hidden name="userid" value="${user_update.getID()}">
                             </td>
                             <td>
                                 <input name="email" id="email" type="email" 
-                                       placeholder="Email của bạn" value="${user.getEmail()}">
+                                       placeholder="Email của bạn" value="${user_update.getEmail()}">
                             </td> 
                             <td>
                                 <input name="password" id="password" type="password" 
-                                       placeholder="Mật khẩu mới">
+                                       placeholder="Mật khẩu mới" required>
                             </td>
                             <td>
                                 <input name="cfpass" id="cfpass" type="password" 
-                                       placeholder="Xác nhận mật khẩu">
+                                       placeholder="Xác nhận mật khẩu" required>
+                                <p id="passError" style="color: red; font-size: 14px; display: none;">
+                                    Mật khẩu xác nhận không khớp!
+                                </p>
                             </td>
                             <td>
-                                <div>
-                                    <input type="radio" name="roleID" value="1" id="admin" 
-                                           ${user.getRoleID() == 1 ? "checked" : ""} required>
-                                    <label for="admin">Admin</label>
-                                </div>
-                                <div>
-                                    <input type="radio" name="roleID" value="2" id="store_owner" 
-                                           ${user.getRoleID() == 2 ? "checked" : ""}>
-                                    <label for="store_owner">Chủ Cửa Hàng</label>
-                                </div>
-                                <div>
-                                    <input type="radio" name="roleID" value="3" id="employee" 
-                                           ${user.getRoleID() == 3 ? "checked" : ""}>
-                                    <label for="employee">Nhân Viên</label>
-                                </div>
+                                <c:if test="${u.getRoleID() == 1}">
+                                    <div>
+                                        <input type="radio" name="roleID" value="1" id="admin" 
+                                               ${user_update.getRoleID() == 1 ? "checked" : ""} required>
+                                        <label for="admin">Admin</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" name="roleID" value="2" id="store_owner" 
+                                               ${user_update.getRoleID() == 2 ? "checked" : ""}>
+                                        <label for="store_owner">Chủ Cửa Hàng</label>
+                                    </div>
+                                </c:if>
+                                <c:if test="${u.getRoleID() == 2}">
+                                    <div>
+                                        <input type="radio" name="roleID" value="3" id="employee" 
+                                               ${user_update.getRoleID() == 3 ? "checked" : ""}>
+                                        <label for="employee">Nhân Viên</label>
+                                    </div>
+                                </c:if>
                             </td>
                             <td style="border-left: 1px solid black;">                                    
                                 <button type="submit" class="btn btn-primary">Cập nhật người dùng</button>
@@ -129,6 +137,31 @@
 
         hideNotification('errorNotification');
         hideNotification('messageNotification');
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const password = document.getElementById("password");
+            const cfpass = document.getElementById("cfpass");
+            const passError = document.getElementById("passError");
+            const form = document.querySelector("form");
+
+            function validatePassword() {
+                if (password.value !== cfpass.value) {
+                    passError.style.display = "block"; // Hiện lỗi
+                } else {
+                    passError.style.display = "none"; // Ẩn lỗi
+                }
+            }
+
+            form.addEventListener("submit", function (event) {
+                if (password.value !== cfpass.value) {
+                    event.preventDefault(); // Chặn gửi form
+                    alert("Mật khẩu xác nhận không khớp! Vui lòng nhập lại.");
+                    cfpass.focus();
+                }
+            });
+        });
+
 
     </script>
 </html>
