@@ -105,7 +105,7 @@ public class AddCustomer extends HttpServlet {
         } else {
             request.setAttribute("message", "error");
         }   
-        request.getRequestDispatcher("ListCustomer").forward(request, response);
+        response.sendRedirect("ListCustomer");
 
     }
 
