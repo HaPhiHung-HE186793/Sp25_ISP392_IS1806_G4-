@@ -123,23 +123,11 @@ public class listUsers extends HttpServlet {
             dao.unlockUserByID(unlockid, createBy);
         }
 
-<<<<<<< HEAD
-        List<User> U = dao.listUsers();
-
-// Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalUsers = U.size();
-        int pageSize = 10;
-        int currentPage = 1;
-
-        if (request.getParameter("cp") != null) {
-            currentPage = Integer.parseInt(request.getParameter("cp"));
-=======
         List<User> U = null;
         if (roleID == 1) {
             U = dao.listUsers();
         } else {
             U = dao.listUsersByOwner(user_current.getID());
->>>>>>> origin/main
         }
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = U.size();
@@ -153,9 +141,6 @@ public class listUsers extends HttpServlet {
         Pagination page = new Pagination(totalUsers, pageSize, currentPage);
         session.setAttribute("page", page);
         request.setAttribute("currentPageUrl", "listusers"); // Hoặc "products"
-
-        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
-        session.setAttribute("page", page);
 
         for (User user : U) {
             User u = dao.getUserbyID(user.getCreateBy());
@@ -192,22 +177,8 @@ public class listUsers extends HttpServlet {
         //search
         if (user_current.getRoleID() == 1) {
             filteredUsers = dao.listUsers();
-<<<<<<< HEAD
-        } else if (role != null && keyword != null && !keyword.isEmpty()) {
-            filteredUsers = dao.getUsersByRoleAndKeyword(role, keyword);
-        } else if (role != null) {
-            filteredUsers = dao.getUsersByRole(role);
-        } else if (keyword != null && !keyword.isEmpty()) {
-            filteredUsers = dao.getUsersByKeyword(keyword);
-        } else {
-            if (filteredUsers == null || filteredUsers.isEmpty()) {
-                mess = "Không tìm thấy người dùng nào.";
-            }
-            filteredUsers = dao.listUsers(); // Lấy toàn bộ danh sách nếu không có lọc
-=======
         } else {
             filteredUsers = dao.listUsersByOwner(user_current.getID());
->>>>>>> origin/main
         }
 
         if (role != null && role != -1) {
@@ -265,20 +236,13 @@ public class listUsers extends HttpServlet {
         }
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = filteredUsers.size();
-<<<<<<< HEAD
-        int pageSize = 10;
-=======
         int pageSize = 8;
->>>>>>> origin/main
         int currentPage = 1;
 
         if (request.getParameter("cp") != null) {
             currentPage = Integer.parseInt(request.getParameter("cp"));
         }
-<<<<<<< HEAD
-=======
         request.setAttribute("currentPageUrl", "listusers"); // Hoặc "products"
->>>>>>> origin/main
 
         Pagination page = new Pagination(totalUsers, pageSize, currentPage);
         session.setAttribute("page", page);
