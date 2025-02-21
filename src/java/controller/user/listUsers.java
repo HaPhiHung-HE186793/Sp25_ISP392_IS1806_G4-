@@ -171,7 +171,7 @@ public class listUsers extends HttpServlet {
         List<User> filteredUsers = null;
         String mess = null;
         String roleParam = request.getParameter("role");
-        String keyword = request.getParameter("keyword");
+        String keyword = request.getParameter("keyword");        
         Integer role = (roleParam != null && !roleParam.isEmpty()) ? Integer.parseInt(roleParam) : null;
 
         //search

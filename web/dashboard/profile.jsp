@@ -93,6 +93,14 @@
             .profile-buttons button:hover {
                 background-color: #0056b3;
             }
+            .profile-buttons button:first-child {
+                background-color: #28a745; /* Màu xanh lá cây */
+            }
+
+            .profile-buttons button:first-child:hover {
+                background-color: #218838; /* Màu xanh lá cây đậm hơn khi hover */
+            }
+
 
             .profile-container label {
                 display: block !important;
@@ -120,8 +128,8 @@
                         <form action="updateprofile" method="post">                        
                             <label for="username">Tên </label>
                             <input type="text" id="username" name="username" value="${U.getUserName()}" required>                                                
-                            <label for="email">Email </label>
-                            <input type="email" id="email" name="email" value="${U.getEmail()}" readonly>
+                        <label for="email">Email </label>
+                        <input type="email" id="email" name="email" value="${U.getEmail()}" readonly>
                         <div class="profile-buttons">                            
                             <button type="button" onclick="location.href = 'changepassword'">Thay đổi mật khẩu</button>
                             <button type="submit">Cập nhật người dùng</button>

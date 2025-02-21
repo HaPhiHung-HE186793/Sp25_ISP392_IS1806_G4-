@@ -94,6 +94,15 @@
                 background-color: #0056b3;
             }
 
+            .profile-buttons button:first-child {
+                background-color: #28a745; /* Màu xanh lá cây */
+            }
+
+            .profile-buttons button:first-child:hover {
+                background-color: #218838; /* Màu xanh lá cây đậm hơn khi hover */
+            }
+
+
             .profile-container label {
                 display: block !important;
                 margin-bottom: 0.5rem !important;
@@ -120,10 +129,10 @@
                         <form action="changepassword" method="post">                        
                             <label for="password">Mật khẩu cũ </label>
                             <input type="password" id="password" name="password" value="${password}" required>                                                
-                            <label for="newpassword">Mật khẩu mới </label>
-                            <input type="password" id="newpassword" name="newpassword" value="${newpassword}" required>
-                            <label for="cfnewpass">Xác nhận mật khẩu mới </label>
-                            <input type="password" id="cfnewpass" name="cfnewpass" value="${cfnewpass}" required>
+                        <label for="newpassword">Mật khẩu mới </label>
+                        <input type="password" id="newpassword" name="newpassword" value="${newpassword}" required>
+                        <label for="cfnewpass">Xác nhận mật khẩu mới </label>
+                        <input type="password" id="cfnewpass" name="cfnewpass" value="${cfnewpass}" required>
                         <div class="profile-buttons">                            
                             <button type="button" onclick="location.href = 'updateprofile'">Cập nhật người dùng</button>
                             <button type="submit">Xác nhận thay đổi</button>
@@ -132,17 +141,17 @@
                 </div>
                 <div>
                     <c:choose>
-                            <c:when test="${not empty errors}">
-                                <div class="notification2" id="errorNotification" style="color: red;">
-                                    <c:forEach var="error" items="${errors}">
-                                        <p>${error}</p>
-                                    </c:forEach>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="notification2" id="errorNotification" style="display: none;"></div>
-                            </c:otherwise>
-                        </c:choose> 
+                        <c:when test="${not empty errors}">
+                            <div class="notification2" id="errorNotification" style="color: red;">
+                                <c:forEach var="error" items="${errors}">
+                                    <p>${error}</p>
+                                </c:forEach>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="notification2" id="errorNotification" style="display: none;"></div>
+                        </c:otherwise>
+                    </c:choose> 
                     <c:choose>
                         <c:when test="${not empty mess}">
                             <div class="notification2" id="messageNotification" style="color: green;">
