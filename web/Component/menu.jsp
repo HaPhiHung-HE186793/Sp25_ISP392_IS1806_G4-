@@ -32,7 +32,7 @@
     <a href="<%=request.getContextPath()%>/URLOrder?service=listshow">Quản lý thanh toán</a>
     <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý khách hàng</a>
     
-    <a href="#">Quản lý kho</a>
+    <!--<a href="#">Quản lý kho</a>-->
     <a href="updateprofile">Hồ sơ người dùng</a>
     <!-- Thêm các mục dài để hiển thị thanh trượt -->
 <!--    <a href="#">Dịch vụ</a>  
