@@ -105,17 +105,18 @@ public class listUsers extends HttpServlet {
         }
 
         List<User> U = dao.listUsers();
-        //seting pagination
-        //check page
-        //at the first time
-        if (session.getAttribute("page") == null) {
-            Page = new Pagination(U.size(), 10, 1);
-            session.setAttribute("page", Page);
-        } else if (request.getParameter("cp") != null) {
-            int cp = Integer.parseInt(request.getParameter("cp"));
-            Page = new Pagination(U.size(), 10, cp);
-            session.setAttribute("page", Page);
+
+// Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = U.size();
+        int pageSize = 10;
+        int currentPage = 1;
+
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
         }
+
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
 
         for (User user : U) {
             User u = dao.getUserbyID(user.getCreateBy());
@@ -150,15 +151,14 @@ public class listUsers extends HttpServlet {
         // Xử lý lọc
         if (role == 0) {
             filteredUsers = dao.listUsers();
-        } else 
-        if (role != null && keyword != null && !keyword.isEmpty()) {
+        } else if (role != null && keyword != null && !keyword.isEmpty()) {
             filteredUsers = dao.getUsersByRoleAndKeyword(role, keyword);
         } else if (role != null) {
             filteredUsers = dao.getUsersByRole(role);
         } else if (keyword != null && !keyword.isEmpty()) {
             filteredUsers = dao.getUsersByKeyword(keyword);
         } else {
-            if (filteredUsers == null || filteredUsers.isEmpty()){
+            if (filteredUsers == null || filteredUsers.isEmpty()) {
                 mess = "Không tìm thấy người dùng nào.";
             }
             filteredUsers = dao.listUsers(); // Lấy toàn bộ danh sách nếu không có lọc
@@ -170,21 +170,21 @@ public class listUsers extends HttpServlet {
             user.setCreatorName(creatorName);
         }
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-    int totalUsers = filteredUsers.size();
-    int pageSize = 10;
-    int currentPage = 1;
-    
-    if (request.getParameter("cp") != null) {
-        currentPage = Integer.parseInt(request.getParameter("cp"));
-    }
+        int totalUsers = filteredUsers.size();
+        int pageSize = 10;
+        int currentPage = 1;
 
-    Pagination page = new Pagination(totalUsers, pageSize, currentPage);
-    session.setAttribute("page", page);
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
 
-    // Lấy danh sách user theo trang hiện tại
-    int startIndex = page.getStartItem();
-    int endIndex = Math.min(startIndex + pageSize, totalUsers);
-    List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+
+        // Lấy danh sách user theo trang hiện tại
+        int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
 
         request.setAttribute("mess", mess);
         request.setAttribute("U", filteredUsers);

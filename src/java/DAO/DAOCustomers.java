@@ -20,12 +20,29 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DAOCustomers extends DBContext {
 
     public static DAOCustomers INSTANCE = new DAOCustomers();
+
+    public String convertDateFormat(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("MM-dd-yyyy");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(dateStr);
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public List<Customers> searchCustomers(String name, String phone) {
         List<Customers> customers = new ArrayList<>();
@@ -208,6 +225,40 @@ public class DAOCustomers extends DBContext {
         return n;
     }
 
+    public int countCustomersByRole(int userID, int roleID) {
+        int count = 0;
+        String sql = "";
+
+        if (roleID == 1) { // Nếu là Admin
+            sql = "SELECT COUNT(*) AS total FROM customers c "
+                    + "WHERE createBy = ? "
+                    + "   OR createBy IN ( "
+                    + "       SELECT u.ID FROM users u "
+                    + "       JOIN orders o ON o.userID = u.ID "
+                    + "       JOIN customers c2 ON c2.customerID = o.customerID "
+                    + "       WHERE u.roleID = 1 AND c2.createBy = ? "
+                    + "   )";
+        } else if (roleID == 2) { // Nếu là Owner
+            sql = "SELECT COUNT(*) AS total FROM customers WHERE createBy = ?";
+        }
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, userID);
+            if (roleID == 1) {
+                pre.setInt(2, userID);
+            }
+
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+
     public int updateCustomer(Customers customer) {
         int n = 0;
         String sql = "UPDATE customers SET name=?, email=?, phone=?, address=?, totalDebt=?, updateAt=?, isDelete=? WHERE customerID=?";
@@ -331,32 +382,18 @@ public class DAOCustomers extends DBContext {
         return list; // Trả về danh sách khách hàng
     }
 
-    public List<Customers> listCustomersByRole(int userID, int roleID) {
+    public List<Customers> listCustomersByRole(int createBylis) {
         List<Customers> list = new ArrayList<>();
         String sql = "";
 
-        if (roleID == 1) { // Nếu là Admin
-            sql = "SELECT * \n"
-                    + "FROM customers c \n"
-                    + "WHERE createBy = ? \n"
-                    + "   OR createBy IN (\n"
-                    + "       SELECT u.ID \n"
-                    + "       FROM users u\n"
-                    + "       JOIN orders o ON o.userID = u.ID \n"
-                    + "       JOIN customers c2 ON c2.customerID = o.customerID\n"
-                    + "       WHERE u.roleID = 1 AND c2.createBy = ?\n"
-                    + "   )";
-
-        } else if (roleID == 2) { // Nếu là Owner
-            sql = "SELECT * FROM customers WHERE createBy = ?";
-        }
+            sql = "SELECT c.*\n"
+                    + "FROM customers c\n"
+                    + "JOIN users u ON c.createBy = u.ID\n"
+                    + "WHERE u.createBy = ?;";
 
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
-            pre.setInt(1, userID);
-            if (roleID == 1) {
-                pre.setInt(2, userID);
-            }
+            pre.setInt(1, createBylis);
 
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
@@ -382,70 +419,52 @@ public class DAOCustomers extends DBContext {
         return list;
     }
 
-    
-    
-    public List<Customers> listCustomersByRoleSearchName(int userID, int roleID, String name) {
-    List<Customers> list = new ArrayList<>();
-    String sql = "";
+    public List<Customers> listCustomersByRoleSearchName(int createBylis, String name) {
+        List<Customers> list = new ArrayList<>();
+        String sql = "";
 
-    if (roleID == 1) { // Nếu là Admin
-        sql = "SELECT * \n"
-                + "FROM customers c \n"
-                + "WHERE (createBy = ? \n"
-                + "   OR createBy IN (\n"
-                + "       SELECT u.ID \n"
-                + "       FROM users u\n"
-                + "       JOIN orders o ON o.userID = u.ID \n"
-                + "       JOIN customers c2 ON c2.customerID = o.customerID\n"
-                + "       WHERE u.roleID = 1 AND c2.createBy = ?\n"
-                + "   ))"
-                + " AND name LIKE ?";
-    } else if (roleID == 2) { // Nếu là Owner
-        sql = "SELECT * FROM customers WHERE createBy = ? AND name LIKE ?";
-    }
+      
+            sql = " SELECT c.* \n"
+                    + "FROM customers c\n"
+                    + "JOIN users u ON c.createBy = u.ID\n"
+                    + "WHERE u.createBy = ? "
+                    + name;
 
-    try {
-        PreparedStatement pre = conn.prepareStatement(sql);
-        pre.setInt(1, userID);
-        if (roleID == 1) {
-            pre.setInt(2, userID);
-            pre.setString(3, "%" + name + "%"); // Tìm kiếm gần đúng theo tên
-        } else {
-            pre.setString(2, "%" + name + "%");
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, createBylis);
+
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                int customerID = rs.getInt("customerID");
+                String customerName = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                double totalDebt = rs.getDouble("totalDebt");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                list.add(customer);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-
-        ResultSet rs = pre.executeQuery();
-        while (rs.next()) {
-            int customerID = rs.getInt("customerID");
-            String customerName = rs.getString("name");
-            String email = rs.getString("email");
-            String phone = rs.getString("phone");
-            String address = rs.getString("address");
-            double totalDebt = rs.getDouble("totalDebt");
-            String createAt = rs.getString("createAt");
-            String updateAt = rs.getString("updateAt");
-            int createBy = rs.getInt("createBy");
-            Boolean isDelete = rs.getBoolean("isDelete");
-            String deleteAt = rs.getString("deleteAt");
-            int deleteBy = rs.getInt("deleteBy");
-
-            Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-            list.add(customer);
-        }
-    } catch (SQLException ex) {
-        ex.printStackTrace();
+        return list;
     }
-    return list;
-}
-
-    
 
     public static void main(String[] args) {
         DAOCustomers dao = new DAOCustomers();
-        List<Customers> list = dao.listCustomersByRoleSearchName(2, 1,"yah");
-        for (Customers o : list) {
-            System.out.println(o.toString());
+        List<Customers> list = dao.listCustomersByRoleSearchName(2,"");
+        for (Customers customers : list) {
+            System.out.println(customers.toString());
         }
+       
 //
 //    // 1. Thêm một khách hàng mới
 //    Customers newCustomer = new Customers(3, "Nguyễn Thu B", "nguyenvanb@gmail.com", "0987654321", "456 Đường XYZ", 2000.0, "2023-01-02", "2023-01-02", 1, false, null, 0);
