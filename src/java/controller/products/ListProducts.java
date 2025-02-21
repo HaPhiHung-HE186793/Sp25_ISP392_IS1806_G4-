@@ -13,12 +13,15 @@ import DAO.DAOProduct;
 import java.util.List;
 import model.Products;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.io.PrintWriter;
+import model.User;
+import model.pagination.Pagination;
 
 /**
  *
@@ -38,7 +41,28 @@ public class ListProducts extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         DAOProduct dBConnect = new DAOProduct();
-        List<Products> products = dBConnect.listAll();      
+                HttpSession session = request.getSession();
+
+        List<Products> products = dBConnect.listAll();     
+        
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = products.size();
+        int pageSize = 4;
+        int currentPage = 1;
+
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
+        request.setAttribute("currentPageUrl", "ListProducts"); // Hoặc "products"
+
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+
+        // Lấy danh sách user theo trang hiện tại
+        int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<Products> paginatedUsers = products.subList(startIndex, endIndex);
+        
         request.setAttribute("products", products);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/dashboard/home.jsp");
         dispatcher.forward(request, response);

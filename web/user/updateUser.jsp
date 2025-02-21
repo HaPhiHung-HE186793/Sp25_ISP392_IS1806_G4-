@@ -79,11 +79,11 @@
                             </td> 
                             <td>
                                 <input name="password" id="password" type="password" 
-                                       placeholder="Mật khẩu mới" required>
+                                       placeholder="Mật khẩu mới" >
                             </td>
                             <td>
                                 <input name="cfpass" id="cfpass" type="password" 
-                                       placeholder="Xác nhận mật khẩu" required>
+                                       placeholder="Xác nhận mật khẩu" >
                                 <p id="passError" style="color: red; font-size: 14px; display: none;">
                                     Mật khẩu xác nhận không khớp!
                                 </p>
