@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,10 +45,10 @@
                                                 </select>-->
                         <form action="ListCustomer" method="post" >
 
-                            <input name="name" type="text" placeholder="Tìm kiếm">
-                        <!--<input type="number" placeholder="Số điện thoại">-->
-<!--                        <input type="date" placeholder="Từ">
-                        <input type="date" placeholder="Đến">-->
+                        <input name="name" type="text" placeholder="Tìm kiếm" value="${searchName}">
+                        <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
+                        <input name="startDate" type="date" value="${searchStartDate}">
+                        <input name="endDate" type="date" value="${searchEndDate}">
                         <button style="background-color: #5bc0de;" >Lọc</button>
                         </form>
                         <button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</button> 
@@ -73,16 +74,17 @@
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
-                            <c:forEach items="${listCustomer}" var="o">
+                             <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" >
+
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getCustomerID()}</td>
                                     <td >${o.getName()}</td>
                                     <td >${o.getEmail()}</td>
                                     <td >${o.getPhone()}</td>
-                                    <td >${o.getAddress()}</td>
+                                    <td style="max-width: 150px;">${o.getAddress()}</td>
                                     <td >${o.getTotalDebt()}</td>
-                                    <td >${o.getCreateAt()}</td>
+                                    <td ">${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
 
                                     <td> 
@@ -101,6 +103,7 @@
             </div>
         </div>
 
+        <%@include file="/Component/pagination.jsp" %>
 
     </body>
 
@@ -190,7 +193,9 @@
         }, 5000); // 5000ms = 5 giây
 
 
-      
+
+
+
     </script>
 
 
