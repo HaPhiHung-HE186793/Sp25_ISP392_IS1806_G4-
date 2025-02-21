@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Customers;
 import model.User;
+import model.pagination.Pagination;
 
 /**
  *
@@ -48,9 +49,22 @@ public class ListCustomer extends HttpServlet {
         HttpSession session = request.getSession();
         List<Customers> listCustomer = new ArrayList<>();
         Integer role = (Integer) session.getAttribute("roleID");
-        Integer createBy = (Integer) session.getAttribute("userID");
+        Integer createBy = (Integer) session.getAttribute("createBy");
 
-        listCustomer = dao.listCustomersByRole(createBy, role);
+        listCustomer = dao.listCustomersByRole(createBy);
+
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = listCustomer.size();
+        int pageSize = 10;
+        int currentPage = 1;
+
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
+
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+        request.setAttribute("currentPageUrl", "ListCustomer");
 
         request.setAttribute("listCustomer", listCustomer);
         request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
@@ -68,22 +82,61 @@ public class ListCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        DAOCustomers dao = new DAOCustomers();
 
         // Lấy các tham số từ request
         String name = request.getParameter("name");
+        String number = request.getParameter("number");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String sql = "";
+// Điều kiện name
+        if (name != null && !name.isEmpty()) {
+            sql += "AND c.name LIKE '%" + name + "%' ";
+        }
 
-        DAOCustomers dao = new DAOCustomers();
+// Điều kiện startDate
+        if (startDate != null && !startDate.isEmpty()) {
+            sql +=  "and CONVERT(date, c.createAt) >= '" + startDate + "' ";
+        }
+
+// Điều kiện endDate
+        if (endDate != null && !endDate.isEmpty()) {
+            sql += "and CONVERT(date, c.updateAt) <= '" + endDate + "' ";
+        }
+
+// Điều kiện number
+        if (number != null && !number.isEmpty()) {
+            sql += "and c.phone like '%" + number + "%' ";
+        }
+
         HttpSession session = request.getSession();
         List<Customers> listCustomer = new ArrayList<>();
         int role = (Integer) session.getAttribute("roleID");
-        int createBy = (Integer) session.getAttribute("userID");
+        int createBy = (Integer) session.getAttribute("createBy");
 
 
-        List<Customers> results = dao.listCustomersByRoleSearchName(createBy, role, name);
+        listCustomer = dao.listCustomersByRoleSearchName(createBy, sql);
+        request.setAttribute("searchName", name);
+        request.setAttribute("searchNumber", number);
+        request.setAttribute("searchStartDate", startDate);
+        request.setAttribute("searchEndDate", endDate);
+        request.setAttribute("listCustomer", listCustomer);
 
+
+       // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = listCustomer.size();
+        int pageSize = 10;
+        int currentPage = 1;
+
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
+
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+        request.setAttribute("currentPageUrl", "ListCustomer");
         // Lưu kết quả vào request
-        request.setAttribute("listCustomer", results);
-
         // Chuyển tiếp kết quả tới JSP
         request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
     }
@@ -99,13 +152,6 @@ public class ListCustomer extends HttpServlet {
 
     }// </editor-fold>
 
-    public static void main(String[] args) {
-        DAOCustomers dao = new DAOCustomers();
-        List<Customers> listCustomer = new ArrayList<>();
-
-        List<Customers> results = dao.listCustomersByRoleSearchName(2, 1, "yah");
-        for (Customers o : results) {
-            System.out.println(o.toString());
-        }
+    
     }
-}
+
