@@ -5,7 +5,6 @@
 
 <form id="paginationForm" method="post" action="${currentPageUrl}">
     <input type="hidden" name="cp" id="cp" value="${requestScope.page.getCurrentPage()}">
-<<<<<<< HEAD
     <input type="hidden" name="role" id="role" value="${requestScope.role}">
     <input type="hidden" name="keyword" id="keyword" value="${requestScope.keyword}">
     <input type="hidden" name="number" id="keyword" value="${requestScope.searchNumber}">
@@ -13,10 +12,8 @@
     <input type="hidden" name="endDate" id="keyword" value="${requestScope.searchEndDate}">
     <input type="hidden" name="name" id="keyword" value="${requestScope.searchName}">
 
-=======
     <input type="hidden" name="role" id="role" value="${requestScope.selectedRole}">
     <input type="hidden" name="keyword" id="keyword" value="${requestScope.keyword}">
->>>>>>> origin/main
 </form>
 
 <c:if test="${sessionScope.page.getTotalPage() > 1}">
@@ -68,17 +65,13 @@
 </c:if>
 
 <script>
-<<<<<<< HEAD
 function submitPage(page) {
         document.getElementById("cp").value = page;
         document.getElementById("paginationForm").submit();
     }
-</script>
-=======
     function submitPage(page) {
         document.getElementById("cp").value = page;
         document.getElementById("paginationForm").submit();
     }
 </script>
 
->>>>>>> origin/main
