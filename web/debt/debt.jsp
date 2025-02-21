@@ -84,7 +84,7 @@
                         </thead>
                         <tbody id="table-tbody">
                          
-                                     <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
+                                     <c:forEach items="${listCustomer}" var="o" >
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getDebtID()}</td>
