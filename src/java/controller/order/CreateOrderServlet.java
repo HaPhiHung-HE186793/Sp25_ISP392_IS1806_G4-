@@ -114,7 +114,7 @@ public class CreateOrderServlet extends HttpServlet {
                 String[] productNames = request.getParameterValues("productName");
                 String[] totalPrices = request.getParameterValues("totalPrice");
                 String[] unitPrices = request.getParameterValues("unitPrice");
-                String[] quantities = request.getParameterValues("quantity");
+                String[] quantities = request.getParameterValues("totalWeight");
                  String[] descriptions = request.getParameterValues("description");
 
                 if (productIds != null) {
