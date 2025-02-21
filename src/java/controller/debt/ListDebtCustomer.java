@@ -53,25 +53,25 @@ public class ListDebtCustomer extends HttpServlet {
         
         Customers customers = daoC.getCustomer(customerid);
         
-        if(customers ==null){
-            response.sendRedirect("ListDebtCustomer");
-        }
+//        if(customers ==null){
+//            response.sendRedirect("ListDebtCustomer");
+//        }
         List<DebtRecords> listCustomer = dao.listAllbyName(customerid);
         request.setAttribute("listCustomer", listCustomer);
         request.setAttribute("customers", customers);
 
-        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalUsers = listCustomer.size();
-        int pageSize = 10;
-        int currentPage = 1;
-
-        if (request.getParameter("cp") != null) {
-            currentPage = Integer.parseInt(request.getParameter("cp"));
-        }
-
-        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
-        session.setAttribute("page", page);
-        request.setAttribute("currentPageUrl", "ListCustomer");
+//        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+//        int totalUsers = listCustomer.size();
+//        int pageSize = 10;
+//        int currentPage = 1;
+//
+//        if (request.getParameter("cp") != null) {
+//            currentPage = Integer.parseInt(request.getParameter("cp"));
+//        }
+//
+//        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+//        session.setAttribute("page", page);
+//        request.setAttribute("currentPageUrl", "ListDebtCustomer");
 
         request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
     }
@@ -87,46 +87,78 @@ public class ListDebtCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        DAODebtRecords dao = new DAODebtRecords();
-        DAOCustomers daoC = new DAOCustomers();
-        String customerid = request.getParameter("customerid");
-        Customers customers = daoC.getCustomer(customerid);
-        List<DebtRecords> listCustomer = dao.listAllbyName(customerid);
-        
-        
-         // Lấy các tham số từ request
-        String name = request.getParameter("name");
-        String number = request.getParameter("number");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        String sql = "";
-// Điều kiện name
-        if (name != null && !name.isEmpty()) {
-            sql += "AND c.name LIKE '%" + name + "%' ";
-        }
+//        DAODebtRecords dao = new DAODebtRecords();
+//        DAOCustomers daoC = new DAOCustomers();
+//        String customerid = request.getParameter("customerid");
+//        Customers customers = daoC.getCustomer(customerid);
+//        List<DebtRecords> listCustomer = dao.listAllbyName(customerid);
+//        
+//        
+//         // Lấy các tham số từ request
+//        String name = request.getParameter("name");
+//        String number = request.getParameter("number");
+//        String startDate = request.getParameter("startDate");
+//        String endDate = request.getParameter("endDate");
+//        String sql = "";
+//// Điều kiện name
+//        if (name != null && !name.isEmpty()) {
+//            sql += "AND c.name LIKE '%" + name + "%' ";
+//        }
+//
+//// Điều kiện startDate
+//        if (startDate != null && !startDate.isEmpty()) {
+//            sql +=  "and CONVERT(date, c.createAt) >= '" + startDate + "' ";
+//        }
+//
+//// Điều kiện endDate
+//        if (endDate != null && !endDate.isEmpty()) {
+//            sql += "and CONVERT(date, c.updateAt) <= '" + endDate + "' ";
+//        }
+//
+//// Điều kiện number
+//        if (number != null && !number.isEmpty()) {
+//            sql += "and c.phone like '" + number + "%' ";
+//        }
+//        
+//        
+//        
+//        
+//        request.setAttribute("listCustomer", listCustomer);
+//        request.setAttribute("customers", customers);
+//
+//        request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
 
-// Điều kiện startDate
-        if (startDate != null && !startDate.isEmpty()) {
-            sql +=  "and CONVERT(date, c.createAt) >= '" + startDate + "' ";
-        }
+//  HttpSession session = request.getSession();
+//
+//        DAODebtRecords dao = new DAODebtRecords();
+//        DAOCustomers daoC = new DAOCustomers();
+//        String customerid = request.getParameter("customerid");
+//        
+//        Customers customers = daoC.getCustomer(customerid);
+//        
+//        if(customers ==null){
+//            response.sendRedirect("ListDebtCustomer");
+//        }
+//        List<DebtRecords> listCustomer = dao.listAllbyName(customerid);
+//        request.setAttribute("listCustomer", listCustomer);
+//        request.setAttribute("customers", customers);
+//
+//        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+//        int totalUsers = listCustomer.size();
+//        int pageSize = 10;
+//        int currentPage = 1;
+//
+//        if (request.getParameter("cp") != null) {
+//            currentPage = Integer.parseInt(request.getParameter("cp"));
+//        }
+//
+//        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+//        session.setAttribute("page", page);
+//        request.setAttribute("currentPageUrl", "ListDebtCustomer");
+//
+//        request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
+    
 
-// Điều kiện endDate
-        if (endDate != null && !endDate.isEmpty()) {
-            sql += "and CONVERT(date, c.updateAt) <= '" + endDate + "' ";
-        }
-
-// Điều kiện number
-        if (number != null && !number.isEmpty()) {
-            sql += "and c.phone like '" + number + "%' ";
-        }
-        
-        
-        
-        
-        request.setAttribute("listCustomer", listCustomer);
-        request.setAttribute("customers", customers);
-
-        request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
     }
 
     /**

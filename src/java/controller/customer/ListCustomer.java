@@ -50,7 +50,8 @@ public class ListCustomer extends HttpServlet {
         List<Customers> listCustomer = new ArrayList<>();
         Integer role = (Integer) session.getAttribute("roleID");
         Integer createBy = (Integer) session.getAttribute("createBy");
-
+        
+  
         listCustomer = dao.listCustomersByRole(createBy);
 
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
@@ -89,6 +90,9 @@ public class ListCustomer extends HttpServlet {
         String number = request.getParameter("number");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
+        
+        
+        
         String sql = "";
 // Điều kiện name
         if (name != null && !name.isEmpty()) {

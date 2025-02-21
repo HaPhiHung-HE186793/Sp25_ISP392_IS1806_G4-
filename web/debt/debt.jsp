@@ -56,23 +56,35 @@
                         <!--<button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</butto //n>--> 
 
                         <button class="addNewDebt js-open-newDebt">Tạo phiếu nợ</button>
-
+                    <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">
+                        Quay lại
+                    </button>
                     </div>
 
                     <table>
                         <thead id="table-header">
                             <tr>
-                                <th>ID</th>
-                                <th>Trạng thái</th>
-                                <th>Số tiền</th>
-                                <th>thời gian tạo</th>
-                                <th>Ngày lập phiếu</th>
+                               
 
                             </tr>
                         </thead>
 
                         <tbody id="table-tbody">
-                            <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
+                          
+                        </tbody>
+                        
+                         <thead id="table-header">
+                            <tr>
+                               <th>ID</th>
+                                <th>Trạng thái</th>
+                                <th>Số tiền</th>
+                                <th>thời gian tạo</th>
+                                <th>Ngày lập phiếu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-tbody">
+                         
+                                     <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getDebtID()}</td>
@@ -89,13 +101,14 @@
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
                                 </tr>
+                 
                             </c:forEach>   
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <%@include file="/Component/pagination.jsp" %>
+        <%--<%@include file="/Component/pagination.jsp" %>--%>
 
     </body>
 
