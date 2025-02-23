@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -40,34 +41,20 @@ public class UpdateProducts extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        try {
-            int productId = Integer.parseInt(request.getParameter("productID"));
-            String productName = request.getParameter("productName");
-            String description = request.getParameter("description");
-            double price = Double.parseDouble(request.getParameter("price"));
-            int quantity = Integer.parseInt(request.getParameter("q"));
-            String image = request.getParameter("image");
+        int productId = Integer.parseInt(request.getParameter("productID"));
+        String productName = request.getParameter("productName");
+        String description = request.getParameter("description");
+        double price = Double.parseDouble(request.getParameter("price"));
+        String image = request.getParameter("image");
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String updateAt = now.format(formatter);
+        // Call the DAO method directly with the individual parameters
+        DAOProduct dao = new DAOProduct();
+        boolean updated = dao.updateProduct(productId, productName, description, price, image, updateAt);
+        request.getRequestDispatcher("ListProducts").forward(request, response);
+        // ... (rest of the servlet logic as before)
 
-            String updateAtStr = request.getParameter("updateAt");
-            LocalDate updateAt = null;
-
-            if (updateAtStr != null && !updateAtStr.isEmpty()) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                updateAt = LocalDate.parse(updateAtStr, formatter);
-            } else {
-                updateAt = LocalDate.now(); // Or handle as you see fit (e.g., set to null)
-            }
-
-            // Call the DAO method directly with the individual parameters
-            DAOProduct dao = new DAOProduct();
-            boolean updated = dao.updateProduct(productId, productName, description, price, quantity, image, updateAt);
-
-            // ... (rest of the servlet logic as before)
-        } catch (NumberFormatException ex) {
-            request.setAttribute("errorMessage", "Invalid price or quantity.");
-            request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
-        }
     }
-
 
 }

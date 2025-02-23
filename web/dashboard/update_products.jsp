@@ -5,8 +5,8 @@
 <html>
     <head>
         <title>Update Product</title>
-        <link rel="stylesheet" href="./assets/css/style.css">
-        <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/themify-icons/themify-icons.css">
     </head>
     <body>
         <div id="main">
@@ -25,6 +25,7 @@
                     </c:if>
 
                     <form action="UpdateProduct" method="post">
+                        <input type="hidden" name="productID" value="${product.productID}">
                         <table>
                             <tr>
                                 <td>Tên sản phẩm:</td>
@@ -39,15 +40,9 @@
                                 <td><input type="number" name="price" value="${product.price}" min="0" required></td>
                             </tr>
                             <tr>
-                                <td>Số lượng:</td>
-                                <td><input type="number" name="q" value="${product.quantity}" min="0" required></td>
-                            </tr>
-                            <tr>
                                 <td>Ảnh:</td>
                                 <td><input type="text" name="image" value="${product.image}"></td>
                             </tr>
-                            <%-- Hidden fields --%>
-                            <input type="hidden" name="updateAt" value="${product.updateAt}">
                             <tr>
                                 <td colspan="2"><input type="submit" value="Lưu"></td>
                             </tr>
