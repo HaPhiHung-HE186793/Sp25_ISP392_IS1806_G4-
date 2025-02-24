@@ -115,6 +115,8 @@
     <servlet>
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <servlet-class>controller.order.CheckOrderStatusServlet</servlet-class>
+        </servlet>
+    <servlet>    
         <servlet-name>sendOTP</servlet-name>
         <servlet-class>controller.user.sendOTP</servlet-class>
     </servlet>
@@ -231,7 +233,6 @@
         <url-pattern>/changepassword</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <url-pattern>/CheckOrderStatusServlet</url-pattern>
 </servlet-mapping>
