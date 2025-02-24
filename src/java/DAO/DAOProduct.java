@@ -29,20 +29,34 @@ public class DAOProduct extends DBContext {
 
     public static DAOProduct INSTANCE = new DAOProduct();
 
-    public boolean updateProductQuantity(int productID, int quantitySold) {
-        String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ? AND quantity >= ?";
+    public void exportProductQuantity(int productID, int quantitySold) {
+        String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantitySold);
             ps.setInt(2, productID);
-            ps.setInt(3, quantitySold); // Đảm bảo không trừ âm số lượng
 
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+            ps.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+
+    }
+
+    public void importProductQuantity(int productID, int quantityAdded) {
+        String sql = "UPDATE products SET quantity = quantity + ? WHERE productID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quantityAdded);
+            ps.setInt(2, productID);
+
+            ps.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+       
     }
 
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
@@ -228,7 +242,7 @@ public class DAOProduct extends DBContext {
     public boolean isProductNameExists(String productName) {
         String sql = "SELECT COUNT(*) FROM Products WHERE productName = ?"; // Assuming 'Products' is your table name
         try ( // Your DBConnect class
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, productName);
             ResultSet rs = ps.executeQuery();

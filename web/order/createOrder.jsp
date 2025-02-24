@@ -16,7 +16,136 @@
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <title>Bảng Điều Khiển</title>
 
+        <style>
 
+            /* --- Form và Input --- */
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background-color: #2a2a2a;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            }
+
+
+
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            select {
+                padding: 8px;
+                border: 1px solid #444;
+                border-radius: 4px;
+                background-color: #333;
+                color: #e0e0e0;
+                font-size: 14px;
+                box-sizing: border-box;
+                width: 200px; /* Điều chỉnh độ rộng tùy ý */
+            }
+
+            button {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                background-color: #4CAF50;
+                color: white;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+            /* --- Bảng --- */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                table-layout: fixed;
+                background-color: #2a2a2a;
+                border-radius: 5px;
+                overflow: hidden;
+            }
+
+            th, td {
+                border: 1px solid #444;
+                padding: 10px;
+                text-align: left;
+                word-wrap: break-word;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            th {
+                background-color: #333;
+                color: #fff;
+            }
+
+            .form-container {
+                background-color: #2a2a2a;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+                overflow-x: auto;
+            }
+
+
+            /* --- Bảng orderItems --- */
+            #orderItems input[readonly],
+            #orderItems input[type="text"],
+            #orderItems input[type="number"],
+            #orderItems input[type="date"],
+            #orderItems select {
+                background-color: #3a3a3a;
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+                color: #e0e0e0; /* Đảm bảo màu chữ sáng dễ nhìn */
+                padding: 8px; /* Đồng bộ khoảng cách bên trong */
+                border: 1px solid #444; /* Đồng bộ viền */
+                border-radius: 4px; /* Đồng bộ bo góc */
+            }
+
+
+            /* --- Điều chỉnh kích thước cột bảng orderItems --- */
+            #orderItems th:first-child, #orderItems td:first-child {
+                width: 18%;
+            }
+
+            #orderItems th:nth-child(2), #orderItems td:nth-child(2),
+            #orderItems th:nth-child(3), #orderItems td:nth-child(3),
+            #orderItems th:nth-child(4), #orderItems td:nth-child(4),
+            #orderItems th:nth-child(5), #orderItems td:nth-child(5) {
+                width: 12%;
+            }
+
+            #orderItems th:nth-child(6), #orderItems td:nth-child(6),
+            #orderItems th:nth-child(7), #orderItems td:nth-child(7) {
+                width: 12%;
+            }
+
+            #orderItems th:last-child, #orderItems td:last-child {
+                width: 7%;
+            }
+
+            textarea {
+                padding: 8px;
+                border: 1px solid #444;
+                border-radius: 4px;
+                background-color: #333;
+                color: #e0e0e0;
+                font-size: 14px;
+                box-sizing: border-box;
+                width: 200px; /* Giống với input */
+                resize: none; /* Ngăn thay đổi kích thước */
+            }
+
+
+        </style>
     </head>
 
     <body>
@@ -77,8 +206,11 @@
                                                 <td><c:out value="${i.quantity}"/></td>
                                                 <td><c:out value="${i.price}"/></td>
                                                 <td>
-                                                    <button onclick="addProductToOrder('${i.productID}', '${i.productName}', ${i.price})">THÊM</button>
+                                                    <button onclick="addProductToOrder('${i.productID}', '${i.productName}', ${i.price}, ${i.quantity}, ${i.quantity})">
+                                                        THÊM
+                                                    </button>
                                                 </td>
+
                                             </tr>
                                         </c:forEach>
                                     </tbody>
@@ -93,7 +225,11 @@
 
 
                     <div class="form-container">
-                        <h3 style="color: red">Tạo Hóa Đơn</h3>
+
+
+
+                        <h2 style="color: red">Tạo Hóa Đơn</h2>
+
 
 
 
@@ -101,108 +237,116 @@
 
                         <form id="orderForm" action="CreateOrderServlet" method="post">
 
-                            <label for="orderDate">Ngày tạo đơn:</label>
-                            <input type="date" id="orderDate" name="orderDate" readonly >
+
+
+                            <strong>Người Tạo:</strong> <span style="color: green">${sessionScope.username}</span>
                             <br><br>
 
 
 
 
-                            <label for="customerID">Khách Hàng:</label>
-                            <select id="customerID" name="customerId" required>
-                                <c:if test="${not empty customers}">
-                                    <c:forEach var="customer" items="${customers}">
-                                        <option value="${customer.customerID}" ${customer.customerID == param.selectedCustomerId ? 'selected' : ''}>
-                                            ${customer.name} - ${customer.phone}
-                                        </option>
-                                    </c:forEach>
+                            <table>
+                                <tr>
+                                    <td><label for="orderType">Loại Hóa Đơn:</label></td>
+                                    <td>
+                                        <select id="orderType" name="orderType">
+                                            <option value="export">Xuất Kho</option>
+                                            <option value="import">Nhập Kho</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><label>Trạng thái đơn hàng:</label></td>
+                                    <td>
+                                        <input type="radio" id="paid" name="orderStatus" value="paid" onclick="togglePaymentFields()" checked>
+                                        <label for="paid">Đã Thanh Toán Đủ</label>
+
+                                        <input type="radio" id="partial" name="orderStatus" value="partial" onclick="togglePaymentFields()">
+                                        <label for="partial">Thanh Toán Thiếu</label>
+
+                                        <input type="radio" id="unpaid" name="orderStatus" value="unpaid" onclick="togglePaymentFields()">
+                                        <label for="unpaid">Chưa Thanh Toán</label>
+                                    </td>
+                                </tr>
+
+                                <tr id="paidAmountRow" style="display: none;">
+                                    <td><label for="paidAmount">Số tiền đã trả:</label></td>
+                                    <td><input type="number" id="paidAmount" name="paidAmount" oninput="calculateDebt()"></td>
+                                </tr>
+
+                                <tr id="debtRow" style="display: none;">
+                                    <td><label for="debtAmount">Số tiền còn nợ:</label></td>
+                                    <td><input type="number" id="debtAmount" name="debtAmount" readonly></td>
+                                </tr>
+
+
+                                <tr>
+                                    <td><label for="orderDate">Ngày tạo đơn:</label></td>
+                                    <td><input type="date" id="orderDate" name="orderDate" readonly></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="customerID">Khách Hàng:</label></td>
+                                    <td>
+                                        <select id="customerID" name="customerId" required>
+                                            <c:if test="${not empty customers}">
+                                                <c:forEach var="customer" items="${customers}">
+                                                    <option value="${customer.customerID}" ${customer.customerID == param.selectedCustomerId ? 'selected' : ''}>
+                                                        ${customer.name} - ${customer.phone}
+                                                    </option>
+                                                </c:forEach>
+                                            </c:if>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <c:if test="${id == 0 && empty customers}">
+                                    <tr>
+                                        <td colspan="2" style="color: red; font-style: italic; text-align: center; padding: 8px;">Không tìm thấy khách hàng</td>
+                                    </tr>
                                 </c:if>
-                            </select>
-
-
-                            <br>
-
-                            <c:if test="${id == 0 && empty customers}">
-                                <p style="color: red; font-style: italic;">Không tìm thấy khách hàng</p>
-                            </c:if>
-
-                            <script>
-
-                                document.addEventListener("DOMContentLoaded", function () {
-                                    let customerSelect = document.getElementById("customerID");
-                                    let savedCustomerId = sessionStorage.getItem("selectedCustomerId");
-
-                                    if (savedCustomerId) {
-                                        customerSelect.value = savedCustomerId;
-                                    }
-
-                                    customerSelect.addEventListener("change", function () {
-                                        sessionStorage.setItem("selectedCustomerId", customerSelect.value);
-                                    });
-                                });
-
-
-                            </script>        
 
 
 
+                                <tr>
+                                    <td><label for="porter">Số Người Bốc Vác:</label></td>
+                                    <td>
+                                        <input type="number" id="porter" name="porter" required min="0"
+                                               >
+                                    </td>
+                                </tr>
 
-                            <br>
+                                <tr>
+                                    <td><label for="status">Trạng Thái:</label></td>
+                                    <td>
+                                        <textarea id="status" name="status" rows="4" cols="40" required 
+                                                  ></textarea>
+                                    </td>
+                                </tr>
+                            </table>
 
 
-                            <label for="userID">Người Tạo:</label>
 
-                            <p>${sessionScope.username}</p>
-
-
-
-                            <label for="porter">Số Người Bốc Vác:</label>
-                            <input type="number" id="porter" name="porter" required
-                                   style="width: 40px; height: 25px; border: 2px solid #000; border-radius: 5px; padding: 5px; text-align: center;">
-
-                            <br><br>
-
-
-                            <script>
-                                document.addEventListener("DOMContentLoaded", function () {
-                                    let porter = document.getElementById("porter");
-                                    let savedPorter = sessionStorage.getItem("inputedPorter");
-
-                                    // Kiểm tra nếu có giá trị đã lưu trong sessionStorage
-                                    if (savedPorter) {
-                                        porter.value = savedPorter;
-                                    }
-
-                                    // Lắng nghe sự kiện input khi người dùng thay đổi giá trị
-                                    porter.addEventListener("input", function () {
-                                        // Lưu giá trị vào sessionStorage
-                                        sessionStorage.setItem("inputedPorter", porter.value);
-                                    });
-                                });
-                            </script>
-
-                            <label for="status">Trạng Thái:</label><br><br>
-                            <textarea id="status" name="status" rows="4" cols="40" required 
-                                      style="border: 2px solid #000; border-radius: 5px; padding: 8px;"></textarea>
 
 
                             <br><br>
 
                             <h3 style="color: red">Chi Tiết Đơn Hàng</h3>
 
-                            <p style="color: hotpink">Thông báo: ${requestScope.ms}</p>
 
-                            <table id="orderItems" border="1" width="100%" cellspacing="0" cellpadding="5">
+
+                            <table id="orderItems">
                                 <thead>
                                     <tr>
-                                        <th width="20%">Sản Phẩm</th>
-                                        <th width="10%">Đơn vị</th>
-                                        <th width="10%">Số Lượng</th>
-                                        <th width="10%">Đơn Giá</th>
-                                        <th width="10%">Giảm Giá (VND/kg)</th>
-                                        <th width="15%">Thành Tiền</th>
-                                        <th width="15%">Chú Thích</th>
-                                        <th width="10%">Thao Tác</th>
+                                        <th>Sản Phẩm</th>
+                                        <th>Đơn vị</th>
+                                        <th>Số Lượng</th>
+                                        <th>Đơn Giá</th>
+                                        <th>Giảm Giá(Kg)</th>
+                                        <th>Thành Tiền</th>
+                                        <th>Chú Thích</th>
+                                        <th>Chọn</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -224,6 +368,183 @@
 
                             <button type="submit">Tạo Hóa Đơn</button>
 
+
+                            <p id="orderStatus"></p>
+                            <script>
+
+                                document.getElementById("paidAmount").addEventListener("input", function () {
+                                    if (this.value < 0) {
+                                        this.value = 0;
+                                    }
+                                });
+                                document.getElementById("porter").addEventListener("input", function () {
+                                    if (this.value < 0) {
+                                        this.value = 0;
+                                    }
+                                });
+
+                            </script>
+
+                            <script>
+
+
+
+
+                                function togglePaymentFields() {
+                                    var isPartial = document.getElementById("partial").checked;
+                                    // trả 1 phần
+                                    var isUnpaid = document.getElementById("unpaid").checked;
+                                    // chưa trả xíu nào
+                                    var paidAmountRow = document.getElementById("paidAmountRow");
+                                    // số tiền đã trả
+                                    var debtRow = document.getElementById("debtRow");
+                                    // số tiền còn nợ
+                                    var paidAmountInput = document.getElementById("paidAmount");
+                                    var debtAmountInput = document.getElementById("debtAmount");
+
+                                    if (isPartial) {
+                                        // nếu chọn trả 1 phần, hiển thị ô nhập số tiền đã trả và số tiền còn nợ
+
+
+                                        paidAmountRow.style.display = "table-row";
+                                        debtRow.style.display = "table-row";
+                                        paidAmountInput.required = true;// yêu cầu nhập số tiền đã trả
+                                        calculateDebt();// gọi hàm để tình toán số tiền còn nợ dựa trên đã trả bao nhiêu
+                                    } else {
+                                        paidAmountRow.style.display = "none";
+                                        debtRow.style.display = "none";
+                                        paidAmountInput.required = false;
+                                        paidAmountInput.value = "";
+                                        debtAmountInput.value = "";
+                                    }
+                                }
+
+                                function calculateDebt() {
+                                    var totalOrderPrice = parseFloat(document.getElementById("totalOrderPrice").value) || 0;
+                                    // lấy giá trị tổng đơn hàng
+                                    var paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
+                                    //Lấy số tiền đã trả (paidAmount). Nếu chưa nhập, mặc định là 0
+                                    var debtAmountInput = document.getElementById("debtAmount");
+                                    //Lấy ô hiển thị số tiền còn nợ (debtAmount)
+
+                                    var debt = totalOrderPrice - paidAmount;
+                                    debtAmountInput.value = debt > 0 ? debt.toFixed(2) : 0;
+
+                                    //Tính số tiền còn nợ:
+//Nếu số tiền còn nợ (debt) lớn hơn 0, hiển thị giá trị.
+//Nếu không, đặt giá trị về 0 (không có nợ).
+                                }
+
+                            </script>
+
+                            <script>
+
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    loadPaymentData(); // Tải lại dữ liệu khi load trang
+
+                                    // Lắng nghe sự kiện thay đổi trên radio button
+                                    var statusRadios = document.querySelectorAll('input[name="orderStatus"]');
+                                    statusRadios.forEach(radio => {
+                                        radio.addEventListener("change", savePaymentData);
+                                    });
+
+                                    // Lắng nghe sự kiện nhập trên ô số tiền đã trả
+                                    document.getElementById("paidAmount").addEventListener("input", function () {
+                                        calculateDebt();
+                                        savePaymentData();
+                                    });
+                                });
+
+                                // Hàm lưu dữ liệu vào sessionStorage
+                                function savePaymentData() {
+                                    var orderStatus = document.querySelector('input[name="orderStatus"]:checked').value;
+                                    var paidAmount = document.getElementById("paidAmount").value;
+                                    var debtAmount = document.getElementById("debtAmount").value;
+
+                                    sessionStorage.setItem("orderStatus", orderStatus);
+                                    sessionStorage.setItem("paidAmount", paidAmount);
+                                    sessionStorage.setItem("debtAmount", debtAmount);
+                                }
+
+// Hàm tải lại dữ liệu từ sessionStorage
+                                function loadPaymentData() {
+                                    var orderStatus = sessionStorage.getItem("orderStatus");
+                                    var paidAmount = sessionStorage.getItem("paidAmount");
+                                    var debtAmount = sessionStorage.getItem("debtAmount");
+                                    // Nếu đã lưu orderStaus thì tự động chọn lại
+                                    if (orderStatus) {
+                                        document.getElementById(orderStatus).checked = true;
+                                    }
+
+                                    if (orderStatus === "partial") {
+                                        document.getElementById("paidAmountRow").style.display = "table-row";
+                                        document.getElementById("debtRow").style.display = "table-row";
+                                        document.getElementById("paidAmount").value = paidAmount || "";
+                                        document.getElementById("debtAmount").value = debtAmount || "";
+                                    } else {
+                                        document.getElementById("paidAmountRow").style.display = "none";
+                                        document.getElementById("debtRow").style.display = "none";
+                                    }
+                                }
+                            </script>
+
+
+
+                            <script>
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let customerSelect = document.getElementById("customerID");
+                                    let savedCustomerId = sessionStorage.getItem("selectedCustomerId");
+
+                                    if (savedCustomerId) {
+                                        customerSelect.value = savedCustomerId;
+                                    }
+
+                                    customerSelect.addEventListener("change", function () {
+                                        sessionStorage.setItem("selectedCustomerId", customerSelect.value);
+                                    });
+                                });
+
+
+                            </script>       
+
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let porter = document.getElementById("porter");
+                                    let savedPorter = sessionStorage.getItem("inputedPorter");
+
+                                    // Kiểm tra nếu có giá trị đã lưu trong sessionStorage
+                                    if (savedPorter) {
+                                        porter.value = savedPorter;
+                                    }
+
+                                    // Lắng nghe sự kiện input khi người dùng thay đổi giá trị
+                                    porter.addEventListener("input", function () {
+                                        // Lưu giá trị vào sessionStorage
+                                        sessionStorage.setItem("inputedPorter", porter.value);
+                                    });
+                                });
+                            </script>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let status = document.getElementById("status");
+                                    let savedStatus = sessionStorage.getItem("inputedStatus");
+
+                                    // Kiểm tra nếu có giá trị đã lưu trong sessionStorage
+                                    if (savedStatus) {
+                                        status.value = savedStatus;
+                                    }
+
+                                    // Lắng nghe sự kiện input khi người dùng thay đổi giá trị
+                                    status.addEventListener("input", function () {
+                                        // Lưu giá trị vào sessionStorage
+                                        sessionStorage.setItem("inputedStatus", status.value);
+                                    });
+                                });
+                            </script>
+
                             <script>
 
                                 document.addEventListener("DOMContentLoaded", function () {
@@ -243,7 +564,9 @@
                                 });
                             </script>
                             <script>
-                                function addProductToOrder(productID, productName, pricePerKg) {
+                                function addProductToOrder(productID, productName, pricePerKg, availableQuantity) {
+                                    var orderType = document.getElementById("orderType").value; // Lấy loại hóa đơn
+
                                     var table = document.getElementById("orderItems").getElementsByTagName('tbody')[0];
                                     var newRow = table.insertRow(table.rows.length);
                                     var cell1 = newRow.insertCell(0);
@@ -268,12 +591,21 @@
                                             '<option value="50">Bao (50kg)</option>' +
                                             '</select>';
 
+                                    if (orderType === "import") {
+                                        // Nếu nhập kho, giá có thể thay đổi
+                                        cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1">';
 
 
-                                    // Số lượng sản phẩm
-                                    cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1">';
-                                    // Đơn giá (tự động tính dựa trên giá gạo 1kg)
-                                    cell4.innerHTML = '<input type="number" name="unitPrice" class="unitPrice" value="' + pricePerKg + '"  readonly>';
+                                        cell4.innerHTML = '<input type="number" name="unitPrice" class="unitPrice" value="' + pricePerKg + '">';
+
+                                    } else {
+                                        cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1" max="' + availableQuantity + '">';
+
+                                        // Nếu xuất kho, giá cố định
+                                        cell4.innerHTML = '<input type="number" name="unitPrice" class="unitPrice" value="' + pricePerKg + '"  readonly>';
+                                    }
+
+
                                     // Giảm giá (VND/kg)
                                     cell5.innerHTML = '<input type="number" name="discount" class="discount" value="0" min="0">';
                                     // Thành tiền (tự động cập nhật)
@@ -286,17 +618,44 @@
                                     // Thêm input ẩn để lưu totalWeight
                                     cell9.innerHTML = '<input type="hidden" name="totalWeight" class="totalWeight">';
 
+                                    //không cho phép nhập âm số lượng và giảm giá
+
+
 
                                     // Gắn sự kiện tính toán tổng tiền
                                     var quantityInput = cell3.querySelector('.quantity');
+
+                                    // Không cho nhập số âm
+                                    quantityInput.addEventListener("input", function () {
+                                        if (this.value < 0) {
+                                            this.value = 0; // Đặt giá trị tối thiểu là 1
+                                        }
+                                    });
+
                                     var unitTypeInput = cell2.querySelector('.unitType');
                                     var discountInput = cell5.querySelector('.discount');
+
+                                    // Không cho nhập số âm
+                                    discountInput.addEventListener("input", function () {
+                                        if (this.value < 0) {
+                                            this.value = 0; // Đặt giá trị tối thiểu là 1
+                                        }
+                                    });
                                     var totalPriceInput = cell6.querySelector('.totalPrice');
                                     var totalWeightInput = cell9.querySelector('.totalWeight'); // Lấy input ẩn totalWeight
                                     function recalculate() {
                                         var unitMultiplier = parseInt(unitTypeInput.value); // 1kg hoặc bao 10kg, 20kg, 50kg
                                         var quantity = parseFloat(quantityInput.value) || 1;
+
+
+
                                         var totalWeight = quantity * unitMultiplier; // Tổng số kg mua
+                                        if (orderType === "export" && totalWeight > availableQuantity) {
+                                            alert("Số lượng sản phẩm vượt quá tồn kho! Vui lòng nhập lại.");
+                                            quantityInput.value = Math.floor(availableQuantity / unitMultiplier); // Tự động điều chỉnh số lượng phù hợp
+                                            totalWeight = quantityInput.value * unitMultiplier; // Cập nhật lại tổng khối lượng
+                                        }
+
                                         var discount = parseFloat(discountInput.value) || 0;
                                         var totalDiscount = totalWeight * discount; // Tổng số tiền giảm
                                         var totalPrice = (totalWeight * pricePerKg) - totalDiscount; // Thành tiền sau giảm giá
@@ -373,6 +732,69 @@
 
                             </script>
                         </form>
+
+                        <!--  
+                        Tải thư viện jQuery phiên bản 3.6.0 từ CDN.
+Giúp sử dụng các hàm AJAX, chọn phần tử DOM, xử lý sự kiện dễ dàng hơn.
+                        -->
+
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script>
+                            $(document).ready(function () {
+    $("#orderForm").submit(function (event) {
+        event.preventDefault(); // Ngăn chặn việc tải lại trang
+        
+        $("#orderStatus").text("⏳ Đơn hàng đang xử lý..."); // Hiển thị trạng thái ngay lập tức
+        
+        $.ajax({
+            url: "CreateOrderServlet",
+            type: "POST",
+            data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
+            dataType: "json",
+            success: function (response) {
+                if (response.status === "processing") {
+                    checkOrderStatus(); // Kiểm tra trạng thái đơn hàng
+                } else if (response.status === "error") {
+                    $("#orderStatus").html("<span style='color: red;'>❌ " + response.message + "</span>");
+                }
+            },
+           
+        });
+    });
+
+    var retryCount = 0;
+    function checkOrderStatus() {
+        if (retryCount >= 5) {
+            $("#orderStatus").html("<span style='color: red;'>❌ Quá thời gian xử lý, vui lòng thử lại!</span>");
+            return;
+        }
+
+        var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
+
+        $.ajax({
+            url: "CheckOrderStatusServlet",
+            type: "GET",
+            data: { userId: userId },
+            dataType: "json",
+            success: function (response) {
+                if (response.status === "done") {
+                    $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
+                } else {
+                    retryCount++;
+                    setTimeout(checkOrderStatus, 2000); // Tiếp tục kiểm tra sau 2 giây
+                }
+            },
+            
+        });
+    }
+});
+
+                        </script>
+
+
+
+
+
 
 
 

@@ -16,7 +16,7 @@ public class DAOOrderItems extends DBContext {
 
     public static DAOOrderItems INSTANCE = new DAOOrderItems();
 
-    public boolean createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity,String description) {
+    public void createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity,String description) {
         String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity, description) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -29,16 +29,13 @@ public class DAOOrderItems extends DBContext {
             ps.setString(7, description);
             
 
-            int rowsAffected = ps.executeUpdate();
+            ps.executeUpdate();
 
-            // Nếu thêm OrderItem thành công, cập nhật số lượng sản phẩm
-            if (rowsAffected > 0) {
-                return DAOProduct.INSTANCE.updateProductQuantity(productID, quantity);
-            }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        
     }
 
     public Vector<OrderItems> getOrderItems(String sql) {

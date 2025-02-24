@@ -110,6 +110,10 @@
         <servlet-name>changePassword</servlet-name>
         <servlet-class>controller.user.changePassword</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CheckOrderStatusServlet</servlet-name>
+        <servlet-class>controller.order.CheckOrderStatusServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
         <url-pattern>/forgotpass</url-pattern>
@@ -217,5 +221,9 @@
     <servlet-mapping>
         <servlet-name>changePassword</servlet-name>
         <url-pattern>/changepassword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckOrderStatusServlet</servlet-name>
+        <url-pattern>/CheckOrderStatusServlet</url-pattern>
     </servlet-mapping>
 </web-app>

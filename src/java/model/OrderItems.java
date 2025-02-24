@@ -42,6 +42,17 @@ public class OrderItems {
         this.description = description;
     }
 
+    public OrderItems(int productID, String productName, double price, double unitPrice, int quantity, String description) {
+        this.productID = productID;
+        this.productName = productName;
+        this.price = price;
+        this.unitPrice = unitPrice;
+        this.quantity = quantity;
+        this.description = description;
+    }
+    
+    
+
     public int getOrderitemID() {
         return orderitemID;
     }
