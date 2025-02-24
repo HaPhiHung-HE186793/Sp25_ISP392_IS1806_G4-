@@ -29,6 +29,8 @@
         <url-pattern>/UpdateProducts</url-pattern>
         <url-pattern>/updateprofile</url-pattern>
         <url-pattern>/changepassword</url-pattern>
+        <url-pattern>/verifyotp</url-pattern>
+        <url-pattern>/sendotp</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -113,6 +115,12 @@
     <servlet>
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <servlet-class>controller.order.CheckOrderStatusServlet</servlet-class>
+        <servlet-name>sendOTP</servlet-name>
+        <servlet-class>controller.user.sendOTP</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>verifyOTPServlet</servlet-name>
+        <servlet-class>controller.user.verifyOTPServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -223,7 +231,16 @@
         <url-pattern>/changepassword</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <url-pattern>/CheckOrderStatusServlet</url-pattern>
+</servlet-mapping>
+        <servlet-mapping>
+        <servlet-name>sendOTP</servlet-name>
+        <url-pattern>/sendotp</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>verifyOTPServlet</servlet-name>
+        <url-pattern>/verifyotp</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import utils.mail;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -39,6 +41,7 @@ public class createUser extends HttpServlet {
 
     DAO.DAOUser daou = new DAOUser();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+    private static ExecutorService emailExecutor = Executors.newSingleThreadExecutor(); // Tạo luồng riêng để gửi email
 
     private void AddUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> errors = new ArrayList<>();
@@ -71,24 +74,20 @@ public class createUser extends HttpServlet {
         }
 
         // lấy id của user hiện tại
-        Integer createBy = (Integer) session.getAttribute("userID");
-        if (createBy == null) {
-            response.sendRedirect("/login/login.jsp");
-            return;
-        }
+        Integer createBy = (Integer) session.getAttribute("userID");        
 
         //Customer customer = new Customer(fullName,);
         // Kiểm tra dữ liệu nhập
-        if (userName == null || userName.trim().isEmpty()) {
-            errors.add("Vui lòng nhập đầy đủ họ tên!");
-        }
-        if (email == null || email.trim().isEmpty()) {
-            errors.add("Vui lòng nhập email!");
-        } else if (!Pattern.matches(EMAIL_REGEX, email)) {
-            errors.add("Email không hợp lệ!");
-        } else if (daou.isEmailExists(email)) {
-            errors.add("Email đã tồn tại!");
-        }
+//        if (userName == null || userName.trim().isEmpty()) {
+//            errors.add("Vui lòng nhập đầy đủ họ tên!");
+//        }
+//        if (email == null || email.trim().isEmpty()) {
+//            errors.add("Vui lòng nhập email!");
+//        } else if (!Pattern.matches(EMAIL_REGEX, email)) {
+//            errors.add("Email không hợp lệ!");
+//        } else if (daou.isEmailExists(email)) {
+//            errors.add("Email đã tồn tại!");
+//        }
 
         // Nếu có lỗi, quay lại trang createUser.jsp với danh sách lỗi và dữ liệu đã nhập
         if (!errors.isEmpty()) {
@@ -99,6 +98,7 @@ public class createUser extends HttpServlet {
             request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
             return;
         }
+        restartEmailExecutor();
 
         User newUser = new User();
         newUser.setUserName(userName);
@@ -111,7 +111,9 @@ public class createUser extends HttpServlet {
 
         //gửi email password được sinh ra cho người dùng
         mail sendEmail = new mail();
-        sendEmail.sendPasswordForUser(email, password);
+        emailExecutor.execute(() -> sendEmail.sendPasswordForUser(email, password));
+
+        emailExecutor.shutdown(); // Đóng executor sau khi gửi xong
 
         request.setAttribute("success", "Thêm thành công!");
         request.setAttribute("userName", userName);
@@ -161,11 +163,12 @@ public class createUser extends HttpServlet {
         HttpSession session = request.getSession();
         Integer roleID = (Integer) session.getAttribute("roleID");
         User user_current = (User) session.getAttribute("user");
-        if (roleID != 1 && roleID !=2) {
+        if (roleID != 1 && roleID != 2) {
             response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
             return;
         }
         request.setAttribute("u", user_current);
+        request.setAttribute("showOTP", false);
         request.getRequestDispatcher("user/createUser.jsp").forward(request, response);
     }
 
@@ -193,4 +196,9 @@ public class createUser extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private synchronized void restartEmailExecutor() {
+        if (emailExecutor.isShutdown() || emailExecutor.isTerminated()) {
+            emailExecutor = Executors.newFixedThreadPool(2);
+        }
+    }
 }

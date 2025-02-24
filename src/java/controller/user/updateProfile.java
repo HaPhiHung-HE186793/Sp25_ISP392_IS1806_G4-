@@ -82,7 +82,6 @@ public class updateProfile extends HttpServlet {
         String email = request.getParameter("email");
         if (user.getUserName().equals(userName)) {
             request.setAttribute("mess", "Không có thay đổi gì.");
-            System.out.println("khong co gi");
         } else {
             dao.updateUserName(user.getID(), userName);
             request.setAttribute("mess", "Cập nhật thành công.");

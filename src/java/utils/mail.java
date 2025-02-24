@@ -92,7 +92,7 @@ public class mail {
     
     public boolean sendMailVerify(String toEmail, String code) {
         String subject = "Email Verification";
-        String content = "Registered successfully. Please verify your account using this code: " + code;
+        String content = "Please verify your account using this code: " + code + ". This code is valid for 3 minutes.";
         return sendEmail(toEmail, subject, content);
     }
 
