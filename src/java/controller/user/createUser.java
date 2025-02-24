@@ -94,7 +94,7 @@ public class createUser extends HttpServlet {
         if (!errors.isEmpty()) {
             request.setAttribute("errors", errors);
             request.setAttribute("userName", userName);
-            request.setAttribute("email", email);
+            request.setAttribute("emaill", email);
             request.setAttribute("u", user_current);
             request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
             return;
@@ -115,7 +115,7 @@ public class createUser extends HttpServlet {
 
         request.setAttribute("success", "Thêm thành công!");
         request.setAttribute("userName", userName);
-        request.setAttribute("email", email);
+        request.setAttribute("emaill", email);
         request.setAttribute("u", user_current);
         request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
     }

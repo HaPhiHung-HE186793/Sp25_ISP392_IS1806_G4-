@@ -27,7 +27,7 @@
 
                     <div class="table-container" >
                         <div style="display: flex">
-                            <h3 style="max-width: 29%;">Cập nhật tài khoản</h3>
+                            <h3 style="max-width: 29%;">Tạo tài khoản</h3>
 
                         <c:choose>
                             <c:when test="${not empty errors}">
@@ -73,7 +73,7 @@
                             </td>
                             <td>
                                 <input name="email" id="email" type="email" 
-                                       placeholder="Email của bạn" value="${email}">
+                                       placeholder="Email của bạn" value="${emaill}">
                             </td> 
                             <td>
                                 <input name="password" id="password" type="password" 

@@ -25,7 +25,7 @@ body {
 }
 
 .sidebar {
-    width: 250px;
+    width: 200px;
     background-color: #222;
     height: 100vh;
     position: fixed;
@@ -74,7 +74,8 @@ body {
 }
 
 .main-content {
-    margin-left: 260px;
+    font-size: 13px;
+    margin-left: 210px;
     padding: 20px;
     margin-top: 50px;
 }
@@ -129,7 +130,7 @@ body {
 
 .table-container {
     background-color: #222;
-    padding: 20px;
+    padding:5px 20px;
     border-radius: 4px;
     overflow-y: scroll ; /* Thêm thanh kéo dọc */
     scrollbar-width: thin;
@@ -208,7 +209,7 @@ body {
 }
 
 .filters button {
-    padding: 8px 12px;
+    padding: 11px 12px;
     border: none;
     background-color: #d9534f;
     color: #fff;
@@ -251,7 +252,7 @@ button {
     background-color: #5bc0de;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 6.5px 12px;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s ease;
@@ -277,7 +278,7 @@ button:hover {
 
 .addNewDebt {
     background-color: #33CC33 !important;
-    padding: 10.5px !important;
+    padding: 6.5px 8px !important;
 }
 
 
@@ -290,7 +291,8 @@ button:hover {
     background: rgba(0, 0, 0, 0.4);
     align-items: center;/* nam giữa chiều cao */
     justify-content: center;/* nam giữa chiều ngang */
-    display: none;;
+    display: none;
+    ;
 }
 
 .newDebt.open {
@@ -382,49 +384,51 @@ button:hover {
 }
 
 .product-form {
-  width: 500px; /* Điều chỉnh chiều rộng của form */
-  margin: 0 auto; /* Căn giữa form */
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+    width: 500px; /* Điều chỉnh chiều rộng của form */
+    margin: 0 auto; /* Căn giữa form */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .form-group {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .form-label {
-  display: block; /* Nhãn nằm trên input */
-  font-weight: bold;
+    display: block; /* Nhãn nằm trên input */
+    font-weight: bold;
 }
 
 .form-input,
 .form-textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box; /* Bao gồm padding và border vào chiều rộng */
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Bao gồm padding và border vào chiều rộng */
 }
 
 .form-textarea {
-  height: 100px; /* Điều chỉnh chiều cao của textarea */
+    height: 100px; /* Điều chỉnh chiều cao của textarea */
 }
 
 .form-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .form-button:hover {
-  background-color: #45a049;
+    background-color: #45a049;
 }
 /*<<<<<<< Updated upstream*/
 .pagination {
+    font-size: 13px;
+    margin-top: -17px;
     display: flex; /* Hiển thị các nút trên một hàng */
     justify-content: center; /* Căn giữa các nút */
     list-style: none; /* Bỏ dấu chấm nếu có */
@@ -450,37 +454,39 @@ button:hover {
     background-color: #007bff;
     color: white;
     border-color: #007bff;
-/*=======*/
-.table-header{
-    display:flex;
-}
-
-.newDebt-notification {
-    color: greenyellow;
-    margin: 15px;
-    transition: opacity 0.5s ease-in-out;
-}
-
-.newDebt-notificationError {
-    color: red;
-    margin: 15px;
-    transition: opacity 0.5s ease-in-out;
-/*>>>>>>> Stashed changes*/
-}
-.newUser {
-    display: none; /* Ẩn form mặc định */
-}
-
-.newUser.open {
-    display: block; /* Khi có lớp 'open', form sẽ hiển thị */
-}
-
-@keyframes modalFadeIn {
-    from{
-        opacity: 0;
-        transform: translateY(-100px);
+    /*=======*/
+    .table-header{
+        display:flex;
     }
-    to{
-        opacity: 1;
-        transform: translateY(0);
+
+    .newDebt-notification {
+        color: greenyellow;
+        margin: 15px;
+        transition: opacity 0.5s ease-in-out;
     }
+
+    .newDebt-notificationError {
+        color: red; 
+        margin: 15px;
+        transition: opacity 0.5s ease-in-out;
+        /*>>>>>>> Stashed changes*/
+    }
+    .newUser {
+        display: none; /* Ẩn form mặc định */
+    }
+
+    .newUser.open {
+        display: block; /* Khi có lớp 'open', form sẽ hiển thị */
+    }
+
+
+
+    @keyframes modalFadeIn {
+        from{
+            opacity: 0;
+            transform: translateY(-100px);
+        }
+        to{
+            opacity: 1;
+            transform: translateY(0);
+        }

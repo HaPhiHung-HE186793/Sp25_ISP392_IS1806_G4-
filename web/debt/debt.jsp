@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,36 +39,52 @@
                         </c:if>
                     </div>
                     <div class="filters">
-                        <select>
-                            <option value="">Trạng thái</option>
-                            <option value="">A->Z</option>
-                            <option value="">Z->A</option>
+<!--                        <form action="ListDebtCustomer" method="post" >
 
-                        </select>
-                        <input type="text" placeholder="Search">
-                        <input type="date" placeholder="Từ">
-                        <input type="date" placeholder="Đến">
-                        <button>Bỏ lọc</button>
-                        <button>Thu gọn</button>
+                                                    <select>
+                                                        <option value="">Trạng thái</option>
+                                                        <option value="">A->Z</option>
+                                                        <option value="">Z->A</option>
+                            
+                                                    </select>
+                            <input name="name" type="text" placeholder="Tìm kiếm" value="${search}">
+                            <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
+                            <input name="startDate" type="date" value="${searchStartDate}">
+                            <input name="endDate" type="date" value="${searchEndDate}">-->
+<!--                            <button style="background-color: #5bc0de;" >Lọc</button>-->
+                        <!--</form>-->
+                        <!--<button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</butto //n>--> 
 
                         <button class="addNewDebt js-open-newDebt">Tạo phiếu nợ</button>
-
+                    <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">
+                        Quay lại
+                    </button>
                     </div>
 
                     <table>
                         <thead id="table-header">
                             <tr>
-                                <th>ID</th>
-                                <th>Trạng thái</th>
-                                <th>Số tiền</th>
-                                <th>thời gian tạo</th>
-                                <th>Ngày lập phiếu</th>
+                               
 
                             </tr>
                         </thead>
 
                         <tbody id="table-tbody">
-                            <c:forEach items="${listCustomer}" var="o">
+                          
+                        </tbody>
+                        
+                         <thead id="table-header">
+                            <tr>
+                               <th>ID</th>
+                                <th>Trạng thái</th>
+                                <th>Số tiền</th>
+                                <th>thời gian tạo</th>
+                                <th>Ngày lập phiếu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-tbody">
+                         
+                                     <c:forEach items="${listCustomer}" var="o" >
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getDebtID()}</td>
@@ -84,13 +101,14 @@
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
                                 </tr>
+                 
                             </c:forEach>   
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
+        <%--<%@include file="/Component/pagination.jsp" %>--%>
 
     </body>
 
