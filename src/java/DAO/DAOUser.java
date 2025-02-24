@@ -101,38 +101,37 @@ public class DAOUser extends DBContext {
         }
         return null; // Trả về null nếu không tìm thấy user
     }
-    
+
     public boolean updatePassword(int userId, String newPassword) {
-    String sql = "UPDATE Users SET userPassword = ? WHERE ID = ?";
-    String hashedPassword = hashPassword(newPassword); // Hash mật khẩu mới
+        String sql = "UPDATE Users SET userPassword = ? WHERE ID = ?";
+        String hashedPassword = hashPassword(newPassword); // Hash mật khẩu mới
 
-    try (PreparedStatement pre = conn.prepareStatement(sql)) {
-        pre.setString(1, hashedPassword);
-        pre.setInt(2, userId);
+        try (PreparedStatement pre = conn.prepareStatement(sql)) {
+            pre.setString(1, hashedPassword);
+            pre.setInt(2, userId);
 
-        int rowsUpdated = pre.executeUpdate();
-        return rowsUpdated > 0; // Trả về true nếu cập nhật thành công
-    } catch (SQLException ex) {
-        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+            int rowsUpdated = pre.executeUpdate();
+            return rowsUpdated > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false; // Trả về false nếu cập nhật thất bại
     }
-    return false; // Trả về false nếu cập nhật thất bại
-}
 
-    
     public boolean updateUserName(int userId, String newUserName) {
-    String sql = "UPDATE Users SET userName = ? WHERE ID = ?";
+        String sql = "UPDATE Users SET userName = ? WHERE ID = ?";
 
-    try (PreparedStatement pre = conn.prepareStatement(sql)) {
-        pre.setString(1, newUserName);
-        pre.setInt(2, userId);
+        try (PreparedStatement pre = conn.prepareStatement(sql)) {
+            pre.setString(1, newUserName);
+            pre.setInt(2, userId);
 
-        int rowsUpdated = pre.executeUpdate();
-        return rowsUpdated > 0; // Trả về true nếu cập nhật thành công
-    } catch (SQLException ex) {
-        Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+            int rowsUpdated = pre.executeUpdate();
+            return rowsUpdated > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false; // Trả về false nếu cập nhật thất bại
     }
-    return false; // Trả về false nếu cập nhật thất bại
-}
 
     public int insertUser(User user) {
         int n = 0;
@@ -472,7 +471,6 @@ public class DAOUser extends DBContext {
         return usersList;
     }
 
-    
     public List<User> getUsersByRole(int roleId, List<User> U) {
         List<User> users = new ArrayList<>();
         for (User user : U) {
@@ -492,7 +490,17 @@ public class DAOUser extends DBContext {
         }
         return users;
     }
-    
+
+    public List<User> getUsersByDate(String startDate, String endDate, List<User> U) {
+        List<User> users = new ArrayList<>();
+        for (User user : U) {
+            if (user.getCreateAt().compareTo(startDate) >= 0 && user.getCreateAt().compareTo(endDate) <= 0) {
+                users.add(user);
+            }
+        }
+        return users;
+    }
+
     public List<User> getUsersByKeyword(String keyword) {
         String sql = "SELECT * FROM Users WHERE userName LIKE ? OR email LIKE ?";
         List<User> usersList = new ArrayList<>();

@@ -45,6 +45,8 @@
                                 </select>
                             </c:if>
                             <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
+                            <input name="startDate" type="date" value="${startDate}">
+                            <input name="endDate" type="date" value="${endDate}">
 
                             <button type="submit">Tìm kiếm</button>
                             <button type="reset" onclick="window.location = 'listusers'">Bỏ lọc</button>

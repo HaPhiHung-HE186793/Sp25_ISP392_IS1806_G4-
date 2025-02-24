@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import DAO.DAOUser;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import model.pagination.Pagination;
 import model.User;
 
@@ -148,6 +150,8 @@ public class listUsers extends HttpServlet {
             user.setCreatorName(creatorName);
         }
 
+        String endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        request.setAttribute("endDate", endDate);
         request.setAttribute("error", error);
         request.setAttribute("user_current", user_current);
         session.setAttribute("U", U);
@@ -171,7 +175,9 @@ public class listUsers extends HttpServlet {
         List<User> filteredUsers = null;
         String mess = null;
         String roleParam = request.getParameter("role");
-        String keyword = request.getParameter("keyword");        
+        String keyword = request.getParameter("keyword");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         Integer role = (roleParam != null && !roleParam.isEmpty()) ? Integer.parseInt(roleParam) : null;
 
         //search
@@ -188,7 +194,17 @@ public class listUsers extends HttpServlet {
             List<User> tempUsers = dao.getUsersByKeyword(keyword, filteredUsers);
             if (!tempUsers.isEmpty()) {
                 filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
-            } else mess = "Không tìm thấy người dùng nào.";
+            } else {
+                mess = "Không tìm thấy người dùng nào.";
+            }
+        }
+        if (startDate != null && !startDate.isEmpty()) {
+            List<User> tempUsers = dao.getUsersByDate(startDate, endDate, filteredUsers);
+            if (!tempUsers.isEmpty()) {
+                filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
+            } else {
+                mess = "Không tìm thấy người dùng nào.";
+            }
         }
         if (filteredUsers == null || filteredUsers.isEmpty()) {
             mess = "Không tìm thấy người dùng nào.";
@@ -256,6 +272,8 @@ public class listUsers extends HttpServlet {
         request.setAttribute("U", filteredUsers);
         request.setAttribute("selectedRole", role);
         request.setAttribute("keyword", keyword);
+        request.setAttribute("startDate", startDate);
+        request.setAttribute("endDate", endDate);
         request.setAttribute("user_current", user_current);
         request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
     }
