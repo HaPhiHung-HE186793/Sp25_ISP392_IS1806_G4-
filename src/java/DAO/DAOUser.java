@@ -490,6 +490,16 @@ public class DAOUser extends DBContext {
         }
         return users;
     }
+    
+    public List<User> getUsersByAction(int selectedAction, List<User> U) {
+        List<User> users = new ArrayList<>();
+        for (User user : U) {
+            if ((user.getIsDelete() ? 1 : 0) == selectedAction) {
+                users.add(user);
+            }
+        }
+        return users;
+    }
 
     public List<User> getUsersByDate(String startDate, String endDate, List<User> U) {
         List<User> users = new ArrayList<>();

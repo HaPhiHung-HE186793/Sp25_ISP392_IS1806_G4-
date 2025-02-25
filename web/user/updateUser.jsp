@@ -5,7 +5,7 @@
 --%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -52,9 +52,9 @@
                                 <div class="notification2" id="messageNotification" style="display: none; max-width: 29%;"></div>
                             </c:otherwise>
                         </c:choose>
-                                <p id="passError" style="color: red; font-size: 14px; display: none; max-width: 29%;margin-left: 25%;">
-                                    Mật khẩu xác nhận không khớp!
-                                </p>
+                        <p id="passError" style="color: red; font-size: 14px; display: none; max-width: 29%;margin-left: 25%;">
+                            Mật khẩu xác nhận không khớp!
+                        </p>
                     </div>
 
                     <table>
@@ -140,31 +140,31 @@
 
 
         document.addEventListener("DOMContentLoaded", function () {
-    const password = document.getElementById("password");
-    const cfpass = document.getElementById("cfpass");
-    const passError = document.getElementById("passError");
-    const form = document.getElementById("updateUserForm"); // Đổi thành getElementById
+            const password = document.getElementById("password");
+            const cfpass = document.getElementById("cfpass");
+            const passError = document.getElementById("passError");
+            const form = document.getElementById("updateUserForm"); // Đổi thành getElementById
 
-    function validatePassword() {
-        if (password.value !== cfpass.value) {
-            passError.style.display = "block"; // Hiện lỗi
-        } else {
-            passError.style.display = "none"; // Ẩn lỗi
-        }
-    }
+            function validatePassword() {
+                if (password.value !== cfpass.value) {
+                    passError.style.display = "block"; // Hiện lỗi
+                } else {
+                    passError.style.display = "none"; // Ẩn lỗi
+                }
+            }
 
-    // Kiểm tra mật khẩu ngay khi nhập
-    password.addEventListener("input", validatePassword);
-    cfpass.addEventListener("input", validatePassword);
+            // Kiểm tra mật khẩu ngay khi nhập
+            password.addEventListener("input", validatePassword);
+            cfpass.addEventListener("input", validatePassword);
 
-    form.addEventListener("submit", function (event) {
-        if (password.value !== cfpass.value) {
-            event.preventDefault(); // Chặn gửi form về servlet
-            alert("Mật khẩu xác nhận không khớp! Vui lòng nhập lại.");
-            cfpass.focus();
-        }
-    });
-});
+            form.addEventListener("submit", function (event) {
+                if (password.value !== cfpass.value) {
+                    event.preventDefault(); // Chặn gửi form về servlet
+                    alert("Mật khẩu xác nhận không khớp! Vui lòng nhập lại.");
+                    cfpass.focus();
+                }
+            });
+        });
 
 
 
