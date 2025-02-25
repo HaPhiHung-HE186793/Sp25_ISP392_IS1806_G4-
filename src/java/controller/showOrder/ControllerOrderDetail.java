@@ -50,42 +50,71 @@ public class ControllerOrderDetail extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-       // processRequest(request, response);
-        DAOOrderItems dao = new DAOOrderItems();
-        String service = request.getParameter("service");
-        if (service == null) { 
-            service = "listOrderItem";
-        }
-        try (PrintWriter out = response.getWriter()) {
-            if (service.equals("listOrderItem")) { //get request
-                //check search or not
-        //     String service = request.getParameter("service");               
-             List<OrderItems> list = new ArrayList<>(); // Khởi tạo danh sách
+     @Override
+      protected void doGet(HttpServletRequest request, HttpServletResponse response)
+     throws ServletException, IOException {
+    DAOOrderItems dao = new DAOOrderItems();
+    String service = request.getParameter("service");
+    if (service == null) {
+        service = "listOrderItem";
+    }
+    try (PrintWriter out = response.getWriter()) {
+        if (service.equals("listOrderItem")) {
+            List<OrderItems> list = new ArrayList<>(); // Khởi tạo danh sách
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+            String productName = request.getParameter("productName");
 
-            if (service.equals("listOrderItem")) { // list all
-    // call DAO (model)
-              int orderId = Integer.parseInt(request.getParameter("orderId"));
-           list = dao.getOrderItems("select * from OrderItems where orderId =" + orderId);
-            } else { // search
-            String orderId = request.getParameter("orderID");
-          list = dao.getOrderItems("select * from OrderItems where orderId =" + orderId);
-          }
-                request.setAttribute("data",list);
-                request.setAttribute("tableTitle", "Danh sách sản phẩm trong hóa đơn");
-                 request.setAttribute("papeTitle", "Orders manage");
-               //call jsp (view)
-                RequestDispatcher dispth
-                        =request.getRequestDispatcher("order/orderItemList.jsp");
-                //run jsp
-               dispth.forward(request, response);
-              // response.sendRedirect("URLOrder");
+            if (productName != null && !productName.isEmpty()) {
+                list = dao.getOrderItems("SELECT * FROM OrderItems WHERE orderId = " + orderId + " AND productName LIKE '%" + productName + "%'");
+            } else {
+                list = dao.getOrderItems("SELECT * FROM OrderItems WHERE orderId = " + orderId);
             }
-           
+
+            request.setAttribute("data", list);
+            request.setAttribute("tableTitle", "Danh sách sản phẩm trong hóa đơn");
+            request.setAttribute("papeTitle", "Orders manage");
+            RequestDispatcher dispth = request.getRequestDispatcher("order/orderItemList.jsp");
+            dispth.forward(request, response);
         }
-    } 
+    }
+}
+
+//    @Override
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//    throws ServletException, IOException {
+//       // processRequest(request, response);
+//        DAOOrderItems dao = new DAOOrderItems();
+//        String service = request.getParameter("service");
+//        if (service == null) { 
+//            service = "listOrderItem";
+//        }
+//        try (PrintWriter out = response.getWriter()) {
+//            if (service.equals("listOrderItem")) { //get request
+//                //check search or not
+//        //     String service = request.getParameter("service");               
+//             List<OrderItems> list = new ArrayList<>(); // Khởi tạo danh sách
+//
+//            if (service.equals("listOrderItem")) { // list all
+//    // call DAO (model)
+//              int orderId = Integer.parseInt(request.getParameter("orderId"));
+//           list = dao.getOrderItems("select * from OrderItems where orderId =" + orderId);
+//            } else { // search
+//            String orderId = request.getParameter("orderID");
+//          list = dao.getOrderItems("select * from OrderItems where orderId =" + orderId);
+//          }
+//                request.setAttribute("data",list);
+//                request.setAttribute("tableTitle", "Danh sách sản phẩm trong hóa đơn");
+//                 request.setAttribute("papeTitle", "Orders manage");
+//               //call jsp (view)
+//                RequestDispatcher dispth
+//                        =request.getRequestDispatcher("order/orderItemList.jsp");
+//                //run jsp
+//               dispth.forward(request, response);
+//              // response.sendRedirect("URLOrder");
+//            }
+//           
+//        }
+//    } 
 
     /** 
      * Handles the HTTP <code>POST</code> method.
