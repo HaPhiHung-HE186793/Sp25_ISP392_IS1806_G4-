@@ -39,7 +39,19 @@
             <div class="notification">
                 Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
             </div>
-
+            <div class="search-container">
+                <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get">
+                    <input type="hidden" name="service" value="listOrderItem">
+                    <input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
+                    <input type="text" name="productName" placeholder="Nhập tên sản phẩm" required>
+                    <button type="submit" class="btn">Tìm kiếm</button>
+                </form>
+                <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get" style="display:inline;">
+                    <input type="hidden" name="service" value="listOrderItem">
+                    <input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
+                    <button type="submit" class="btn">Hiển thị toàn bộ sản phẩm</button>
+                </form>
+            </div>
             <div class="table-container">
                 <h3><%= request.getAttribute("tableTitle") %></h3>
                 <table border="1">
