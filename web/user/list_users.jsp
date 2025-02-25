@@ -31,7 +31,31 @@
 
 
                     <div class="table-container">
+                        <div style="display: flex; gap: 300px;">
                         <h3>Danh sách người dùng</h3>
+                        
+                            <c:choose>
+                                <c:when test="${not empty error}">
+                                    <div class="notification2" id="errorNotification" style="color: red;">
+                                        ${error}
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="notification2" id="errorNotification" style="display: none;"></div>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <c:choose>
+                                <c:when test="${not empty mess}">
+                                    <div class="notification2" id="messageNotification" style="color: green;">
+                                        ${mess}
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="notification2" id="messageNotification" style="display: none;"></div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
                         <div class="filters">
                             <form method="post" action="listusers">
                             <c:if test="${user_current.getRoleID() == 1}">
@@ -56,29 +80,7 @@
                         <div>
                             <button class="addNewDebt" style="padding: 11px !important;" onclick="window.location = 'createuser'">Tạo tài khoản mới</button>
                         </div>
-                        <div>
-                            <c:choose>
-                                <c:when test="${not empty error}">
-                                    <div class="notification2" id="errorNotification" style="color: red;">
-                                        ${error}
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="notification2" id="errorNotification" style="display: none;"></div>
-                                </c:otherwise>
-                            </c:choose>
-
-                            <c:choose>
-                                <c:when test="${not empty mess}">
-                                    <div class="notification2" id="messageNotification" style="color: green;">
-                                        ${mess}
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="notification2" id="messageNotification" style="display: none;"></div>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+                        
                     </div>
 
                     <table>

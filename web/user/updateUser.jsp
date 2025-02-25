@@ -63,7 +63,7 @@
                                 <th>Tên</th>                               
                                 <th>Email</th>
                                 <th>Mật khẩu mới</th>
-                                <th>Xác minh mật khẩu</th>
+                                <th>Xác nhận mật khẩu</th>
                                 <th>Chức năng</th>
                                 <th style="border-left: 1px solid black;">Hành động</th>
                             </tr>

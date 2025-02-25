@@ -19,10 +19,10 @@
         <title>Profile</title>
         <style>
             .profile-container {
-                max-width: 500px;
+                max-width: 690px;
                 margin: 30px auto;
                 padding: 20px;
-                background: #fff;
+                background: #333;
                 border-radius: 8px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
@@ -31,7 +31,7 @@
                 text-align: center;
                 margin-bottom: 20px;
                 font-size: 24px;
-                color: #333;
+                color: white;
                 display: block; /* Đảm bảo thẻ h2 không bị ẩn */
             }
 
@@ -53,7 +53,7 @@
                 margin-bottom: 15px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
-                font-size: 16px;
+                font-size: 15px;
             }
 
             .profile-container button {
@@ -63,7 +63,7 @@
                 color: white;
                 border: none;
                 border-radius: 5px;
-                font-size: 16px;
+                font-size: 15px;
                 cursor: pointer;
                 margin-top: 10px;
             }
@@ -109,7 +109,7 @@
                 line-height: 1.5 !important;
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
-                color: #333;
+                color: white;
             }
 
 

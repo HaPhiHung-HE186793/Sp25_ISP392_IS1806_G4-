@@ -19,10 +19,10 @@
         <title>Change Password</title>
         <style>
             .profile-container {
-                max-width: 500px;
+                max-width: 690px;
                 margin: 30px auto;
                 padding: 20px;
-                background: #fff;
+                background: #333;
                 border-radius: 8px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
@@ -31,7 +31,7 @@
                 text-align: center;
                 margin-bottom: 20px;
                 font-size: 24px;
-                color: #333;
+                color: white;
                 display: block; /* Đảm bảo thẻ h2 không bị ẩn */
             }
 
@@ -53,7 +53,7 @@
                 margin-bottom: 15px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
-                font-size: 16px;
+                font-size: 15px;
             }
 
             .profile-container button {
@@ -63,7 +63,7 @@
                 color: white;
                 border: none;
                 border-radius: 5px;
-                font-size: 16px;
+                font-size: 15px;
                 cursor: pointer;
                 margin-top: 10px;
             }
@@ -93,7 +93,6 @@
             .profile-buttons button:hover {
                 background-color: #0056b3;
             }
-
             .profile-buttons button:first-child {
                 background-color: #28a745; /* Màu xanh lá cây */
             }
@@ -110,7 +109,7 @@
                 line-height: 1.5 !important;
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
-                color: #333;
+                color: white;
             }
 
 
@@ -183,36 +182,36 @@
 
         hideNotification('errorNotification');
         hideNotification('messageNotification');
-        
+
 
 
         document.addEventListener("DOMContentLoaded", function () {
-    const password = document.getElementById("password");
-    const newpassword = document.getElementById("newpassword");
-    const cfpass = document.getElementById("cfpass");
-    const passError = document.getElementById("passError");
-    const form = document.getElementById("updateUserForm"); // Đổi thành getElementById
+            const password = document.getElementById("password");
+            const newpassword = document.getElementById("newpassword");
+            const cfpass = document.getElementById("cfpass");
+            const passError = document.getElementById("passError");
+            const form = document.getElementById("updateUserForm"); // Đổi thành getElementById
 
-    function validatePassword() {
-        if (newpassword.value !== cfpass.value) {
-            passError.style.display = "block"; // Hiện lỗi
-        } else {
-            passError.style.display = "none"; // Ẩn lỗi
-        }
-    }
+            function validatePassword() {
+                if (newpassword.value !== cfpass.value) {
+                    passError.style.display = "block"; // Hiện lỗi
+                } else {
+                    passError.style.display = "none"; // Ẩn lỗi
+                }
+            }
 
-    // Kiểm tra mật khẩu ngay khi nhập
-    newpassword.addEventListener("input", validatePassword);
-    cfpass.addEventListener("input", validatePassword);
+            // Kiểm tra mật khẩu ngay khi nhập
+            newpassword.addEventListener("input", validatePassword);
+            cfpass.addEventListener("input", validatePassword);
 
-    form.addEventListener("submit", function (event) {
-        if (newpassword.value !== cfpass.value) {
-            event.preventDefault(); // Chặn gửi form về servlet
-            alert("Mật khẩu xác nhận không khớp! Vui lòng nhập lại.");
-            cfpass.focus();
-        }
-    });
-});
+            form.addEventListener("submit", function (event) {
+                if (newpassword.value !== cfpass.value) {
+                    event.preventDefault(); // Chặn gửi form về servlet
+                    alert("Mật khẩu xác nhận không khớp! Vui lòng nhập lại.");
+                    cfpass.focus();
+                }
+            });
+        });
 
     </script>
 </html>

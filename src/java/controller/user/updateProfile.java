@@ -84,9 +84,11 @@ public class updateProfile extends HttpServlet {
             request.setAttribute("mess", "Không có thay đổi gì.");
         } else {
             dao.updateUserName(user.getID(), userName);
+            User updatedUser = dao.getUserbyID(user.getID());
+            session.setAttribute("user", updatedUser); // Cập nhật session
             request.setAttribute("mess", "Cập nhật thành công.");
         }
-        request.setAttribute("U", user);
+        request.setAttribute("U", session.getAttribute("user"));
         request.getRequestDispatcher("/dashboard/profile.jsp").forward(request, response);
 
     }

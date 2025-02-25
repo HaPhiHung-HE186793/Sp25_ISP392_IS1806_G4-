@@ -62,7 +62,8 @@
                             <tr>
                                 <th>Tên</th>                               
                                 <th>Email</th>
-                                <th>Mật Khẩu</th>
+                                <th>Mật khẩu</th>
+                                <th>Xác nhận mật khẩu</th>
                                 <th>Chức năng</th>
                                 <th style="border-left: 1px solid black;">Hành động</th>
                             </tr>
@@ -81,6 +82,10 @@
                             <td>
                                 <input name="password" id="password" type="password" 
                                        placeholder="Nhập mật khẩu" required>
+                            </td>
+                            <td>
+                                <input name="cfpass" id="cfpass" type="password" 
+                                       placeholder="Xác nhận mật khẩu" >                                
                             </td>
                             <td>
                                 <c:if test="${u.getRoleID() == 1}">
