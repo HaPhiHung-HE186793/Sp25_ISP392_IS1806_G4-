@@ -181,59 +181,6 @@
 
     </body>
 
-    <div class="newDebt">
-        <div class="newDebt-container">
-            <button class="newDebt-add">
-                Thêm mới 
-            </button>
-            <button class="newDebt-close js-close-newDebt">
-                close
-            </button>
-            <div class="newDebt-header">Thông tin người dùng</div>
-            <div class="newDebt-body">
-
-
-                <table>
-                    <thead id="newDebt-tableHeader">
-                    </thead>
-                    <tbody class="newDebt-tableTbody">                            
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Họ và tên:</div></td>
-                            <td ><input class="newDebt-input" type="text" placeholder="Nguyen Van A"> </td>                                    
-                        </tr>                            
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Mật khẩu:</div></td>
-                            <td ><input name="password" id="password" type="password" 
-                                        class="newDebt-input" placeholder="Nhập mật khẩu" required=""><br></td>                                    
-                        </tr>       
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Email:</div></td>
-                            <td ><input name="email" id="email" type="email" class="newDebt-input" placeholder="@example.com" value="${email}"></td>                                    
-                        </tr> 
-                        <tr class="newDebt-tableTbody-tr">
-                            <td ><div class="newDebt-text"> Chức năng:</div></td>
-                            <td >
-                                <div class="form-check">
-                                    <input class="newDebt-input" type="radio" name="roleID" value="1" id="admin" required>
-                                    Admin
-                                </div>
-                                <div class="form-check">
-                                    <input class="newDebt-input" type="radio" name="roleID" value="2" id="store_owner">
-                                    Chủ Cửa Hàng
-                                </div>
-                                <div class="form-check">
-                                    <input class="newDebt-input" type="radio" name="roleID" value="3" id="employee">
-                                    Nhân Viên
-                                </div>
-                            </td>                                    
-                        </tr>                                   
-
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

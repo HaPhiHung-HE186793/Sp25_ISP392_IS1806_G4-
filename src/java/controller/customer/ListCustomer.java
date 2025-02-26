@@ -65,6 +65,10 @@ public class ListCustomer extends HttpServlet {
 
         Pagination page = new Pagination(totalUsers, pageSize, currentPage);
         session.setAttribute("page", page);
+        int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<Customers> paginatedUsers = listCustomer.subList(startIndex, endIndex);
+        request.setAttribute("currentPageUrl", "ListCustomer");
         request.setAttribute("currentPageUrl", "ListCustomer");
 
         request.setAttribute("listCustomer", listCustomer);
@@ -139,6 +143,10 @@ public class ListCustomer extends HttpServlet {
 
         Pagination page = new Pagination(totalUsers, pageSize, currentPage);
         session.setAttribute("page", page);
+        int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<Customers> paginatedUsers = listCustomer.subList(startIndex, endIndex);
+        request.setAttribute("currentPageUrl", "ListCustomer");
         request.setAttribute("currentPageUrl", "ListCustomer");
         // Lưu kết quả vào request
         // Chuyển tiếp kết quả tới JSP

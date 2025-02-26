@@ -70,6 +70,10 @@ public class ListDebtCustomer extends HttpServlet {
 
         Pagination page = new Pagination(totalUsers, pageSize, currentPage);
         session.setAttribute("page", page);
+        int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<DebtRecords> paginatedUsers = listCustomer.subList(startIndex, endIndex);
+        request.setAttribute("currentPageUrl", "ListCustomer");
         request.setAttribute("currentPageUrl", "ListDebtCustomer");
         session.setAttribute("customerid", customerid);
         request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
@@ -149,6 +153,9 @@ public class ListDebtCustomer extends HttpServlet {
 
             Pagination page = new Pagination(totalUsers, pageSize, currentPage);
             session.setAttribute("page", page);
+            int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<DebtRecords> paginatedUsers = listCustomer.subList(startIndex, endIndex);
             request.setAttribute("currentPageUrl", "ListDebtCustomer");
 
             request.getRequestDispatcher("debt/debt.jsp").forward(request, response);
