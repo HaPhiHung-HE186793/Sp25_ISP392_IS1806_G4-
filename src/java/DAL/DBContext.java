@@ -40,7 +40,7 @@ public class DBContext {
     }
     public DBContext() {
 
-        this("jdbc:sqlserver://localhost:1433;databaseName=ISPG4NV1","sa","123");
+       this("jdbc:sqlserver://localhost:1433;databaseName=ISPG4NV1","sa","123456");
 
     }
     public void dispatch(HttpServletRequest request, HttpServletResponse response, String page) {

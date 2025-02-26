@@ -7,10 +7,21 @@
     <input type="hidden" name="cp" id="cp" value="${requestScope.page.getCurrentPage()}">
     <input type="hidden" name="role" id="role" value="${requestScope.selectedRole}">
     <input type="hidden" name="keyword" id="keyword" value="${requestScope.keyword}">
+<<<<<<< HEAD
+=======
+    <input type="hidden" name="action" id="action" value="${requestScope.selectedAction}">
+    <input type="hidden" name="startDate" id="startDate" value="${requestScope.startDate}">
+    <input type="hidden" name="endDate" id="endDate" value="${requestScope.endDate}">
+
+
+>>>>>>> origin/main
     <input type="hidden" name="number" id="keyword" value="${requestScope.searchNumber}">
     <input type="hidden" name="startDate" id="keyword" value="${requestScope.searchStartDate}">
     <input type="hidden" name="endDate" id="keyword" value="${requestScope.searchEndDate}">
     <input type="hidden" name="name" id="keyword" value="${requestScope.searchName}">
+
+    <input type="hidden" name="search" id="search" value="${requestScope.search}">
+    <input type="hidden" name="search2" id="search2" value="${requestScope.search2}">
 
 </form>
 

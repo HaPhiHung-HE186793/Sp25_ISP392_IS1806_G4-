@@ -17,8 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.OrderItems;
+import model.OrderTask;
+import service.OrderQueue;
+import service.OrderWorker;
 
 /**
  *
@@ -79,16 +85,17 @@ public class CreateOrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+          response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
 
         HttpSession session = request.getSession();
+        String orderType = request.getParameter("orderType"); // Nhập hay Xuất kho
         String userName = (String) session.getAttribute("username");
-         //Lấy thông tin đơn hàng
-        int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
+       int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
 
-        DAOUser daoUser = new DAOUser();
-
-        User currentUser = daoUser.getCurrentUser(userName);
-        int userId = currentUser.getCreateBy();
+       
+        int userId = (int)session.getAttribute("userID");
         int porter = Integer.parseInt(request.getParameter("porter"));
 
         Double totalDiscount = Double.parseDouble(request.getParameter("totalDiscount"));
@@ -96,65 +103,55 @@ public class CreateOrderServlet extends HttpServlet {
 
         if (totalDiscount >= 200000) {
 
-            status = "Tổng tiền đã giảm : " + totalDiscount +"<br>"+ request.getParameter("status");
+            status = "Tổng tiền đã giảm : " + totalDiscount + "<br>" + request.getParameter("status");
         } else {
             status = request.getParameter("status");
         }
 
-        BigDecimal totalOrderPrice = new BigDecimal(request.getParameter("totalOrderPrice")); // Tổng tiền
-       
-
+        Double totalOrderPrice = Double.parseDouble(request.getParameter("totalOrderPrice")); // Tổng tiền
 
         try {
+            // Lấy danh sách sản phẩm từ request
+            String[] productIds = request.getParameterValues("productID");
+            String[] productNames = request.getParameterValues("productName");
+            String[] totalPrices = request.getParameterValues("totalPrice");
+            String[] unitPrices = request.getParameterValues("unitPrice");
+            String[] quantities = request.getParameterValues("totalWeight");
+            String[] descriptions = request.getParameterValues("description");
 
-            int orderId = DAOOrders.INSTANCE.createOrder(customerId,userId,userId, totalOrderPrice, porter, status);
+            List<OrderItems> orderDetails = new ArrayList<>();
+            if (productIds != null) {
+                for (int i = 0; i < productIds.length; i++) {
+                    int productID = Integer.parseInt(productIds[i]);
+                    String productName = productNames[i];
+                    Double price = Double.parseDouble(totalPrices[i]);
+                    Double unitPrice = Double.parseDouble(unitPrices[i]);
+                    int quantity = Integer.parseInt(quantities[i]);
+                    String description = descriptions[i];
+                    
+                   OrderItems orderItem = new OrderItems(productID, productName, price, unitPrice, quantity, description);
 
-            if (orderId != -1) {
-                String[] productIds = request.getParameterValues("productID");
-                String[] productNames = request.getParameterValues("productName");
-                String[] totalPrices = request.getParameterValues("totalPrice");
-                String[] unitPrices = request.getParameterValues("unitPrice");
-                String[] quantities = request.getParameterValues("totalWeight");
-                 String[] descriptions = request.getParameterValues("description");
-
-                if (productIds != null) {
-                    for (int i = 0; i < productIds.length; i++) {
-                        int productID = Integer.parseInt(productIds[i]);
-                        String productName = productNames[i];
-                        BigDecimal price = new BigDecimal(totalPrices[i]);
-                        BigDecimal unitPrice = new BigDecimal(unitPrices[i]);
-                        int quantity = Integer.parseInt(quantities[i]);
-
-                        if (quantity <= 0) {
-                            request.setAttribute("ms", "Số lượng sản phẩm không hợp lệ!");
-                            request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
-                            return;  // Dừng ngay sau khi forward
-                        }
-                        
-                        String description = descriptions[i];
-
-                        boolean success = DAOOrderItems.INSTANCE.createOrderItem(orderId, productID, productName, price, unitPrice, quantity,description);
-
-                        if (!success) {
-                            request.setAttribute("ms", "Không đủ số lượng sản phẩm trong kho!");
-                            request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
-                            return;  // Dừng ngay sau khi forward
-                        }
-                    }
+                    orderDetails.add(orderItem);
+                    
+                    
                 }
-                request.setAttribute("ms", "Tạo đơn hàng thành công");
-            } else {
-                request.setAttribute("ms", "Tạo đơn hàng thất bại");
             }
-        } catch (SQLException ex) {
+
+            // Khởi động Worker nếu chưa chạy
+            OrderWorker.startWorker();
+
+            // Đưa đơn hàng vào hàng đợi để xử lý
+        OrderTask orderTask = new OrderTask(orderType,customerId, userId, totalOrderPrice, porter, status, orderDetails);
+        OrderQueue.addOrder(orderTask);
+
+            // Trả về JSON response cho AJAX
+        response.getWriter().write("{\"status\": \"processing\"}");
+        } catch (Exception ex) {
             Logger.getLogger(CreateOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
-            request.setAttribute("ms", "Lỗi khi tạo đơn hàng, vui lòng thử lại.");
-            request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
-            return;  // Dừng ngay sau khi forward
+                    response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
+
         }
 
-// Nếu đã forward trước đó, thì sẽ không đến được đây
-        request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
 
     }
 

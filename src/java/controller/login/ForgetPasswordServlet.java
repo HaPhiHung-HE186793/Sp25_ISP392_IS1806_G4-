@@ -12,6 +12,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import model.User;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @WebServlet(name = "ForgetPasswordServlet", urlPatterns = {"/forgotpass"})
 public class ForgetPasswordServlet extends HttpServlet {
@@ -20,29 +22,33 @@ public class ForgetPasswordServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        
         String step = request.getParameter("step");
         DAOForget dao = new DAOForget();
         HttpSession session = request.getSession();
 
-       if ("1".equals(step)) {
-    String email = request.getParameter("email");
-    User acc = dao.checkEmail(email);
-    if (acc != null) {
-        session.setAttribute("email", email); // Lưu email vào session
-        request.setAttribute("email", email);
-        request.getRequestDispatcher("forgetpass/ForgetPassword2.jsp").forward(request, response);
-    } else {
-        request.setAttribute("errorMessage", "Email không tồn tại trong hệ thống.");
-        request.setAttribute("email", email);
-        request.getRequestDispatcher("forgetpass/ForgetPassword.jsp").forward(request, response);
-    }
-}
+        if ("1".equals(step)) {
+            String email = request.getParameter("email");
+            User acc = dao.checkEmail(email);
+            if (acc != null) {
+                session.setAttribute("email", email);
+                request.setAttribute("email", email);
+                request.getRequestDispatcher("forgetpass/ForgetPassword2.jsp").forward(request, response);
+            } else {
+                request.setAttribute("errorMessage", "Email không tồn tại trong hệ thống.");
+                request.setAttribute("email", email);
+                request.getRequestDispatcher("forgetpass/ForgetPassword.jsp").forward(request, response);
+            }
+        }
+
         // Step 2: Generate and send OTP
         if ("2".equals(step)) {
             String email = request.getParameter("email");
-
             String otpCode = MailUtil.generateOTP();
-            MailUtil.sendOTP(email, otpCode);
+
+            // Gửi OTP trong một luồng riêng
+            executor.submit(new OTPTask(email, otpCode));
 
             session.setAttribute("otpCode", otpCode);
             session.setAttribute("otpGenerationTime", LocalDateTime.now());
@@ -58,11 +64,31 @@ public class ForgetPasswordServlet extends HttpServlet {
             String sessionOtp = (String) session.getAttribute("otpCode");
             LocalDateTime otpGenerationTime = (LocalDateTime) session.getAttribute("otpGenerationTime");
 
-            if (enteredOtp.equals(sessionOtp) && LocalDateTime.now().isBefore(otpGenerationTime.plusMinutes(5))) {
+            Integer failedAttempts = (Integer) session.getAttribute("failedAttempts");
+            if (failedAttempts == null) {
+                failedAttempts = 0;
+            }
+
+            if (enteredOtp.equals(sessionOtp) && LocalDateTime.now().isBefore(otpGenerationTime.plusMinutes(1))) {
+                session.setAttribute("failedAttempts", 0);
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("forgetpass/ForgetPassword4.jsp").forward(request, response);
             } else {
-                request.setAttribute("errorMessage", "OTP không chính xác hoặc đã hết hạn.");
+                failedAttempts++;
+                session.setAttribute("failedAttempts", failedAttempts);
+
+                if (LocalDateTime.now().isAfter(otpGenerationTime.plusMinutes(1))) {
+                    session.removeAttribute("otpCode");
+                    session.removeAttribute("otpGenerationTime");
+                    request.setAttribute("errorMessage", "OTP đã hết hạn. Vui lòng yêu cầu OTP mới.");
+                } else if (failedAttempts >= 3) {
+                    session.removeAttribute("otpCode");
+                    session.removeAttribute("otpGenerationTime");
+                    request.setAttribute("errorMessage", "Bạn đã nhập sai OTP quá 3 lần. Vui lòng yêu cầu OTP mới.");
+                } else {
+                    request.setAttribute("errorMessage", "OTP không chính xác. Hãy thử lại.");
+                }
+                
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("forgetpass/ForgetPassword3.jsp").forward(request, response);
             }
@@ -70,64 +96,62 @@ public class ForgetPasswordServlet extends HttpServlet {
 
         if ("resend".equals(step)) {
             String email = (String) request.getParameter("email");
-
-            // Kiểm tra xem email có tồn tại trong hệ thống không
             User acc = dao.checkEmail(email);
             if (acc != null) {
-                // Tạo và gửi lại OTP
                 String otpCode = MailUtil.generateOTP();
-                MailUtil.sendOTP(email, otpCode);
+                executor.submit(new OTPTask(email, otpCode));
 
-                // Lưu OTP và thời gian vào session
                 session.setAttribute("otpCode", otpCode);
                 session.setAttribute("otpGenerationTime", LocalDateTime.now());
 
-                // Quay lại trang nhập mã OTP
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("forgetpass/ForgetPassword3.jsp").forward(request, response);
             } else {
-                // Xử lý nếu email không tồn tại (trường hợp này ít khi xảy ra nếu đã gửi OTP trước đó)
                 request.setAttribute("errorMessage", "Email không tồn tại trong hệ thống.");
                 request.getRequestDispatcher("forgetpass/ForgetPassword.jsp").forward(request, response);
             }
         }
-// Step 4: Reset password
-if ("4".equals(step)) {
-    String email = (String) session.getAttribute("email"); // Lấy email từ session
-    String password = request.getParameter("password");
-    String passwordConfirm = request.getParameter("passwordConfirm");
 
-    if (password.equals(passwordConfirm)) {
-        String hashedPassword = hashPassword(password);
-        boolean isUpdated = dao.updatePassword(email, hashedPassword);
-        
-        if (isUpdated) {
-            response.sendRedirect("login/login.jsp");
-        } else {
-            request.setAttribute("errorMessage", "Cập nhật mật khẩu thất bại. Hãy thử lại.");
-            request.setAttribute("email", email);
-            request.getRequestDispatcher("forgetpass/ForgetPassword4.jsp").forward(request, response);
+        // Step 4: Reset password
+        if ("4".equals(step)) {
+            String email = (String) session.getAttribute("email");
+            String password = request.getParameter("password");
+            String passwordConfirm = request.getParameter("passwordConfirm");
+
+            if (password.equals(passwordConfirm)) {
+                String hashedPassword = hashPassword(password);
+                boolean isUpdated = dao.updatePassword(email, hashedPassword);
+                
+                if (isUpdated) {
+                    response.sendRedirect("login/login.jsp");
+                } else {
+                    request.setAttribute("errorMessage", "Cập nhật mật khẩu thất bại. Hãy thử lại.");
+                    request.setAttribute("email", email);
+                    request.getRequestDispatcher("forgetpass/ForgetPassword4.jsp").forward(request, response);
+                }
+            } else {
+                request.setAttribute("errorMessage", "Mật khẩu không giống nhau. Hãy thử lại.");
+                request.setAttribute("email", email);
+                request.getRequestDispatcher("forgetpass/ForgetPassword4.jsp").forward(request, response);
+            }
         }
-    } else {
-        request.setAttribute("errorMessage", "Mật khẩu không giống nhau. Hãy thử lại.");
-        request.setAttribute("email", email);
-        request.getRequestDispatcher("forgetpass/ForgetPassword4.jsp").forward(request, response);
-    }
-}
+
+        // Dừng ExecutorService
+        executor.shutdown();
     }
 
     private String hashPassword(String password) {
-    try {
-        MessageDigest md = MessageDigest.getInstance("SHA-256"); // Sử dụng SHA-256
-        md.update(password.getBytes());
-        byte[] digest = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b));
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException ex) {
+            return null;
         }
-        return sb.toString();
-    } catch (NoSuchAlgorithmException ex) {
-        return null;
     }
-}
 }

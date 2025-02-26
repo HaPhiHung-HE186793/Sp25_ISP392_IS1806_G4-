@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import DAO.DAOUser;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import model.pagination.Pagination;
 import model.User;
 
@@ -74,19 +76,7 @@ public class listUsers extends HttpServlet {
             return;
         }
         String error = null;
-        //update users
-//        if (request.getParameter("id") != null) {
-//            int id = Integer.parseInt(request.getParameter("id"));
-//            User U = dao.getUserbyID(id);
-//            // Không cho phép chỉnh sửa admin khác
-//            if (U.getRoleID() == 1 && userID != U.getID()) {
-//                error = "Không được phép chỉnh sửa admin khác.";
-//            } else {
-//                request.setAttribute("u", U);
-//                session.setAttribute("userIdUpdate", U.getID());
-//                request.getRequestDispatcher("updateuser").forward(request, response);
-//            }
-//        }
+
         if (request.getParameter("id") != null) {
             int id = Integer.parseInt(request.getParameter("id"));
             User Users = dao.getUserbyID(id);
@@ -105,23 +95,23 @@ public class listUsers extends HttpServlet {
                 }
             }
         }
-        //block user
-        if (request.getParameter("blockid") != null) {
-            int blockid = Integer.parseInt(request.getParameter("blockid"));
-            User U = dao.getUserbyID(blockid);
-            if (U.getRoleID() == 1) {
-                error = "Không được phép khóa tài khoản admin khác.";
-            } else {
-                Integer deleteBy = (Integer) session.getAttribute("userID");
-                dao.blockUserByID(blockid, deleteBy);
-            }
-        }
-        //unlock user
-        if (request.getParameter("unlockid") != null) {
-            int unlockid = Integer.parseInt(request.getParameter("unlockid"));
-            Integer createBy = (Integer) session.getAttribute("userID");
-            dao.unlockUserByID(unlockid, createBy);
-        }
+//        //block user
+//        if (request.getParameter("blockid") != null) {
+//            int blockid = Integer.parseInt(request.getParameter("blockid"));
+//            User U = dao.getUserbyID(blockid);
+//            if (U.getRoleID() == 1) {
+//                error = "Không được phép khóa tài khoản admin khác.";
+//            } else {
+//                Integer deleteBy = (Integer) session.getAttribute("userID");
+//                dao.blockUserByID(blockid, deleteBy);
+//            }
+//        }
+//        //unlock user
+//        if (request.getParameter("unlockid") != null) {
+//            int unlockid = Integer.parseInt(request.getParameter("unlockid"));
+//            Integer createBy = (Integer) session.getAttribute("userID");
+//            dao.unlockUserByID(unlockid, createBy);
+//        }
 
         List<User> U = null;
         if (roleID == 1) {
@@ -131,7 +121,7 @@ public class listUsers extends HttpServlet {
         }
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = U.size();
-        int pageSize = 8;
+        int pageSize = 9;
         int currentPage = 1;
 
         if (request.getParameter("cp") != null) {
@@ -148,6 +138,8 @@ public class listUsers extends HttpServlet {
             user.setCreatorName(creatorName);
         }
 
+        String endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        request.setAttribute("endDate", endDate);
         request.setAttribute("error", error);
         request.setAttribute("user_current", user_current);
         session.setAttribute("U", U);
@@ -171,8 +163,38 @@ public class listUsers extends HttpServlet {
         List<User> filteredUsers = null;
         String mess = null;
         String roleParam = request.getParameter("role");
-        String keyword = request.getParameter("keyword");        
+        String keyword = request.getParameter("keyword");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String action = request.getParameter("action");
+        Integer selectedAction = (action != null && !action.isEmpty()) ? Integer.parseInt(action) : null;
         Integer role = (roleParam != null && !roleParam.isEmpty()) ? Integer.parseInt(roleParam) : null;
+
+        String error = null;
+        String actionBlock = request.getParameter("actionBlock");
+        String userIDBlock = request.getParameter("userIDBlock");
+        if (userIDBlock != null) {
+            int id = Integer.parseInt(userIDBlock);
+            User U = dao.getUserbyID(id);
+            if (U.getRoleID() == 1) {
+                error = "Không được phép khóa tài khoản admin khác.";
+            } else if ("block".equals(actionBlock)) {
+                // Gọi DAO để khóa user
+                Integer deleteBy = (Integer) session.getAttribute("userID");
+                dao.blockUserByID(id, deleteBy);
+            } else if ("unlock".equals(actionBlock)) {
+                // Gọi DAO để mở khóa user
+                Integer createBy = (Integer) session.getAttribute("userID");
+                dao.unlockUserByID(id, createBy);
+            }
+
+        }
+        if (error != null) {
+            response.setStatus(400); // Báo lỗi cho AJAX
+            response.getWriter().write(error);
+        } else {
+            response.setStatus(200);
+        }
 
         //search
         if (user_current.getRoleID() == 1) {
@@ -188,7 +210,25 @@ public class listUsers extends HttpServlet {
             List<User> tempUsers = dao.getUsersByKeyword(keyword, filteredUsers);
             if (!tempUsers.isEmpty()) {
                 filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
-            } else mess = "Không tìm thấy người dùng nào.";
+            } else {
+                mess = "Không tìm thấy người dùng nào.";
+            }
+        }
+        if (startDate != null && !startDate.isEmpty()) {
+            List<User> tempUsers = dao.getUsersByDate(startDate, endDate, filteredUsers);
+            if (!tempUsers.isEmpty()) {
+                filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
+            } else {
+                mess = "Không tìm thấy người dùng nào.";
+            }
+        }
+        if (selectedAction != null && selectedAction != -1) {
+            List<User> tempUsers = dao.getUsersByAction(selectedAction, filteredUsers);
+            if (!tempUsers.isEmpty()) {
+                filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
+            } else {
+                mess = "Không tìm thấy người dùng nào.";
+            }
         }
         if (filteredUsers == null || filteredUsers.isEmpty()) {
             mess = "Không tìm thấy người dùng nào.";
@@ -199,35 +239,6 @@ public class listUsers extends HttpServlet {
 
         }
 
-//        if (user_current.getRoleID() == 1) {
-//            if (role != null && role == 0) {
-//                filteredUsers = dao.listUsers();
-//            } else if (role != -1 && keyword != null && !keyword.isEmpty()) {
-//                boolean[] isKeywordSearchEmpty = {false};
-//                filteredUsers = dao.getUsersByRoleAndKeyword(role, keyword, isKeywordSearchEmpty);
-//                if (isKeywordSearchEmpty[0]) {
-//                    mess = "Không tìm thấy người dùng nào.";
-//                }
-//            } else if (role != -1) {
-//                filteredUsers = dao.getUsersByRole(role);
-//            } else if (keyword != null && !keyword.isEmpty()) {
-//                filteredUsers = dao.getUsersByKeyword(keyword);
-//            }
-//            if (filteredUsers == null || filteredUsers.isEmpty()) {
-//                mess = "Không tìm thấy người dùng nào.";
-//                filteredUsers = dao.listUsers(); // Lấy toàn bộ danh sách nếu không có lọc
-//            }
-//        }
-//        if (user_current.getRoleID() == 2) {
-//            if (keyword != null && !keyword.isEmpty()) {
-//                filteredUsers = dao.getUsersByKeywordAndOwner(keyword, user_current.getID());
-//            }
-//            if (filteredUsers == null || filteredUsers.isEmpty()) {
-//                mess = "Không tìm thấy người dùng nào.";
-//                System.out.println(mess);
-//                filteredUsers = dao.listUsersByOwner(user_current.getID());
-//            }
-//        }
         //lay ten creatrBy
         for (User user : filteredUsers) {
             User u = dao.getUserbyID(user.getCreateBy());
@@ -236,7 +247,7 @@ public class listUsers extends HttpServlet {
         }
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = filteredUsers.size();
-        int pageSize = 8;
+        int pageSize = 9;
         int currentPage = 1;
 
         if (request.getParameter("cp") != null) {
@@ -253,9 +264,13 @@ public class listUsers extends HttpServlet {
         List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
 
         request.setAttribute("mess", mess);
+        request.setAttribute("error", error);
         request.setAttribute("U", filteredUsers);
         request.setAttribute("selectedRole", role);
         request.setAttribute("keyword", keyword);
+        request.setAttribute("startDate", startDate);
+        request.setAttribute("endDate", endDate);
+        request.setAttribute("selectedAction", selectedAction);
         request.setAttribute("user_current", user_current);
         request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
     }
@@ -271,24 +286,3 @@ public class listUsers extends HttpServlet {
     }// </editor-fold>
 
 }
-//if (request.getParameter("id") != null) {
-//            int id = Integer.parseInt(request.getParameter("id"));
-//            User Users = dao.getUserbyID(id);
-//            // Không cho phép chỉnh sửa user cùng role
-//            if (Users.getRoleID() == user_current.getRoleID() && userID != Users.getID()) {
-//                error = "Không được phép chỉnh sửa.";
-//            } else  if(Users.getRoleID() == 3  && user_current.getRoleID() == 1) {
-//                error = "Không được phép chỉnh sửa.";
-//            } else {
-//                request.setAttribute("u", U);
-//                session.setAttribute("userIdUpdate", Users.getID());
-//                request.getRequestDispatcher("updateuser").forward(request, response);
-//            }
-//        }
-
-//List<User> U = dao.listUsers();
-//search theo role
-//U = dao.getSearchbyRole( roleId, U);
-//sau ddos search theo keyword
-//U = dao.getSearchByKey( key, U);
-// trong ham dao se tru di users trung lap

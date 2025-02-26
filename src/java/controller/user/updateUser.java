@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import model.User;
 import utils.mail;
@@ -27,6 +29,7 @@ public class updateUser extends HttpServlet {
     DAO.DAOUser daou = new DAOUser();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
     mail sendEmail = new mail();
+    private static ExecutorService emailExecutor = Executors.newFixedThreadPool(2); // Tạo 2 luồng xử lý email
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -74,8 +77,8 @@ public class updateUser extends HttpServlet {
             return;
         }
         Integer userid = (Integer) session.getAttribute("userIdUpdate");
-        if(userid == null){
-          response.sendRedirect("ListProducts");
+        if (userid == null) {
+            response.sendRedirect("ListProducts");
         }
         User user = daou.getUserbyID(userid);
         request.setAttribute("user_update", user);
@@ -126,15 +129,11 @@ public class updateUser extends HttpServlet {
             errors.add("Vui lòng chọn chức năng!");
         }
         // lấy id của user hiện tại
-        Integer createBy = (Integer) session.getAttribute("userID");
-        if (createBy == null) {
-            response.sendRedirect("/login/login.jsp");
-            return;
-        }
+        Integer createBy = (Integer) session.getAttribute("userID");        
 
-        if (userName == null || userName.trim().isEmpty()) {
-            errors.add("Vui lòng nhập đầy đủ họ tên!");
-        }
+//        if (userName == null || userName.trim().isEmpty()) {
+//            errors.add("Vui lòng nhập đầy đủ họ tên!");
+//        }
         if (email == null || email.trim().isEmpty()) {
             errors.add("Vui lòng nhập email!");
         } else if (!Pattern.matches(EMAIL_REGEX, email)) {
@@ -145,9 +144,9 @@ public class updateUser extends HttpServlet {
             }
         }
 
-        if (!newPassword.equals(confirmPassword)) {
-            errors.add("Mật khẩu không trùng khớp");
-        }
+//        if (!newPassword.equals(confirmPassword)) {
+//            errors.add("Mật khẩu không trùng khớp");
+//        }
 
         if (!errors.isEmpty()) {
             request.setAttribute("errors", errors);
@@ -159,6 +158,35 @@ public class updateUser extends HttpServlet {
             request.getRequestDispatcher("/user/updateUser.jsp").forward(request, response);
             return;
         }
+
+//        if (newPassword != null && !newPassword.isEmpty()) {
+//            User newUser = new User();
+//            newUser.setID(userid);
+//            newUser.setUserName(userName);
+//            newUser.setEmail(email);
+//            newUser.setUserPassword(newPassword);
+//            newUser.setRoleID(roleID);
+//            newUser.setCreateBy(createBy);
+//            daou.updateUser2(newUser);
+//            //gửi email password được sinh ra cho người dùng           
+//            sendEmail.sendPasswordChangeConfirmation(email, newPassword);
+//            if (!u.getEmail().equals(email)) {
+//                sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
+//            }
+//        } else {
+//            User newUser = new User();
+//            newUser.setID(userid);
+//            newUser.setUserName(userName);
+//            newUser.setEmail(email);
+//            newUser.setRoleID(roleID);
+//            newUser.setCreateBy(createBy);
+//            daou.updateUser3(newUser);
+//            if (!u.getEmail().equals(email)) {
+//                sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
+//            }
+//        }
+        restartEmailExecutor();
+
         if (newPassword != null && !newPassword.isEmpty()) {
             User newUser = new User();
             newUser.setID(userid);
@@ -168,10 +196,13 @@ public class updateUser extends HttpServlet {
             newUser.setRoleID(roleID);
             newUser.setCreateBy(createBy);
             daou.updateUser2(newUser);
-            //gửi email password được sinh ra cho người dùng           
-            sendEmail.sendPasswordChangeConfirmation(email, newPassword);
+
+            // Gửi email thông báo thay đổi mật khẩu (chạy trên luồng khác)
+            emailExecutor.execute(() -> sendEmail.sendPasswordChangeConfirmation(email, newPassword));
+
+            // Nếu email thay đổi, gửi email xác nhận thay đổi (chạy song song)
             if (!u.getEmail().equals(email)) {
-                sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
+                emailExecutor.execute(() -> sendEmail.sendEmailChangeConfirmation(u.getEmail(), email));
             }
         } else {
             User newUser = new User();
@@ -181,10 +212,15 @@ public class updateUser extends HttpServlet {
             newUser.setRoleID(roleID);
             newUser.setCreateBy(createBy);
             daou.updateUser3(newUser);
+
+            // Nếu email thay đổi, gửi email xác nhận thay đổi (chạy song song)
             if (!u.getEmail().equals(email)) {
-                sendEmail.sendEmailChangeConfirmation(u.getEmail(), email);
+                emailExecutor.execute(() -> sendEmail.sendEmailChangeConfirmation(u.getEmail(), email));
             }
         }
+
+// Đóng `ExecutorService` sau khi xử lý xong (nếu chương trình không còn gửi email)
+        emailExecutor.shutdown();
 
         // lay ra user sau khi update
         User user = daou.getUserbyID(userid);
@@ -203,5 +239,11 @@ public class updateUser extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private synchronized void restartEmailExecutor() {
+        if (emailExecutor.isShutdown() || emailExecutor.isTerminated()) {
+            emailExecutor = Executors.newFixedThreadPool(2);
+        }
+    }
 
 }

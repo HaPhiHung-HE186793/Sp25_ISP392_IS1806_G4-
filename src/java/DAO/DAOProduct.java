@@ -23,26 +23,41 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DAOProduct extends DBContext {
 
     public static DAOProduct INSTANCE = new DAOProduct();
 
-    public boolean updateProductQuantity(int productID, int quantitySold) {
-        String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ? AND quantity >= ?";
+    public void exportProductQuantity(int productID, int quantitySold) {
+        String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantitySold);
             ps.setInt(2, productID);
-            ps.setInt(3, quantitySold); // Đảm bảo không trừ âm số lượng
 
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+            ps.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+
+    }
+
+    public void importProductQuantity(int productID, int quantityAdded) {
+        String sql = "UPDATE products SET quantity = quantity + ? WHERE productID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quantityAdded);
+            ps.setInt(2, productID);
+
+            ps.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+       
     }
 
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
@@ -200,35 +215,32 @@ public class DAOProduct extends DBContext {
         return n;
     }
 
-    public boolean updateProduct(int productId, String productName, String description, double price, int quantity, String image, LocalDate updateAt) {
-        String sql = "UPDATE Products SET productName = ?, description = ?, price = ?, quantity = ?, image = ?, updateAt = ? WHERE productID = ?";
+    public boolean updateProduct(int productId, String productName, String description, double price, String image, String updateAt) {
+        String sql = "UPDATE Products SET productName = ?, description = ?, price = ?, image = ?, updateAt = ? WHERE productID = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, productName);
             statement.setString(2, description);
             statement.setDouble(3, price);
-            statement.setInt(4, quantity);
-            statement.setString(5, image);
+            statement.setString(4, image);
 
-            // Format LocalDate to String for database (same as before)
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String updateAtStr = updateAt.format(formatter);
-            statement.setString(6, updateAtStr);
+            // Giữ updateAt là LocalDate nhưng lưu vào DB đúng cách
+            statement.setString(5, updateAt);
 
-            statement.setInt(7, productId);
+            statement.setInt(6, productId);
 
             int rowsUpdated = statement.executeUpdate();
             return rowsUpdated > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, "Error updating product", e);
         }
+        return false;
     }
 
     public boolean isProductNameExists(String productName) {
         String sql = "SELECT COUNT(*) FROM Products WHERE productName = ?"; // Assuming 'Products' is your table name
         try ( // Your DBConnect class
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, productName);
             ResultSet rs = ps.executeQuery();

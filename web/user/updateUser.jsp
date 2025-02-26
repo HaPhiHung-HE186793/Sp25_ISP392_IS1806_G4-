@@ -5,7 +5,7 @@
 --%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,26 +32,29 @@
 
                         <c:choose>
                             <c:when test="${not empty errors}">
-                                <div class="notification" id="errorNotification" style="color: red; max-width: 29%;margin-left: 25%;padding: 0px 5px;">
+                                <div class="notification2" id="errorNotification" style="color: red; max-width: 29%;margin-left: 25%;padding: 0px 5px;">
                                     <c:forEach var="error" items="${errors}">
                                         <p>${error}</p>
                                     </c:forEach>
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                <div class="notification" id="errorNotification" style="display: none; max-width: 29%;"></div>
+                                <div class="notification2" id="errorNotification" style="display: none; max-width: 29%;"></div>
                             </c:otherwise>
                         </c:choose> 
                         <c:choose>
                             <c:when test="${not empty success}">
-                                <div class="notification" id="messageNotification" style="color: green; max-width: 29%;margin-left: 25%;">
+                                <div class="notification2" id="messageNotification" style="color: green; max-width: 29%;margin-left: 25%;">
                                     ${success}
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                <div class="notification" id="messageNotification" style="display: none; max-width: 29%;"></div>
+                                <div class="notification2" id="messageNotification" style="display: none; max-width: 29%;"></div>
                             </c:otherwise>
                         </c:choose>
+                        <p id="passError" style="color: red; font-size: 14px; display: none; max-width: 29%;margin-left: 25%;">
+                            Mật khẩu xác nhận không khớp!
+                        </p>
                     </div>
 
                     <table>
@@ -60,14 +63,14 @@
                                 <th>Tên</th>                               
                                 <th>Email</th>
                                 <th>Mật khẩu mới</th>
-                                <th>Xác minh mật khẩu</th>
+                                <th>Xác nhận mật khẩu</th>
                                 <th>Chức năng</th>
                                 <th style="border-left: 1px solid black;">Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
                             <tr>
-                        <form action="updateuser" method="POST">
+                        <form id="updateUserForm" action="updateuser" method="POST">
                             <td>
                                 <input name="userName" id="userName" type="text" 
                                        placeholder="Tên của bạn" value="${user_update.getUserName()}">
@@ -79,14 +82,11 @@
                             </td> 
                             <td>
                                 <input name="password" id="password" type="password" 
-                                       placeholder="Mật khẩu mới" required>
+                                       placeholder="Mật khẩu mới" >
                             </td>
                             <td>
                                 <input name="cfpass" id="cfpass" type="password" 
-                                       placeholder="Xác nhận mật khẩu" required>
-                                <p id="passError" style="color: red; font-size: 14px; display: none;">
-                                    Mật khẩu xác nhận không khớp!
-                                </p>
+                                       placeholder="Xác nhận mật khẩu" >                                
                             </td>
                             <td>
                                 <c:if test="${u.getRoleID() == 1}">
@@ -143,7 +143,7 @@
             const password = document.getElementById("password");
             const cfpass = document.getElementById("cfpass");
             const passError = document.getElementById("passError");
-            const form = document.querySelector("form");
+            const form = document.getElementById("updateUserForm"); // Đổi thành getElementById
 
             function validatePassword() {
                 if (password.value !== cfpass.value) {
@@ -153,14 +153,20 @@
                 }
             }
 
+            // Kiểm tra mật khẩu ngay khi nhập
+            password.addEventListener("input", validatePassword);
+            cfpass.addEventListener("input", validatePassword);
+
             form.addEventListener("submit", function (event) {
                 if (password.value !== cfpass.value) {
-                    event.preventDefault(); // Chặn gửi form
+                    event.preventDefault(); // Chặn gửi form về servlet
                     alert("Mật khẩu xác nhận không khớp! Vui lòng nhập lại.");
                     cfpass.focus();
                 }
             });
         });
+
+
 
 
     </script>

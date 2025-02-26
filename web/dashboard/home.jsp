@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -62,7 +62,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <c:forEach items="${products}" var="p">
+                            <c:forEach items="${products}" var="p" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
                                 <c:if test="${not p.isIsDelete()}">
                                     <tr class="no-rows">
                                         <td>${p.getProductID()}</td>
@@ -93,6 +93,7 @@
                 </div>
             </div>
         </div>
+                                    <%@include file="/Component/pagination.jsp" %>
     </body>
 
     <script>

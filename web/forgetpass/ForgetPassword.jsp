@@ -73,6 +73,9 @@
                     <%= request.getAttribute("errorMessage") != null ? request.getAttribute("errorMessage") : "" %>
                 </span>
             </form>
+                 <div class="back-button">
+            <a href="<%= request.getContextPath() %>/login/login.jsp">Quay lại</a>
+        </div>
         </div>
     </body>
 </html>

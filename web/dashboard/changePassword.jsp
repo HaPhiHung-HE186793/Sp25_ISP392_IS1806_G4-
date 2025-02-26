@@ -19,10 +19,10 @@
         <title>Change Password</title>
         <style>
             .profile-container {
-                max-width: 500px;
+                max-width: 690px;
                 margin: 30px auto;
                 padding: 20px;
-                background: #fff;
+                background: #333;
                 border-radius: 8px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
@@ -31,7 +31,7 @@
                 text-align: center;
                 margin-bottom: 20px;
                 font-size: 24px;
-                color: #333;
+                color: white;
                 display: block; /* Đảm bảo thẻ h2 không bị ẩn */
             }
 
@@ -53,7 +53,7 @@
                 margin-bottom: 15px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
-                font-size: 16px;
+                font-size: 15px;
             }
 
             .profile-container button {
@@ -63,7 +63,7 @@
                 color: white;
                 border: none;
                 border-radius: 5px;
-                font-size: 16px;
+                font-size: 15px;
                 cursor: pointer;
                 margin-top: 10px;
             }
@@ -93,7 +93,6 @@
             .profile-buttons button:hover {
                 background-color: #0056b3;
             }
-
             .profile-buttons button:first-child {
                 background-color: #28a745; /* Màu xanh lá cây */
             }
@@ -110,7 +109,7 @@
                 line-height: 1.5 !important;
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
-                color: #333;
+                color: white;
             }
 
 
@@ -126,13 +125,13 @@
                     </div>
                     <div class="profile-container">
                         <h2>Thay đổi mật khẩu</h2>
-                        <form action="changepassword" method="post">                        
+                        <form id="updateUserForm" action="changepassword" method="post">                        
                             <label for="password">Mật khẩu cũ </label>
                             <input type="password" id="password" name="password" value="${password}" required>                                                
                         <label for="newpassword">Mật khẩu mới </label>
                         <input type="password" id="newpassword" name="newpassword" value="${newpassword}" required>
-                        <label for="cfnewpass">Xác nhận mật khẩu mới </label>
-                        <input type="password" id="cfnewpass" name="cfnewpass" value="${cfnewpass}" required>
+                        <label for="cfpass">Xác nhận mật khẩu mới </label>
+                        <input type="password" id="cfpass" name="cfpass" value="${cfpass}" required>
                         <div class="profile-buttons">                            
                             <button type="button" onclick="location.href = 'updateprofile'">Cập nhật người dùng</button>
                             <button type="submit">Xác nhận thay đổi</button>
@@ -162,6 +161,9 @@
                             <div class="notification2" id="messageNotification" style="display: none;"></div>
                         </c:otherwise>
                     </c:choose>
+                    <p id="passError" style="color: red; font-size: 14px; display: none; max-width: 29%;margin-left: 40%;">
+                        Mật khẩu xác nhận không khớp!
+                    </p>
                 </div>
             </div>
         </div>
@@ -181,6 +183,35 @@
         hideNotification('errorNotification');
         hideNotification('messageNotification');
 
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const password = document.getElementById("password");
+            const newpassword = document.getElementById("newpassword");
+            const cfpass = document.getElementById("cfpass");
+            const passError = document.getElementById("passError");
+            const form = document.getElementById("updateUserForm"); // Đổi thành getElementById
+
+            function validatePassword() {
+                if (newpassword.value !== cfpass.value) {
+                    passError.style.display = "block"; // Hiện lỗi
+                } else {
+                    passError.style.display = "none"; // Ẩn lỗi
+                }
+            }
+
+            // Kiểm tra mật khẩu ngay khi nhập
+            newpassword.addEventListener("input", validatePassword);
+            cfpass.addEventListener("input", validatePassword);
+
+            form.addEventListener("submit", function (event) {
+                if (newpassword.value !== cfpass.value) {
+                    event.preventDefault(); // Chặn gửi form về servlet
+                    alert("Mật khẩu xác nhận không khớp! Vui lòng nhập lại.");
+                    cfpass.focus();
+                }
+            });
+        });
 
     </script>
 </html>
