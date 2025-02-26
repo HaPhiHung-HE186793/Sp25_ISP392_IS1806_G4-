@@ -31,11 +31,8 @@
                 text-align: center;
                 margin-bottom: 20px;
                 font-size: 24px;
-<<<<<<< HEAD
                 color: #fff;
-=======
                 color: white;
->>>>>>> origin/main
                 display: block; /* Đảm bảo thẻ h2 không bị ẩn */
             }
 
@@ -113,11 +110,8 @@
                 line-height: 1.5 !important;
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
-<<<<<<< HEAD
                 color: #fff;
-=======
                 color: white;
->>>>>>> origin/main
             }
 
 
