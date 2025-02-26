@@ -5,9 +5,8 @@
 
 <form id="paginationForm" method="post" action="${currentPageUrl}">
     <input type="hidden" name="cp" id="cp" value="${requestScope.page.getCurrentPage()}">
-<input type="hidden" name="role" id="role" value="${requestScope.selectedRole}">
+    <input type="hidden" name="role" id="role" value="${requestScope.selectedRole}">
     <input type="hidden" name="keyword" id="keyword" value="${requestScope.keyword}">
-
     <input type="hidden" name="number" id="keyword" value="${requestScope.searchNumber}">
     <input type="hidden" name="startDate" id="keyword" value="${requestScope.searchStartDate}">
     <input type="hidden" name="endDate" id="keyword" value="${requestScope.searchEndDate}">
@@ -64,7 +63,7 @@
 </c:if>
 
 <script>
-function submitPage(page) {
+    function submitPage(page) {
         document.getElementById("cp").value = page;
         document.getElementById("paginationForm").submit();
     }

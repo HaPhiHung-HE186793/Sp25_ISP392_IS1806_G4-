@@ -44,8 +44,11 @@ public class UpdateCustomer extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String customerid = request.getParameter("customerid");
-        DAOCustomers dao = new DAOCustomers();
+        DAOCustomers dao = new DAOCustomers();                
         Customers customers = dao.getCustomer(customerid);
+        if(customers == null){
+            response.sendRedirect("ListCustomer");
+        }
         request.setAttribute("customers", customers);
         // Lấy message từ session và đặt vào request
         HttpSession session = request.getSession();

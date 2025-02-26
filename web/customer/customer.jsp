@@ -144,7 +144,7 @@
                             </tr>                                   
                             <tr class="newDebt-tableTbody-tr">
                                 <td ><div class="newDebt-text"> Tổng nợ:</div></td>
-                                <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    
+                                <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" value="0" readonly> </td>                                    
                             </tr>  
                             <tr class="newDebt-tableTbody-tr">
                                 <td ><div class="newDebt-text"> Người tạo:</div></td>

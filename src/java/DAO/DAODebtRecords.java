@@ -88,11 +88,6 @@ public class DAODebtRecords extends DBContext {
         return 0;
     }
 
-    
-    
-    
-    
-    
     public Vector<DebtRecords> getDeptRecords(String sql) {
         Vector<DebtRecords> vector = new Vector<DebtRecords>();
         try {
@@ -178,31 +173,40 @@ public class DAODebtRecords extends DBContext {
         return n;
     }
 
-//    public void listAll() {
-//        String sql = "SELECT * FROM debtRecords"; // Cập nhật tên bảng
-//        try {
-//            Statement state = conn.createStatement();
-//            ResultSet rs = state.executeQuery(sql);
-//            while (rs.next()) {
-//                int debtID = rs.getInt("debtID");
-//                int customerID = rs.getInt("customerID");
-//                int orderID = rs.getInt("orderID");
-//                double amount = rs.getDouble("amount");
-//                String paymentStatus = rs.getString("paymentStatus");
-//                String createAt = rs.getString("createAt");
-//                String updateAt = rs.getString("updateAt");
-//                String createBy = rs.getString("createBy");
-//                int isDelete = rs.getInt("isDelete");
-//                String deleteAt = rs.getString("deleteAt");
-//                String deleteBy = rs.getString("deleteBy");
-//
-//                debtRecords record = new debtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-//                System.out.println(record);
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    public List<DebtRecords> listCustomersByRoleSearchName(String createBylis, String name) {
+        List<DebtRecords> list = new ArrayList<>();
+        String sql = " SELECT * FROM debtRecords d \n"
+                + " JOIN customers c ON d.customerID = c.customerID\n"
+                + " WHERE c.customerID = ? \n"
+                + name +" ORDER BY d.updateAt DESC";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, createBylis); // Truyền tham số vào dấu ?
+            ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
+
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                double amount = rs.getDouble("amount");
+                int paymentStatus = rs.getInt("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                list.add(record);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+
     public List<DebtRecords> listAllbyName(String id) {
         List<DebtRecords> list = new ArrayList<>();
         String sql = " SELECT * FROM debtRecords d \n"

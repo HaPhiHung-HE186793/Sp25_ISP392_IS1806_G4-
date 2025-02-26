@@ -39,43 +39,42 @@
                         </c:if>
                     </div>
                     <div class="filters">
-<!--                        <form action="ListDebtCustomer" method="post" >
-
-                                                    <select>
-                                                        <option value="">Trạng thái</option>
-                                                        <option value="">A->Z</option>
-                                                        <option value="">Z->A</option>
+                        <form action="ListDebtCustomer" method="post" >
+                            <!--                            <select name="sortBy">
+                                                            <option value="0">Trạng thái</option>
+                                                            <option value="1">Thời gian tạo</option>
+                                                            <option value="2">Ngày lập phiếu</option>
                             
-                                                    </select>
-                            <input name="name" type="text" placeholder="Tìm kiếm" value="${search}">
-                            <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
+                                                        </select>-->
                             <input name="startDate" type="date" value="${searchStartDate}">
-                            <input name="endDate" type="date" value="${searchEndDate}">-->
-<!--                            <button style="background-color: #5bc0de;" >Lọc</button>-->
-                        <!--</form>-->
-                        <!--<button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</butto //n>--> 
+                            <input name="endDate" type="date" value="${searchEndDate}">
+
+                            <button style="background-color: #5bc0de;" >Lọc</button>
+                        </form>
+                        <!--<button onclick="window.location.href = '<%=request.getContextPath()%>/ListDebtCustomer?id=${customerid}'">Bỏ lọc</button>--> 
+
 
                         <button class="addNewDebt js-open-newDebt">Tạo phiếu nợ</button>
-                    <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">
-                        Quay lại
-                    </button>
+                        <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">
+                            Quay lại
+                        </button>
                     </div>
 
                     <table>
                         <thead id="table-header">
                             <tr>
-                               
+
 
                             </tr>
                         </thead>
 
                         <tbody id="table-tbody">
-                          
+
                         </tbody>
-                        
-                         <thead id="table-header">
+
+                        <thead id="table-header">
                             <tr>
-                               <th>ID</th>
+                                <th>ID</th>
                                 <th>Trạng thái</th>
                                 <th>Số tiền</th>
                                 <th>thời gian tạo</th>
@@ -83,8 +82,8 @@
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
-                         
-                                     <c:forEach items="${listCustomer}" var="o" >
+
+                            <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getDebtID()}</td>
@@ -101,14 +100,14 @@
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
                                 </tr>
-                 
+
                             </c:forEach>   
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <%--<%@include file="/Component/pagination.jsp" %>--%>
+        <%@include file="/Component/pagination.jsp" %>
 
     </body>
 

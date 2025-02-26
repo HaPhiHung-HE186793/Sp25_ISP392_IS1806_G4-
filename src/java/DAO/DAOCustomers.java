@@ -29,20 +29,6 @@ public class DAOCustomers extends DBContext {
 
     public static DAOCustomers INSTANCE = new DAOCustomers();
 
-    public String convertDateFormat(String dateStr) {
-        if (dateStr == null || dateStr.isEmpty()) {
-            return null;
-        }
-        try {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("MM-dd-yyyy");
-            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = inputFormat.parse(dateStr);
-            return outputFormat.format(date);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public List<Customers> searchCustomers(String name, String phone) {
         List<Customers> customers = new ArrayList<>();

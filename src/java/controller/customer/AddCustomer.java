@@ -43,9 +43,8 @@ public class AddCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            
-        
-            request.getRequestDispatcher("ListCustomer").forward(request, response);
+
+        request.getRequestDispatcher("ListCustomer").forward(request, response);
 
     }
 
@@ -60,7 +59,7 @@ public class AddCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
+
         HttpSession session = request.getSession();
 
         /* TODO output your page here. You may use following sample code. */
@@ -70,20 +69,25 @@ public class AddCustomer extends HttpServlet {
         String email = request.getParameter("email");
         String totalDebtStr = request.getParameter("total");
         Integer createBy = (Integer) session.getAttribute("userID");
+        double totalDebt = Double.parseDouble(totalDebtStr);
 
-        double totalDebt = 0.0;
         try {
-            totalDebt = Double.parseDouble(totalDebtStr);
+            // Chỉ chấp nhận giá trị mặc định "0", nếu khác thì báo lỗi
+            if (!"0".equals(totalDebtStr)) {
+                request.setAttribute("message", "error");
+                new ListCustomer().doGet(request, response);
+                return;
+            }
         } catch (NumberFormatException e) {
-            e.printStackTrace(); // In lỗi nếu có
+            request.setAttribute("message", "error");
+            new ListCustomer().doGet(request, response);
         }
-        
-        
+
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createAt = now.format(formatter);  // Thời gian hiện tại
         String updateAt = createAt;  // Ban đầu updateAt cũng là thời gian hiện tại
-       
+
         boolean isDelete = false;
         String deleteAt = null;
         Integer deleteBy = null;
@@ -98,25 +102,24 @@ public class AddCustomer extends HttpServlet {
         customer.setCreateBy(createBy);
         customer.setEmail(email);
         customer.setIsDelete(isDelete);
-      
+
         int result = dao.insertNewCustomer(customer);
         if (result > 0) {
             request.setAttribute("message", "success");
         } else {
             request.setAttribute("message", "error");
-        }   
-        response.sendRedirect("ListCustomer");
+        }
+        new ListCustomer().doGet(request, response);
 
     }
 
-
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */
-@Override
-public String getServletInfo() {
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 //public static void main(String[] args) {
@@ -125,4 +128,3 @@ public String getServletInfo() {
 //       int insertResult = dao.insertNewCustomer(newCustomer);
 //}
 }
-
