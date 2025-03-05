@@ -93,7 +93,8 @@ public class DAOUser extends DBContext {
                         rs.getInt("createBy"),
                         rs.getBoolean("isDelete"),
                         rs.getString("deleteAt"),
-                        rs.getInt("deleteBy")
+                        rs.getInt("deleteBy"),
+                        rs.getInt("storeID")
                 );
             }
         } catch (SQLException ex) {
