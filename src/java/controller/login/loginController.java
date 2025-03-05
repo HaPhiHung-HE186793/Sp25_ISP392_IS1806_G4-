@@ -89,7 +89,7 @@ public class loginController extends HttpServlet {
         session.setAttribute("roleID", user.getRoleID());
         session.setAttribute("username", user.getUserName());
         session.setAttribute("createBy", user.getCreateBy());
-        
+        session.setAttribute("storeID", user.getStoreID());
         if (user.getIsDelete()) {
            request.setAttribute("message", "Tài khoản của bạn đã bị cấm.");
            dao.dispatch(request, response, "login/login.jsp");
