@@ -22,10 +22,27 @@ public class User {
     private String deleteAt;
     private int deleteBy;
     String creatorName;
+    private int storeID;
 
     public User() {
     }
 
+    public User(int ID, String userName, String userPassword, String email, int roleID, String image, String createAt, String updateAt, int createBy, Boolean isDelete, String deleteAt, int deleteBy, int storeID) {
+        this.ID = ID;
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.email = email;
+        this.roleID = roleID;
+        this.image = image;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.storeID = storeID;
+    }
+    
     public User(int ID, String userName, String userPassword, String email, int roleID, String image, String createAt, String updateAt, int createBy, Boolean isDelete, String deleteAt, int deleteBy) {
         this.ID = ID;
         this.userName = userName;
@@ -159,6 +176,14 @@ public class User {
         this.creatorName = creatorName;
     }
 
+    public int getStoreID() {
+        return storeID;
+    }
+
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
+    }
+    
     
     @Override
     public String toString() {
