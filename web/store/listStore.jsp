@@ -32,7 +32,7 @@
                     </div>
                     <div class="table-container">
                         <div style="display: flex; gap: 300px;">
-                            <h3>Danh sách người dùng</h3>
+                            <h3>Danh sách cửa hàng </h3>
 
                         <c:choose>
                             <c:when test="${not empty error}">
@@ -58,20 +58,10 @@
                         </c:choose>
                     </div>
                     <div class="filters">
-                        <form method="post" action="listusers">
-                            <c:if test="${user_current.getRoleID() == 1}">
-                                <label for="role">Chức Năng:</label>
-                                <select name="role" id="role" onchange="this.form.submit()">
-                                    <option value="-1" hidden ${selectedRole == -1 ? 'selected' : ''}>Tất cả</option>
-                                    <option value="-1">Tất cả</option>
-                                    <option value="1" ${selectedRole == 1 ? 'selected' : ''}>Admin</option>
-                                    <option value="2" ${selectedRole == 2 ? 'selected' : ''}>Chủ cửa hàng</option>
-                                    <option value="3" ${selectedRole == 3 ? 'selected' : ''}>Nhân viên bán hàng</option>
-                                </select>
-                            </c:if>
+                        <form method="post" action="listusers">                                
                             <input type="text" name="keyword" id="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
-                            <input name="startDate" id="startDate" type="date" value="${startDate}">
-                            <input name="endDate" id="endDate" type="date" value="${endDate}">
+                            <input name="startDateCreate" id="startDateCreate" type="date" value="${startDateCreate}">
+                            <input name="startDateCreate" id="startDateCreate" type="date" value="${startDateCreate}">
                             <select name="action" id="action" onchange="this.form.submit()">
                                 <option value="-1" hidden ${selectedAction == -1 ? 'selected' : ''}>Tất cả trạng thái</option>
                                 <option value="-1">Tất cả trạng thái</option>
@@ -85,7 +75,7 @@
 
 
                         <div>
-                            <button class="addNewDebt" style="padding: 11px !important;" onclick="window.location = 'createuser'">Tạo tài khoản mới</button>
+                            <button class="addNewDebt" style="padding: 11px !important;" onclick="window.location = 'createstore'">Tạo cửa hàng mới</button>
                         </div>
 
                     </div>
@@ -93,10 +83,11 @@
                     <table>
                         <thead id="table-header">
                             <tr>
-                                <th>ID</th>
+                                <th>Logo</th>
                                 <th>Tên</th>
-                                <th>Chức năng</th>
+                                <th>Chủ của hàng</th>
                                 <th>Email</th>
+                                <th>Địa chỉ</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th> 
                                 <th>Người tạo</th> 
@@ -105,40 +96,34 @@
                         </thead>
                         <tbody id="table-tbody">
                             <c:set var="rowCount" value="0" />
-                            <c:forEach items="${U}" var="u" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" varStatus="status">
+                            <c:forEach items="${Store}" var="s" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" varStatus="status">
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
 
-                                    <td>${u.getID()}</td>
-                                    <td>${u.getUserName()}</td>
+                                    <td>${s.getLogostore()}</td>
+                                    <td>${s.getStoreName()}</td>
+                                    <td>${s.getOwnerName()}</td>                                 
+                                    <td>${s.getEmail()}</td>     
+                                    <td>${s.getAddress()}</td> 
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${u.getRoleID() == 1}">Admin</c:when>
-                                            <c:when test="${u.getRoleID() == 2}">Chủ cửa hàng</c:when>
-                                            <c:when test="${u.getRoleID() == 3}">Nhân viên bán hàng</c:when>
-                                            <c:otherwise>Không xác định</c:otherwise>
-                                        </c:choose>
+                                        <span>${s.getCreateAt().substring(0, 10)}</span><br>
+                                        <span>${s.getCreateAt().substring(11)}</span>
                                     </td>
-                                    <td>${u.getEmail()}</td>                                                                    
+                                    <td>${s.getIsDelete() ? "Đã khóa" : "Hoạt động"}</td>
                                     <td>
-                                        <span>${u.getCreateAt().substring(0, 10)}</span><br>
-                                        <span>${u.getCreateAt().substring(11)}</span>
-                                    </td>
-                                    <td>${u.getIsDelete() ? "Đã khóa" : "Hoạt động"}</td>
-                                    <td>
-                                        ${u.getCreatorName()}
+                                        ${s.getCreateName()}
                                     </td>
                                     <td style="border-left: 1px solid black; display: flex; align-items: center;">
-                                        <button onclick="window.location.href = 'listusers?id=${u.getID()}'"  
+                                        <button onclick="window.location.href = 'liststore?id=${s.getStoreID()}'"  
                                                 style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: #5bc0de; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
                                             Cập nhật
                                         </button>
 
 
                                         <c:choose>
-                                            <c:when test="${u.getIsDelete()}">
+                                            <c:when test="${s.getIsDelete()}">
                                                 <form class="toggleStatusForm" data-action="unlock">
-                                                    <input type="hidden" name="userIDBlock" value="${u.getID()}">                                                    
+                                                    <input type="hidden" name="storeIDBlock" value="${u.getID()}">                                                    
                                                     <button type="button" class="toggleStatusBtn"
                                                             style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
                                                         Mở khóa
@@ -147,7 +132,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <form class="toggleStatusForm" data-action="block">
-                                                    <input type="hidden" name="userIDBlock" value="${u.getID()}">
+                                                    <input type="hidden" name="storeIDBlock" value="${s.getStoreID()}">
                                                     <button type="button" class="toggleStatusBtn"
                                                             style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: red; color: white; border: none; border-radius: 5px; cursor: pointer;">
                                                         Khóa
@@ -202,15 +187,15 @@
                                             $(document).ready(function () {
                                                 $(".toggleStatusBtn").click(function () {
                                                     var form = $(this).closest(".toggleStatusForm");
-                                                    var userIDBlock = form.find("input[name='userIDBlock']").val();
+                                                    var userIDBlock = form.find("input[name='storeIDBlock']").val();
                                                     var actionBlock = form.data("action"); // "block" hoặc "unlock"
 
                                                     $.ajax({
                                                         type: "POST",
-                                                        url: "listusers",
+                                                        url: "liststore",
                                                         data: {actionBlock: actionBlock, userIDBlock: userIDBlock},
                                                         success: function () {
-                                                            history.replaceState(null, "", "listusers"); // Xóa id khỏi URL
+                                                            history.replaceState(null, "", "liststore"); // Xóa id khỏi URL
                                                             location.reload(); // Reload để cập nhật trạng thái
                                                         },
                                                         error: function () {
