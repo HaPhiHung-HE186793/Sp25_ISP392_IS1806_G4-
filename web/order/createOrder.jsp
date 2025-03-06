@@ -289,6 +289,7 @@
                 transition: all 0.3s ease;
             }
 
+
             /* Ảnh sản phẩm */
             .product-image img {
                 width: 50px;
@@ -348,6 +349,92 @@
                 padding-left: 10px;
             }
 
+            /* Danh sách gợi ý */
+            .search-suggestions {
+                max-height: 180px; /* Giới hạn chiều cao */
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 5px;
+                width: 100%; /* Đảm bảo bằng với ô tìm kiếm */
+            }
+
+            /* Mỗi khách hàng gợi ý */
+            .customer-item {
+                display: flex;
+                align-items: center;
+
+                padding: 6px 8px;
+                cursor: pointer;
+                transition: background-color 0.2s ease-in-out;
+            }
+
+            /* Khi hover */
+            .customer-item:hover {
+                background-color: var(--primary-hover);
+                transform: scale(1.02);
+                transition: all 0.3s ease;
+            }
+
+            /* Tên khách hàng */
+            .customer-item h3 {
+                font-size: 15px;
+                font-weight: bold;
+                margin: 0;
+                color:white;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
+            }
+
+            /* Số điện thoại */
+            .customer-item p {
+                font-size: 14px;
+                color: var(--text-color);
+                margin: 0;
+                font-weight: 500;
+                white-space: nowrap;
+            }
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: black;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    width: 280px;
+    text-align: center;
+}
+
+.popup input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    background: black;
+    color: white;
+    border: 1px solid white;
+}
+
+.popup button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+}
+
+
 
 
         </style>
@@ -392,37 +479,42 @@
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <script>
                                 $(document).ready(function () {
-                                    $("#search").keyup(function () {
+                                    $("#search").on("input", function () {
                                         let query = $(this).val();
                                         if (query.length > 0) {
                                             $.ajax({
                                                 url: "SearchServlet",
                                                 type: "GET",
-                                                data: {keyword: query},
+                                                data: {searchProduct: query},
                                                 success: function (data) {
-                                                    $("#suggestions").html(data);
+                                                    if (data.trim() !== "") {
+                                                        $("#suggestions").html(data).show();
+                                                    } else {
+                                                        $("#suggestions").hide();
+                                                    }
                                                 }
                                             });
                                         } else {
-                                            $("#suggestions").html("");
+                                            $("#suggestions").hide();
                                         }
                                     });
 
+                                    // Ẩn danh sách khi click ra ngoài
+                                    $(document).on("click", function (event) {
+                                        if (!$(event.target).closest("#search, #suggestions").length) {
+                                            $("#suggestions").hide();
+                                        }
+                                    });
+
+                                    // Hiển thị lại danh sách khi focus vào ô tìm kiếm (nếu có nội dung)
+                                    $("#search").on("focus", function () {
+                                        if ($(this).val().length > 0) {
+                                            $("#suggestions").show();
+                                        }
+                                    });
                                 });
 
-                                // Ẩn danh sách khi click ra ngoài
-                                $(document).on("click", function (event) {
-                                    if (!$(event.target).closest("#search, #suggestions").length) {
-                                        $("#suggestions").hide();
-                                    }
-                                });
 
-                                // Hiện lại danh sách khi focus vào ô tìm kiếm (nếu có nội dung)
-                                $("#search").focus(function () {
-                                    if ($(this).val().length > 0) {
-                                        $("#suggestions").show();
-                                    }
-                                });
 
 
                             </script>
@@ -455,7 +547,12 @@
                                     <tfoot>
                                         <tr>
                                             <td colspan="5" style="text-align: right;"><strong>Tổng tiền:</strong></td>
-                                            <td colspan="2"><input type="text" id="totalOrderPrice" name="totalOrderPrice" readonly></td>
+
+                                            <td colspan="2">
+                                                <input type="hidden" id="totalOrderPriceHidden" name="totalOrderPriceHidden">
+                                                <input type="text" id="totalOrderPrice" name="totalOrderPrice" readonly>
+                                            </td>
+
                                         </tr>
                                         <tr>
                                             <td colspan="5" style="text-align: right;"><strong>Tổng tiền đã giảm:</strong></td>
@@ -488,38 +585,147 @@
                             </span>
                         </div>
 
-                        <div class="info-row">
-                            <span class="info-label">Loại Hóa Đơn:</span>
-                            <span class="info-value">
-                                <select id="orderType" name="orderType">
-                                    <option value="export">Xuất Kho</option>
-                                    <option value="import">Nhập Kho</option>
-                                </select>
-                            </span>
-                        </div>
+
 
                         <!-- Customer search -->
-                        <div class="search-container">
-                            <div class="search-box">
-                                <input type="text" id="searchCustomerInput" name="searchCustomer" placeholder="Tìm khách hàng theo SĐT...">
 
-                            </div>
+
+                        <div class="search-box">
+
+                            <input type="text" id="searchCustomerInput"  placeholder="Tìm khách hàng theo SĐT..." >
+
+
+                            <div id="suggestionsCustomer" class="search-suggestions"></div>
+
+
                         </div>
 
-                        <div class="info-row">
-                            <span class="info-label">Khách Hàng:</span>
-                            <span class="info-value">
-                                <select id="customerID" name="customerId" required>
-                                    <c:if test="${not empty customers}">
-                                        <c:forEach var="customer" items="${customers}">
-                                            <option value="${customer.customerID}" ${customer.customerID == param.selectedCustomerId ? 'selected' : ''}>
-                                                ${customer.name} - ${customer.phone}
-                                            </option>
-                                        </c:forEach>
-                                    </c:if>
-                                </select>
-                            </span>
+                        <!-- Ô hiển thị thông tin khách hàng sau khi chọn -->
+                        <div id="customerInfo" class="customer-info" style="display: none;">
+                            <h3 class="info-value success-text" id="customerName"></h3>
+                            <p id="customerPhone"></p>
+                            <p id="customerDebt"></p>
                         </div>
+
+                        <script>
+                            $(document).ready(function () {
+                                $("#searchCustomerInput").on("input", function () {
+                                    let query = $(this).val();
+                                    if (query.length > 0) {
+                                        $.ajax({
+                                            url: "SearchServlet",
+                                            type: "POST",
+                                            data: {keyword: query},
+                                            success: function (data) {
+                                                if (data.trim() !== "") {
+                                                    $("#suggestionsCustomer").html(data).show();
+                                                } else {
+                                                    $("#suggestionsCustomer").hide();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        $("#suggestionsCustomer").hide();
+                                    }
+                                });
+
+                                // Ẩn danh sách khi click ra ngoài
+                                $(document).on("click", function (event) {
+                                    if (!$(event.target).closest("#searchCustomerInput, #suggestionsCustomer").length) {
+                                        $("#suggestionsCustomer").hide();
+                                    }
+                                });
+
+                                // Hiển thị lại danh sách khi focus vào ô tìm kiếm (nếu có nội dung)
+                                $("#searchCustomerInput").on("focus", function () {
+                                    if ($(this).val().length > 0) {
+                                        $("#suggestionsCustomer").show();
+                                    }
+                                });
+                            });
+                            // Hàm chọn khách hàng từ danh sách
+                            function selectCustomer(name, phone, debt) {
+
+
+                                // Hiển thị thông tin khách hàng đã chọn
+                                $("#customerName").text("Khách hàng: " + name);
+                                $("#customerPhone").text("SĐT: " + phone);
+                                $("#customerDebt").text("Tổng nợ: " + formatNumberVND(debt));
+                                $("#customerInfo").show(); // Hiển thị div chứa thông tin khách hàng
+
+                            }
+
+                        </script>
+
+                        <!-- Thêm khách hàng mới -->
+
+                        <!-- Popup thêm khách hàng mới -->
+                        <div id="addCustomerPopup" class="popup">
+                            
+                                <span class="close" onclick="closeAddCustomerPopup()">&times;</span>
+                                <h2>Thêm khách hàng mới</h2>
+
+                                <form id="addCustomerForm">
+                                    <label for="newCustomerName">Tên khách hàng:</label>
+                                    <input type="text" id="newCustomerName" name="name" placeholder="Nhập tên khách hàng" required>
+
+                                    <label for="newCustomerPhone">Số điện thoại:</label>
+                                    <input type="text" id="newCustomerPhone" name="phone" placeholder="Nhập số điện thoại" required>
+
+                                    <!-- Các input ẩn để Servlet nhận đủ dữ liệu -->
+                                    <input type="hidden" name="address" value="">
+                                    <input type="hidden" name="email" value="">
+                                    <input type="hidden" name="total" value="0"> <!-- Để hợp lệ với Servlet -->
+
+                                    <button type="button" onclick="saveNewCustomer()">Lưu</button>
+                                </form>
+                           
+                        </div>
+
+                        <!-- JavaScript -->
+                        <script>
+                            function openAddCustomerPopup() {
+                                document.getElementById("addCustomerPopup").style.display = "block";
+                            }
+
+                            function closeAddCustomerPopup() {
+                                document.getElementById("addCustomerPopup").style.display = "none";
+                            }
+
+                            function saveNewCustomer() {
+                                let name = document.getElementById("newCustomerName").value;
+                                let phone = document.getElementById("newCustomerPhone").value;
+
+                                if (name.trim() === "" || phone.trim() === "") {
+                                    alert("Vui lòng nhập đầy đủ thông tin!");
+                                    return;
+                                }
+
+                                // Tạo object chứa đầy đủ dữ liệu theo yêu cầu của Servlet
+                                let customerData = {
+                                    name: name,
+                                    phone: phone,
+                                    address: "", // Giá trị mặc định
+                                    email: "", // Giá trị mặc định
+                                    total: "0" // Để Servlet chấp nhận
+                                };
+
+                                // Gửi dữ liệu lên server để lưu khách hàng mới
+                                $.ajax({
+                                    url: "AddCustomer",
+                                    type: "POST",
+                                    data: customerData,
+                                    success: function (response) {
+                                        alert("Khách hàng đã được thêm!");
+                                        closeAddCustomerPopup();
+                                    },
+                                    error: function () {
+                                        alert("Lỗi khi thêm khách hàng!");
+                                    }
+                                });
+                            }
+
+                        </script>
 
                         <div class="info-row">
                             <span class="info-label">Số Bao Bốc Vác:</span>
@@ -561,28 +767,13 @@
                                 <div class="info-row">
                                     <span class="info-label">Số tiền còn nợ:</span>
                                     <span class="info-value">
-                                        <input type="number" id="debtAmount" name="debtAmount" readonly>
+                                        <input type="text" id="debtAmount" name="debtAmount" readonly>
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Order summary -->
-                        <div class="order-summary">
-                            <h3>Tổng Kết Đơn Hàng</h3>
-                            <div class="summary-row">
-                                <strong>Tổng tiền hàng:</strong>
-                                <span id="summaryTotal">0 VNĐ</span>
-                            </div>
-                            <div class="summary-row">
-                                <strong>Tổng tiền đã giảm:</strong>
-                                <span id="summaryDiscount">0 VNĐ</span>
-                            </div>
-                            <div class="summary-row grand-total">
-                                <strong>Khách cần trả:</strong>
-                                <span id="summaryFinal">0 VNĐ</span>
-                            </div>
-                        </div>
+
 
                         <!-- Action buttons -->
                         <div class="action-buttons">
@@ -645,7 +836,7 @@
                     }
 
                     function calculateDebt() {
-                        var totalOrderPrice = parseFloat(document.getElementById("totalOrderPrice").value) || 0;
+                        var totalOrderPrice = parseFloat(document.getElementById("totalOrderPriceHidden").value) || 0;
                         // lấy giá trị tổng đơn hàng
                         var paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
                         //Lấy số tiền đã trả (paidAmount). Nếu chưa nhập, mặc định là 0
@@ -653,7 +844,8 @@
                         //Lấy ô hiển thị số tiền còn nợ (debtAmount)
 
                         var debt = totalOrderPrice - paidAmount;
-                        debtAmountInput.value = debt > 0 ? debt : 0;
+
+                        debtAmountInput.value = formatNumberVND(debt > 0 ? debt : 0);
 
                         //Tính số tiền còn nợ:
 //Nếu số tiền còn nợ (debt) lớn hơn 0, hiển thị giá trị.
@@ -716,23 +908,7 @@
 
 
 
-                <script>
 
-                    document.addEventListener("DOMContentLoaded", function () {
-                        let customerSelect = document.getElementById("customerID");
-                        let savedCustomerId = sessionStorage.getItem("selectedCustomerId");
-
-                        if (savedCustomerId) {
-                            customerSelect.value = savedCustomerId;
-                        }
-
-                        customerSelect.addEventListener("change", function () {
-                            sessionStorage.setItem("selectedCustomerId", customerSelect.value);
-                        });
-                    });
-
-
-                </script>       
 
 
                 <script>
@@ -789,8 +965,8 @@
                     });
                 </script>
                 <script>
-                    function addProductToOrder(productID, productName, pricePerKg, availableQuantity) {
-                        var orderType = document.getElementById("orderType").value; // Lấy loại hóa đơn
+                    function addProductToOrder(productID, productName, pricePerKg, availableQuantity, unitSizes) {
+
 
                         // Kiểm tra nếu sản phẩm hết hàng
                         if (availableQuantity <= 0) {
@@ -800,130 +976,104 @@
 
                         var table = document.getElementById("orderItems").getElementsByTagName('tbody')[0];
 
-                        var existingRow = null;
 
-                        // Kiểm tra xem sản phẩm đã có trong bảng chưa (TỐI ƯU: Dùng find() thay vì forEach)
-                        var existingRow = [...document.querySelectorAll("#orderItems tbody tr")]
-                                .find(row => row.querySelector("input[name='productID']").value === productID);
+                        // Nếu sản phẩm chưa có, thêm dòng mới
 
-                        if (existingRow) {
-                            // Nếu sản phẩm đã có trong bảng, tăng số lượng
-                            var quantityInput = existingRow.querySelector(".quantity");
-                            var currentQuantity = parseInt(quantityInput.value);
-                            var newQuantity = currentQuantity + 1;
+                        var newRow = table.insertRow(table.rows.length);
+                        var cell1 = newRow.insertCell(0);
+                        var cell2 = newRow.insertCell(1);
+                        var cell3 = newRow.insertCell(2);
+                        var cell4 = newRow.insertCell(3);
+                        var cell5 = newRow.insertCell(4);
+                        var cell6 = newRow.insertCell(5);
+                        var cell7 = newRow.insertCell(6);
+                        var cell8 = newRow.insertCell(7);
 
-                            if (orderType === "export" && newQuantity > availableQuantity) {
-                                alert("Số lượng sản phẩm vượt quá tồn kho! Vui lòng nhập lại.");
-                                newQuantity = availableQuantity; // Không cho vượt quá tồn kho
-                            }
-
-                            quantityInput.value = newQuantity;
-                            recalculateRow(existingRow, pricePerKg, availableQuantity);
+                        // Hiển thị tên sản phẩm
+                        cell1.innerHTML =
+                                '<input type="hidden" name="productID" value="' + productID + '">' +
+                                '<input type="hidden" name="productName" value="' + productName + '">' +
+                                productName;
+                        // Chọn đơn vị tính: kg hoặc bao
+                        // Tạo dropdown từ danh sách unitSizes
+                        var unitSelectHTML = '<select name="unitType" class="unitType">';
+                        if (unitSizes && unitSizes.length > 0) {
+                            unitSizes.forEach(size => {
+                                unitSelectHTML += '<option value="' + size + '">' + (size == 1 ? "Kg" : "Bao (" + size + "kg)") + '</option>';
+                            });
                         } else {
-                            // Nếu sản phẩm chưa có, thêm dòng mới
-
-                            var newRow = table.insertRow(table.rows.length);
-                            var cell1 = newRow.insertCell(0);
-                            var cell2 = newRow.insertCell(1);
-                            var cell3 = newRow.insertCell(2);
-                            var cell4 = newRow.insertCell(3);
-                            var cell5 = newRow.insertCell(4);
-                            var cell6 = newRow.insertCell(5);
-                            var cell7 = newRow.insertCell(6);
-                            var cell8 = newRow.insertCell(7);
-
-                            // Hiển thị tên sản phẩm
-                            cell1.innerHTML =
-                                    '<input type="hidden" name="productID" value="' + productID + '">' +
-                                    '<input type="hidden" name="productName" value="' + productName + '">' +
-                                    productName;
-                            // Chọn đơn vị tính: kg hoặc bao
-                            cell2.innerHTML = '<select name="unitType" class="unitType">' +
-                                    '<option value="1">Kg</option>' +
-                                    '<option value="10">Bao (10kg)</option>' +
-                                    '<option value="20">Bao (20kg)</option>' +
-                                    '<option value="50">Bao (50kg)</option>' +
-                                    '</select>';
-
-                            if (orderType === "import") {
-                                // Nếu nhập kho, giá có thể thay đổi
-                                cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1">';
-
-
-                                cell4.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden" value="' + pricePerKg + '">' +
-                   '<input type="text" name="unitPrice" class="unitPrice" value="' + formatNumberVND(pricePerKg) + '" readonly>';
-
-
-
-
-
-                            } else {
-                                cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1" max="' + availableQuantity + '">';
-
-                                // Nếu xuất kho, giá cố định
-                                cell4.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden" value="' + pricePerKg + '">' +
-                   '<input type="text" name="unitPrice" class="unitPrice" value="' + formatNumberVND(pricePerKg) + '" readonly>';
-
-
-
-
-                            }
-
-
-
-
-                            // Giảm giá (VND/kg)
-                            cell5.innerHTML = '<input type="number" name="discount" class="discount" value="0" min="0">';
-                            cell6.innerHTML =
-                                    '<input type="hidden" name="totalPriceHidden" class="totalPriceHidden">' +
-                                    '<input type="text" name="totalPrice" class="totalPrice" readonly>';
-
-
-                            // Nút xóa
-                            cell7.innerHTML = '<button type="button" onclick="deleteRow(this)">Xóa</button>';
-
-                            // Thêm input ẩn để lưu totalWeight
-                            cell8.innerHTML = '<input type="hidden" name="totalWeight" class="totalWeight">';
-
-                            //không cho phép nhập âm số lượng và giảm giá
-
-
-
-
-                            var quantityInput = cell3.querySelector('.quantity');
-
-                            // Không cho nhập số âm
-                            quantityInput.addEventListener("input", function () {
-                                if (this.value < 0) {
-                                    this.value = 1; // Đặt giá trị tối thiểu là 1
-                                }
-                                recalculateRow(newRow, pricePerKg, availableQuantity);
-
-                            });
-
-
-                            var unitTypeInput = cell2.querySelector('.unitType');
-                            var discountInput = cell5.querySelector('.discount');
-
-                            // Không cho nhập số âm
-                            discountInput.addEventListener("input", function () {
-                                if (this.value < 0) {
-                                    this.value = 0; // Đặt giá trị tối thiểu là 1
-                                }
-                            });
-
-
-                            unitTypeInput.addEventListener('change', () => recalculateRow(newRow, pricePerKg, availableQuantity));
-                            discountInput.addEventListener('input', () => recalculateRow(newRow, pricePerKg, availableQuantity));
-
-                            recalculateRow(newRow, pricePerKg, availableQuantity);
+                            unitSelectHTML += '<option value="1">Kg</option>'; // Mặc định nếu không có dữ liệu
                         }
+                        unitSelectHTML += '</select>';
+                        cell2.innerHTML = unitSelectHTML;
+
+
+                        cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1" max="' + availableQuantity + '">';
+
+                        // Nếu xuất kho, giá cố định
+                        cell4.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden" value="' + pricePerKg + '">' +
+                                '<input type="text" name="unitPrice" class="unitPrice" value="' + formatNumberVND(pricePerKg) + '" readonly>';
+
+
+
+
+
+
+
+
+
+                        // Giảm giá (VND/kg)
+                        cell5.innerHTML = '<input type="number" name="discount" class="discount" value="0" min="0">';
+                        cell6.innerHTML =
+                                '<input type="hidden" name="totalPriceHidden" class="totalPriceHidden">' +
+                                '<input type="text" name="totalPrice" class="totalPrice" readonly>';
+
+
+                        // Nút xóa
+                        cell7.innerHTML = '<button type="button" onclick="deleteRow(this)">Xóa</button>';
+
+                        // Thêm input ẩn để lưu totalWeight
+                        cell8.innerHTML = '<input type="hidden" name="totalWeight" class="totalWeight">';
+
+                        //không cho phép nhập âm số lượng và giảm giá
+
+
+
+
+                        var quantityInput = cell3.querySelector('.quantity');
+
+                        // Không cho nhập số âm
+                        quantityInput.addEventListener("input", function () {
+                            if (this.value < 0) {
+                                this.value = 1; // Đặt giá trị tối thiểu là 1
+                            }
+                            recalculateRow(newRow, pricePerKg, availableQuantity);
+
+                        });
+
+
+                        var unitTypeInput = cell2.querySelector('.unitType');
+                        var discountInput = cell5.querySelector('.discount');
+
+                        // Không cho nhập số âm
+                        discountInput.addEventListener("input", function () {
+                            if (this.value < 0) {
+                                this.value = 0; // Đặt giá trị tối thiểu là 1
+                            }
+                        });
+
+
+                        unitTypeInput.addEventListener('change', () => recalculateRow(newRow, pricePerKg, availableQuantity));
+                        discountInput.addEventListener('input', () => recalculateRow(newRow, pricePerKg, availableQuantity));
+
+                        recalculateRow(newRow, pricePerKg, availableQuantity);
+
 
 
 
                     }
                     function recalculateRow(row, pricePerKg, availableQuantity) {
-                        var orderType = document.getElementById("orderType").value;
+
                         var quantityInput = row.querySelector(".quantity");
                         var unitTypeInput = row.querySelector(".unitType");
                         var discountInput = row.querySelector(".discount");
@@ -935,7 +1085,7 @@
                         var quantity = parseInt(quantityInput.value);
                         var totalWeight = quantity * unitMultiplier;
 
-                        if (orderType === "export" && totalWeight > availableQuantity) {
+                        if (totalWeight > availableQuantity) {
                             alert("Số lượng sản phẩm vượt quá tồn kho! Vui lòng nhập lại.");
                             quantityInput.value = Math.floor(availableQuantity / unitMultiplier); // Tự động điều chỉnh số lượng phù hợp
                             totalWeight = quantityInput.value * unitMultiplier; // Cập nhật lại tổng khối lượng
@@ -986,6 +1136,7 @@
 
                             totalDiscount += totalWeight * discount; // Tổng số tiền giảm giá của sản phẩm này
                         });
+                        document.getElementById("totalOrderPriceHidden").value = total; // Lưu giá trị số thực
                         document.getElementById("totalOrderPrice").value = formatNumberVND(total);
                         document.getElementById("totalDiscount").value = formatNumberVND(totalDiscount);
                     }
@@ -999,29 +1150,51 @@
                             var quantity = row.querySelector(".quantity").value;
                             var unitPriceHidden = row.querySelector(".unitPriceHidden").value;
                             var discount = row.querySelector(".discount").value;
-
                             var totalPriceHidden = row.querySelector(".totalPriceHidden").value;
-                            orderItems.push({productID, productName, unitType, quantity, unitPriceHidden, discount, totalPriceHidden});
+
+                            // Lấy danh sách unitSizes từ dropdown
+                            var unitSizes = Array.from(row.querySelectorAll(".unitType option")).map(opt => opt.value);
+
+                            orderItems.push({productID, productName, unitType, quantity, unitPriceHidden, discount, totalPriceHidden, unitSizes});
                         });
                         sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
                     }
 
+
                     function loadOrderFromSessionStorage() {
                         var orderItems = JSON.parse(sessionStorage.getItem("orderItems")) || [];
                         orderItems.forEach(item => {
-                            addProductToOrder(item.productID, item.productName, item.unitPriceHidden);
+                            // Đảm bảo có unitSizes từ dữ liệu đã lưu trước đó
+                            var unitSizes = item.unitSizes || [1]; // Nếu không có, mặc định là [1] (Kg)
+
+                            addProductToOrder(item.productID, item.productName, item.unitPriceHidden, item.quantity, unitSizes);
+
                             var lastRow = document.querySelector("#orderItems tbody tr:last-child");
-                            lastRow.querySelector(".unitType").value = item.unitType;
+
+                            // Cập nhật danh sách option trong dropdown
+                            var unitSelect = lastRow.querySelector(".unitType");
+                            unitSelect.innerHTML = ""; // Xóa option cũ
+
+                            unitSizes.forEach(size => {
+                                var option = document.createElement("option");
+                                option.value = size;
+                                option.text = (size == 1 ? "Kg" : "Bao (" + size + "kg)");
+                                unitSelect.appendChild(option);
+                            });
+
+                            // Đặt lại giá trị đã lưu
+                            unitSelect.value = item.unitType;
                             lastRow.querySelector(".quantity").value = item.quantity;
                             lastRow.querySelector(".discount").value = item.discount;
-                             lastRow.querySelector(".unitPriceHidden").value = item.unitPriceHidden;
-                            // Hiển thị giá trị định dạng VND
+                            lastRow.querySelector(".unitPriceHidden").value = item.unitPriceHidden;
                             lastRow.querySelector(".totalPriceHidden").value = item.totalPriceHidden;
                             lastRow.querySelector(".totalPrice").value = formatNumberVND(item.totalPriceHidden);
-                             lastRow.querySelector(".unitPrice").value = formatNumberVND(item.unitPriceHidden);
+                            lastRow.querySelector(".unitPrice").value = formatNumberVND(item.unitPriceHidden);
                         });
                         updateTotalOrderPrice();
                     }
+
+
 
                 </script>
                 </form>

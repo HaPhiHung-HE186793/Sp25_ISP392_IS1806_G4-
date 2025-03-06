@@ -20,15 +20,36 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class DAOProduct extends DBContext {
 
     public static DAOProduct INSTANCE = new DAOProduct();
+
+    public List<Integer> getProductUnitsByProductID(int productID) {
+        List<Integer> unitSizes = new ArrayList<>();
+        String sql = "SELECT unitSize FROM ProductUnits WHERE productID = ? ORDER BY unitSize ASC";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                unitSizes.add(rs.getInt("unitSize"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return unitSizes;
+    }
 
     public void exportProductQuantity(int productID, int quantitySold) {
         String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ?";
@@ -53,20 +74,24 @@ public class DAOProduct extends DBContext {
             ps.setInt(2, productID);
 
             ps.executeUpdate();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-       
+
     }
 
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
     public List<Products> searchProductsByName(String keyword) {
         List<Products> productsList = new ArrayList<>();
-        String sql = "SELECT * FROM products WHERE LOWER(productName) LIKE LOWER(?) AND isDelete = 0";
+        String sql = "SELECT * FROM products "
+                + "WHERE productName COLLATE Vietnamese_CI_AI LIKE ? "
+                + "AND isDelete = 0";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + keyword.toLowerCase() + "%"); // Chuyển keyword thành chữ thường
+            // Loại bỏ dấu trước khi tìm kiếm
+            String normalizedKeyword = removeVietnameseAccent(keyword.trim().toLowerCase());
+            ps.setString(1, "%" + normalizedKeyword + "%");  // Tìm kiếm gần đúng
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -78,7 +103,6 @@ public class DAOProduct extends DBContext {
                     product.setQuantity(rs.getInt("quantity"));
                     product.setImage(rs.getString("image"));
 
-                    // Giữ nguyên getString như yêu cầu
                     product.setCreateAt(rs.getString("createAt"));
                     product.setUpdateAt(rs.getString("updateAt"));
                     product.setCreateBy(rs.getInt("createBy"));
@@ -92,8 +116,15 @@ public class DAOProduct extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return productsList;
+    }
+
+    public static String removeVietnameseAccent(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(str).replaceAll("")
+                .replaceAll("đ", "d")
+                .replaceAll("Đ", "D");
     }
 
     public List<Products> searchProducts(String keywordName, String keywordDescription) {
