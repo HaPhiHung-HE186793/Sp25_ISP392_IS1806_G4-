@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.OrderItems, java.util.List"%>
+<%@page import="model.OrderItems, java.util.List, model.CustomerOrder"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +28,12 @@
             text-align: right; /* Căn chỉnh nút về bên phải */
             margin-top: 10px; /* Thêm khoảng cách phía trên nút */
         }
+        .customer-info {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -39,6 +45,30 @@
             <div class="notification">
                 Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
             </div>
+
+            <!-- Hiển thị thông tin khách hàng ở đây -->
+            <div class="customer-info">
+                <h3>Thông tin Khách Hàng</h3>
+                <%
+                List<CustomerOrder> list2 = (List<CustomerOrder>) request.getAttribute("data2");
+                if (list2 != null && !list2.isEmpty()) {
+                    for (CustomerOrder customerOrder : list2) {
+                %>
+                <p>
+                    Tên: <%= customerOrder.getName() %><br>
+                    Email: <%= customerOrder.getEmail() %><br>
+                    Điện thoại: <%= customerOrder.getPhone() %>
+                </p>
+                <%
+                    }
+                } else {
+                %>
+                <p style="text-align: center;">Không có thông tin khách hàng</p>
+                <%
+                }
+                %>
+            </div>
+
             <div class="search-container">
                 <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get">
                     <input type="hidden" name="service" value="listOrderItem">
@@ -46,19 +76,14 @@
                     <input type="text" name="productName" placeholder="Nhập tên sản phẩm" required>
                     <button type="submit" class="btn">Tìm kiếm</button>
                 </form>
-                <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get" style="display:inline;">
-                    <input type="hidden" name="service" value="listOrderItem">
-                    <input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
-                    <button type="submit" class="btn">Hiển thị toàn bộ sản phẩm</button>
-                </form>
             </div>
+
             <div class="table-container">
                 <h3><%= request.getAttribute("tableTitle") %></h3>
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Mã hóa đơn</th>
+                            <th>ID</th>                            
                             <th>Mã sản phẩm</th>
                             <th>Tên sản phẩm</th>
                             <th>Giá</th>
@@ -73,9 +98,8 @@
                         if (list != null && !list.isEmpty()) {
                             for (OrderItems orderItem : list) {
                         %>
-                        <tr>
+                        <tr>                            
                             <td><%= orderItem.getOrderitemID() %></td>
-                            <td><%= orderItem.getOrderID() %></td>
                             <td><%= orderItem.getProductID() %></td>
                             <td><%= orderItem.getProductName() %></td>
                             <td><%= orderItem.getPrice() %></td>
@@ -88,7 +112,7 @@
                         } else {
                         %>
                         <tr>
-                            <td colspan="8" style="text-align: center;">Không có bản ghi</td>
+                            <td colspan="7" style="text-align: center;">Không có bản ghi</td>
                         </tr>
                         <%
                         }
@@ -96,6 +120,16 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Di chuyển nút hiển thị toàn bộ sản phẩm xuống đây -->
+            <div class="search-container" style="margin-top: 10px;">
+                <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get" style="display:inline;">
+                    <input type="hidden" name="service" value="listOrderItem">
+                    <input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
+                    <button type="submit" class="btn">Hiển thị toàn bộ sản phẩm</button>
+                </form>
+            </div>
+
             <div class="back-button">
                 <a href="<%=request.getContextPath()%>/URLOrder?service=listshow" class="btn">Quay lại</a>
             </div>
