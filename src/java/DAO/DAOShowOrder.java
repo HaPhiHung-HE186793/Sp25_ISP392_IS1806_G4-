@@ -59,8 +59,10 @@ public class DAOShowOrder extends DBContext {
             String updateAt = rs.getString("updateAt");
             int porter = rs.getInt("porter");
             String status = rs.getString("status");
+            int storeID = rs.getInt("storeID");
+            double paidAmount = rs.getDouble("paidAmount");
 
-            ShowOrder showOrder = new ShowOrder(orderID, name, userName, totalAmount, createAt, updateAt, porter, status);
+            ShowOrder showOrder = new ShowOrder(orderID, name, userName, totalAmount, createAt, updateAt, porter, status, storeID, paidAmount);
             vector.add(showOrder);
         }
     } catch (SQLException ex) {
