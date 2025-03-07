@@ -17,11 +17,14 @@ import model.ShowOrder;
 import DAO.DAOOrders;
 import DAO.DAOShowOrder;
 import DAO.DAOOrderItems;
+import DAO.DAOCustomerOrder;
 import jakarta.servlet.RequestDispatcher;
 import java.util.ArrayList;
 import static java.util.Collections.list;
 import java.util.List;
 import java.util.Vector;
+import model.CustomerOrder;
+
 /**
  *
  * @author ADMIN
@@ -54,23 +57,38 @@ public class ControllerOrderDetail extends HttpServlet {
       protected void doGet(HttpServletRequest request, HttpServletResponse response)
      throws ServletException, IOException {
     DAOOrderItems dao = new DAOOrderItems();
+    DAOCustomerOrder dao2 = new DAOCustomerOrder();
     String service = request.getParameter("service");
     if (service == null) {
         service = "listOrderItem";
     }
+//     String sql = "SELECT o.orderID, c.name, c.email, c.phone " +
+//                     "FROM orders o " +
+//                     "JOIN customers c ON o.customerID = c.customerID ";                    
     try (PrintWriter out = response.getWriter()) {
         if (service.equals("listOrderItem")) {
-            List<OrderItems> list = new ArrayList<>(); // Khởi tạo danh sách
+            List<OrderItems> list = new ArrayList<>();
+            List<CustomerOrder> list2 = new ArrayList<>();// Khởi tạo danh sách
+      //      List<CustomerOrder> list2 = dao2.getCustomerOrder(sql);
+            //
+            
             int orderId = Integer.parseInt(request.getParameter("orderId"));
+             String sql = "SELECT o.orderID, c.name, c.email, c.phone " +
+                     "FROM orders o " +
+                     "JOIN customers c ON o.customerID = c.customerID " +
+                     "WHERE o.orderID = " + orderId; 
             String productName = request.getParameter("productName");
 
             if (productName != null && !productName.isEmpty()) {
                 list = dao.getOrderItems("SELECT * FROM OrderItems WHERE orderId = " + orderId + " AND productName LIKE '%" + productName + "%'");
+                list2 = dao2.getCustomerOrder(sql);
             } else {
                 list = dao.getOrderItems("SELECT * FROM OrderItems WHERE orderId = " + orderId);
+                list2 = dao2.getCustomerOrder(sql);
             }
 
             request.setAttribute("data", list);
+            request.setAttribute("data2", list2);
             request.setAttribute("tableTitle", "Danh sách sản phẩm trong hóa đơn");
             request.setAttribute("papeTitle", "Orders manage");
             RequestDispatcher dispth = request.getRequestDispatcher("order/orderItemList.jsp");
