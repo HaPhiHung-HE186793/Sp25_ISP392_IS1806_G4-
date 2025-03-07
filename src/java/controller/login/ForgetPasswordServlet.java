@@ -123,6 +123,7 @@ public class ForgetPasswordServlet extends HttpServlet {
                 boolean isUpdated = dao.updatePassword(email, hashedPassword);
                 
                 if (isUpdated) {
+                    session.removeAttribute("email");
                     response.sendRedirect("login/login.jsp");
                 } else {
                     request.setAttribute("errorMessage", "Cập nhật mật khẩu thất bại. Hãy thử lại.");
