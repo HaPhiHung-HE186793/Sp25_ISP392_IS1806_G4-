@@ -21,6 +21,28 @@ import model.Customers;
 
 public class DAODebtRecords extends DBContext {
 
+    public boolean addDebtRecordFromOrder(DebtRecords record) {
+        String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus, createBy, isDelete) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(insertSQL)) {
+            ps.setInt(1, record.getCustomerID());
+            ps.setInt(2, record.getOrderID());
+            ps.setDouble(3, record.getAmount());
+            ps.setInt(4, record.getPaymentStatus());
+           
+           
+            ps.setInt(5, record.getCreateBy());
+            ps.setBoolean(6, record.isIsDelete());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi thêm bản ghi nợ: " + e.getMessage());
+            return false;
+        }
+
+        return updateCustomerDebt(record);
+    }
     public boolean addDebtRecord(DebtRecords record) {
         String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

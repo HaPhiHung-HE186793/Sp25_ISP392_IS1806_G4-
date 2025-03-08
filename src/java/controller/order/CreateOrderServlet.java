@@ -85,17 +85,16 @@ public class CreateOrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-          response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
         HttpSession session = request.getSession();
         String orderType = request.getParameter("orderType"); // Nhập hay Xuất kho
         String userName = (String) session.getAttribute("username");
-       int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
+        int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
 
-       
-        int userId = (int)session.getAttribute("userID");
+        int userId = (int) session.getAttribute("userID");
         int porter = Integer.parseInt(request.getParameter("porter"));
 
         Double totalDiscount = Double.parseDouble(request.getParameter("totalDiscount"));
@@ -108,32 +107,60 @@ public class CreateOrderServlet extends HttpServlet {
             status = request.getParameter("status");
         }
 
-        Double totalOrderPrice = Double.parseDouble(request.getParameter("totalOrderPrice")); // Tổng tiền
+        Double totalOrderPrice = Double.parseDouble(request.getParameter("totalOrderPriceHidden")); // Tổng tiền
+
+        Double paidAmount = 0.0;
+        Double debtAmount = 0.0;
+
+        String orderStatus = request.getParameter("orderStatus");
+
+        if (orderStatus.equals("paid")) {
+
+            paidAmount = totalOrderPrice;
+
+        } else if (orderStatus.equals("partial")) {
+
+            paidAmount = Double.parseDouble(request.getParameter("paidAmount"));
+            debtAmount = totalOrderPrice - paidAmount;
+
+        } else if (orderStatus.equals("unpaid")) {
+            paidAmount = 0.0;
+            debtAmount = totalOrderPrice;
+
+        }
 
         try {
             // Lấy danh sách sản phẩm từ request
             String[] productIds = request.getParameterValues("productID");
             String[] productNames = request.getParameterValues("productName");
-            String[] totalPrices = request.getParameterValues("totalPrice");
-            String[] unitPrices = request.getParameterValues("unitPrice");
+            String[] totalPrices = request.getParameterValues("totalPriceHidden");
+            String[] unitPrices = request.getParameterValues("unitPriceHidden");
             String[] quantities = request.getParameterValues("totalWeight");
-            String[] descriptions = request.getParameterValues("description");
+            String[] discounts = request.getParameterValues("discount");
 
             List<OrderItems> orderDetails = new ArrayList<>();
             if (productIds != null) {
                 for (int i = 0; i < productIds.length; i++) {
                     int productID = Integer.parseInt(productIds[i]);
                     String productName = productNames[i];
+
                     Double price = Double.parseDouble(totalPrices[i]);
                     Double unitPrice = Double.parseDouble(unitPrices[i]);
+                    Double discount = Double.parseDouble(discounts[i]);
+
                     int quantity = Integer.parseInt(quantities[i]);
-                    String description = descriptions[i];
-                    
-                   OrderItems orderItem = new OrderItems(productID, productName, price, unitPrice, quantity, description);
+                    if (quantity <= 0 || unitPrice <= 0 || price <= 0 || discount < 0||discount > unitPrice * 0.1) {
+
+                        return;
+                    }
+
+                   
+
+                    OrderItems orderItem = new OrderItems(productID, productName, price, unitPrice, quantity,discount);
+                   
 
                     orderDetails.add(orderItem);
-                    
-                    
+
                 }
             }
 
@@ -141,17 +168,16 @@ public class CreateOrderServlet extends HttpServlet {
             OrderWorker.startWorker();
 
             // Đưa đơn hàng vào hàng đợi để xử lý
-        OrderTask orderTask = new OrderTask(orderType,customerId, userId, totalOrderPrice, porter, status, orderDetails);
-        OrderQueue.addOrder(orderTask);
+            OrderTask orderTask = new OrderTask(orderType, customerId, userId, totalOrderPrice, porter, status, paidAmount, debtAmount, orderDetails);
+            OrderQueue.addOrder(orderTask);
 
             // Trả về JSON response cho AJAX
-        response.getWriter().write("{\"status\": \"processing\"}");
+            response.getWriter().write("{\"status\": \"processing\"}");
         } catch (Exception ex) {
             Logger.getLogger(CreateOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
-                    response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
+            response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
 
         }
-
 
     }
 

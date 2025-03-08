@@ -17,9 +17,13 @@ public class OrderItems {
     private double unitPrice;  
     private int quantity;
     private String description;
+    private double discount;
 
     public OrderItems() {
     }
+
+    
+    
 
     public OrderItems(int orderitemID, int orderID, int productID, String productName, double price, double unitPrice, int quantity, String description) {
         this.orderitemID = orderitemID;
@@ -42,13 +46,32 @@ public class OrderItems {
         this.description = description;
     }
 
-    public OrderItems(int productID, String productName, double price, double unitPrice, int quantity, String description) {
+    public OrderItems(int productID, String productName, double price, double unitPrice, int quantity,String description) {
         this.productID = productID;
         this.productName = productName;
         this.price = price;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
         this.description = description;
+    }
+    
+    public OrderItems(int productID, String productName, double price, double unitPrice, int quantity,double discount ) {
+        this.productID = productID;
+        this.productName = productName;
+        this.price = price;
+        this.unitPrice = unitPrice;
+        this.quantity = quantity;
+        
+        this.discount = discount;
+    
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
     }
     
     

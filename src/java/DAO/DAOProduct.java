@@ -9,6 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
+import java.math.BigDecimal;
 import model.Products;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +32,42 @@ import java.util.regex.Pattern;
 public class DAOProduct extends DBContext {
 
     public static DAOProduct INSTANCE = new DAOProduct();
+
+    public int getProductQuantity(int productId) {
+        int quantity = 0;
+        String sql = "SELECT quantity FROM products WHERE productID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                quantity = rs.getInt("quantity");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return quantity;
+    }
+
+    public BigDecimal getProductPrice(int productId) {
+        String sql = "SELECT price FROM products WHERE productID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBigDecimal("price"); // ✅ Lấy giá bằng BigDecimal
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy giá sản phẩm productID = " + productId + ": " + e.getMessage());
+        }
+
+        return BigDecimal.ZERO; // Nếu lỗi hoặc không có sản phẩm thì trả về 0
+    }
 
     public List<Integer> getProductUnitsByProductID(int productID) {
         List<Integer> unitSizes = new ArrayList<>();

@@ -35,18 +35,19 @@ public class DebtRecords {
         this.deleteBy = deleteBy;
     }
 
-    public DebtRecords(int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public DebtRecords(int customerID, int orderID, double amount, int paymentStatus, int createBy, boolean isDelete) {
         this.customerID = customerID;
         this.orderID = orderID;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
         this.createAt = createAt;
-        this.updateAt = updateAt;
+        
         this.createBy = createBy;
         this.isDelete = isDelete;
-        this.deleteAt = deleteAt;
-        this.deleteBy = deleteBy;
+        
     }
+    
+    
     
     
 

@@ -159,6 +159,7 @@ public class SearchServlet extends HttpServlet {
             out.println("<div class='search-suggestions'>");
             for (Customers customer : customers) {
                 out.println("<div class='customer-item' onclick=\"selectCustomer('"
+                        + customer.getCustomerID() + "', '"
                         + customer.getName() + "', '"
                         + customer.getPhone() + "', '"
                         + customer.getTotalDebt() + "')\">");
