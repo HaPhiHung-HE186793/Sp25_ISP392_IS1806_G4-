@@ -150,14 +150,11 @@ public class CreateOrderServlet extends HttpServlet {
 
                     int quantity = Integer.parseInt(quantities[i]);
                     if (quantity <= 0 || unitPrice <= 0 || price <= 0 || discount < 0) {
-
+                        response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
                         return;
                     }
 
-                   
-
-                    OrderItems orderItem = new OrderItems(productID, productName, price, unitPrice, quantity,discount);
-                   
+                    OrderItems orderItem = new OrderItems(productID, productName, price, unitPrice, quantity, discount);
 
                     orderDetails.add(orderItem);
 

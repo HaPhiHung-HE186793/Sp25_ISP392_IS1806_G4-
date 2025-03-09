@@ -182,8 +182,8 @@ public class SearchServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        String searchPhone = request.getParameter("keyword");
-        List<Customers> customers = DAOCustomers.INSTANCE.findByPhone(searchPhone);
+        String searchValue = request.getParameter("keyword");
+        List<Customers> customers = DAOCustomers.INSTANCE.findByNameOrPhone(searchValue);
 
         if (customers.isEmpty()) {
             out.println("<p>Không tìm thấy khach hang.</p>");
