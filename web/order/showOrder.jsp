@@ -57,12 +57,26 @@
             color: white;
             border-radius: 4px;
             cursor: pointer;
-            text-decoration: none; /* Remove underline */
-            display: inline-block; /* Allow padding and margin */
+            text-decoration: none;
+            display: inline-block;
             transition: background-color 0.3s;
         }
         .action-button:hover {
             background-color: #c9302c; /* Màu đỏ tối hơn khi hover */
+        }
+        .blue-button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff; /* Màu xanh */
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .blue-button:hover {
+            background-color: #0056b3; /* Màu xanh tối hơn khi hover */
         }
         .table-container {
             overflow-x: auto;
@@ -113,6 +127,9 @@
             </div>
             
             <h3><%= request.getAttribute("tableTitle") %></h3>
+            <div style="text-align: right; margin-bottom: 10px;">
+                <button class="blue-button" onclick="window.location.href='<%=request.getContextPath()%>/URLOrderIn?service=listshow'">Hóa đơn nhập</button>
+            </div>
             <div>
                 <label for="customerName">Tên khách hàng:</label>
                 <input type="text" id="customerName" placeholder="Enter customer name" value="<%= customerName != null ? customerName : "" %>">
