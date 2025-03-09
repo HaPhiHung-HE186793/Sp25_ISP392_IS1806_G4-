@@ -61,6 +61,16 @@ public class OrderWorker extends Thread {
         BigDecimal paidAmount = new BigDecimal(orderTask.getPaidAmount());
 
         BigDecimal debtAmount = new BigDecimal(orderTask.getDebtAmount());
+        
+        int paymentStatus;
+        
+        if(orderType ==0){
+            
+           
+            paymentStatus = 2;
+        
+        }else{
+            paymentStatus = 0;
 
         for (OrderItems detail : orderTask.getOrderDetails()) {
             int quantity = DAOProduct.INSTANCE.getProductQuantity(detail.getProductID());
@@ -101,12 +111,14 @@ public class OrderWorker extends Thread {
             processedOrders.put(orderTask.getUserId(), -1); // Lưu trạng thái lỗi
             return;
         }
+        
+        }
 
         // int orderId = DAOOrders.INSTANCE.createOrder(customerId,userId,userId, totalOrderPrice, porter, status);
         int orderId = DAOOrders.INSTANCE.createOrder(orderTask.getCustomerId(), orderTask.getUserId(), orderTask.getUserId(), totalAmount, orderTask.getPorter(), orderTask.getStatus(), orderType, paidAmount);
         if (debtAmount.compareTo(BigDecimal.ZERO) != 0) {
 
-            DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, orderTask.getDebtAmount(), 0, orderTask.getUserId(), false);
+            DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, orderTask.getDebtAmount(), paymentStatus, orderTask.getUserId(), false);
             DAODebtRecords dao = new DAODebtRecords();
             // cần xử lí thêm việc tạo nợ có cần thành công không
             dao.addDebtRecordFromOrder(debtRecord);
@@ -120,11 +132,20 @@ public class OrderWorker extends Thread {
 
             DAOOrderItems.INSTANCE.createOrderItem(orderId, detail.getProductID(), detail.getProductName(), price, unitPrice, detail.getQuantity());
 
-            // Cập nhật kho hàng
-            
+           
+                
+                
+         // Cập nhật kho hàng
+            if (orderType==1) {
                 //  Xuất kho: Giảm số lượng sản phẩm trong kho
                 DAOProduct.INSTANCE.exportProductQuantity(detail.getProductID(), detail.getQuantity());
 
+            } else if (orderType==0) {
+                //  Nhập kho: Tăng số lượng sản phẩm trong kho
+                DAOProduct.INSTANCE.importProductQuantity(detail.getProductID(), detail.getQuantity());
+                   
+                
+            }
             
         }
 

@@ -28,7 +28,8 @@
     </c:if>
 
     <c:if test="${sessionScope.roleID == 2 or sessionScope.roleID == 3}">
-        <a href="<%=request.getContextPath()%>/CreateOrderServlet">Tạo hóa đơn</a>
+        <a href="<%=request.getContextPath()%>/CreateOrderServlet">Hóa đơn xuất</a>
+         <a href="<%=request.getContextPath()%>/CreateImportOrderServlet">Hóa đơn nhập</a>
     <a href="<%=request.getContextPath()%>/URLOrder?service=listshow">Quản lý thanh toán</a>
         <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý khách hàng</a>
     </c:if>

@@ -115,14 +115,18 @@
     <servlet>
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <servlet-class>controller.order.CheckOrderStatusServlet</servlet-class>
-        </servlet>
-    <servlet>    
+    </servlet>
+    <servlet>
         <servlet-name>sendOTP</servlet-name>
         <servlet-class>controller.user.sendOTP</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>verifyOTPServlet</servlet-name>
         <servlet-class>controller.user.verifyOTPServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateImportOrderServlet</servlet-name>
+        <servlet-class>controller.order.CreateImportOrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -235,13 +239,17 @@
     <servlet-mapping>
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <url-pattern>/CheckOrderStatusServlet</url-pattern>
-</servlet-mapping>
-        <servlet-mapping>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>sendOTP</servlet-name>
         <url-pattern>/sendotp</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>verifyOTPServlet</servlet-name>
         <url-pattern>/verifyotp</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateImportOrderServlet</servlet-name>
+        <url-pattern>/CreateImportOrderServlet</url-pattern>
     </servlet-mapping>
 </web-app>

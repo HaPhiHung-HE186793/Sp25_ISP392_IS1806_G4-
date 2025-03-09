@@ -1,7 +1,7 @@
 <%-- 
-    Document   : home
-    Created on : Feb 8, 2025, 5:59:03 PM
-    Author     : TIEN DAT PC
+    Document   : importOrder
+    Created on : Mar 8, 2025, 6:20:20 PM
+    Author     : Admin
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -449,10 +449,11 @@
                     <div class="notification">
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
                     </div>
-                    
+
                     <h1 style="text-align: center">
-                        Hóa Đơn Xuất
+                        Hóa Đơn Nhập
                     </h1>
+
 
 
                     <form id="orderForm" action="CreateOrderServlet" method="post">
@@ -492,7 +493,7 @@
                                                     type: "GET",
                                                     data: {
                                                         searchProduct: query,
-                                                        orderType: 1  // ✅ Đúng cú pháp
+                                                        orderType: 0  // ✅ Đúng cú pháp
                                                     },
                                                     success: function (data) {
                                                         if (data.trim() !== "") {
@@ -536,7 +537,7 @@
 
 
 
-                                <input type="hidden" name="orderType" value="1"><!-- xuất -->
+                                <input type="hidden" name="orderType" value="0"><!-- xuất -->
 
                                 <!-- Order items table -->
                                 <div class="order-items-container">
@@ -547,7 +548,7 @@
                                                 <th>Sản Phẩm</th>
                                                 <th>Đơn vị</th>
                                                 <th>Số Lượng</th>
-                                                <th>Đơn Giá</th>
+                                                <th>Giá Nhập</th>
                                                 <th>Giảm Giá(Kg)</th>
                                                 <th>Thành Tiền</th>
                                                 <th>Xóa</th>
@@ -962,15 +963,11 @@
                         });
                     </script>
                     <script>
-                        function addProductToOrder(productID, productName, pricePerKg, availableQuantity, unitSizes) {
+                        function addProductToOrder(productID, productName, unitSizes) {
 
 
 
-                            // Kiểm tra nếu sản phẩm hết hàng
-                            if (availableQuantity <= 0) {
-                                alert("Sản phẩm đã hết hàng! Không thể thêm vào đơn hàng.");
-                                return; // Dừng hàm nếu sản phẩm không còn hàng
-                            }
+
 
                             var table = document.getElementById("orderItems").getElementsByTagName('tbody')[0];
 
@@ -1006,12 +1003,12 @@
                             cell2.innerHTML = unitSelectHTML;
 
 
-                            cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1" max="' + availableQuantity + '">';
+                            cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required="required" value="1" min="1">';
 
-                            // Nếu xuất kho, giá cố định
-                            cell4.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden" value="' + pricePerKg + '">' +
-                                    '<input type="text" name="unitPrice" class="unitPrice" value="' + formatNumberVND(pricePerKg) + '" readonly>';
 
+
+                            cell4.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden">' +
+                                    '<input type="number" name="unitPrice" class="unitPrice" min="0"  required>';
 
 
 
@@ -1045,13 +1042,14 @@
                                 if (this.value < 0) {
                                     this.value = 1; // Đặt giá trị tối thiểu là 1
                                 }
-                                recalculateRow(newRow, pricePerKg, availableQuantity);
+                                recalculateRow(newRow);
 
                             });
 
 
                             var unitTypeInput = cell2.querySelector('.unitType');
                             var discountInput = cell5.querySelector('.discount');
+                            var unitPriceInput = cell4.querySelector('.unitPrice');
 
                             // Không cho nhập số âm
                             discountInput.addEventListener("input", function () {
@@ -1059,18 +1057,24 @@
                                     this.value = 0; // Đặt giá trị tối thiểu là 1
                                 }
                             });
+                            unitPriceInput.addEventListener("input", function () {
+                                if (this.value < 0) {
+                                    this.value = 0; // Đặt giá trị tối thiểu là 1
+                                }
+                            });
 
 
-                            unitTypeInput.addEventListener('change', () => recalculateRow(newRow, pricePerKg, availableQuantity));
-                            discountInput.addEventListener('input', () => recalculateRow(newRow, pricePerKg, availableQuantity));
+                            unitTypeInput.addEventListener('change', () => recalculateRow(newRow));
+                            discountInput.addEventListener('input', () => recalculateRow(newRow));
+                            unitPriceInput.addEventListener('input', () => recalculateRow(newRow));
 
-                            recalculateRow(newRow, pricePerKg, availableQuantity);
+                            recalculateRow(newRow);
 
 
 
 
                         }
-                        function recalculateRow(row, pricePerKg, availableQuantity) {
+                        function recalculateRow(row) {
 
                             var quantityInput = row.querySelector(".quantity");
                             var unitTypeInput = row.querySelector(".unitType");
@@ -1078,22 +1082,26 @@
                             var totalPriceInput = row.querySelector(".totalPrice");
                             var totalPriceHidden = row.querySelector(".totalPriceHidden");
                             var totalWeightInput = row.querySelector(".totalWeight");
+                            var unitPriceInput = row.querySelector(".unitPrice");
+                            var unitPriceHidden = row.querySelector(".unitPriceHidden");
+
 
                             var unitMultiplier = parseInt(unitTypeInput.value);
                             var quantity = parseInt(quantityInput.value);
                             var totalWeight = quantity * unitMultiplier;
+                            var unitPrice = parseInt(unitPriceInput.value) || 0;
 
-                            if (totalWeight > availableQuantity) {
-                                alert("Số lượng sản phẩm vượt quá tồn kho! Vui lòng nhập lại.");
-                                quantityInput.value = Math.floor(availableQuantity / unitMultiplier); // Tự động điều chỉnh số lượng phù hợp
-                                totalWeight = quantityInput.value * unitMultiplier; // Cập nhật lại tổng khối lượng
-                            }
+                            unitPriceHidden.value = unitPrice;
+
 
 
 
                             var discount = parseInt(discountInput.value) || 0;
                             var totalDiscount = totalWeight * discount;
-                            var totalPrice = (totalWeight * pricePerKg) - totalDiscount;
+
+                            var totalPrice = ((totalWeight * unitPriceHidden.value) - totalDiscount) || 0;
+
+
 
                             totalWeightInput.value = totalWeight;
                             totalPriceHidden.value = totalPrice; // Lưu giá trị số
@@ -1150,8 +1158,11 @@
                                 var discount = row.querySelector(".discount").value;
                                 var totalPriceHidden = row.querySelector(".totalPriceHidden").value;
 
-                                // Lấy danh sách unitSizes từ dropdown
-                                var unitSizes = Array.from(row.querySelectorAll(".unitType option")).map(opt => opt.value);
+
+
+                                // Lấy danh sách unitSizes từ dropdown, đảm bảo nó luôn là mảng
+                                var unitSizes = Array.from(row.querySelectorAll(".unitType option")).map(opt => parseInt(opt.value));
+
 
                                 orderItems.push({productID, productName, unitType, quantity, unitPriceHidden, discount, totalPriceHidden, unitSizes});
                             });
@@ -1165,7 +1176,7 @@
                                 // Đảm bảo có unitSizes từ dữ liệu đã lưu trước đó
                                 var unitSizes = item.unitSizes || [1]; // Nếu không có, mặc định là [1] (Kg)
 
-                                addProductToOrder(item.productID, item.productName, item.unitPriceHidden, item.quantity, unitSizes);
+                                addProductToOrder(item.productID, item.productName, unitSizes);
 
                                 var lastRow = document.querySelector("#orderItems tbody tr:last-child");
 

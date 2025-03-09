@@ -71,6 +71,8 @@ public class SearchServlet extends HttpServlet {
 
         String keyword = request.getParameter("searchProduct");
 
+        int orderType = Integer.parseInt(request.getParameter("orderType"));
+
         if (keyword != null && !keyword.trim().isEmpty()) {
             List<Products> products = DAOProduct.INSTANCE.searchProductsByName(keyword);
 
@@ -94,36 +96,71 @@ public class SearchServlet extends HttpServlet {
                         }
                     }
                     unitSizesStr.append("]");
-                    // Xuất HTML với unitSizes được truyền vào addProductToOrder()
-                    out.println("<div class='product-item' onclick=\"addProductToOrder('"
-                            + product.getProductID() + "','"
-                            + product.getProductName() + "','"
-                            + (int) product.getPrice() + "','"
-                            + product.getQuantity() + "',"
-                            + unitSizesStr.toString() + ")\">");
-                    // Ảnh sản phẩm
-                    out.println("<div class='product-image'>"
-                            + "<img src='" + product.getImage() + "' alt='Product Image' />"
-                            + "</div>");
 
-                    // Container chứa nội dung
-                    out.println("<div class='product-content'>");
+                    if (orderType == 0) {
+                        // Xuất HTML với unitSizes được truyền vào addProductToOrder()
+                        out.println("<div class='product-item' onclick=\"addProductToOrder('"
+                                + product.getProductID() + "','"
+                                + product.getProductName() + "',"
+                                + unitSizesStr.toString() + ")\">");
 
-                    // Hàng chứa tên, số lượng và giá
-                    out.println("<div class='product-info'>");
-                    out.println("<h3 class='product-name'>" + product.getProductName() + "</h3>");
-                    out.println("<p class='product-quantity'>Số lượng: " + product.getQuantity() + "</p>");
-                    out.println("<p class='product-price'>Giá: " + formatter.format(product.getPrice()) + "</p>");
-                    out.println("</div>");
+                        // Ảnh sản phẩm
+                        out.println("<div class='product-image'>"
+                                + "<img src='" + product.getImage() + "' alt='Product Image' />"
+                                + "</div>");
 
-                    // Mô tả sản phẩm
-                    out.println("<p class='product-description'>"
-                            + (product.getDescription() != null ? product.getDescription() : "")
-                            + "</p>");
+                        // Container chứa nội dung
+                        out.println("<div class='product-content'>");
 
-                    out.println("</div>"); // đóng div .product-content
-                    out.println("</div>"); // đóng div .product-item
-                }
+                        // Hàng chứa tên, số lượng và giá
+                        out.println("<div class='product-info'>");
+                        out.println("<h3 class='product-name'>" + product.getProductName() + "</h3>");
+                        out.println("<p class='product-quantity'>Số lượng: " + product.getQuantity() + "</p>");
+                        out.println("<p class='product-price'>Giá Bán: " + formatter.format(product.getPrice()) + "</p>");
+                        out.println("</div>");
+
+                        // Mô tả sản phẩm
+                        out.println("<p class='product-description'>"
+                                + (product.getDescription() != null ? product.getDescription() : "")
+                                + "</p>");
+
+                        out.println("</div>"); // đóng div .product-content
+                        out.println("</div>"); // đóng div .product-item
+
+                    } else {
+
+                        // Xuất HTML với unitSizes được truyền vào addProductToOrder()
+                        out.println("<div class='product-item' onclick=\"addProductToOrder('"
+                                + product.getProductID() + "','"
+                                + product.getProductName() + "','"
+                                + (int) product.getPrice() + "','"
+                                + product.getQuantity() + "',"
+                                + unitSizesStr.toString() + ")\">");
+                        // Ảnh sản phẩm
+                        out.println("<div class='product-image'>"
+                                + "<img src='" + product.getImage() + "' alt='Product Image' />"
+                                + "</div>");
+
+                        // Container chứa nội dung
+                        out.println("<div class='product-content'>");
+
+                        // Hàng chứa tên, số lượng và giá
+                        out.println("<div class='product-info'>");
+                        out.println("<h3 class='product-name'>" + product.getProductName() + "</h3>");
+                        out.println("<p class='product-quantity'>Số lượng: " + product.getQuantity() + "</p>");
+                        out.println("<p class='product-price'>Giá Bán: " + formatter.format(product.getPrice()) + "</p>");
+                        out.println("</div>");
+
+                        // Mô tả sản phẩm
+                        out.println("<p class='product-description'>"
+                                + (product.getDescription() != null ? product.getDescription() : "")
+                                + "</p>");
+
+                        out.println("</div>"); // đóng div .product-content
+                        out.println("</div>"); // đóng div .product-item
+                    }
+
+                }// kết thúc for
 
                 out.println("</div>"); // đóng container lớn
             }

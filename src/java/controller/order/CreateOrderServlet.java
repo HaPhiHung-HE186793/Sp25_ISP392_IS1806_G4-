@@ -149,7 +149,7 @@ public class CreateOrderServlet extends HttpServlet {
                     Double discount = Double.parseDouble(discounts[i]);
 
                     int quantity = Integer.parseInt(quantities[i]);
-                    if (quantity <= 0 || unitPrice <= 0 || price <= 0 || discount < 0||discount > unitPrice * 0.1) {
+                    if (quantity <= 0 || unitPrice <= 0 || price <= 0 || discount < 0) {
 
                         return;
                     }
