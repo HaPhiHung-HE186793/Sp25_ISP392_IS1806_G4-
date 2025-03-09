@@ -49,15 +49,16 @@ public class ControllerOrder extends HttpServlet {
             sortOrder = "asc"; // Giá trị mặc định
         }
 
-        String sql = "SELECT o.orderID, c.name, u.userName, o.paidAmount, o.totalAmount, o.createAt, o.updateAt, o.porter, o.status, u.storeID " +
+        String sql = "SELECT o.orderID, c.name, u.userName, o.paidAmount, o.totalAmount, o.createAt, o.updateAt, o.porter, o.status, u.storeID, o.orderType " +
                      "FROM orders o " +
                      "JOIN customers c ON o.customerID = c.customerID " +
-                     "JOIN users u ON o.userID = u.ID ";
+                     "JOIN users u ON o.userID = u.ID "+
+                     "WHERE o.orderType = 1 ";
 
         // Lấy storeID từ session
         Integer storeID = (Integer) request.getSession().getAttribute("storeID");
         if (storeID != null) {
-            sql += "WHERE u.storeID = " + storeID + " "; // Thêm điều kiện lọc theo storeID
+            sql += "AND u.storeID = " + storeID + " "; // Thêm điều kiện lọc theo storeID
         }
 
         // Thêm điều kiện tìm kiếm
@@ -106,11 +107,12 @@ public class ControllerOrder extends HttpServlet {
             // Tính tổng giá tiền cho tất cả các bản ghi
             String totalAmountSql = "SELECT SUM(o.totalAmount) FROM orders o " +
                                     "JOIN customers c ON o.customerID = c.customerID " +
-                                    "JOIN users u ON o.userID = u.ID ";
+                                    "JOIN users u ON o.userID = u.ID "+
+                                    "WHERE o.orderType = 1 ";
 
             // Thêm điều kiện lọc theo storeID
             if (storeID != null) {
-                totalAmountSql += "WHERE u.storeID = " + storeID + " ";
+                totalAmountSql += "AND u.storeID = " + storeID + " ";
             }
 
             // Thêm điều kiện tìm kiếm vào câu truy vấn tổng
@@ -153,11 +155,12 @@ public class ControllerOrder extends HttpServlet {
         String countSql = "SELECT COUNT(*) " +
                           "FROM orders o " +
                           "JOIN customers c ON o.customerID = c.customerID " +
-                          "JOIN users u ON o.userID = u.ID ";
+                          "JOIN users u ON o.userID = u.ID "+
+                          "WHERE o.orderType = 1 ";
 
         // Thêm điều kiện lọc theo storeID
         if (storeID != null) {
-            countSql += "WHERE u.storeID = " + storeID + " ";
+            countSql += "AND u.storeID = " + storeID + " ";
         }
 
         int totalRecords = dao.getTotalRecords(countSql);
