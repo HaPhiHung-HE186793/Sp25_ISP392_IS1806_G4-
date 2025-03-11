@@ -89,7 +89,7 @@
                             <th>Giá</th>
                             <th>Đơn giá</th>
                             <th>Số lượng</th>
-                            <th>Mô tả</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -105,7 +105,7 @@
                             <td><%= orderItem.getPrice() %></td>
                             <td><%= orderItem.getUnitPrice() %></td>
                             <td><%= orderItem.getQuantity() %></td>
-                            <td><%= orderItem.getDescription() %></td>
+                            
                         </tr>
                         <%
                             }
