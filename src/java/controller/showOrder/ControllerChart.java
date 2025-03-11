@@ -86,7 +86,7 @@ public class ControllerChart extends HttpServlet {
                                 "JOIN OrderItems i ON o.orderID = i.orderID " +
                                 "WHERE o.orderType = 1 AND u.storeID = " + storeID + " " +
                                 "GROUP BY i.productName " +
-                                "ORDER BY COUNT(i.productName) DESC";
+                                "ORDER BY price DESC";
 
                 Vector<BestSeller> bestSellingProduct = dao1.getProductSeller(bestSellingProductSql);
                 request.setAttribute("bestSellingProduct", bestSellingProduct);
@@ -99,7 +99,7 @@ public class ControllerChart extends HttpServlet {
                                           "JOIN customers c ON o.customerID = c.customerID " +
                                           "WHERE o.orderType = 1 AND u.storeID = " + storeID + " " +
                                           "GROUP BY c.name " +
-                                          "ORDER BY COUNT(c.name) DESC";
+                                          "ORDER BY price DESC";
 
                 Vector<BestSeller> bestCustomer = dao1.getCustomerSeller(bestCustomerSql);
                 request.setAttribute("bestCustomer", bestCustomer);
