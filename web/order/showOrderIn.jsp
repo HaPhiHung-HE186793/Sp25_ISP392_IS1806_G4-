@@ -86,11 +86,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            border: none;
         }
         th, td {
             padding: 10px;
-            border: 1px solid #ddd;
+/*            border: 1px solid #ddd;*/
             text-align: left;
+            border: none;
         }
         th {
             background-color: #f2f2f2;
