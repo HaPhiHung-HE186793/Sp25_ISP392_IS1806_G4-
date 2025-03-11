@@ -80,7 +80,7 @@
 
             <div class="table-container">
                 <h3><%= request.getAttribute("tableTitle") %></h3>
-                <table border="1">
+                <table >
                     <thead>
                         <tr>
                             <th>ID</th>                            
