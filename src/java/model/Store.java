@@ -5,6 +5,7 @@
 package model;
 
 import DAO.DAOStore;
+import java.util.List;
 
 /**
  *
@@ -12,12 +13,11 @@ import DAO.DAOStore;
  */
 public class Store{
     private int storeID;
-    private int ownerID;
     private String storeName;
     private String createAt;  
     private String updateAt;
     private int createBy;
-    private int isDelete;
+    private boolean isDelete;
     private String deleteAt;
     private int deleteBy; 
     private String address;
@@ -29,11 +29,10 @@ public class Store{
     public Store() {}
 
     // Constructor đầy đủ
-    public Store(int storeID,int ownerID, String storeName, String createAt, String updateAt, int createBy,
-                 int isDelete, String deleteAt, int deleteBy, String address, String phone,
+    public Store(int storeID,String storeName, String createAt, String updateAt, int createBy,
+                 boolean isDelete, String deleteAt, int deleteBy, String address, String phone,
                  String email, String logostore) {
         this.storeID = storeID;
-        this.ownerID = ownerID;
         this.storeName = storeName;
         this.createAt = createAt;
         this.updateAt = updateAt;
@@ -47,6 +46,15 @@ public class Store{
         this.logostore = logostore;
     }
 
+    public Store(String storeName, int createBy, String address, String phone, String email, String logostore) {
+        this.storeName = storeName;
+        this.createBy = createBy;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.logostore = logostore;
+    }        
+
     // Getter và Setter
 
     public int getStoreID() {
@@ -57,13 +65,6 @@ public class Store{
         this.storeID = storeID;
     }
 
-    public int getOwnerID() {
-        return ownerID;
-    }
-
-    public void setOwnerID(int ownerID) {
-        this.ownerID = ownerID;
-    }
 
     public String getStoreName() {
         return storeName;
@@ -97,11 +98,11 @@ public class Store{
         this.createBy = createBy;
     }
 
-    public int getIsDelete() {
+    public boolean getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(boolean isDelete) {
         this.isDelete = isDelete;
     }
 
@@ -153,9 +154,9 @@ public class Store{
         this.logostore = logostore;
     }
     
-    public String getOwnerName() { 
+    public List<String> getOwnerName() { 
         DAOStore dao = new DAOStore();
-        return dao.getUserNamebyID(ownerID);
+        return dao.getUserNamesByStoreID(storeID);
     }
     public String getCreateName() { 
         DAOStore dao = new DAOStore();
@@ -164,7 +165,7 @@ public class Store{
 
     @Override
     public String toString() {
-        return "Store{" + "storeID=" + storeID + ", ownerID=" + ownerID + ", storeName=" + storeName + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", address=" + address + ", phone=" + phone + ", email=" + email + ", logostore=" + logostore + '}';
+        return "Store{" + "storeID=" + storeID +", storeName=" + storeName + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", address=" + address + ", phone=" + phone + ", email=" + email + ", logostore=" + logostore + '}';
     }
     
     

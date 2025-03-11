@@ -31,6 +31,10 @@
         <url-pattern>/changepassword</url-pattern>
         <url-pattern>/verifyotp</url-pattern>
         <url-pattern>/sendotp</url-pattern>
+        <url-pattern>/liststore</url-pattern>
+        <url-pattern>/createstore</url-pattern>
+        <url-pattern>/storedetail</url-pattern>
+        <url-pattern>/updatestore</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -131,6 +135,18 @@
         <servlet>
         <servlet-name>ListStore</servlet-name>
         <servlet-class>controller.store.ListStore</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateStore</servlet-name>
+        <servlet-class>controller.store.CreateStore</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateStore</servlet-name>
+        <servlet-class>controller.store.UpdateStore</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StoreDetail</servlet-name>
+        <servlet-class>controller.store.StoreDetail</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -261,5 +277,17 @@
         <servlet-name>ListStore</servlet-name>
         <url-pattern>/liststore</url-pattern>
 
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateStore</servlet-name>
+        <url-pattern>/createstore</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateStore</servlet-name>
+        <url-pattern>/updatestore</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StoreDetail</servlet-name>
+        <url-pattern>/storedetail</url-pattern>
     </servlet-mapping>
 </web-app>

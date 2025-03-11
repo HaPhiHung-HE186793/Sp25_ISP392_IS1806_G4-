@@ -11,7 +11,11 @@
     <input type="hidden" name="action" id="action" value="${requestScope.selectedAction}">
     <input type="hidden" name="startDate" id="startDate" value="${requestScope.startDate}">
     <input type="hidden" name="endDate" id="endDate" value="${requestScope.endDate}">
-
+    
+    <input type="hidden" name="selectedAction" id="selectedAction" value="${requestScope.selectedAction}">
+    <input type="hidden" name="keyword1" id="keyword1" value="${requestScope.keyword1}">
+    <input type="hidden" name="startDateCreate" id="startDateCreate" value="${requestScope.startDateCreate}">
+    <input type="hidden" name="endDateCreate" id="endDateCreate" value="${requestScope.endDateCreate}">
 
     <input type="hidden" name="number" id="keyword" value="${requestScope.searchNumber}">
     <input type="hidden" name="startDate" id="keyword" value="${requestScope.searchStartDate}">

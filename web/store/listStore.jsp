@@ -20,6 +20,14 @@
         <title>List User</title>
     </head>
 
+    <style>
+        td {
+            vertical-align: middle; /* Căn giữa nội dung theo chiều dọc */
+            height: 100px; /* Đảm bảo tất cả các ô có cùng chiều cao */
+        }
+
+
+    </style>
     <body>
         <div id="main">
             <jsp:include page="/Component/menu.jsp"></jsp:include>   
@@ -44,7 +52,7 @@
                                 <div class="notification2" id="errorNotification" style="display: none;"></div>
                             </c:otherwise>
                         </c:choose>                                
-                                <div class="notification2" id="error-message" style="color: red; display: none;"></div>
+                        <div class="notification2" id="error-message" style="color: red; display: none;"></div>
 
                         <c:choose>
                             <c:when test="${not empty mess}">
@@ -58,11 +66,11 @@
                         </c:choose>
                     </div>
                     <div class="filters">
-                        <form method="post" action="listusers">                                
-                            <input type="text" name="keyword" id="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
+                        <form method="post" action="liststore">                                
+                            <input type="text" name="keyword1" id="keyword1" placeholder="Nhập từ khóa..." value="${param.keyword1}">
                             <input name="startDateCreate" id="startDateCreate" type="date" value="${startDateCreate}">
-                            <input name="startDateCreate" id="startDateCreate" type="date" value="${startDateCreate}">
-                            <select name="action" id="action" onchange="this.form.submit()">
+                            <input name="endDateCreate" id="endDateCreate" type="date" value="${endDateCreate}">
+                            <select name="selectedAction" id="selectedAction" onchange="this.form.submit()">
                                 <option value="-1" hidden ${selectedAction == -1 ? 'selected' : ''}>Tất cả trạng thái</option>
                                 <option value="-1">Tất cả trạng thái</option>
                                 <option value="0" ${selectedAction == 0 ? 'selected' : ''}>Hoạt động</option>
@@ -70,7 +78,7 @@
                             </select>
 
                             <button type="submit">Tìm kiếm</button>
-                            <button type="reset" onclick="window.location = 'listusers'">Bỏ lọc</button>
+                            <button type="reset" onclick="window.location = 'liststore'">Bỏ lọc</button>
                         </form>
 
 
@@ -84,13 +92,12 @@
                         <thead id="table-header">
                             <tr>
                                 <th>Logo</th>
-                                <th>Tên</th>
-                                <th>Chủ của hàng</th>
+                                <th>Tên cửa hàng</th>
                                 <th>Email</th>
                                 <th>Địa chỉ</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th> 
-                                <th>Người tạo</th> 
+                                <th>Chủ của hàng</th>                                
                                 <th style="border-left: 1px solid black;">Hành động</th>
                             </tr>
                         </thead>
@@ -100,9 +107,9 @@
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
 
-                                    <td>${s.getLogostore()}</td>
+                                    <td><img src="${s.getLogostore()}" width="100px" height="100px"/></td>
                                     <td>${s.getStoreName()}</td>
-                                    <td>${s.getOwnerName()}</td>                                 
+
                                     <td>${s.getEmail()}</td>     
                                     <td>${s.getAddress()}</td> 
                                     <td>
@@ -111,43 +118,26 @@
                                     </td>
                                     <td>${s.getIsDelete() ? "Đã khóa" : "Hoạt động"}</td>
                                     <td>
-                                        ${s.getCreateName()}
-                                    </td>
-                                    <td style="border-left: 1px solid black; display: flex; align-items: center;">
+                                        <c:forEach var="owner" items="${s.getOwnerName()}">
+                                            ${owner} <br>
+                                        </c:forEach>
+                                    </td> 
+                                    <td style="border-left: 1px solid black; display: flex; align-items: center; gap: 10px;">
                                         <button onclick="window.location.href = 'liststore?id=${s.getStoreID()}'"  
-                                                style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: #5bc0de; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                                style="padding: 5px 15px; font-size: 14px; min-width: 90px; background-color: #5bc0de; color: white; border: none; border-radius: 5px; cursor: pointer;">
                                             Cập nhật
                                         </button>
-
-
-                                        <c:choose>
-                                            <c:when test="${s.getIsDelete()}">
-                                                <form class="toggleStatusForm" data-action="unlock">
-                                                    <input type="hidden" name="storeIDBlock" value="${u.getID()}">                                                    
-                                                    <button type="button" class="toggleStatusBtn"
-                                                            style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                                                        Mở khóa
-                                                    </button>
-                                                </form>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <form class="toggleStatusForm" data-action="block">
-                                                    <input type="hidden" name="storeIDBlock" value="${s.getStoreID()}">
-                                                    <button type="button" class="toggleStatusBtn"
-                                                            style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: red; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                                                        Khóa
-                                                    </button>
-                                                </form>
-                                            </c:otherwise>
-                                        </c:choose>
-
-
+                                        <button onclick="window.location.href = 'liststore?idDetail=${s.getStoreID()}'"  
+                                                style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                            Chi tiết
+                                        </button>
                                     </td>
+
                                 </tr>
                                 <c:set var="rowCount" value="${status.count}" />
                             </c:forEach>   
                             <!-- Bổ sung các hàng trống nếu danh sách có ít hơn 9 người dùng -->
-                            <c:forEach begin="1" end="${9 - rowCount}">
+                            <c:forEach begin="1" end="${4 - rowCount}">
                                 <tr>
                                     <td colspan="8" style="height: 40px;"></td>
                                 </tr>
@@ -170,41 +160,41 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
-                                            // Hàm ẩn thông báo sau 3 giây
-                                            function hideNotification(notificationId) {
-                                                setTimeout(function () {
-                                                    var notification = document.getElementById(notificationId);
-                                                    if (notification) {
-                                                        notification.style.display = 'none';
-                                                    }
-                                                }, 3000); // 3000 milliseconds = 3 seconds
-                                            }
+        // Hàm ẩn thông báo sau 3 giây
+        function hideNotification(notificationId) {
+            setTimeout(function () {
+                var notification = document.getElementById(notificationId);
+                if (notification) {
+                    notification.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
 
-                                            hideNotification('errorNotification');
-                                            hideNotification('messageNotification');
+        hideNotification('errorNotification');
+        hideNotification('messageNotification');
 
-                                            //ajax submit block, unlock
-                                            $(document).ready(function () {
-                                                $(".toggleStatusBtn").click(function () {
-                                                    var form = $(this).closest(".toggleStatusForm");
-                                                    var userIDBlock = form.find("input[name='storeIDBlock']").val();
-                                                    var actionBlock = form.data("action"); // "block" hoặc "unlock"
+        //ajax submit block, unlock
+        $(document).ready(function () {
+            $(".toggleStatusBtn").click(function () {
+                var form = $(this).closest(".toggleStatusForm");
+                var userIDBlock = form.find("input[name='storeIDBlock']").val();
+                var actionBlock = form.data("action"); // "block" hoặc "unlock"
 
-                                                    $.ajax({
-                                                        type: "POST",
-                                                        url: "liststore",
-                                                        data: {actionBlock: actionBlock, userIDBlock: userIDBlock},
-                                                        success: function () {
-                                                            history.replaceState(null, "", "liststore"); // Xóa id khỏi URL
-                                                            location.reload(); // Reload để cập nhật trạng thái
-                                                        },
-                                                        error: function () {
-                                                            $("#error-message").text("Không được phép khóa tài khoản admin khác.").show();
-                                                            hideNotification('error-message');
-                                                        }
-                                                    });
-                                                });
-                                            });
+                $.ajax({
+                    type: "POST",
+                    url: "liststore",
+                    data: {actionBlock: actionBlock, userIDBlock: userIDBlock},
+                    success: function () {
+                        history.replaceState(null, "", "liststore"); // Xóa id khỏi URL
+                        location.reload(); // Reload để cập nhật trạng thái
+                    },
+                    error: function () {
+                        $("#error-message").text("Không được phép khóa tài khoản admin khác.").show();
+                        hideNotification('error-message');
+                    }
+                });
+            });
+        });
 
 
     </script>

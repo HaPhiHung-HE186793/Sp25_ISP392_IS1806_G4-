@@ -83,6 +83,7 @@
         </c:if>
         <c:if test="${sessionScope.roleID==1}">
             <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
+            <a href="<%=request.getContextPath()%>/liststore">Danh sách cửa hàng</a>
         </c:if>
         <c:if test="${sessionScope.roleID==2}">
             <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
@@ -97,3 +98,4 @@
     </div>
 </body>
 </html>
+
