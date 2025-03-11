@@ -78,7 +78,9 @@
     </div>
     <div class="sidebar">
         <div class="logo">Bảng Điều Khiển</div>
+        <c:if test="${sessionScope.roleID == 2 or sessionScope.roleID == 3}">
         <a href="<%=request.getContextPath()%>/ListProducts">Danh sách sản phẩm</a>
+        </c:if>
         <c:if test="${sessionScope.roleID==1}">
             <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
         </c:if>
