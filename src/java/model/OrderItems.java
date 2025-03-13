@@ -23,7 +23,15 @@ public class OrderItems {
     }
 
     
-    
+     public OrderItems(int orderitemID, int orderID, int productID, String productName, double price, double unitPrice, int quantity) {
+        this.orderitemID = orderitemID;
+        this.orderID = orderID;
+        this.productID = productID;
+        this.productName = productName;
+        this.price = price;
+        this.unitPrice = unitPrice;
+        this.quantity = quantity;
+    }
 
     public OrderItems(int orderitemID, int orderID, int productID, String productName, double price, double unitPrice, int quantity, String description) {
         this.orderitemID = orderitemID;
