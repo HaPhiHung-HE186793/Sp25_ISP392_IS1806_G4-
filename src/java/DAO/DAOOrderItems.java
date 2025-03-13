@@ -16,6 +16,49 @@ public class DAOOrderItems extends DBContext {
 
     public static DAOOrderItems INSTANCE = new DAOOrderItems();
 
+  public Vector<OrderItems> getOrderItems(String sql) {
+    Vector<OrderItems> vector = new Vector<OrderItems>();
+    try {
+        System.out.println("Executing SQL: " + sql); // Ghi lại câu lệnh SQL
+        Statement state = conn.createStatement();
+        ResultSet rs = state.executeQuery(sql);
+        while (rs.next()) {
+                   OrderItems orderItem = new OrderItems(
+                    rs.getInt("orderitemID"),
+                    rs.getInt("orderID"),
+                    rs.getInt("productID"),
+                    rs.getString("productName"),
+                    rs.getDouble("price"),
+                    rs.getDouble("unitPrice"),
+                    rs.getInt("quantity")
+                   
+                );
+                vector.add(orderItem);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+          return vector;
+}
+
+    public int getTotalRecords(String sql, int orderId, Integer storeID) {
+        int totalRecords = 0;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            if (storeID != null) {
+                ps.setInt(2, storeID);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalRecords = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOOrderItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return totalRecords;
+    }
+
     public void createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity) {
         String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -25,10 +68,7 @@ public class DAOOrderItems extends DBContext {
             ps.setString(3, productName);
             ps.setBigDecimal(4, price);
             ps.setBigDecimal(5, unitPrice);
-            ps.setInt(6, quantity);
-           
-            
-
+            ps.setInt(6, quantity);           
             ps.executeUpdate();
 
             
@@ -37,31 +77,6 @@ public class DAOOrderItems extends DBContext {
         }
         
     }
-
-    public Vector<OrderItems> getOrderItems(String sql) {
-        Vector<OrderItems> vector = new Vector<OrderItems>();
-        try {
-            Statement state = conn.createStatement();
-            ResultSet rs = state.executeQuery(sql);
-            while (rs.next()) {
-                int orderitemID = rs.getInt("orderitemID");
-                int orderID = rs.getInt("orderID");
-                int productID = rs.getInt("productID");
-                String productName = rs.getString("productName");
-                double price = rs.getDouble("price");
-                double unitPrice = rs.getDouble("unitPrice");
-                int quantity = rs.getInt("quantity");
-                String description = rs.getString("description");
-
-                OrderItems orderItem = new OrderItems(orderitemID, orderID, productID, productName, price, unitPrice, quantity, description);
-                vector.add(orderItem);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return vector;
-    }
-
     public int removeOrderItem(int orderitemID) {
         int n = 0;
         String sql = "DELETE FROM OrderItems WHERE orderitemID=?";
@@ -113,6 +128,7 @@ public class DAOOrderItems extends DBContext {
         }
         return n;
     }
+    
 
     public void listAll() {
         String sql = "SELECT * FROM OrderItems"; // Cập nhật tên bảng
@@ -136,6 +152,7 @@ public class DAOOrderItems extends DBContext {
             ex.printStackTrace();
         }
     }
+    
 
     public static void main(String[] args) {
         DAOOrderItems dao = new DAOOrderItems();
