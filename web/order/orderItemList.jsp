@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.OrderItems, java.util.List, model.CustomerOrder"%>
+<%@page import="model.OrderItems, java.util.List, model.CustomerOrder, java.util.Vector"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,29 +10,56 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
     <title><%= request.getAttribute("papeTitle") %></title>
+    
     <style>
         .btn {
             padding: 5px 10px;
-            background-color: #c9302c; /* Màu nút */
+            background-color: #c9302c;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            text-decoration: none; /* Bỏ gạch chân */
+            text-decoration: none;
             transition: background-color 0.3s;
         }
         .btn:hover {
-            background-color: #b52a2a; /* Màu tối hơn khi hover */
+            background-color: #b52a2a;
         }
         .back-button {
-            text-align: right; /* Căn chỉnh nút về bên phải */
-            margin-top: 10px; /* Thêm khoảng cách phía trên nút */
+            text-align: right;
+            margin-top: 10px;
         }
         .customer-info {
             margin-bottom: 20px;
             border: 1px solid #ccc;
             padding: 10px;
             border-radius: 5px;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .page-link {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: #000; /* Màu chữ mặc định */
+            transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+            border: 1px solid #ccc; /* Viền mặc định */
+            border-radius: 4px; /* Bo góc */
+            margin: 0 2px; /* Khoảng cách giữa các nút */
+        }
+        .page-link:hover,
+        .page-link:focus {
+            background-color: #1E90FF; /* Màu xanh nước biển khi hover hoặc focus */
+            color: white; /* Màu chữ khi hover hoặc focus */
+            outline: none; /* Bỏ viền mặc định */
+        }
+        .page-link.active {
+            background-color: #1E90FF; /* Màu xanh nước biển cho nút đang hoạt động */
+            color: white; /* Màu chữ cho nút đang hoạt động */
+        }
+        .refresh-container {
+            margin-top: 20px; /* Khoảng cách từ bảng */
+            text-align: left; /* Đặt nút ở bên trái */
         }
     </style>
 </head>
@@ -46,7 +73,6 @@
                 Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
             </div>
 
-            <!-- Hiển thị thông tin khách hàng ở đây -->
             <div class="customer-info">
                 <h3>Thông tin Khách Hàng</h3>
                 <%
@@ -73,14 +99,17 @@
                 <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get">
                     <input type="hidden" name="service" value="listOrderItem">
                     <input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
-                    <input type="text" name="productName" placeholder="Nhập tên sản phẩm" required>
+                    <input type="text" name="productName" placeholder="Nhập tên sản phẩm" 
+                           value="<%= request.getParameter("productName") != null ? request.getParameter("productName") : "" %>" 
+                           required>
                     <button type="submit" class="btn">Tìm kiếm</button>
                 </form>
             </div>
 
             <div class="table-container">
                 <h3><%= request.getAttribute("tableTitle") %></h3>
-                <table >
+                
+                <table>
                     <thead>
                         <tr>
                             <th>ID</th>                            
@@ -89,7 +118,6 @@
                             <th>Giá</th>
                             <th>Đơn giá</th>
                             <th>Số lượng</th>
-                            
                         </tr>
                     </thead>
                     <tbody>
@@ -105,14 +133,13 @@
                             <td><%= orderItem.getPrice() %></td>
                             <td><%= orderItem.getUnitPrice() %></td>
                             <td><%= orderItem.getQuantity() %></td>
-                            
                         </tr>
                         <%
                             }
                         } else {
                         %>
                         <tr>
-                            <td colspan="7" style="text-align: center;">Không có bản ghi</td>
+                            <td colspan="6" style="text-align: center;">Không có bản ghi</td>
                         </tr>
                         <%
                         }
@@ -120,14 +147,25 @@
                     </tbody>
                 </table>
             </div>
+            <div class="refresh-container">
+                <a href="<%=request.getContextPath()%>/URLOrderDetail?service=listOrderItem&orderId=<%= request.getParameter("orderId") %>" class="btn">Hiển thị lại</a>
+            </div>
+            <div class="pagination" aria-label="Order Pagination">
+                <% 
+                int currentPage = (Integer) request.getAttribute("currentPage");
+                int totalPages = (Integer) request.getAttribute("totalPages");
+                %>
+                <% if (currentPage > 1) { %> 
+                    <a href="URLOrderDetail?page=<%= currentPage - 1 %>&orderId=<%= request.getParameter("orderId") %>" class="page-link" aria-label="Previous Page">&laquo; Trước</a>
+                <% } %>
 
-            <!-- Di chuyển nút hiển thị toàn bộ sản phẩm xuống đây -->
-            <div class="search-container" style="margin-top: 10px;">
-                <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get" style="display:inline;">
-                    <input type="hidden" name="service" value="listOrderItem">
-                    <input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
-                    <button type="submit" class="btn">Hiển thị toàn bộ sản phẩm</button>
-                </form>
+                <% for (int i = 1; i <= totalPages; i++) { %>
+                    <a href="URLOrderDetail?page=<%= i %>&orderId=<%= request.getParameter("orderId") %>" class="page-link <%= (i == currentPage) ? "active" : "" %>" aria-current="<%= (i == currentPage) ? "page" : "false" %>"><%= i %></a>
+                <% } %>
+
+                <% if (currentPage < totalPages) { %>
+                    <a href="URLOrderDetail?page=<%= currentPage + 1 %>&orderId=<%= request.getParameter("orderId") %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
+                <% } %>
             </div>
 
             <div class="back-button">
