@@ -23,7 +23,7 @@
     <input type="hidden" name="name" id="keyword" value="${requestScope.searchName}">
 
     <input type="hidden" name="search" id="search" value="${requestScope.search}">
-    <input type="hidden" name="search2" id="search2" value="${requestScope.search2}">
+
 
 </form>
 

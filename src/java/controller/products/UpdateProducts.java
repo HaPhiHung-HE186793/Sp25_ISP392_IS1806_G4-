@@ -41,20 +41,38 @@ public class UpdateProducts extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        int productId = Integer.parseInt(request.getParameter("productID"));
-        String productName = request.getParameter("productName");
-        String description = request.getParameter("description");
-        double price = Double.parseDouble(request.getParameter("price"));
-        String image = request.getParameter("image");
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String updateAt = now.format(formatter);
-        // Call the DAO method directly with the individual parameters
-        DAOProduct dao = new DAOProduct();
-        boolean updated = dao.updateProduct(productId, productName, description, price, image, updateAt);
-        request.getRequestDispatcher("ListProducts").forward(request, response);
-        // ... (rest of the servlet logic as before)
+        try {
+            int productId = Integer.parseInt(request.getParameter("productID"));
+            String productName = request.getParameter("productName");
+            String description = request.getParameter("description");
+            String priceStr = request.getParameter("price").replaceFirst("^0+(\\d+)", "$1"); // Xóa số 0 ở đầu
+            double price = Double.parseDouble(priceStr);
+            String image = request.getParameter("image");
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String updateAt = now.format(formatter);
 
+            if (price < 0) {
+                request.setAttribute("errorMessage", "Giá sản phẩm không thể âm!");
+                DAOProduct dao = new DAOProduct();
+                Products product = dao.getProductById(productId);
+                request.setAttribute("product", product);
+                request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
+                return;
+            }
+
+            DAOProduct dao = new DAOProduct();
+            boolean updated = dao.updateProduct(productId, productName, description, price, image, updateAt);
+
+            request.getRequestDispatcher("ListProducts").forward(request, response);
+        } catch (NumberFormatException e) {
+            int productId = Integer.parseInt(request.getParameter("productID"));
+            request.setAttribute("errorMessage", "Giá sản phẩm không hợp lệ!");
+            DAOProduct dao = new DAOProduct();
+            Products product = dao.getProductById(productId);
+            request.setAttribute("product", product);
+
+            request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
+        }
     }
-
 }
