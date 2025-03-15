@@ -134,7 +134,7 @@
             </div>
             <div>
                 <label for="customerName">Tên khách hàng:</label>
-                <input type="text" id="customerName" placeholder="Enter customer name" value="<%= customerName != null ? customerName : "" %>">
+                <input type="text" id="customerName" placeholder="Nhập tên khách hàng" value="<%= customerName != null ? customerName : "" %>">
                 
                 <label for="datePicker">Ngày</label>
                 <input type="date" id="datePicker" value="<%= selectedDate != null ? selectedDate : "" %>">

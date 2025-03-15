@@ -19,20 +19,18 @@ public class SearchProducts extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        String keywordName = request.getParameter("search"); // Get search term for name
-        String keywordDescription = request.getParameter("search2"); // Get search term for description
-                request.setAttribute("search", keywordName);
-        request.setAttribute("search2", keywordDescription);
+        String keyword = request.getParameter("search"); // Get search term
+        request.setAttribute("search", keyword);
 
         DAOProduct dao = new DAOProduct();
         List<Products> productsList;
 
-        if ((keywordName != null && !keywordName.isEmpty()) || (keywordDescription != null && !keywordDescription.isEmpty())) {
-            productsList = dao.searchProducts(keywordName, keywordDescription); // New search method
+        if (keyword != null && !keyword.isEmpty()) {
+            productsList = dao.searchProducts(keyword); // New search method
         } else {
             productsList = dao.listAll();
         }
-        
+
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = productsList.size();
         int pageSize = 4;
@@ -52,15 +50,18 @@ public class SearchProducts extends HttpServlet {
         List<Products> paginatedUsers = productsList.subList(startIndex, endIndex);
 
         request.setAttribute("products", productsList);
-        request.getRequestDispatcher("dashboard/home.jsp").forward(request, response);
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            request.getRequestDispatcher("dashboard/home.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("dashboard/home.jsp").forward(request, response);
+        }
     }
-    
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-                    processRequest(request, response);   
+        processRequest(request, response);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -68,6 +69,3 @@ public class SearchProducts extends HttpServlet {
     }
 
 }
-
-
- 

@@ -1,71 +1,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/themify-icons/themify-icons.css">
         <title>Bảng Điều Khiển</title>
-        <style>
-            .table-container form table {
-                width: 50%; /* Adjust as needed */
-                margin: 20px auto; /* Center the table */
-                border-collapse: separate;
-                border-spacing: 15px; /* Adjust spacing between rows */
-            }
-
-            .table-container form table td {
-                padding: 10px;
-                vertical-align: top; /* Align cell content to the top */
-            }
-
-            .table-container form table label { /* If you want to style labels specifically */
-                font-weight: bold;
-            }
-
-            .table-container form input[type="text"],
-            .table-container form input[type="number"],
-            .table-container form input[type="email"],
-            .table-container form textarea {
-                width: 100%;
-                padding: 8px;
-                box-sizing: border-box;
-                border: 1px solid #ccc;
-            }
-
-            .table-container form textarea {
-                height: 100px; /* Adjust textarea height */
-                resize: vertical; /* Allow vertical resizing */
-            }
-
-            .table-container form button {
-                padding: 10px 20px;
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                cursor: pointer;
-            }
-        </style>
     </head>
-
     <body>
         <div id="main">
             <jsp:include page="/Component/menu.jsp"></jsp:include>
-
                 <div class="main-content">
                     <div class="notification">
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
                     </div>
-
                     <div class="table-container">
                     <c:if test="${not empty message}">
-                        <p style="color: red;">${message}</p> <%-- Display error/success message --%>
+                        <p style="color: red;">${message}</p>
                     </c:if>
-                    <h3>New product</h3>
-                    <form method="post" action="/DemoISP/CreateProduct">
+                    <h3>Thêm sản phẩm mới</h3>
+                    <form method="post" action="/DemoISP/CreateProduct" enctype="multipart/form-data">
                         <table>
                             <tr>
                                 <td>Tên sản phẩm:</td>
@@ -81,7 +37,11 @@
                             </tr>
                             <tr>
                                 <td>Ảnh:</td>
-                                <td><input type="text" name="image"></td>
+                                <td>
+                                    <input type="file" name="image" id="image" accept="image/*" required>
+                                    <br>
+                                    <img id="previewImage" src="#" alt="Xem trước ảnh" style="max-width: 200px; display: none; margin-top: 10px;">
+                                </td>
                             </tr>
                             <tr>
                                 <td>Tạo bởi (User ID):</td>
@@ -98,10 +58,18 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.getElementById("image").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById("previewImage").src = e.target.result;
+                        document.getElementById("previewImage").style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
     </body>
-
-    <script>
-        // Your JavaScript code can go here if needed.
-    </script>
-
 </html>

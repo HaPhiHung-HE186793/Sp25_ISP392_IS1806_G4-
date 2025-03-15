@@ -28,16 +28,15 @@
                                 <option value="">A->Z</option>
                                 <option value="">Z->A</option>
                             </select>
-                            <form action="ListRice" method="get">
-                                <input type="text" name="search" placeholder="Nhập tên gạo">
-                                <input type="text" name="search2" placeholder="Nhập mô tả">
-                                <button>Bỏ lọc</button>
-                                <button type="submit">Tìm kiếm</button>
-                            </form>
+                            <form id="searchForm">
+                                <input type="text" name="search" id="searchInput" placeholder="Nhập tên gạo hoặc mô tả" value="${param.search}">
+                            <button type="button" onclick="clearSearch()">Bỏ lọc</button>
+                        </form>
+
+
 
                         <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
                             <a href="./dashboard/insert_product.jsp"><button>Thêm gạo</button></a>
-                            <a href="/DemoISP/ListProductCheckIs"><button>Thêm check ngừng bán</button></a>
                         </c:if> <%-- End of roleID check for buttons --%>
 
                     </div>
@@ -55,28 +54,32 @@
                                 <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
                                     <th>Thời gian tạo</th>
                                     <th>Cập nhật lần cuối </th>
-                                    
+
                                     <th>Ngừng bán</th>
                                     </c:if> <%-- End of roleID check for table headers --%>
 
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="productTableBody">
                             <c:forEach items="${products}" var="p" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
-                                <c:if test="${not p.isIsDelete()}">
+                                <c:if test="${(sessionScope.roleID == 2) or (not p.isIsDelete() and (sessionScope.roleID != 1 and sessionScope.roleID != 3))}">
                                     <tr class="no-rows">
                                         <td>${p.getProductID()}</td>
                                         <td>${p.getProductName()}</td>
                                         <td>${p.getDescription()}</td>
                                         <td>${p.getPrice()}</td>
                                         <td>${p.getQuantity()}</td>
-                                        <td><img src="${p.getImage()}"></td>
+                                        <td><img src="${p.getImage()}" alt="ảnh" style="width: 180px; height: 180px;"></td>
 
                                         <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
                                             <td>${p.getCreateAt()}</td>
                                             <td>${p.getUpdateAt()}</td>
-                                            
-                                            <td>${p.isIsDelete()}</td>
+
+                                            <td><form action="UpdateIsDeleteServlet" method="post">
+                                                    <input type="hidden" name="productId" value="${p.getProductID()}">
+                                                    <input type="checkbox" name="isDeleted" value="true" ${p.isIsDelete() ? 'checked' : ''} 
+                                                           onchange="this.form.submit()">  <%-- Submit form khi checkbox thay đổi --%>
+                                                </form></td>
 
                                         </c:if> <%-- End of roleID check for table data --%>
 
@@ -90,10 +93,38 @@
                             </c:forEach>
                         </tbody>
                     </table>
+
+                    <script>
+                        document.getElementById("searchInput").addEventListener("input", function () {
+                            fetchProducts();
+                        });
+
+                        function clearSearch() {
+                            document.getElementById("searchInput").value = "";
+                            fetchProducts();
+                        }
+
+                        function fetchProducts() {
+                            let keyword = document.getElementById("searchInput").value;
+
+                            fetch("ListRice?search=" + encodeURIComponent(keyword), {
+                                method: "GET",
+                                headers: {"X-Requested-With": "XMLHttpRequest"}
+                            })
+                                    .then(response => response.text())
+                                    .then(data => {
+// Parse nội dung HTML trả về và cập nhật bảng sản phẩm
+                                        let tempDiv = document.createElement("div");
+                                        tempDiv.innerHTML = data;
+                                        let newTableBody = tempDiv.querySelector("#productTableBody").innerHTML;
+                                        document.getElementById("productTableBody").innerHTML = newTableBody;
+                                    });
+                        }
+                    </script>
                 </div>
             </div>
         </div>
-                                    <%@include file="/Component/pagination.jsp" %>
+        <%@include file="/Component/pagination.jsp" %>
     </body>
 
     <script>

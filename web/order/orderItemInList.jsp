@@ -115,8 +115,8 @@
                             <th>ID</th>                            
                             <th>Mã sản phẩm</th>
                             <th>Tên sản phẩm</th>
-                            <th>Giá</th>
-                            <th>Đơn giá</th>
+                            <th>Tổng</th>
+                            <th>Giá nhập</th>
                             <th>Số lượng</th>
                         </tr>
                     </thead>
@@ -148,7 +148,7 @@
                 </table>
             </div>
             <div class="refresh-container">
-                <a href="<%=request.getContextPath()%>/URLOrderDetail?service=listOrderItem&orderId=<%= request.getParameter("orderId") %>" class="btn">Hiển thị lại</a>
+                <a href="<%=request.getContextPath()%>/URLOrderDetailIn?service=listOrderItem&orderId=<%= request.getParameter("orderId") %>" class="btn">Hiển thị lại</a>
             </div>
             <div class="pagination" aria-label="Order Pagination">
                 <% 
@@ -156,20 +156,20 @@
                 int totalPages = (Integer) request.getAttribute("totalPages");
                 %>
                 <% if (currentPage > 1) { %> 
-                    <a href="URLOrderDetail?page=<%= currentPage - 1 %>&orderId=<%= request.getParameter("orderId") %>" class="page-link" aria-label="Previous Page">&laquo; Trước</a>
+                    <a href="URLOrderDetailIn?page=<%= currentPage - 1 %>&orderId=<%= request.getParameter("orderId") %>" class="page-link" aria-label="Previous Page">&laquo; Trước</a>
                 <% } %>
 
                 <% for (int i = 1; i <= totalPages; i++) { %>
-                    <a href="URLOrderDetail?page=<%= i %>&orderId=<%= request.getParameter("orderId") %>" class="page-link <%= (i == currentPage) ? "active" : "" %>" aria-current="<%= (i == currentPage) ? "page" : "false" %>"><%= i %></a>
+                    <a href="URLOrderDetailIn?page=<%= i %>&orderId=<%= request.getParameter("orderId") %>" class="page-link <%= (i == currentPage) ? "active" : "" %>" aria-current="<%= (i == currentPage) ? "page" : "false" %>"><%= i %></a>
                 <% } %>
 
                 <% if (currentPage < totalPages) { %>
-                    <a href="URLOrderDetail?page=<%= currentPage + 1 %>&orderId=<%= request.getParameter("orderId") %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
+                    <a href="URLOrderDetailIn?page=<%= currentPage + 1 %>&orderId=<%= request.getParameter("orderId") %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
                 <% } %>
             </div>
 
             <div class="back-button">
-                <a href="<%=request.getContextPath()%>/URLOrder?service=listshow" class="btn">Quay lại</a>
+                <a href="<%=request.getContextPath()%>/URLOrderIn?service=listshow" class="btn">Quay lại</a>
             </div>
         </div>
     </div>

@@ -1,25 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.products;
 
 import DAO.DAOProduct;
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import jakarta.servlet.http.Part;
 import model.Products;
 
-/**
- *
- * @author ACER
- */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 public class CreateProduct extends HttpServlet {
 
     @Override
@@ -28,28 +27,35 @@ public class CreateProduct extends HttpServlet {
 
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(Integer.MAX_VALUE);
+
         String productName = request.getParameter("productName");
         String description = request.getParameter("description");
-        String contextPath = request.getContextPath();
         double price = 0.0;
         try {
             price = Double.parseDouble(request.getParameter("price"));
         } catch (NumberFormatException e) {
-            // ... (error handling)
+            request.setAttribute("message", "Lỗi: Giá không hợp lệ");
+            request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
+            return;
         }
         int quantity = 0;
 
-        String imageName = request.getParameter("image"); // To store ONLY the image file name
-
-        int createBy = 0;
-        try {
-            createBy = Integer.parseInt(request.getParameter("createBy"));
-        } catch (NumberFormatException e) {
-            // ... (error handling)
+        Part imagePart = request.getPart("image");
+        String imageName = "";
+        if (imagePart != null && imagePart.getSize() > 0) {
+            String uploadDir = getServletContext().getRealPath("/Image/");
+            File uploadFolder = new File(uploadDir);
+            if (!uploadFolder.exists()) {
+                uploadFolder.mkdir();
+            }
+            imageName = imagePart.getSubmittedFileName();
+            File imageFile = new File(uploadFolder, imageName);
+            imagePart.write(imageFile.getAbsolutePath());
         }
 
-        boolean isDelete = false; // nguoc lai neu o ben controller delete
+        int createBy = (session.getAttribute("userID") != null) ? (int) session.getAttribute("userID") : 0;
 
+        boolean isDelete = false;
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createAt = now.format(formatter);
@@ -57,51 +63,23 @@ public class CreateProduct extends HttpServlet {
         String deleteAt = null;
         Integer deleteBy = 0;
 
-        Products product = new Products(productName, description, price, quantity, imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy); // Use imageName here
+        Products product = new Products(productName, description, price, quantity, "Image/" + imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
         DAOProduct dao = new DAOProduct();
+
         if (dao.isProductNameExists(productName)) {
-            request.setAttribute("message", "error: Product name already exists");
+            request.setAttribute("message", "Lỗi: Tên sản phẩm đã tồn tại");
             request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
-            return; // Stop further processing
+            return;
         }
+
         int result = dao.insertProduct(product);
 
         if (result > 0) {
-            request.setAttribute("message", "success");
+            request.setAttribute("message", "Thêm sản phẩm thành công");
         } else {
-            request.setAttribute("message", "error: Database insertion failed");
+            request.setAttribute("message", "Lỗi: Thêm sản phẩm thất bại");
         }
 
         request.getRequestDispatcher("ListProducts").forward(request, response);
-    }
-
-    public static void main(String[] args) {
-        // Create sample product data
-        String productName = "Test Product";
-        String description = "Test Description";
-        double price = 99.99;
-        int quantity = 10;
-        String imageName = "test.jpg";
-        int createBy = 1; // Replace with a valid user ID
-        boolean isDelete = false;
-
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String createAt = now.format(formatter);
-        String updateAt = createAt;
-        String deleteAt = null;
-        Integer deleteBy = 0;
-
-        Products product = new Products(productName, description, price, quantity, imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-
-        // Create an instance of your servlet
-        DAOProduct pro = new DAOProduct();
-        int result = pro.insertProduct(product); // Call the helper method
-
-        if (result > 0) {
-            System.out.println("Test Passed: Product inserted successfully.");
-        } else {
-            System.out.println("Test Failed: Product insertion failed.");
-        }
     }
 }

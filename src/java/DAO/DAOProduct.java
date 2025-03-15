@@ -164,30 +164,19 @@ public class DAOProduct extends DBContext {
                 .replaceAll("Đ", "D");
     }
 
-    public List<Products> searchProducts(String keywordName, String keywordDescription) {
+    public List<Products> searchProducts(String keyword) {
         List<Products> productsList = new ArrayList<>();
-        String sql = "SELECT * FROM products WHERE isDelete = 0 ";
+        String sql = "SELECT * FROM products WHERE isDelete = 0";
 
-        List<String> conditions = new ArrayList<>();
-        if (keywordName != null && !keywordName.isEmpty()) {
-            conditions.add("LOWER(productName) LIKE LOWER(?)");
-        }
-        if (keywordDescription != null && !keywordDescription.isEmpty()) {
-            conditions.add("LOWER(description) LIKE LOWER(?)");
-        }
-
-        if (!conditions.isEmpty()) {
-            sql += " AND (" + String.join(" OR ", conditions) + ")";
+        if (keyword != null && !keyword.isEmpty()) {
+            sql += " AND (LOWER(productName) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))";
         }
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            int paramIndex = 1;
-
-            if (keywordName != null && !keywordName.isEmpty()) {
-                ps.setString(paramIndex++, "%" + keywordName.toLowerCase() + "%");
-            }
-            if (keywordDescription != null && !keywordDescription.isEmpty()) {
-                ps.setString(paramIndex++, "%" + keywordDescription.toLowerCase() + "%");
+            if (keyword != null && !keyword.isEmpty()) {
+                String searchKeyword = "%" + keyword.toLowerCase() + "%";
+                ps.setString(1, searchKeyword);
+                ps.setString(2, searchKeyword);
             }
 
             try (ResultSet rs = ps.executeQuery()) {
