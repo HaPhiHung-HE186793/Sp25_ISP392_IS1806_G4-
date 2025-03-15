@@ -6,6 +6,7 @@ package controller.order;
 
 import DAO.DAOOrderItems;
 import DAO.DAOOrders;
+import DAO.DAOProduct;
 import DAO.DAOUser;
 import model.User;
 import java.io.IOException;
@@ -70,8 +71,13 @@ public class CreateOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
+        // Kiểm tra nếu phản hồi chưa được commit, tiến hành forward
+        if (!response.isCommitted()) {
+            request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
+        } else {
+            // Nếu đã commit, có thể xử lý một thông báo lỗi hoặc ghi log
+            System.out.println("Phản hồi đã được commit, không thể forward.");
+        }
     }
 
     /**
@@ -95,39 +101,30 @@ public class CreateOrderServlet extends HttpServlet {
         int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
 
         int userId = (int) session.getAttribute("userID");
-        int porter = Integer.parseInt(request.getParameter("porter"));
 
-        Double totalDiscount = Double.parseDouble(request.getParameter("totalDiscount"));
         String status;
+        if (orderType.equals("1")) {// xuất
+            Double totalDiscount = Double.parseDouble(request.getParameter("totalDiscount"));
+            if (totalDiscount >= 200000) {
 
-        if (totalDiscount >= 200000) {
+                status = "Tổng tiền đã giảm : " + totalDiscount + "<br>" + request.getParameter("status");
+            } else {
+                status = request.getParameter("status");
+            }
 
-            status = "Tổng tiền đã giảm : " + totalDiscount + "<br>" + request.getParameter("status");
-        } else {
+        }else{
             status = request.getParameter("status");
+        
         }
 
         Double totalOrderPrice = Double.parseDouble(request.getParameter("totalOrderPriceHidden")); // Tổng tiền
+        Double calculatedTotalAmount = 0.0;
 
-        Double paidAmount = 0.0;
-        Double debtAmount = 0.0;
+        Double paidAmount = Double.parseDouble(request.getParameter("paidAmount"));
+        Double debtAmount = Double.parseDouble(request.getParameter("balanceAmount"));
 
-        String orderStatus = request.getParameter("orderStatus");
-
-        if (orderStatus.equals("paid")) {
-
-            paidAmount = totalOrderPrice;
-
-        } else if (orderStatus.equals("partial")) {
-
-            paidAmount = Double.parseDouble(request.getParameter("paidAmount"));
-            debtAmount = totalOrderPrice - paidAmount;
-
-        } else if (orderStatus.equals("unpaid")) {
-            paidAmount = 0.0;
-            debtAmount = totalOrderPrice;
-
-        }
+        String balanceAction = request.getParameter("balanceAction");
+        Double epsilon = 1e-9; // Ngưỡng sai số rất nhỏ
 
         try {
             // Lấy danh sách sản phẩm từ request
@@ -136,7 +133,11 @@ public class CreateOrderServlet extends HttpServlet {
             String[] totalPrices = request.getParameterValues("totalPriceHidden");
             String[] unitPrices = request.getParameterValues("unitPriceHidden");
             String[] quantities = request.getParameterValues("totalWeight");
-            String[] discounts = request.getParameterValues("discount");
+            String[] discounts = null;
+            if (orderType.equals("1")) {
+                discounts = request.getParameterValues("discount");
+
+            }
 
             List<OrderItems> orderDetails = new ArrayList<>();
             if (productIds != null) {
@@ -146,26 +147,72 @@ public class CreateOrderServlet extends HttpServlet {
 
                     Double price = Double.parseDouble(totalPrices[i]);
                     Double unitPrice = Double.parseDouble(unitPrices[i]);
-                    Double discount = Double.parseDouble(discounts[i]);
+                    Double discount = 0.0;
+                    if (orderType.equals("1")) { // xuất
+                        discount = Double.parseDouble(discounts[i]);
+
+                    }
 
                     int quantity = Integer.parseInt(quantities[i]);
+                    Double actualUnitPrice = 0.0;
+                    Double expectedPrice = 0.0;
+
+                    if (orderType.equals("1")) {
+
+                        int availablequantity = DAOProduct.INSTANCE.getProductQuantity(productID);
+                        actualUnitPrice = DAOProduct.INSTANCE.getProductPrice(productID);
+
+                        expectedPrice = (actualUnitPrice - discount) * quantity;
+
+                        if (quantity > availablequantity || Math.abs(expectedPrice - price) > epsilon || Math.abs(actualUnitPrice - unitPrice) > epsilon) {
+                            response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
+
+                            return;
+                        }
+
+                    } else {// nhập
+                        actualUnitPrice = unitPrice;
+                        expectedPrice = actualUnitPrice * quantity;
+
+                    }
+                    calculatedTotalAmount = calculatedTotalAmount + expectedPrice;
+
                     if (quantity <= 0 || unitPrice <= 0 || price <= 0 || discount < 0) {
                         response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
                         return;
                     }
 
-                    OrderItems orderItem = new OrderItems(productID, productName, price, unitPrice, quantity, discount);
+                    OrderItems orderItem = new OrderItems(productID, productName, expectedPrice, actualUnitPrice, quantity, discount);
 
                     orderDetails.add(orderItem);
 
                 }
+
+                if (Math.abs(calculatedTotalAmount - totalOrderPrice) > epsilon) {
+
+                    response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
+                    return;
+                }
+            }
+
+            if (debtAmount < 0) {
+                debtAmount = (paidAmount - calculatedTotalAmount);
+
+            } else if (debtAmount > 0 && balanceAction.equals("debt")) {
+                debtAmount = (paidAmount - calculatedTotalAmount);
+
+            } else {
+                debtAmount = 0.0;
             }
 
             // Khởi động Worker nếu chưa chạy
             OrderWorker.startWorker();
 
             // Đưa đơn hàng vào hàng đợi để xử lý
-            OrderTask orderTask = new OrderTask(orderType, customerId, userId, totalOrderPrice, porter, status, paidAmount, debtAmount, orderDetails);
+            OrderTask orderTask = new OrderTask(orderType, customerId, userId, calculatedTotalAmount, status, paidAmount, debtAmount, orderDetails);
+
+// Xóa trạng thái cũ để đảm bảo lấy đúng kết quả mới
+            OrderWorker.clearProcessedOrder(userId);
             OrderQueue.addOrder(orderTask);
 
             // Trả về JSON response cho AJAX

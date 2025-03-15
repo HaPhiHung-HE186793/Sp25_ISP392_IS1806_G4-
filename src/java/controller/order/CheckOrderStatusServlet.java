@@ -57,19 +57,32 @@ public class CheckOrderStatusServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int userId = Integer.parseInt(request.getParameter("userId"));
+        boolean clearStatus = request.getParameter("clear") != null;
+        if (clearStatus) {
+            // Xóa trạng thái đơn hàng nếu có yêu cầu "clear"
+            OrderWorker.clearProcessedOrder(userId);
+            response.getWriter().write("{\"status\": \"cleared\"}");
+            return;
+        }
 
         // Kiểm tra xem user có đơn hàng nào đã xử lý xong không
         Integer orderId = OrderWorker.getProcessedOrder(userId);
+        
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         if (orderId == null) {
             response.getWriter().write("{\"status\": \"pending\"}");
+            
         } else if (orderId == -1) {
             response.getWriter().write("{\"status\": \"error\"}");
+            // Xóa trạng thái lỗi để lần sau kiểm tra không bị kẹt ở lỗi cũ
+            OrderWorker.clearProcessedOrder(userId);
         } else {
             response.getWriter().write("{\"status\":\"done\"}");
+            // Sau khi trả về thành công, xóa trạng thái để lần sau không nhầm lẫn với đơn mới
+            OrderWorker.clearProcessedOrder(userId);
         }
     }
 

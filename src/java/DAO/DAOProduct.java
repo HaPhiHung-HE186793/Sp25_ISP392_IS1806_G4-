@@ -52,21 +52,21 @@ public class DAOProduct extends DBContext {
         return quantity;
     }
 
-    public BigDecimal getProductPrice(int productId) {
+    public Double getProductPrice(int productId) {
         String sql = "SELECT price FROM products WHERE productID = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, productId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getBigDecimal("price"); // ✅ Lấy giá bằng BigDecimal
+                    return rs.getDouble("price");
                 }
             }
         } catch (SQLException e) {
             System.err.println("Lỗi khi lấy giá sản phẩm productID = " + productId + ": " + e.getMessage());
         }
 
-        return BigDecimal.ZERO; // Nếu lỗi hoặc không có sản phẩm thì trả về 0
+        return 0.0; // Nếu lỗi hoặc không có sản phẩm thì trả về 0
     }
 
     public List<Integer> getProductUnitsByProductID(int productID) {

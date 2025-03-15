@@ -71,7 +71,10 @@ public class DAODebtRecords extends DBContext {
 
         while (!success) {
             double currentDebt = getCustomerTotalDebt(record.getCustomerID());
+            
+             
 
+            
             // Tính toán tổng nợ mới dựa trên trạng thái thanh toán
             double newDebt = (record.getPaymentStatus() == 1 || record.getPaymentStatus() == 2)
                     ? currentDebt + record.getAmount()
@@ -87,9 +90,12 @@ public class DAODebtRecords extends DBContext {
                 int updatedRows = ps.executeUpdate();
                 if (updatedRows > 0) {
                     success = true; // Cập nhật thành công
+                }else{
+                    return false;
                 }
             } catch (SQLException e) {
                 System.out.println("Lỗi khi cập nhật tổng nợ: " + e.getMessage());
+                return false;
             }
         }
 

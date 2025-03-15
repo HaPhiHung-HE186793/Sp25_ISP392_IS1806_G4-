@@ -15,7 +15,7 @@ public class OrderTask {
      private int customerId;
     private int userId;
     private double totalAmount;
-    private int porter;
+    
     private String status;
     private double paidAmount;
     private double debtAmount;
@@ -26,12 +26,12 @@ public class OrderTask {
     public OrderTask() {
     }
 
-    public OrderTask(String orderType, int customerId, int userId, double totalAmount, int porter, String status, double paidAmount, double debtAmount, List<OrderItems> orderDetails) {
+    public OrderTask(String orderType, int customerId, int userId, double totalAmount,String status, double paidAmount, double debtAmount, List<OrderItems> orderDetails) {
         this.orderType = orderType;
         this.customerId = customerId;
         this.userId = userId;
         this.totalAmount = totalAmount;
-        this.porter = porter;
+        
         this.status = status;
         this.paidAmount = paidAmount;
         this.debtAmount = debtAmount;
@@ -70,13 +70,7 @@ public class OrderTask {
         this.totalAmount = totalAmount;
     }
 
-    public int getPorter() {
-        return porter;
-    }
-
-    public void setPorter(int porter) {
-        this.porter = porter;
-    }
+    
 
     public String getStatus() {
         return status;
