@@ -4,6 +4,7 @@
  */
 package DAL;
 //2
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,31 +39,37 @@ public class DBContext {
             ex.printStackTrace();
         }
     }
+
     public DBContext() {
 
-       this("jdbc:sqlserver://localhost:1433;databaseName=ISPG4NV1","sa","123");
+        this("jdbc:sqlserver://localhost:1433;databaseName=ISPG4NV1", "sa", "123");
 
     }
+
     public void dispatch(HttpServletRequest request, HttpServletResponse response, String page) {
-    RequestDispatcher dispatcher = request.getRequestDispatcher(page);
-    try {
-        dispatcher.forward(request, response);
-    } catch (ServletException | IOException ex) {
-        Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
-    }
-}
-    public ResultSet getData(String sql){
-        ResultSet rs=null;
+        RequestDispatcher dispatcher = request.getRequestDispatcher(page);
         try {
-            Statement state=conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+            dispatcher.forward(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public ResultSet getData(String sql) {
+        ResultSet rs = null;
+        try {
+            Statement state = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
-            rs=state.executeQuery(sql);
+            rs = state.executeQuery(sql);
         } catch (SQLException ex) {
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rs;
     }
-    
 
-    
+    //  Thêm phương thức này để các lớp khác có thể lấy connection
+    public Connection getConnection() {
+        return conn;
+    }
+
 }
