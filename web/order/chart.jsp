@@ -2,7 +2,7 @@
 <%@page import="model.Chart,java.util.Vector,model.BestSeller"%>
 <%@page import="com.google.gson.Gson"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@page import="java.text.DecimalFormat"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -237,12 +237,13 @@
                     <h2>Sản phẩm bán chạy nhất</h2>
                     <div id="bestSellingContent">
                         <%
+                            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
                             Vector<BestSeller> bestSellingProduct = (Vector<BestSeller>) request.getAttribute("bestSellingProduct");
                             if (bestSellingProduct != null && !bestSellingProduct.isEmpty()) {
                                 for (BestSeller product : bestSellingProduct) {
                         %>
                             <p>Tên sản phẩm: <%= product.getProductName() %></p>
-                            <p>Tổng doanh thu: <%= product.getPrice() %></p>
+                            <p>Tổng doanh thu: <%= decimalFormat.format(product.getPrice()) %></p>
                         <%
                                 }
                             } else {
@@ -261,12 +262,13 @@
                     <h2>Khách hàng mua nhiều nhất</h2>
                     <div id="bestCustomerContent">
                         <%
+                            
                             Vector<BestSeller> bestCustomer = (Vector<BestSeller>) request.getAttribute("bestCustomer");
                             if (bestCustomer != null && !bestCustomer.isEmpty()) {
                                 for (BestSeller customer : bestCustomer) {
                         %>
                             <p>Tên khách hàng: <%= customer.getName() %></p>
-                            <p>Tổng doanh thu: <%= customer.getPrice() %></p>
+                            <p>Tổng doanh thu: <%= decimalFormat.format(customer.getPrice()) %></p>
                         <%
                                 }
                             } else {
