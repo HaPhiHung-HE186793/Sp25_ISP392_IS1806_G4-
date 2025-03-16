@@ -1,7 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.ShowOrder, java.util.Vector"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.text.DecimalFormat"%>
 <%
+    DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
     int currentPage = (int) request.getAttribute("currentPage");
     int totalPages = (int) request.getAttribute("totalPages");
     String customerName = (String) request.getAttribute("customerName");
@@ -180,8 +182,8 @@
                             <td><%= showOrder.getOrderID() %></td>
                             <td><%= showOrder.getName() %></td>
                             <td><%= showOrder.getUserName() %></td>
-                            <td><%= showOrder.getPaidAmount()%></td>
-                            <td><%= showOrder.getTotalAmount() %></td>
+                            <td><%= decimalFormat.format(showOrder.getPaidAmount()) %></td>
+                            <td><%= decimalFormat.format(showOrder.getTotalAmount()) %></td>
                             <td><%= showOrder.getCreateAt() %></td>                           
                             <td><%= showOrder.getPorter() %></td>
                             <td><%= showOrder.getStatus() %></td>
