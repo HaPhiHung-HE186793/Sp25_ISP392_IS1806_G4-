@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.OrderItems, java.util.List, model.CustomerOrder, java.util.Vector"%>
+<%@page import="model.OrderItems, java.util.List, model.CustomerOrder, java.util.Vector, java.text.DecimalFormat"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -122,6 +122,7 @@
                     </thead>
                     <tbody>
                         <%
+                        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
                         List<OrderItems> list = (List<OrderItems>) request.getAttribute("data");
                         if (list != null && !list.isEmpty()) {
                             for (OrderItems orderItem : list) {
@@ -130,7 +131,7 @@
                             <td><%= orderItem.getOrderitemID() %></td>
                             <td><%= orderItem.getProductID() %></td>
                             <td><%= orderItem.getProductName() %></td>
-                            <td><%= orderItem.getPrice() %></td>
+                            <td><%= decimalFormat.format(orderItem.getPrice()) %></td>
                             <td><%= orderItem.getUnitPrice() %></td>
                             <td><%= orderItem.getQuantity() %></td>
                         </tr>
