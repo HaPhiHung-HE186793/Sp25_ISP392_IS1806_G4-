@@ -1,7 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.ShowOrder, java.util.Vector"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.text.DecimalFormat"%>
 <%
+    DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
     int currentPage = (int) request.getAttribute("currentPage");
     int totalPages = (int) request.getAttribute("totalPages");
     String customerName = (String) request.getAttribute("customerName");
@@ -180,8 +182,8 @@
                             <td><%= showOrder.getOrderID() %></td>
                             <td><%= showOrder.getName() %></td>
                             <td><%= showOrder.getUserName() %></td>
-                            <td><%= showOrder.getPaidAmount()%></td>
-                            <td><%= showOrder.getTotalAmount() %></td>
+                            <td><%= decimalFormat.format(showOrder.getPaidAmount()) %></td>
+                            <td><%= decimalFormat.format(showOrder.getTotalAmount()) %></td>
                             <td><%= showOrder.getCreateAt() %></td>                           
                             <td><%= showOrder.getPorter() %></td>
                             <td><%= showOrder.getStatus() %></td>
@@ -205,15 +207,15 @@
             <div class="total-amount">Tổng : <%= totalAmount %></div>
             <div class="pagination" aria-label="Quiz Pagination">
             <% if (currentPage > 1) { %>
-                <a href="URLOrder?page=<%= currentPage - 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Previous Page">&laquo; Trước</a>
+                <a href="URLOrderIn?page=<%= currentPage - 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Previous Page">&laquo; Trước</a>
             <% } %>
 
             <% for (int i = 1; i <= totalPages; i++) { %>
-                <a href="URLOrder?page=<%= i %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link <%= (i == currentPage) ? "active" : "" %>" aria-current="<%= (i == currentPage) ? "page" : "false" %>"><%= i %></a>
+                <a href="URLOrderIn?page=<%= i %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link <%= (i == currentPage) ? "active" : "" %>" aria-current="<%= (i == currentPage) ? "page" : "false" %>"><%= i %></a>
             <% } %>
 
             <% if (currentPage < totalPages) { %>
-                <a href="URLOrder?page=<%= currentPage + 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
+                <a href="URLOrderIn?page=<%= currentPage + 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
             <% } %>
             </div>
            
