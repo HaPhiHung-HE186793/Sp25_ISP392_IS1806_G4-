@@ -88,34 +88,38 @@ public class DAOProduct extends DBContext {
         return unitSizes;
     }
 
-    public void exportProductQuantity(int productID, int quantitySold) {
+    public boolean exportProductQuantity(int productID, int quantitySold) {
         String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantitySold);
             ps.setInt(2, productID);
 
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate(); // Số dòng bị ảnh hưởng
+
+            return affectedRows > 0; // Nếu có ít nhất 1 dòng bị ảnh hưởng -> thành công
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false; // Có lỗi -> trả về false
         }
-
     }
 
-    public void importProductQuantity(int productID, int quantityAdded) {
+    public boolean importProductQuantity(int productID, int quantityAdded) {
         String sql = "UPDATE products SET quantity = quantity + ? WHERE productID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantityAdded);
             ps.setInt(2, productID);
 
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate(); // Số dòng bị ảnh hưởng
+
+            return affectedRows > 0; // Nếu có ít nhất 1 dòng bị ảnh hưởng -> thành công
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false; // Có lỗi -> trả về false
         }
-
     }
 
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)

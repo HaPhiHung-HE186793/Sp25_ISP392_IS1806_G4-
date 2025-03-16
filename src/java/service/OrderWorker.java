@@ -4,6 +4,7 @@
  */
 package service;
 
+import DAL.DBContext;
 import DAO.DAODebtRecords;
 import model.OrderTask;
 import model.OrderItems;
@@ -17,6 +18,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DebtRecords;
+import java.sql.Connection;
 
 /**
  *
@@ -29,6 +31,11 @@ public class OrderWorker extends Thread {
     // Lưu trạng thái đơn hàng mới nhất theo userId
     private static final ConcurrentHashMap<Integer, Integer> processedOrders = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, String> orderErrors = new ConcurrentHashMap<>();
+    private Connection conn; // ✅ Thêm biến conn
+
+    public OrderWorker() {
+        this.conn = new DBContext().getConnection(); // ✅ Lấy kết nối từ DBContext
+    }
 
     public void run() {
         isRunning = true; // Khi Worker chạy, đánh dấu là true
@@ -66,97 +73,118 @@ public class OrderWorker extends Thread {
         BigDecimal paidAmount = new BigDecimal(orderTask.getPaidAmount());
         System.out.println("💳 Số tiền đã thanh toán: " + paidAmount);
 
-        Double debtAmount = orderTask.getDebtAmount();
+        BigDecimal debtAmount = new BigDecimal(orderTask.getDebtAmount());
         System.out.println("📉 Số tiền nợ: " + debtAmount);
 
-        int paymentStatus=-1;
+        int paymentStatus = -1;
         //nhập
         if (orderType == 0) {// nhập
 
-           
-            
-             if (debtAmount< 0) {
+            if (debtAmount.compareTo(BigDecimal.ZERO) < 0) {
                 paymentStatus = 2; // chủ đi vay
-                 debtAmount = debtAmount * (-1);
-               
-                System.out.println("📉 Số tiền nợ: " + debtAmount);
-                
-            } else if (debtAmount > 0) {
+                debtAmount = debtAmount.abs();
+                System.out.println("nợ" + debtAmount);
+            } else if (debtAmount.compareTo(BigDecimal.ZERO) > 0) {
                 paymentStatus = 3; // Chủ đi trả
+                System.out.println("nợ" + debtAmount);
             }
 
         } else {// xuất
-            
-            if (debtAmount< 0) {
+
+            if (debtAmount.compareTo(BigDecimal.ZERO) < 0) {
                 paymentStatus = 0; // Khách nợ chủ
-                debtAmount = debtAmount * (-1); // Đổi dấu thành số dương
-                System.out.println("📉 Số tiền nợ: " + debtAmount);
-                
-            } else if (debtAmount > 0) {
+                debtAmount = debtAmount.abs(); // Đổi dấu thành số dương
+                System.out.println("nợ" + debtAmount);
+                System.out.println("nợ" + debtAmount.doubleValue());
+            } else if (debtAmount.compareTo(BigDecimal.ZERO) > 0) {
                 paymentStatus = 1; // khách trả nợ
+                System.out.println("nợ" + debtAmount);
+                System.out.println("nợ" + debtAmount.doubleValue());
             }
 
             System.out.println("📦 Đơn hàng xuất kho, kiểm tra tồn kho và giá...");
-
-            
-            
-
         }
+
         System.out.println("📥 Đang tạo đơn hàng trong DB...");
+        try {
+            if (conn == null) {
+                throw new SQLException("Kết nối DB không hợp lệ!");
+            }
+            conn.setAutoCommit(false); // 🔹 Bắt đầu transaction
 
-        int orderId = DAOOrders.INSTANCE.createOrder(orderTask.getCustomerId(), orderTask.getUserId(), orderTask.getUserId(), totalAmount, orderTask.getStatus(), orderType, paidAmount);
-        if (orderId <= 0) {
-            System.out.println("❌ Lỗi: Không thể tạo đơn hàng trong DB!");
-            processedOrders.put(orderTask.getUserId(), -1);
-
-            return;
-        }
-        System.out.println("✅ Đơn hàng đã tạo thành công! Order ID: " + orderId);
-
-        if (debtAmount != 0) {
-            System.out.println("📄 Đang tạo bản ghi nợ...");
-
-            DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId,debtAmount, paymentStatus, orderTask.getUserId(), false);
-
-            DAODebtRecords dao = new DAODebtRecords();
-            // cần xử lí thêm việc tạo nợ có cần thành công không
-            Boolean success = dao.addDebtRecordFromOrder(debtRecord);
-            if (success == false) {
+            int orderId = DAOOrders.INSTANCE.createOrder(orderTask.getCustomerId(), orderTask.getUserId(), orderTask.getUserId(), totalAmount, orderTask.getStatus(), orderType, paidAmount);
+            if (orderId <= 0) {
+                System.out.println("❌ Lỗi: Không thể tạo đơn hàng trong DB!");
+                conn.rollback(); // 🔥 Nếu tạo đơn hàng thất bại, rollback toàn bộ
                 processedOrders.put(orderTask.getUserId(), -1);
 
                 return;
             }
+            System.out.println("✅ Đơn hàng đã tạo thành công! Order ID: " + orderId);
 
-            System.out.println("✅ Bản ghi nợ đã tạo thành công!");
+            if (debtAmount.compareTo(BigDecimal.ZERO) != 0) {
+                System.out.println("📄 Đang tạo bản ghi nợ...");
 
-        }
-        System.out.println("🔄 Đang thêm sản phẩm vào đơn hàng...");
+                DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, debtAmount.doubleValue(), paymentStatus, orderTask.getUserId(), false);
 
-        for (OrderItems detail : orderTask.getOrderDetails()) {
+                DAODebtRecords dao = new DAODebtRecords();
+                // cần xử lí thêm việc tạo nợ có cần thành công không
+                Boolean success = dao.addDebtRecordFromOrder(debtRecord);
+                if (success == false) {
+                    conn.rollback(); // 🔥 Nếu tạo đơn hàng thất bại, rollback toàn bộ
+                    processedOrders.put(orderTask.getUserId(), -1);
 
-            BigDecimal price = new BigDecimal(detail.getPrice());
-            BigDecimal unitPrice = new BigDecimal(detail.getUnitPrice());
+                    return;
+                }
 
-            DAOOrderItems.INSTANCE.createOrderItem(orderId, detail.getProductID(), detail.getProductName(), price, unitPrice, detail.getQuantity());
-            System.out.println("✅ Đã thêm sản phẩm vào đơn hàng - ID: " + detail.getProductID());
+                System.out.println("✅ Bản ghi nợ đã tạo thành công!");
 
-            // Cập nhật kho hàng
-            if (orderType == 1) {
-                //  Xuất kho: Giảm số lượng sản phẩm trong kho
-                System.out.println("📉 Xuất kho - Giảm số lượng tồn kho cho sản phẩm ID: " + detail.getProductID());
+            }
+            System.out.println("🔄 Đang thêm sản phẩm vào đơn hàng...");
 
-                DAOProduct.INSTANCE.exportProductQuantity(detail.getProductID(), detail.getQuantity());
+            for (OrderItems detail : orderTask.getOrderDetails()) {
 
-            } else if (orderType == 0) {
-                //  Nhập kho: Tăng số lượng sản phẩm trong kho
-                DAOProduct.INSTANCE.importProductQuantity(detail.getProductID(), detail.getQuantity());
+                BigDecimal price = new BigDecimal(detail.getPrice());
+                BigDecimal unitPrice = new BigDecimal(detail.getUnitPrice());
+
+                Boolean success = DAOOrderItems.INSTANCE.createOrderItem(orderId, detail.getProductID(), detail.getProductName(), price, unitPrice, detail.getQuantity());
+                if (success == false) {
+                    conn.rollback(); // 🔥 Nếu tạo đơn hàng thất bại, rollback toàn bộ
+                    processedOrders.put(orderTask.getUserId(), -1);
+
+                    return;
+                }
+                System.out.println("✅ Đã thêm sản phẩm vào đơn hàng - ID: " + detail.getProductID());
+
+                // Cập nhật kho hàng
+                if (orderType == 1) {
+                    //  Xuất kho: Giảm số lượng sản phẩm trong kho
+                    System.out.println("📉 Xuất kho - Giảm số lượng tồn kho cho sản phẩm ID: " + detail.getProductID());
+
+                    DAOProduct.INSTANCE.exportProductQuantity(detail.getProductID(), detail.getQuantity());
+
+                } else if (orderType == 0) {
+                    //  Nhập kho: Tăng số lượng sản phẩm trong kho
+                    DAOProduct.INSTANCE.importProductQuantity(detail.getProductID(), detail.getQuantity());
+
+                }
 
             }
 
+            conn.commit(); // ✅ Nếu tất cả đều OK, commit thay đổi vào database
+            processedOrders.put(orderTask.getUserId(), orderId);
+            System.out.println("✅ [DONE] Đơn hàng đã xử lý xong! User ID: " + orderTask.getUserId() + " | Order ID: " + orderId);
+        } catch (SQLException e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            e.printStackTrace();
+            processedOrders.put(orderTask.getUserId(), -1);
+        } finally {
+            if (conn != null) {
+            conn.setAutoCommit(true);// đặt lại trạng thái mặc đinh
         }
-
-        processedOrders.put(orderTask.getUserId(), orderId);
-        System.out.println("✅ [DONE] Đơn hàng đã xử lý xong! User ID: " + orderTask.getUserId() + " | Order ID: " + orderId);
+        }
 
     }
 

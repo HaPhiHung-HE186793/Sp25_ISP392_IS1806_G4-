@@ -565,11 +565,11 @@
                                                 <th>Sản Phẩm</th>
                                                 <th>Số Lượng</th>
                                                 <th>Đơn vị</th>
-                                                 <th>Khối Lượng(Kg)</th>
+                                                <th>Khối Lượng(Kg)</th>
                                                 <th>Đơn Giá/Kg</th>
                                                 <th>Giảm Giá/Kg</th>
                                                 <th>Thành Tiền</th>
-                                               
+
                                                 <th>Xóa</th>
 
                                             </tr>
@@ -699,6 +699,8 @@
 
                                 </script>
 
+
+
                                 <!-- Thêm khách hàng mới -->
 
 
@@ -709,8 +711,8 @@
 
                                 <script>
                                     function calculateBalance() {
-                                        let totalOrderPrice = parseFloat($("#totalOrderPriceHidden").val()) || 0;
-                                        let paidAmount = parseFloat($("#paidAmount").val()) || 0;
+                                        let totalOrderPrice = parseInt($("#totalOrderPriceHidden").val()) || 0;
+                                        let paidAmount = parseInt($("#paidAmount").val()) || 0;
                                         if (isNaN(paidAmount) || paidAmount < 0) {
                                             paidAmount = 0;
                                             $("#paidAmount").val(0); // Cập nhật lại giá trị hiển thị
@@ -722,7 +724,12 @@
                                         let $debtOption = $("#debtOption");
 
 
-                                        $("#balanceAmount").val(formatNumberVND(balance));
+
+
+                                        $("#balanceAmount").val(balance);
+                                        $("#balanceAmountHidden").val(formatNumberVND(balance));
+
+
 
 
                                         if (balance > 0) {
@@ -730,20 +737,26 @@
                                             $excessOption.show();
                                             $debtOption.show();
                                             $balanceOptions.show();
+                                            autoSelectOption("refund");
                                         } else if (balance < 0) {
                                             // Khách trả thiếu
                                             $excessOption.hide();
                                             $debtOption.show();
                                             $balanceOptions.show();
+                                            autoSelectOption("debt");
                                         } else {
                                             // Thanh toán đúng số tiền
                                             $balanceOptions.hide();
                                         }
+
+                                    }
+                                    function autoSelectOption(value) {
+                                        $("input[name='balanceAction'][value='" + value + "']").prop("checked", true);
                                     }
                                 </script>
 
                                 <div class="payment-options">
-                                    
+
                                     <div class="info-row">
                                         <span class="info-label">Khách Thanh Toán:</span>
                                         <span class="info-value">
@@ -754,7 +767,8 @@
                                     <div class="info-row">
                                         <span class="info-label">Số tiền còn lại:</span>
                                         <span class="info-value">
-                                            <input type="text" id="balanceAmount" name="balanceAmount" readonly>
+                                            <input type="hidden" id="balanceAmount" name="balanceAmount">
+                                            <input type="text" id="balanceAmountHidden" name="balanceAmountHidden" readonly>
                                         </span>
                                     </div>
 
@@ -770,11 +784,41 @@
 
 
 
+                                <script>
+
+
+                                    $(document).ready(function () {
+                                        $("#submitOrder").on("click", function (event) {
+                                            if ($("#customerId").val() === "") {
+                                                event.preventDefault(); // Ngăn form hoặc hành động tiếp theo
+                                                alert("⚠️ Vui lòng chọn khách hàng trước khi tạo đơn hàng!");
+                                            }
+                                            let paidAmount = $("#paidAmount").val().trim();
+                                            // Kiểm tra đã nhập số tiền thanh toán chưa
+                                            if (!paidAmount || isNaN(parseFloat(paidAmount))) {
+                                                event.preventDefault();
+                                                alert("⚠️ Vui lòng nhập số tiền khách thanh toán!");
+                                                return;
+                                            }
+
+                                            let selectedOption = $("input[name='balanceAction']:checked").val();
+                                            // Kiểm tra nếu có tiền dư/thừa, phải chọn phương án xử lý
+                                            if ($("#balanceOptions").is(":visible") && !selectedOption) {
+                                                event.preventDefault();
+                                                alert("⚠️ Vui lòng chọn cách xử lý số tiền còn lại!");
+                                                return;
+                                            }
+
+                                        });
+                                    });
+
+                                </script>
+
 
                                 <!-- Action buttons -->
                                 <div class="action-buttons">
 
-                                    <button type="submit">Tạo Hóa Đơn</button>
+                                    <button type="submit" id="submitOrder">Tạo Hóa Đơn</button>
                                     <button id="printOrderBtn" type="button" class="print-btn">In Hóa Đơn</button>
                                 </div>
 

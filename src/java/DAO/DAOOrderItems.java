@@ -16,30 +16,29 @@ public class DAOOrderItems extends DBContext {
 
     public static DAOOrderItems INSTANCE = new DAOOrderItems();
 
-  public Vector<OrderItems> getOrderItems(String sql) {
-    Vector<OrderItems> vector = new Vector<OrderItems>();
-    try {
-        System.out.println("Executing SQL: " + sql); // Ghi lại câu lệnh SQL
-        Statement state = conn.createStatement();
-        ResultSet rs = state.executeQuery(sql);
-        while (rs.next()) {
-                   OrderItems orderItem = new OrderItems(
-                    rs.getInt("orderitemID"),
-                    rs.getInt("orderID"),
-                    rs.getInt("productID"),
-                    rs.getString("productName"),
-                    rs.getDouble("price"),
-                    rs.getDouble("unitPrice"),
-                    rs.getInt("quantity")
-                   
+    public Vector<OrderItems> getOrderItems(String sql) {
+        Vector<OrderItems> vector = new Vector<OrderItems>();
+        try {
+            System.out.println("Executing SQL: " + sql); // Ghi lại câu lệnh SQL
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+            while (rs.next()) {
+                OrderItems orderItem = new OrderItems(
+                        rs.getInt("orderitemID"),
+                        rs.getInt("orderID"),
+                        rs.getInt("productID"),
+                        rs.getString("productName"),
+                        rs.getDouble("price"),
+                        rs.getDouble("unitPrice"),
+                        rs.getInt("quantity")
                 );
                 vector.add(orderItem);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-          return vector;
-}
+        return vector;
+    }
 
     public int getTotalRecords(String sql, int orderId, Integer storeID) {
         int totalRecords = 0;
@@ -59,7 +58,7 @@ public class DAOOrderItems extends DBContext {
         return totalRecords;
     }
 
-    public void createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity) {
+    public boolean createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity) {
         String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -68,15 +67,17 @@ public class DAOOrderItems extends DBContext {
             ps.setString(3, productName);
             ps.setBigDecimal(4, price);
             ps.setBigDecimal(5, unitPrice);
-            ps.setInt(6, quantity);           
-            ps.executeUpdate();
+            ps.setInt(6, quantity);
 
-            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu có ít nhất một dòng được thêm
+
         } catch (SQLException e) {
             e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
         }
-        
     }
+
     public int removeOrderItem(int orderitemID) {
         int n = 0;
         String sql = "DELETE FROM OrderItems WHERE orderitemID=?";
@@ -128,7 +129,6 @@ public class DAOOrderItems extends DBContext {
         }
         return n;
     }
-    
 
     public void listAll() {
         String sql = "SELECT * FROM OrderItems"; // Cập nhật tên bảng
@@ -152,7 +152,6 @@ public class DAOOrderItems extends DBContext {
             ex.printStackTrace();
         }
     }
-    
 
     public static void main(String[] args) {
         DAOOrderItems dao = new DAOOrderItems();
