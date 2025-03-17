@@ -24,7 +24,7 @@
                         <p style="color: red;">${errorMessage}</p>
                     </c:if>
 
-                    <form action="UpdateProduct" method="post" onsubmit="return validateForm()">
+                    <form action="UpdateProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                         <input type="hidden" name="productID" value="${product.productID}">
                         <table>
                             <tr>
@@ -44,7 +44,16 @@
                             </tr>
                             <tr>
                                 <td>Ảnh:</td>
-                                <td><input type="text" name="image" value="${param.image != null ? param.image : product.image}"></td>
+                                <td>
+                                    <input type="file" name="image" id="image" accept="image/*">
+                                    <br>
+                                    <c:if test="${not empty product.image}">
+                                        <img id="previewImage" src="${product.image}" alt="Ảnh sản phẩm" style="max-width: 200px; display: block; margin-top: 10px;">
+                                    </c:if>
+                                    <c:if test="${empty product.image}">
+                                        <img id="previewImage" src="#" alt="Xem trước ảnh" style="max-width: 200px; display: none; margin-top: 10px;">
+                                    </c:if>
+                                </td>
                             </tr>
                             <tr>
                                 <td colspan="2"><input type="submit" value="Lưu"></td>
@@ -56,6 +65,30 @@
         </div>
 
         <script>
+            document.getElementById("image").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById("previewImage").src = e.target.result;
+                        document.getElementById("previewImage").style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById("image").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById("previewImage").src = e.target.result;
+                        document.getElementById("previewImage").style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
             function formatPrice(input) {
                 input.value = input.value.replace(/^0+(\d+)/, '$1'); // Xóa số 0 ở đầu
                 if (input.value < 0) {
