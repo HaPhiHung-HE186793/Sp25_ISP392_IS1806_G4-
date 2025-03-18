@@ -4,45 +4,55 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/debt/debt.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/user/createUser.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/zone/zone.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOForget.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/changePassword.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/showOrder.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/Component/footer.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/order/CheckOrderStatusServlet.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/META-INF/context.xml</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/service/OrderWorker.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/home.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/ListDebtCustomer.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/customer/ListCustomer.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/zone/ListZone.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/createOrder.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/service/WebAppListener.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/login/login.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/user/createUser.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/order/SearchServlet.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAODebtRecords.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/service/OrderQueue.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/profile.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/order/CreateOrderServlet.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOForget.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/customer/editCustomer.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/product/insert_product.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/user/list_users.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/showOrder.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/order_item.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/AddNewCustomerDebt.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/customer/AddCustomer.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/Component/footer.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/order.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/user/updateUser.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOOrderItems.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/orderItemList.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/assets/css/style.css</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/order/CheckOrderStatusServlet.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/model/DebtRecords.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOCustomers.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/insert_product.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOShowOrder.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/customer/customer.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/service/OrderWorker.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAL/DBContext.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/product/edit_product.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOZones.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/model/Zones.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/home.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/zone/zoneDetail.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/customer/UpdateCustomer.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/ListDebtCustomer.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/customer/ListCustomer.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/Component/pagination.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/zone/ListZone.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/zone/AddZone.java</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/createOrder.jsp</file>
-            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/service/WebAppListener.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/listcheckis.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/update_products.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/Component/menu.jsp</file>
         </group>
     </open-files>

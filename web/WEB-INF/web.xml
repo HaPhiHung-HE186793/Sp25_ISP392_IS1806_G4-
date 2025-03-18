@@ -125,15 +125,9 @@
         <servlet-name>verifyOTPServlet</servlet-name>
         <servlet-class>controller.user.verifyOTPServlet</servlet-class>
     </servlet>
+    
     <servlet>
-<<<<<<< HEAD
-        <servlet-name>ListZone</servlet-name>
-        <servlet-class>controller.zone.ListZone</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AddZone</servlet-name>
-        <servlet-class>controller.zone.AddZone</servlet-class>
-=======
+
         <servlet-name>CreateImportOrderServlet</servlet-name>
         <servlet-class>controller.order.CreateImportOrderServlet</servlet-class>
     </servlet>
@@ -156,7 +150,15 @@
     <servlet>
         <servlet-name>ListZones</servlet-name>
         <servlet-class>controller.zone.ListZones</servlet-class>
->>>>>>> origin/main
+    </servlet>
+
+    <servlet>
+        <servlet-name>ListZone</servlet-name>
+        <servlet-class>controller.zone.ListZone</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddZone</servlet-name>
+        <servlet-class>controller.zone.AddZone</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -275,7 +277,6 @@
         <url-pattern>/verifyotp</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-<<<<<<< HEAD
         <servlet-name>ListZone</servlet-name>
         <url-pattern>/ListZone</url-pattern>
     </servlet-mapping>
@@ -283,11 +284,9 @@
         <servlet-name>AddZone</servlet-name>
         <url-pattern>/AddZone</url-pattern>
     </servlet-mapping>
-<listener>
-    <listener-class>service.WebAppListener</listener-class>
-</listener>
+    
+    <servlet-mapping>
 
-=======
         <servlet-name>CreateImportOrderServlet</servlet-name>
         <url-pattern>/CreateImportOrderServlet</url-pattern>
     </servlet-mapping>
@@ -311,5 +310,9 @@
         <servlet-name>ListZones</servlet-name>
         <url-pattern>/ListZones</url-pattern>
     </servlet-mapping>
->>>>>>> origin/main
+    
+    <listener>
+        <listener-class>service.WebAppListener</listener-class>
+    </listener>
+
 </web-app>

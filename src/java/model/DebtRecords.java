@@ -43,33 +43,18 @@ public class DebtRecords {
         this.isDelete = isDelete;
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
-<<<<<<< HEAD
         this.storeID = storeID;
         this.description = description;
         this.img = img;
         this.status = status;
-=======
     }
 
-    public DebtRecords(int customerID, int orderID, double amount, int paymentStatus, int createBy, boolean isDelete) {
-        this.customerID = customerID;
-        this.orderID = orderID;
-        this.amount = amount;
-        this.paymentStatus = paymentStatus;
-        this.createAt = createAt;
-        
-        this.createBy = createBy;
-        this.isDelete = isDelete;
-        
-    }
+ 
     
     
     
     
 
-    public DebtRecords() {
->>>>>>> origin/main
-    }
 
     public int getDebtID() {
         return debtID;
