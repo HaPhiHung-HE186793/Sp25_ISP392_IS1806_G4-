@@ -37,10 +37,6 @@
         <servlet-class>controller.login.loginController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ListDebt</servlet-name>
-        <servlet-class>controller.debt.ListDebt</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>createUser</servlet-name>
         <servlet-class>controller.user.createUser</servlet-class>
     </servlet>
@@ -115,14 +111,22 @@
     <servlet>
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <servlet-class>controller.order.CheckOrderStatusServlet</servlet-class>
-        </servlet>
-    <servlet>    
+    </servlet>
+    <servlet>
         <servlet-name>sendOTP</servlet-name>
         <servlet-class>controller.user.sendOTP</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>verifyOTPServlet</servlet-name>
         <servlet-class>controller.user.verifyOTPServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListZone</servlet-name>
+        <servlet-class>controller.zone.ListZone</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddZone</servlet-name>
+        <servlet-class>controller.zone.AddZone</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -135,10 +139,6 @@
     <servlet-mapping>
         <servlet-name>verifyOTPController</servlet-name>
         <url-pattern>/verifyOTP</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ListDebt</servlet-name>
-        <url-pattern>/ListDebt</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>createUser</servlet-name>
@@ -235,8 +235,8 @@
     <servlet-mapping>
         <servlet-name>CheckOrderStatusServlet</servlet-name>
         <url-pattern>/CheckOrderStatusServlet</url-pattern>
-</servlet-mapping>
-        <servlet-mapping>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>sendOTP</servlet-name>
         <url-pattern>/sendotp</url-pattern>
     </servlet-mapping>
@@ -244,4 +244,16 @@
         <servlet-name>verifyOTPServlet</servlet-name>
         <url-pattern>/verifyotp</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListZone</servlet-name>
+        <url-pattern>/ListZone</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddZone</servlet-name>
+        <url-pattern>/AddZone</url-pattern>
+    </servlet-mapping>
+<listener>
+    <listener-class>service.WebAppListener</listener-class>
+</listener>
+
 </web-app>

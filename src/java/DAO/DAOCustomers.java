@@ -9,6 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
+import java.math.BigDecimal;
 import model.Customers;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -61,7 +62,7 @@ public class DAOCustomers extends DBContext {
                         rs.getString("email"),
                         rs.getString("phone"),
                         rs.getString("address"),
-                        rs.getDouble("totalDebt"),
+                        rs.getBigDecimal("totalDebt"),
                         rs.getString("createAt"),
                         rs.getString("updateAt"),
                         rs.getInt("createBy"),
@@ -89,7 +90,7 @@ public class DAOCustomers extends DBContext {
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                double totalDebt = rs.getDouble("totalDebt");  // Sử dụng double cho tổng nợ
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");  // Sử dụng double cho tổng nợ
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
@@ -121,7 +122,7 @@ public class DAOCustomers extends DBContext {
                         rs.getString("email"),
                         rs.getString("phone"),
                         rs.getString("address"),
-                        rs.getDouble("totalDebt"),
+                        rs.getBigDecimal("totalDebt"),
                         rs.getString("createAt"),
                         rs.getString("updateAt"),
                         rs.getInt("createBy"),
@@ -153,7 +154,7 @@ public class DAOCustomers extends DBContext {
                         rs.getString("email"),
                         rs.getString("phone"),
                         rs.getString("address"),
-                        rs.getDouble("totalDebt"),
+                        rs.getBigDecimal("totalDebt"),
                         rs.getString("createAt"),
                         rs.getString("updateAt"),
                         rs.getInt("createBy"),
@@ -181,7 +182,7 @@ public class DAOCustomers extends DBContext {
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                double totalDebt = rs.getDouble("totalDebt");  // Sử dụng double cho tổng nợ
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");  // Sử dụng double cho tổng nợ
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
@@ -254,7 +255,7 @@ public class DAOCustomers extends DBContext {
             pre.setString(2, customer.getEmail()); // email
             pre.setString(3, customer.getPhone()); // phone
             pre.setString(4, customer.getAddress()); // address
-            pre.setDouble(5, customer.getTotalDebt()); // totalDebt
+            pre.setBigDecimal(5, customer.getTotalDebt()); // totalDebt
             pre.setString(6, customer.getUpdateAt()); // updateAt
             pre.setBoolean(7, customer.isIsDelete()); // isDelete
             pre.setInt(8, customer.getCustomerID()); // customerID
@@ -274,7 +275,7 @@ public class DAOCustomers extends DBContext {
             pre.setString(2, customer.getEmail()); // email
             pre.setString(3, customer.getPhone()); // phone
             pre.setString(4, customer.getAddress()); // address
-            pre.setDouble(5, customer.getTotalDebt()); // totalDebt
+            pre.setBigDecimal(5, customer.getTotalDebt()); // totalDebt
             pre.setString(6, customer.getCreateAt()); // createAt
             pre.setString(7, customer.getUpdateAt()); // updateAt
             pre.setInt(8, customer.getCreateBy()); // createBy
@@ -297,7 +298,7 @@ public class DAOCustomers extends DBContext {
             pre.setString(2, customer.getEmail()); // email
             pre.setString(3, customer.getPhone()); // phone
             pre.setString(4, customer.getAddress()); // address
-            pre.setDouble(5, customer.getTotalDebt()); // totalDebt
+            pre.setBigDecimal(5, customer.getTotalDebt()); // totalDebt
             pre.setString(6, customer.getCreateAt()); // createAt
             pre.setString(7, customer.getUpdateAt()); // updateAt
             pre.setInt(8, customer.getCreateBy()); // createBy
@@ -321,7 +322,7 @@ public class DAOCustomers extends DBContext {
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                double totalDebt = rs.getDouble("totalDebt"); // Sử dụng double cho tổng nợ
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt"); // Sử dụng double cho tổng nợ
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
@@ -351,7 +352,7 @@ public class DAOCustomers extends DBContext {
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                double totalDebt = rs.getDouble("totalDebt"); // Sử dụng double cho tổng nợ
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt"); // Sử dụng double cho tổng nợ
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
@@ -388,7 +389,7 @@ public class DAOCustomers extends DBContext {
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                double totalDebt = rs.getDouble("totalDebt");
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
@@ -427,7 +428,7 @@ public class DAOCustomers extends DBContext {
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                double totalDebt = rs.getDouble("totalDebt");
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");

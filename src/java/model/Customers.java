@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author ADMIN
@@ -14,7 +16,7 @@ public class Customers {
     private String email;
     private String phone;
     private String address;
-    private double totalDebt;  
+    private BigDecimal totalDebt;  
     private String createAt;   
     private String updateAt;   
     private int createBy;
@@ -25,7 +27,7 @@ public class Customers {
     public Customers() {
     }
 
-    public Customers(int customerID, String name, String email, String phone, String address, double totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Customers(int customerID, String name, String email, String phone, String address, BigDecimal totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
         this.customerID = customerID;
         this.name = name;
         this.email = email;
@@ -80,11 +82,11 @@ public class Customers {
         this.address = address;
     }
 
-    public double getTotalDebt() {
+    public BigDecimal getTotalDebt() {
         return totalDebt;
     }
 
-    public void setTotalDebt(double totalDebt) {
+    public void setTotalDebt(BigDecimal totalDebt) {
         this.totalDebt = totalDebt;
     }
 
@@ -141,6 +143,6 @@ public class Customers {
         return "Customers{" + "customerID=" + customerID + ", name=" + name + ", email=" + email + ", phone=" + phone + ", address=" + address + ", totalDebt=" + totalDebt + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
     }
 
-  
+   
     
 }

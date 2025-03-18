@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import model.Customers;
@@ -69,7 +70,16 @@ public class AddCustomer extends HttpServlet {
         String email = request.getParameter("email");
         String totalDebtStr = request.getParameter("total");
         Integer createBy = (Integer) session.getAttribute("userID");
-        double totalDebt = Double.parseDouble(totalDebtStr);
+        BigDecimal debt = BigDecimal.ZERO;
+        String debtStr = request.getParameter("debt");
+        if (debtStr != null && !debtStr.trim().isEmpty()) {
+            try {
+                debt = new BigDecimal(debtStr);
+            } catch (NumberFormatException e) {
+                response.sendRedirect("ListCustomer");
+                return;
+            }
+        }
 
         try {
             // Chỉ chấp nhận giá trị mặc định "0", nếu khác thì báo lỗi
@@ -84,7 +94,7 @@ public class AddCustomer extends HttpServlet {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String createAt = now.format(formatter);  // Thời gian hiện tại
         String updateAt = createAt;  // Ban đầu updateAt cũng là thời gian hiện tại
 
@@ -96,7 +106,7 @@ public class AddCustomer extends HttpServlet {
         customer.setName(name);
         customer.setAddress(address);
         customer.setPhone(phone);
-        customer.setTotalDebt(totalDebt);
+        customer.setTotalDebt(debt);
         customer.setCreateAt(createAt);
         customer.setUpdateAt(updateAt);
         customer.setCreateBy(createBy);

@@ -1,6 +1,10 @@
 package DAO;
 
 import DAL.DBContext;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import controller.debt.AddNewCustomerDebt;
+import java.math.BigDecimal;
 import model.DebtRecords;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
@@ -18,101 +22,136 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Customers;
+import service.WebAppListener;
 
 public class DAODebtRecords extends DBContext {
 
-    public boolean addDebtRecord(DebtRecords record) {
-        String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public DBContext db;
 
-        try (PreparedStatement ps = conn.prepareStatement(insertSQL)) {
-            ps.setInt(1, record.getCustomerID());
-            ps.setInt(2, record.getOrderID());
-            ps.setDouble(3, record.getAmount());
-            ps.setInt(4, record.getPaymentStatus());
-            ps.setString(5, record.getCreateAt());
-            ps.setString(6, record.getUpdateAt());
-            ps.setInt(7, record.getCreateBy());
-            ps.setBoolean(8, record.isIsDelete());
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi thêm bản ghi nợ: " + e.getMessage());
-            return false;
-        }
-
-        return updateCustomerDebt(record);
+    public DAODebtRecords() {
+        db = new DBContext(); // Sử dụng kết nối từ DBContext
     }
+// public void processDebtQueue() {
+//        String selectSQL = "SELECT debtID, paymentStatus , amount FROM DebtRecords WHERE status = 0";
+//
+//        try {
+//            ResultSet rs = db.getData(selectSQL);
+//            conn.setAutoCommit(false);
+//            while (rs.next()) {
+//                int debtID = rs.getInt("debtID");
+//                int paymentStatus = rs.getInt("paymentStatus");
+//                double amount = rs.getDouble("amount");
+//
+//                // Cập nhật số dư trong bảng customer
+//                updateCustomerDebt(debtID, paymentStatus, amount);
+//
+//                // Đánh dấu nợ là đã xử lý
+//                markDebtAsProcessed(debtID);
+//            }
+//            conn.commit();
+//        } catch (SQLException e) {
+//            if (conn != null) {
+//                try {
+//                    conn.rollback();
+//                } catch (SQLException rollbackEx) {
+//                    rollbackEx.printStackTrace();
+//                }
+//            }
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (conn != null) {
+//                    conn.close(); // Đóng kết nối ở đây
+//                }
+//            } catch (SQLException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+//    }
 
-    private boolean updateCustomerDebt(DebtRecords record) {
-        boolean success = false;
+//    private static final BlockingQueue<DebtRecords> debtQueue = new LinkedBlockingQueue<>();
+    public List<DebtRecords> getUnprocessedDebts() {
+        List<DebtRecords> unprocessedList = new ArrayList<>();
+        String selectSQL = "SELECT debtID, customerID, paymentStatus, amount, status FROM DebtRecords WHERE status = 0";
 
-        while (!success) {
-            double currentDebt = getCustomerTotalDebt(record.getCustomerID());
-
-            // Tính toán tổng nợ mới dựa trên trạng thái thanh toán
-            double newDebt = (record.getPaymentStatus() == 1 || record.getPaymentStatus() == 2)
-                    ? currentDebt + record.getAmount()
-                    : currentDebt - record.getAmount();
-
-            String updateSQL = "UPDATE Customers SET totalDebt = ? WHERE customerID = ? AND totalDebt = ?";
-
-            try (PreparedStatement ps = conn.prepareStatement(updateSQL)) {
-                ps.setDouble(1, newDebt);
-                ps.setInt(2, record.getCustomerID());
-                ps.setDouble(3, currentDebt);
-
-                int updatedRows = ps.executeUpdate();
-                if (updatedRows > 0) {
-                    success = true; // Cập nhật thành công
-                }
-            } catch (SQLException e) {
-                System.out.println("Lỗi khi cập nhật tổng nợ: " + e.getMessage());
-            }
-        }
-
-        return success;
-    }
-
-    public double getCustomerTotalDebt(int customerID) {
-        String sql = "SELECT totalDebt FROM Customers WHERE customerID = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, customerID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getDouble("totalDebt");
-            }
-        } catch (SQLException e) {
-            System.out.println("Lỗi khi lấy tổng nợ: " + e.getMessage());
-        }
-        return 0;
-    }
-
-    public Vector<DebtRecords> getDeptRecords(String sql) {
-        Vector<DebtRecords> vector = new Vector<DebtRecords>();
-        try {
-            Statement state = conn.createStatement();
-            ResultSet rs = state.executeQuery(sql);
+        try (ResultSet rs = db.getData(selectSQL)) {
             while (rs.next()) {
-                int debtID = rs.getInt("debtID");
-                int customerID = rs.getInt("customerID");
-                int orderID = rs.getInt("orderID");
-                double amount = rs.getDouble("amount");
-                int paymentStatus = rs.getInt("paymentStatus");
-                String createAt = rs.getString("createAt");
-                String updateAt = rs.getString("updateAt");
-                String createBy = rs.getString("createBy");
-                int isDelete = rs.getInt("isDelete");
-                String deleteAt = rs.getString("deleteAt");
-                String deleteBy = rs.getString("deleteBy");
+                DebtRecords record = new DebtRecords();
+                record.setDebtID(rs.getInt("debtID"));
+                record.setCustomerID(rs.getInt("customerID"));
+                record.setPaymentStatus(rs.getInt("paymentStatus"));
+                record.setAmount(rs.getBigDecimal("amount"));
+                record.setStatus(rs.getInt("status"));
+                unprocessedList.add(record);
 
-                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, debtID, true, deleteAt, isDelete);
-                vector.add(record);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return vector;
+        return unprocessedList;
+    }
+
+public int addDebtRecord(DebtRecords record) {
+    String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete,storeID,description,img,status) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+    
+    int generatedDebtID = -1;
+
+    try (PreparedStatement ps = db.conn.prepareStatement(insertSQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        ps.setInt(1, record.getCustomerID());
+        ps.setInt(2, record.getOrderID());
+        ps.setBigDecimal(3, record.getAmount());
+        ps.setInt(4, record.getPaymentStatus());
+        ps.setString(5, record.getCreateAt());
+        ps.setString(6, record.getUpdateAt());
+        ps.setInt(7, record.getCreateBy());
+        ps.setBoolean(8, record.isIsDelete());
+        ps.setInt(9, record.getStoreID());
+        ps.setString(10, record.getDescription());
+        ps.setString(11, record.getImg());
+
+        ps.executeUpdate();
+
+        try (ResultSet rs = ps.getGeneratedKeys()) {
+            if (rs.next()) {
+                generatedDebtID = rs.getInt(1); // Lấy debtID vừa được tạo
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi thêm bản ghi nợ: " + e.getMessage());
+    }
+
+    return generatedDebtID; // Trả về debtID để thêm vào queue
+}
+
+
+    public void updateCustomerDebt(int customerId, int paymentStatus, BigDecimal amount) throws SQLException {
+        String operation = switch (paymentStatus) {
+            case 1, 2 ->
+                "+";
+            case 0, 3 ->
+                "-";
+            default ->
+                throw new IllegalArgumentException("Trạng thái thanh toán không hợp lệ.");
+        };
+
+        String updateSQL = "UPDATE customers SET totalDebt = totalDebt " + operation + " ? WHERE customerID = ?";
+        try (PreparedStatement ps = db.conn.prepareStatement(updateSQL)) {
+            ps.setBigDecimal(1, amount);
+            ps.setInt(2, customerId);
+            ps.executeUpdate();
+//            ps.close();
+        }
+    }
+
+    public void markDebtAsProcessed(int debtId) throws SQLException {
+        String updateSQL = "UPDATE DebtRecords SET status = 1 WHERE debtID = ?";
+        try (PreparedStatement ps = db.conn.prepareStatement(updateSQL)) {
+            ps.setInt(1, debtId);
+            ps.executeUpdate();
+//            ps.close();
+ 
+        }
     }
 
     public int insertDeptRecord(DebtRecords record) {
@@ -122,7 +161,7 @@ public class DAODebtRecords extends DBContext {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, record.getCustomerID());
             pre.setInt(2, record.getOrderID());
-            pre.setDouble(3, record.getAmount());
+            pre.setBigDecimal(3, record.getAmount());
             pre.setInt(4, record.getPaymentStatus());
             pre.setString(5, record.getCreateAt());
             pre.setString(6, record.getUpdateAt());
@@ -144,7 +183,7 @@ public class DAODebtRecords extends DBContext {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, record.getCustomerID());
             pre.setInt(2, record.getOrderID());
-            pre.setDouble(3, record.getAmount());
+            pre.setBigDecimal(3, record.getAmount());
             pre.setInt(4, record.getPaymentStatus());
             pre.setString(5, record.getCreateAt());
             pre.setString(6, record.getUpdateAt());
@@ -178,7 +217,7 @@ public class DAODebtRecords extends DBContext {
         String sql = " SELECT * FROM debtRecords d \n"
                 + " JOIN customers c ON d.customerID = c.customerID\n"
                 + " WHERE c.customerID = ? \n"
-                + name +" ORDER BY d.updateAt DESC";
+                + name + " ORDER BY d.updateAt DESC";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, createBylis); // Truyền tham số vào dấu ?
@@ -188,7 +227,7 @@ public class DAODebtRecords extends DBContext {
                 int debtID = rs.getInt("debtID");
                 int customerID = rs.getInt("customerID");
                 int orderID = rs.getInt("orderID");
-                double amount = rs.getDouble("amount");
+                BigDecimal amount = rs.getBigDecimal("amount");
                 int paymentStatus = rs.getInt("paymentStatus");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
@@ -196,8 +235,12 @@ public class DAODebtRecords extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int store = rs.getInt("storeID");
+                String description = rs.getString("description");
+                String img = rs.getString("img");
+                int status = rs.getInt("status");
 
-                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, store, description, img, status);
                 list.add(record);
             }
         } catch (SQLException ex) {
@@ -206,13 +249,12 @@ public class DAODebtRecords extends DBContext {
         return list;
     }
 
-
     public List<DebtRecords> listAllbyName(String id) {
         List<DebtRecords> list = new ArrayList<>();
         String sql = " SELECT * FROM debtRecords d \n"
                 + " JOIN customers c ON d.customerID = c.customerID\n"
                 + " WHERE c.customerID = ? \n"
-                + " ORDER BY d.updateAt DESC";
+                + " ORDER BY d.debtID DESC";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, id); // Truyền tham số vào dấu ?
@@ -222,7 +264,7 @@ public class DAODebtRecords extends DBContext {
                 int debtID = rs.getInt("debtID");
                 int customerID = rs.getInt("customerID");
                 int orderID = rs.getInt("orderID");
-                double amount = rs.getDouble("amount");
+                BigDecimal amount = rs.getBigDecimal("amount");
                 int paymentStatus = rs.getInt("paymentStatus");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
@@ -230,8 +272,12 @@ public class DAODebtRecords extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int store = rs.getInt("storeID");
+                String description = rs.getString("description");
+                String img = rs.getString("img");
+                int status = rs.getInt("status");
 
-                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, store, description, img, status);
                 list.add(record);
             }
         } catch (SQLException ex) {
@@ -250,7 +296,7 @@ public class DAODebtRecords extends DBContext {
                 int debtID = rs.getInt("debtID");
                 int customerID = rs.getInt("customerID");
                 int orderID = rs.getInt("orderID");
-                double amount = rs.getDouble("amount");
+                BigDecimal amount = rs.getBigDecimal("amount");
                 int paymentStatus = rs.getInt("paymentStatus");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
@@ -258,8 +304,12 @@ public class DAODebtRecords extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int store = rs.getInt("storeID");
+                String description = rs.getString("description");
+                String img = rs.getString("img");
+                int status = rs.getInt("status");
 
-                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, store, description, img, status);
                 list.add(record);
             }
         } catch (SQLException ex) {

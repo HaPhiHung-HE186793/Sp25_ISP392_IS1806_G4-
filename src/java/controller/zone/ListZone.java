@@ -2,12 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.debt;
 
-import DAO.DAOCustomers;
-import DAO.DAODebtRecords;
-import model.Customers;
-import model.DebtRecords;
+package controller.zone;
+
+import DAO.DAOZones;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,46 +15,27 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import model.User;
+import model.Zones;
+import model.pagination.Pagination;
 
 /**
  *
  * @author TIEN DAT PC
  */
-public class ListDebt extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+public class ListZone extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet UpdateDebt</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet UpdateDebt at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-
-        }
-    }
+   
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -64,20 +43,41 @@ public class ListDebt extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-        DAODebtRecords dao = new DAODebtRecords();
+    throws ServletException, IOException {
+        
+         DAOZones dao = new DAOZones();
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        request.setAttribute("user", user);
-        List<DebtRecords> listDebt = dao.listAll();
-        request.setAttribute("listDebt", listDebt);
-        request.getRequestDispatcher("debt/ListDebtRecords.jsp").forward(request, response);
-    }
+        List<Zones> listZone = new ArrayList<>();
+        Integer role = (Integer) session.getAttribute("roleID");
+        Integer createBy = (Integer) session.getAttribute("createBy");
+        
+  
+        listZone = dao.listZones(createBy+"");
 
-    /**
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = listZone.size();
+        int pageSize = 10;
+        int currentPage = 1;
+
+        if (request.getParameter("cp") != null) {
+            currentPage = Integer.parseInt(request.getParameter("cp"));
+        }
+
+        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        session.setAttribute("page", page);
+        int startIndex = page.getStartItem();
+        int endIndex = Math.min(startIndex + pageSize, totalUsers);
+        List<Zones> paginatedUsers = listZone.subList(startIndex, endIndex);
+        request.setAttribute("currentPageUrl", "ListZone");
+
+
+        request.setAttribute("listZone", listZone);
+        request.getRequestDispatcher("zone/zone.jsp").forward(request, response);
+
+    } 
+
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -85,20 +85,11 @@ public class ListDebt extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-//        DAODebtRecords dao = new DAODebtRecords();
-//        DAOCustomers daoC = new DAOCustomers();
-//        
-//        int 
-          
-
-
+    throws ServletException, IOException {
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override
