@@ -93,6 +93,7 @@
             <a href="<%=request.getContextPath()%>/CreateImportOrderServlet">Hóa đơn nhập</a>
             <a href="<%=request.getContextPath()%>/URLOrder?service=listshow">Quản lý thanh toán</a>
             <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý khách hàng</a>
+            <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý zone</a>
         </c:if>
         <a href="<%=request.getContextPath()%>/updateprofile">Hồ sơ người dùng</a>
     </div>
