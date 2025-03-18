@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -289,6 +290,7 @@
                 transition: all 0.3s ease;
             }
 
+
             /* Ảnh sản phẩm */
             .product-image img {
                 width: 50px;
@@ -348,9 +350,97 @@
                 padding-left: 10px;
             }
 
+            /* Danh sách gợi ý */
+            .search-suggestions {
+                max-height: 180px; /* Giới hạn chiều cao */
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 5px;
+                width: 100%; /* Đảm bảo bằng với ô tìm kiếm */
+            }
+
+            /* Mỗi khách hàng gợi ý */
+            .customer-item {
+                display: flex;
+                align-items: center;
+
+                padding: 6px 8px;
+                cursor: pointer;
+                transition: background-color 0.2s ease-in-out;
+            }
+
+            /* Khi hover */
+            .customer-item:hover {
+                background-color: var(--primary-hover);
+                transform: scale(1.02);
+                transition: all 0.3s ease;
+            }
+
+            /* Tên khách hàng */
+            .customer-item h3 {
+                font-size: 15px;
+                font-weight: bold;
+                margin: 0;
+                color:white;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
+            }
+
+            /* Số điện thoại */
+            .customer-item p {
+                font-size: 14px;
+                color: var(--text-color);
+                margin: 0;
+                font-weight: 500;
+                white-space: nowrap;
+            }
+
+            .popup {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: black;
+                color: white;
+                padding: 15px;
+                border-radius: 5px;
+                width: 280px;
+                text-align: center;
+            }
+
+            .popup input {
+                width: 100%;
+                padding: 8px;
+                margin: 5px 0;
+                background: black;
+                color: white;
+                border: 1px solid white;
+            }
+
+            .popup button {
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 8px;
+                cursor: pointer;
+            }
+
+            .close {
+                position: absolute;
+                top: 5px;
+                right: 10px;
+                cursor: pointer;
+            }
+
+
 
 
         </style>
+
+
     </head>
 
     <body>
@@ -358,739 +448,720 @@
             <jsp:include page="/Component/menu.jsp"></jsp:include>
 
 
+
+
+
                 <div class="main-content">
-                    <div class="notification">
-                        Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
-                    </div>
+
+
+                    <button onclick="openNewTab()">Thêm hóa đơn</button>
+
+                    <script>
+                        function openNewTab() {
+                            window.open('CreateOrderServlet', '_blank');
+                        }
+                    </script>
+
+
+
+                    <h1 style="text-align: center">
+                        Hóa Đơn Xuất
+                    </h1>
+
+
+                    <form id="orderForm" action="CreateOrderServlet" method="post">
 
 
 
 
 
+                        <div class="order-container">
+
+                            <!-- LEFT PANEL: Product search, order items, notes -->
+                            <div class="left-panel">
 
 
-
-                    <div class="order-container">
-                        <!-- LEFT PANEL: Product search, order items, notes -->
-                        <div class="left-panel">
+                                <!-- Product search -->
 
 
-                            <!-- Product search -->
+                                <div class="search-box">
+
+                                    <input type="text" id="search" placeholder="Nhập tên sản phẩm..." >
 
 
-                            <div class="search-box">
-
-                                <input type="text" id="search" placeholder="Nhập tên sản phẩm..." >
-
-
-                                <div id="suggestions" class="search-suggestions"></div>
-                            </div>
+                                    <div id="suggestions" class="search-suggestions"></div>
+                                </div>
 
 
 
 
-                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                            <script>
-                                $(document).ready(function () {
-                                    $("#search").keyup(function () {
-                                        let query = $(this).val();
-                                        if (query.length > 0) {
-                                            $.ajax({
-                                                url: "SearchServlet",
-                                                type: "GET",
-                                                data: {keyword: query},
-                                                success: function (data) {
-                                                    $("#suggestions").html(data);
+                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                <script>
+                        $(document).ready(function () {
+                            let currentLoad;
+                            $("#search").on("input", function () {
+                                if (currentLoad) {
+                                    console.log("Clear timeout");
+                                    clearTimeout(currentLoad);
+                                }
+                                let that = this;
+                                currentLoad = setTimeout(function () {
+                                    console.log("fetch customer");
+                                    let query = $(that).val();
+                                    if (query.length > 0) {
+                                        $.ajax({
+                                            url: "SearchServlet",
+                                            type: "GET",
+                                            data: {
+                                                searchProduct: query,
+                                                orderType: 1  // ✅ Đúng cú pháp
+                                            },
+                                            success: function (data) {
+                                                if (data.trim() !== "") {
+                                                    $("#suggestions").html(data).show();
+                                                } else {
+                                                    $("#suggestions").hide();
                                                 }
-                                            });
-                                        } else {
-                                            $("#suggestions").html("");
-                                        }
-                                    });
-
-                                });
-
-                                // Ẩn danh sách khi click ra ngoài
-                                $(document).on("click", function (event) {
-                                    if (!$(event.target).closest("#search, #suggestions").length) {
+                                            }
+                                        });
+                                    } else {
                                         $("#suggestions").hide();
                                     }
-                                });
+                                    currentLoad = null;
+                                }, 500);
+                            });
+                            // Ẩn danh sách khi click ra ngoài
+                            $(document).on("click", function (event) {
+                                if (!$(event.target).closest("#search, #suggestions").length) {
+                                    $("#suggestions").hide();
+                                }
+                            });
+                            // Hiển thị lại danh sách khi focus vào ô tìm kiếm (nếu có nội dung)
+                            $("#search").on("focus", function () {
+                                if ($(this).val().length > 0) {
+                                    $("#suggestions").show();
+                                }
+                            });
+                        });
+                                </script>
 
-                                // Hiện lại danh sách khi focus vào ô tìm kiếm (nếu có nội dung)
-                                $("#search").focus(function () {
-                                    if ($(this).val().length > 0) {
-                                        $("#suggestions").show();
+
+
+
+
+
+
+
+
+
+                                <input type="hidden" name="orderType" value="1"><!-- xuất -->
+
+                                <!-- Order items table -->
+                                <div class="order-items-container">
+                                    <h3>Chi Tiết Đơn Hàng</h3>
+                                    <table id="orderItems">
+                                        <thead>
+                                            <tr>
+                                                <th>Sản Phẩm</th>
+                                                <th>Số Lượng</th>
+                                                <th>Đơn vị</th>
+                                                <th>Khối Lượng(Kg)</th>
+                                                <th>Đơn Giá/Kg</th>
+                                                <th>Giảm Giá/Kg</th>
+                                                <th>Thành Tiền</th>
+
+                                                <th>Xóa</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Order items will be added here -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+
+                                                <td colspan="4">
+                                                    <input type="hidden" id="totalOrderPriceHidden" name="totalOrderPriceHidden">
+                                                    <input type="text" id="totalOrderPrice" name="totalOrderPrice" readonly>
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right;"><strong>Tổng tiền đã giảm:</strong></td>
+                                                <td colspan="4"><input type="text" id="totalDiscount" name="totalDiscount" readonly></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                                <!-- Order notes -->
+                                <div class="order-notes">
+                                    <h3>Ghi Chú Đơn Hàng</h3>
+                                    <textarea id="status" name="status" rows="4" placeholder="Nhập ghi chú cho đơn hàng..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT PANEL: Order info, customer, payment -->
+                            <div class="right-panel">
+                                <h2>Thông Tin Hóa Đơn</h2>
+
+
+
+
+
+
+
+                                <!-- Customer search -->
+
+
+                                <div class="search-box">
+
+                                    <input type="text" id="searchCustomerInput"  placeholder="Tìm khách hàng theo SĐT..." >
+
+
+                                    <div id="suggestionsCustomer" class="search-suggestions"></div>
+
+
+                                </div>
+
+                                <!-- Ô hiển thị thông tin khách hàng sau khi chọn -->
+                                <div id="customerInfo" class="customer-info" style="display: none;">
+                                    <h3 class="info-value success-text" id="customerName"></h3>
+                                    <p id="customerPhone"></p>
+                                    <p id="customerDebt"></p>
+                                    <input type="hidden" id="customerId" name="customerId">
+
+                                </div>
+
+                                <script>
+                                    $(document).ready(function () {
+                                        let currentLoad;
+                                        $("#searchCustomerInput").on("input", function () {
+                                            if (currentLoad) {
+                                                console.log("Clear timeout");
+                                                clearTimeout(currentLoad);
+                                            }
+                                            let that = this;
+                                            currentLoad = setTimeout(function () {
+                                                console.log("fetch customer");
+                                                let query = $(that).val();
+                                                if (query.length > 0) {
+                                                    $.ajax({
+                                                        url: "SearchServlet",
+                                                        type: "POST",
+                                                        data: {keyword: query},
+                                                        success: function (data) {
+                                                            if (data.trim() !== "") {
+                                                                $("#suggestionsCustomer").html(data).show();
+                                                            } else {
+                                                                $("#suggestionsCustomer").hide();
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    $("#suggestionsCustomer").hide();
+                                                }
+                                                currentLoad = null;
+                                            }, 500);
+                                        });
+                                        // Ẩn danh sách khi click ra ngoài
+                                        $(document).on("click", function (event) {
+                                            if (!$(event.target).closest("#searchCustomerInput, #suggestionsCustomer").length) {
+                                                $("#suggestionsCustomer").hide();
+                                            }
+                                        });
+                                        // Hiển thị lại danh sách khi focus vào ô tìm kiếm (nếu có nội dung)
+                                        $("#searchCustomerInput").on("focus", function () {
+                                            if ($(this).val().length > 0) {
+                                                $("#suggestionsCustomer").show();
+                                            }
+                                        });
+                                    });
+                                    // Hàm chọn khách hàng từ danh sách
+                                    function selectCustomer(id, name, phone, debt) {
+                                        $("#customerId").val(id);
+                                        $("#customerName").text("Khách hàng: " + name);
+                                        $("#customerPhone").text("SĐT: " + phone);
+
+                                        // Xác định cách hiển thị tổng nợ
+                                        if (debt < 0) {
+                                            $("#customerDebt").text("Khách nợ: " + formatNumberVND(-debt));
+                                        } else if (debt > 0) {
+                                            $("#customerDebt").text("Nợ Khách: " + formatNumberVND(debt));
+                                        } else {
+                                            $("#customerDebt").text("Tổng nợ: " + formatNumberVND(debt));
+                                        }
+
+                                        $("#customerInfo").show(); // Hiển thị div chứa thông tin khách hàng
                                     }
-                                });
 
 
-                            </script>
-
-
+                                </script>
 
 
 
+                                <!-- Thêm khách hàng mới -->
 
 
 
-                            <!-- Order items table -->
-                            <div class="order-items-container">
-                                <h3>Chi Tiết Đơn Hàng</h3>
-                                <table id="orderItems">
-                                    <thead>
-                                        <tr>
-                                            <th>Sản Phẩm</th>
-                                            <th>Đơn vị</th>
-                                            <th>Số Lượng</th>
-                                            <th>Đơn Giá</th>
-                                            <th>Giảm Giá(Kg)</th>
-                                            <th>Thành Tiền</th>
-                                            <th>Xóa</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Order items will be added here -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="5" style="text-align: right;"><strong>Tổng tiền:</strong></td>
-                                            <td colspan="2"><input type="text" id="totalOrderPrice" name="totalOrderPrice" readonly></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="5" style="text-align: right;"><strong>Tổng tiền đã giảm:</strong></td>
-                                            <td colspan="2"><input type="text" id="totalDiscount" name="totalDiscount" readonly></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                                <!-- JavaScript -->
 
-                            <!-- Order notes -->
-                            <div class="order-notes">
-                                <h3>Ghi Chú Đơn Hàng</h3>
-                                <textarea id="status" name="status" rows="4" placeholder="Nhập ghi chú cho đơn hàng..."></textarea>
-                            </div>
-                        </div>
 
-                        <!-- RIGHT PANEL: Order info, customer, payment -->
-                        <div class="right-panel">
-                            <h2>Thông Tin Hóa Đơn</h2>
 
-                            <div class="info-row">
-                                <span class="info-label">Người Tạo:</span>
-                                <span class="info-value success-text">${sessionScope.username}</span>
-                        </div>
+                                <script>
+                                    function calculateBalance() {
+                                        let totalOrderPrice = parseInt($("#totalOrderPriceHidden").val()) || 0;
+                                        let paidAmount = parseInt($("#paidAmount").val()) || 0;
+                                        if (isNaN(paidAmount) || paidAmount < 0) {
+                                            paidAmount = 0;
+                                            $("#paidAmount").val(0); // Cập nhật lại giá trị hiển thị
+                                        }
+                                        let balance = paidAmount - totalOrderPrice;
 
-                        <div class="info-row">
-                            <span class="info-label">Ngày Tạo:</span>
-                            <span class="info-value">
-                                <input type="date" id="orderDate" name="orderDate" readonly>
-                            </span>
-                        </div>
+                                        let $balanceOptions = $("#balanceOptions");
+                                        let $excessOption = $("#excessOption");
+                                        let $debtOption = $("#debtOption");
 
-                        <div class="info-row">
-                            <span class="info-label">Loại Hóa Đơn:</span>
-                            <span class="info-value">
-                                <select id="orderType" name="orderType">
-                                    <option value="export">Xuất Kho</option>
-                                    <option value="import">Nhập Kho</option>
-                                </select>
-                            </span>
-                        </div>
 
-                        <!-- Customer search -->
-                        <div class="search-container">
-                            <div class="search-box">
-                                <input type="text" id="searchCustomerInput" name="searchCustomer" placeholder="Tìm khách hàng theo SĐT...">
 
-                            </div>
-                        </div>
 
-                        <div class="info-row">
-                            <span class="info-label">Khách Hàng:</span>
-                            <span class="info-value">
-                                <select id="customerID" name="customerId" required>
-                                    <c:if test="${not empty customers}">
-                                        <c:forEach var="customer" items="${customers}">
-                                            <option value="${customer.customerID}" ${customer.customerID == param.selectedCustomerId ? 'selected' : ''}>
-                                                ${customer.name} - ${customer.phone}
-                                            </option>
-                                        </c:forEach>
-                                    </c:if>
-                                </select>
-                            </span>
-                        </div>
+                                        $("#balanceAmount").val(balance);
+                                        $("#balanceAmountHidden").val(formatNumberVND(balance));
 
-                        <div class="info-row">
-                            <span class="info-label">Số Bao Bốc Vác:</span>
-                            <span class="info-value">
-                                <input type="number" id="porter" name="porter" required min="0">
-                            </span>
-                        </div>
 
-                        <!-- Payment status -->
-                        <div class="payment-options">
-                            <h3>Trạng Thái Thanh Toán</h3>
-                            <div class="radio-group">
-                                <div>
-                                    <input type="radio" id="paid" name="orderStatus" value="paid" onclick="togglePaymentFields()" checked>
-                                    <label for="paid">Đã Thanh Toán Đủ</label>
+
+
+                                        if (balance > 0) {
+                                            // Khách trả dư
+                                            $excessOption.show();
+                                            $debtOption.show();
+                                            $balanceOptions.show();
+                                            autoSelectOption("refund");
+                                        } else if (balance < 0) {
+                                            // Khách trả thiếu
+                                            $excessOption.hide();
+                                            $debtOption.show();
+                                            $balanceOptions.show();
+                                            autoSelectOption("debt");
+                                        } else {
+                                            // Thanh toán đúng số tiền
+                                            $balanceOptions.hide();
+                                        }
+
+                                    }
+                                    function autoSelectOption(value) {
+                                        $("input[name='balanceAction'][value='" + value + "']").prop("checked", true);
+                                    }
+                                </script>
+
+                                <div class="payment-options">
+
+                                    <div class="info-row">
+                                        <span class="info-label">Khách Thanh Toán:</span>
+                                        <span class="info-value">
+                                            <input type="number" id="paidAmount" name="paidAmount"oninput="calculateBalance()">
+                                        </span>
+                                    </div>
+
+                                    <div class="info-row">
+                                        <span class="info-label">Số tiền còn lại:</span>
+                                        <span class="info-value">
+                                            <input type="hidden" id="balanceAmount" name="balanceAmount">
+                                            <input type="text" id="balanceAmountHidden" name="balanceAmountHidden" readonly>
+                                        </span>
+                                    </div>
+
+                                    <div id="balanceOptions" style="display: none;">
+                                        <div id="excessOption" style="display: none;">
+                                            <label><input type="radio" name="balanceAction" value="refund"> Tiền thừa trả khách</label>
+                                        </div>
+                                        <div id="debtOption" style="display: none;">
+                                            <label><input type="radio" name="balanceAction" value="debt"> Tính vào công nợ</label>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <input type="radio" id="partial" name="orderStatus" value="partial" onclick="togglePaymentFields()">
-                                    <label for="partial">Thanh Toán Thiếu</label>
+
+
+                                <script>
+
+
+                                    $(document).ready(function () {
+                                        $("#submitOrder").on("click", function (event) {
+                                            if ($("#customerId").val() === "") {
+                                                event.preventDefault(); // Ngăn form hoặc hành động tiếp theo
+                                                alert("⚠️ Vui lòng chọn khách hàng trước khi tạo đơn hàng!");
+                                            }
+                                            let paidAmount = $("#paidAmount").val().trim();
+                                            // Kiểm tra đã nhập số tiền thanh toán chưa
+                                            if (!paidAmount || isNaN(parseFloat(paidAmount))) {
+                                                event.preventDefault();
+                                                alert("⚠️ Vui lòng nhập số tiền khách thanh toán!");
+                                                return;
+                                            }
+
+                                            let selectedOption = $("input[name='balanceAction']:checked").val();
+                                            // Kiểm tra nếu có tiền dư/thừa, phải chọn phương án xử lý
+                                            if ($("#balanceOptions").is(":visible") && !selectedOption) {
+                                                event.preventDefault();
+                                                alert("⚠️ Vui lòng chọn cách xử lý số tiền còn lại!");
+                                                return;
+                                            }
+
+                                        });
+                                    });
+
+                                </script>
+
+
+                                <!-- Action buttons -->
+                                <div class="action-buttons">
+
+                                    <button type="submit" id="submitOrder">Tạo Hóa Đơn</button>
+                                    <button id="printOrderBtn" type="button" class="print-btn">In Hóa Đơn</button>
                                 </div>
 
-                                <div>
-                                    <input type="radio" id="unpaid" name="orderStatus" value="unpaid" onclick="togglePaymentFields()">
-                                    <label for="unpaid">Chưa Thanh Toán</label>
-                                </div>
+                                <p id="orderStatus"></p>
                             </div>
 
-                            <div id="paidAmountRow" style="display: none;">
-                                <div class="info-row">
-                                    <span class="info-label">Số tiền đã trả:</span>
-                                    <span class="info-value">
-                                        <input type="number" id="paidAmount" name="paidAmount" oninput="calculateDebt()">
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div id="debtRow" style="display: none;">
-                                <div class="info-row">
-                                    <span class="info-label">Số tiền còn nợ:</span>
-                                    <span class="info-value">
-                                        <input type="number" id="debtAmount" name="debtAmount" readonly>
-                                    </span>
-                                </div>
-                            </div>
                         </div>
 
-                        <!-- Order summary -->
-                        <div class="order-summary">
-                            <h3>Tổng Kết Đơn Hàng</h3>
-                            <div class="summary-row">
-                                <strong>Tổng tiền hàng:</strong>
-                                <span id="summaryTotal">0 VNĐ</span>
-                            </div>
-                            <div class="summary-row">
-                                <strong>Tổng tiền đã giảm:</strong>
-                                <span id="summaryDiscount">0 VNĐ</span>
-                            </div>
-                            <div class="summary-row grand-total">
-                                <strong>Khách cần trả:</strong>
-                                <span id="summaryFinal">0 VNĐ</span>
-                            </div>
-                        </div>
-
-                        <!-- Action buttons -->
-                        <div class="action-buttons">
-                            <button id="createOrderBtn" type="button" class="primary-btn">Tạo Hóa Đơn</button>
-                            <button id="printOrderBtn" type="button" class="print-btn">In Hóa Đơn</button>
-                        </div>
-
-                        <p id="orderStatus"></p>
-                    </div>
-                </div>
-
-
-                <script>
-
-                    document.getElementById("paidAmount").addEventListener("input", function () {
-                        if (this.value < 0) {
-                            this.value = 0;
-                        }
-                    });
-                    document.getElementById("porter").addEventListener("input", function () {
-                        if (this.value < 0) {
-                            this.value = 0;
-                        }
-                    });
-
-                </script>
-
-                <script>
-
-
-
-
-                    function togglePaymentFields() {
-                        var isPartial = document.getElementById("partial").checked;
-                        // trả 1 phần
-                        var isUnpaid = document.getElementById("unpaid").checked;
-                        // chưa trả xíu nào
-                        var paidAmountRow = document.getElementById("paidAmountRow");
-                        // số tiền đã trả
-                        var debtRow = document.getElementById("debtRow");
-                        // số tiền còn nợ
-                        var paidAmountInput = document.getElementById("paidAmount");
-                        var debtAmountInput = document.getElementById("debtAmount");
-
-                        if (isPartial) {
-                            // nếu chọn trả 1 phần, hiển thị ô nhập số tiền đã trả và số tiền còn nợ
-
-
-                            paidAmountRow.style.display = "table-row";
-                            debtRow.style.display = "table-row";
-                            paidAmountInput.required = true;// yêu cầu nhập số tiền đã trả
-                            calculateDebt();// gọi hàm để tình toán số tiền còn nợ dựa trên đã trả bao nhiêu
-                        } else {
-                            paidAmountRow.style.display = "none";
-                            debtRow.style.display = "none";
-                            paidAmountInput.required = false;
-                            paidAmountInput.value = "";
-                            debtAmountInput.value = "";
-                        }
-                    }
-
-                    function calculateDebt() {
-                        var totalOrderPrice = parseFloat(document.getElementById("totalOrderPrice").value) || 0;
-                        // lấy giá trị tổng đơn hàng
-                        var paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
-                        //Lấy số tiền đã trả (paidAmount). Nếu chưa nhập, mặc định là 0
-                        var debtAmountInput = document.getElementById("debtAmount");
-                        //Lấy ô hiển thị số tiền còn nợ (debtAmount)
-
-                        var debt = totalOrderPrice - paidAmount;
-                        debtAmountInput.value = debt > 0 ? debt : 0;
-
-                        //Tính số tiền còn nợ:
-//Nếu số tiền còn nợ (debt) lớn hơn 0, hiển thị giá trị.
-//Nếu không, đặt giá trị về 0 (không có nợ).
-                    }
-
-                </script>
-
-                <script>
-
-
-                    document.addEventListener("DOMContentLoaded", function () {
-                        loadPaymentData(); // Tải lại dữ liệu khi load trang
-
-                        // Lắng nghe sự kiện thay đổi trên radio button
-                        var statusRadios = document.querySelectorAll('input[name="orderStatus"]');
-                        statusRadios.forEach(radio => {
-                            radio.addEventListener("change", savePaymentData);
-                        });
-
-                        // Lắng nghe sự kiện nhập trên ô số tiền đã trả
-                        document.getElementById("paidAmount").addEventListener("input", function () {
-                            calculateDebt();
-                            savePaymentData();
-                        });
-                    });
-
-                    // Hàm lưu dữ liệu vào sessionStorage
-                    function savePaymentData() {
-                        var orderStatus = document.querySelector('input[name="orderStatus"]:checked').value;
-                        var paidAmount = document.getElementById("paidAmount").value;
-                        var debtAmount = document.getElementById("debtAmount").value;
-
-                        sessionStorage.setItem("orderStatus", orderStatus);
-                        sessionStorage.setItem("paidAmount", paidAmount);
-                        sessionStorage.setItem("debtAmount", debtAmount);
-                    }
-
-// Hàm tải lại dữ liệu từ sessionStorage
-                    function loadPaymentData() {
-                        var orderStatus = sessionStorage.getItem("orderStatus");
-                        var paidAmount = sessionStorage.getItem("paidAmount");
-                        var debtAmount = sessionStorage.getItem("debtAmount");
-                        // Nếu đã lưu orderStaus thì tự động chọn lại
-                        if (orderStatus) {
-                            document.getElementById(orderStatus).checked = true;
-                        }
-
-                        if (orderStatus === "partial") {
-                            document.getElementById("paidAmountRow").style.display = "table-row";
-                            document.getElementById("debtRow").style.display = "table-row";
-                            document.getElementById("paidAmount").value = paidAmount || "";
-                            document.getElementById("debtAmount").value = debtAmount || "";
-                        } else {
-                            document.getElementById("paidAmountRow").style.display = "none";
-                            document.getElementById("debtRow").style.display = "none";
-                        }
-                    }
-                </script>
-
-
-
-                <script>
-
-                    document.addEventListener("DOMContentLoaded", function () {
-                        let customerSelect = document.getElementById("customerID");
-                        let savedCustomerId = sessionStorage.getItem("selectedCustomerId");
-
-                        if (savedCustomerId) {
-                            customerSelect.value = savedCustomerId;
-                        }
-
-                        customerSelect.addEventListener("change", function () {
-                            sessionStorage.setItem("selectedCustomerId", customerSelect.value);
-                        });
-                    });
-
-
-                </script>       
-
-
-                <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        let porter = document.getElementById("porter");
-                        let savedPorter = sessionStorage.getItem("inputedPorter");
-
-                        // Kiểm tra nếu có giá trị đã lưu trong sessionStorage
-                        if (savedPorter) {
-                            porter.value = savedPorter;
-                        }
-
-                        // Lắng nghe sự kiện input khi người dùng thay đổi giá trị
-                        porter.addEventListener("input", function () {
-                            // Lưu giá trị vào sessionStorage
-                            sessionStorage.setItem("inputedPorter", porter.value);
-                        });
-                    });
-                </script>
-                <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        let status = document.getElementById("status");
-                        let savedStatus = sessionStorage.getItem("inputedStatus");
-
-                        // Kiểm tra nếu có giá trị đã lưu trong sessionStorage
-                        if (savedStatus) {
-                            status.value = savedStatus;
-                        }
-
-                        // Lắng nghe sự kiện input khi người dùng thay đổi giá trị
-                        status.addEventListener("input", function () {
-                            // Lưu giá trị vào sessionStorage
-                            sessionStorage.setItem("inputedStatus", status.value);
-                        });
-                    });
-                </script>
-
-                <script>
-
-                    document.addEventListener("DOMContentLoaded", function () {
-                        document.getElementById("orderForm").addEventListener("submit", function () {
-                            sessionStorage.clear(); // Xóa toàn bộ dữ liệu trong sessionStorage
-                        });
-                    });
-
-                </script>
-
-                <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        let today = new Date();
-                        let formattedDate = today.toISOString().split('T')[0]; // Chuyển thành YYYY-MM-DD
-                        document.getElementById("orderDate").value = formattedDate;
-                        loadOrderFromSessionStorage();
-                    });
-                </script>
-                <script>
-                    function addProductToOrder(productID, productName, pricePerKg, availableQuantity) {
-                        var orderType = document.getElementById("orderType").value; // Lấy loại hóa đơn
-
-                        // Kiểm tra nếu sản phẩm hết hàng
-                        if (availableQuantity <= 0) {
-                            alert("Sản phẩm đã hết hàng! Không thể thêm vào đơn hàng.");
-                            return; // Dừng hàm nếu sản phẩm không còn hàng
-                        }
-
-                        var table = document.getElementById("orderItems").getElementsByTagName('tbody')[0];
-
-                        var existingRow = null;
-
-                        // Kiểm tra xem sản phẩm đã có trong bảng chưa (TỐI ƯU: Dùng find() thay vì forEach)
-                        var existingRow = [...document.querySelectorAll("#orderItems tbody tr")]
-                                .find(row => row.querySelector("input[name='productID']").value === productID);
-
-                        if (existingRow) {
-                            // Nếu sản phẩm đã có trong bảng, tăng số lượng
-                            var quantityInput = existingRow.querySelector(".quantity");
-                            var currentQuantity = parseInt(quantityInput.value);
-                            var newQuantity = currentQuantity + 1;
-
-                            if (orderType === "export" && newQuantity > availableQuantity) {
-                                alert("Số lượng sản phẩm vượt quá tồn kho! Vui lòng nhập lại.");
-                                newQuantity = availableQuantity; // Không cho vượt quá tồn kho
-                            }
-
-                            quantityInput.value = newQuantity;
-                            recalculateRow(existingRow, pricePerKg, availableQuantity);
-                        } else {
-                            // Nếu sản phẩm chưa có, thêm dòng mới
-
-                            var newRow = table.insertRow(table.rows.length);
-                            var cell1 = newRow.insertCell(0);
-                            var cell2 = newRow.insertCell(1);
-                            var cell3 = newRow.insertCell(2);
-                            var cell4 = newRow.insertCell(3);
-                            var cell5 = newRow.insertCell(4);
-                            var cell6 = newRow.insertCell(5);
-                            var cell7 = newRow.insertCell(6);
-                            var cell8 = newRow.insertCell(7);
-
-                            // Hiển thị tên sản phẩm
-                            cell1.innerHTML =
-                                    '<input type="hidden" name="productID" value="' + productID + '">' +
-                                    '<input type="hidden" name="productName" value="' + productName + '">' +
-                                    productName;
-                            // Chọn đơn vị tính: kg hoặc bao
-                            cell2.innerHTML = '<select name="unitType" class="unitType">' +
-                                    '<option value="1">Kg</option>' +
-                                    '<option value="10">Bao (10kg)</option>' +
-                                    '<option value="20">Bao (20kg)</option>' +
-                                    '<option value="50">Bao (50kg)</option>' +
-                                    '</select>';
-
-                            if (orderType === "import") {
-                                // Nếu nhập kho, giá có thể thay đổi
-                                cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1">';
-
-
-                                cell4.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden" value="' + pricePerKg + '">' +
-                   '<input type="text" name="unitPrice" class="unitPrice" value="' + formatNumberVND(pricePerKg) + '" readonly>';
 
 
 
 
 
-                            } else {
-                                cell3.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1" max="' + availableQuantity + '">';
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <script>
+                            function addProductToOrder(productID, productName, pricePerKg, availableQuantity, unitSizes) {
+
+
+
+                                // Kiểm tra nếu sản phẩm hết hàng
+                                if (availableQuantity <= 0) {
+                                    alert("Sản phẩm đã hết hàng! Không thể thêm vào đơn hàng.");
+                                    return; // Dừng hàm nếu sản phẩm không còn hàng
+                                }
+
+                                var table = document.getElementById("orderItems").getElementsByTagName('tbody')[0];
+                                // Nếu sản phẩm chưa có, thêm dòng mới
+
+                                var newRow = table.insertRow(table.rows.length);
+                                var cell1 = newRow.insertCell(0);
+                                var cell2 = newRow.insertCell(1);
+                                var cell3 = newRow.insertCell(2);
+                                var cell4 = newRow.insertCell(3);
+                                var cell5 = newRow.insertCell(4);
+                                var cell6 = newRow.insertCell(5);
+                                var cell7 = newRow.insertCell(6);
+                                var cell8 = newRow.insertCell(7);
+                                // Hiển thị tên sản phẩm
+                                cell1.innerHTML =
+                                        '<input type="hidden" name="productID" value="' + productID + '">' +
+                                        '<input type="hidden" name="productName" value="' + productName + '">' +
+                                        productName;
+                                // Chọn đơn vị tính: kg hoặc bao
+                                // Tạo dropdown từ danh sách unitSizes
+                                var unitSelectHTML = '<select name="unitType" class="unitType">';
+                                if (unitSizes && unitSizes.length > 0) {
+                                    unitSizes.forEach(size => {
+                                        unitSelectHTML += '<option value="' + size + '">' + (size === 1 ? "Kg" : "Bao (" + size + "kg)") + '</option>';
+                                    });
+                                } else {
+                                    unitSelectHTML += '<option value="1">Kg</option>'; // Mặc định nếu không có dữ liệu
+                                }
+                                unitSelectHTML += '</select>';
+                                cell3.innerHTML = unitSelectHTML;
+                                cell2.innerHTML = '<input type="number" name="quantity" class="quantity" required value="1" min="1" max="' + availableQuantity + '">';
                                 // Nếu xuất kho, giá cố định
-                                cell4.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden" value="' + pricePerKg + '">' +
-                   '<input type="text" name="unitPrice" class="unitPrice" value="' + formatNumberVND(pricePerKg) + '" readonly>';
+                                cell5.innerHTML = '<input type="hidden" name="unitPriceHidden" class="unitPriceHidden" value="' + pricePerKg + '">' +
+                                        '<input type="text" name="unitPrice" class="unitPrice" value="' + formatNumberVND(pricePerKg) + '" readonly>';
+                                // Giảm giá (VND/kg)
+                                cell6.innerHTML = '<input type="number" name="discount" class="discount" value="0" min="0">';
+                                cell7.innerHTML =
+                                        '<input type="hidden" name="totalPriceHidden" class="totalPriceHidden">' +
+                                        '<input type="text" name="totalPrice" class="totalPrice" readonly>';
+                                // Nút xóa
+                                cell8.innerHTML = '<button type="button" onclick="deleteRow(this)">Xóa</button>';
+                                // Thêm input ẩn để lưu totalWeight
+                                cell4.innerHTML = '<input type="number" name="totalWeight" class="totalWeight" readonly >';
+                                //không cho phép nhập âm số lượng và giảm giá
 
 
 
 
+                                var quantityInput = cell2.querySelector('.quantity');
+                                // Không cho nhập số âm
+                                quantityInput.addEventListener("input", function () {
+                                    if (this.value < 0) {
+                                        this.value = 1; // Đặt giá trị tối thiểu là 1
+                                    }
+                                    recalculateRow(newRow, pricePerKg, availableQuantity);
+                                });
+                                var unitTypeInput = cell3.querySelector('.unitType');
+                                var discountInput = cell6.querySelector('.discount');
+                                // Không cho nhập số âm
+                                discountInput.addEventListener("input", function () {
+                                    if (this.value < 0) {
+                                        this.value = 0; // Đặt giá trị tối thiểu là 1
+                                    }
+                                });
+                                unitTypeInput.addEventListener('change', () => recalculateRow(newRow, pricePerKg, availableQuantity));
+                                discountInput.addEventListener('input', () => recalculateRow(newRow, pricePerKg, availableQuantity));
+                                recalculateRow(newRow, pricePerKg, availableQuantity);
+                            }
+                            function recalculateRow(row, pricePerKg, availableQuantity) {
+
+                                var quantityInput = row.querySelector(".quantity");
+                                var unitTypeInput = row.querySelector(".unitType");
+                                var discountInput = row.querySelector(".discount");
+                                var totalPriceInput = row.querySelector(".totalPrice");
+                                var totalPriceHidden = row.querySelector(".totalPriceHidden");
+                                var totalWeightInput = row.querySelector(".totalWeight");
+                                var unitMultiplier = parseInt(unitTypeInput.value);
+                                var quantity = parseInt(quantityInput.value);
+                                var totalWeight = quantity * unitMultiplier;
+                                if (totalWeight > availableQuantity) {
+                                    alert("Số lượng sản phẩm vượt quá tồn kho! Vui lòng nhập lại.");
+                                    quantityInput.value = Math.floor(availableQuantity / unitMultiplier); // Tự động điều chỉnh số lượng phù hợp
+                                    totalWeight = quantityInput.value * unitMultiplier; // Cập nhật lại tổng khối lượng
+                                }
+
+
+
+                                var discount = parseInt(discountInput.value) || 0;
+                                var totalDiscount = totalWeight * discount;
+                                var totalPrice = (totalWeight * pricePerKg) - totalDiscount;
+                                totalWeightInput.value = totalWeight;
+                                totalPriceHidden.value = totalPrice; // Lưu giá trị số
+                                totalPriceInput.value = formatNumberVND(totalPrice);
+                                updateTotalOrderPrice();
                             }
 
 
 
 
-                            // Giảm giá (VND/kg)
-                            cell5.innerHTML = '<input type="number" name="discount" class="discount" value="0" min="0">';
-                            cell6.innerHTML =
-                                    '<input type="hidden" name="totalPriceHidden" class="totalPriceHidden">' +
-                                    '<input type="text" name="totalPrice" class="totalPrice" readonly>';
-
-
-                            // Nút xóa
-                            cell7.innerHTML = '<button type="button" onclick="deleteRow(this)">Xóa</button>';
-
-                            // Thêm input ẩn để lưu totalWeight
-                            cell8.innerHTML = '<input type="hidden" name="totalWeight" class="totalWeight">';
-
-                            //không cho phép nhập âm số lượng và giảm giá
 
 
 
 
-                            var quantityInput = cell3.querySelector('.quantity');
 
-                            // Không cho nhập số âm
-                            quantityInput.addEventListener("input", function () {
-                                if (this.value < 0) {
-                                    this.value = 1; // Đặt giá trị tối thiểu là 1
-                                }
-                                recalculateRow(newRow, pricePerKg, availableQuantity);
+                            function deleteRow(button) {
+                                var row = button.parentNode.parentNode;
+                                row.parentNode.removeChild(row);
+                                updateTotalOrderPrice();
+                            }
 
-                            });
+                            function updateTotalOrderPrice() {
+                                var total = 0;
+                                var totalDiscount = 0;
+                                var totalPriceInputs = document.querySelectorAll(".totalPriceHidden");
+                                var discountInputs = document.querySelectorAll(".discount");
+                                var quantityInputs = document.querySelectorAll(".quantity");
+                                var unitTypeInputs = document.querySelectorAll(".unitType");
+                                totalPriceInputs.forEach((input, index) => {
+                                    total += parseInt(input.value) || 0;
+                                    var discount = parseInt(discountInputs[index].value) || 0;
+                                    var quantity = parseInt(quantityInputs[index].value);
+                                    var unitMultiplier = parseInt(unitTypeInputs[index].value); // 1kg hoặc bao 10kg, 20kg, 50kg
+                                    var totalWeight = quantity * unitMultiplier; // Tổng số kg của sản phẩm này
+
+                                    totalDiscount += totalWeight * discount; // Tổng số tiền giảm giá của sản phẩm này
+                                });
+                                document.getElementById("totalOrderPriceHidden").value = total; // Lưu giá trị số thực
+                                document.getElementById("totalOrderPrice").value = formatNumberVND(total);
+                                document.getElementById("totalDiscount").value = formatNumberVND(totalDiscount);
+                            }
 
 
-                            var unitTypeInput = cell2.querySelector('.unitType');
-                            var discountInput = cell5.querySelector('.discount');
-
-                            // Không cho nhập số âm
-                            discountInput.addEventListener("input", function () {
-                                if (this.value < 0) {
-                                    this.value = 0; // Đặt giá trị tối thiểu là 1
-                                }
-                            });
 
 
-                            unitTypeInput.addEventListener('change', () => recalculateRow(newRow, pricePerKg, availableQuantity));
-                            discountInput.addEventListener('input', () => recalculateRow(newRow, pricePerKg, availableQuantity));
 
-                            recalculateRow(newRow, pricePerKg, availableQuantity);
+
+                        </script>
+
+                        <script>
+
+
+                            function formatNumberVND(number) {
+                                return new Intl.NumberFormat('vi-VN').format(number);
+                            }
+
+                        </script>
+
+
+
+
+                    </form>
+                    <!-- Popup thêm khách hàng mới -->
+                    <div id="addCustomerPopup" class="popup">
+
+                        <span class="close" onclick="closeAddCustomerPopup()">&times;</span>
+                        <h2>Thêm khách hàng mới</h2>
+
+                        <form id="addCustomerForm">
+                            <label for="newCustomerName">Tên khách hàng:</label>
+                            <input type="text" id="newCustomerName" name="name" placeholder="Nhập tên khách hàng" required>
+
+                            <label for="newCustomerPhone">Số điện thoại:</label>
+                            <input type="text" id="newCustomerPhone" name="phone" placeholder="Nhập số điện thoại" required>
+
+                            <!-- Các input ẩn để Servlet nhận đủ dữ liệu -->
+                            <input type="hidden" name="address" value="">
+                            <input type="hidden" name="email" value="">
+                            <input type="hidden" name="total" value="0"> <!-- Để hợp lệ với Servlet -->
+
+                            <button type="button" onclick="saveNewCustomer()">Lưu</button>
+                        </form>
+
+                    </div>
+
+
+
+                    <script>
+
+                        $("#paidAmount").on("input", function () {
+                            if ($(this).val() < 0) {
+                                $(this).val(0);
+                            }
+                        });
+
+
+                    </script>
+                    <script>
+                        function openAddCustomerPopup() {
+                            $("#addCustomerPopup").show();
                         }
 
-
-
-                    }
-                    function recalculateRow(row, pricePerKg, availableQuantity) {
-                        var orderType = document.getElementById("orderType").value;
-                        var quantityInput = row.querySelector(".quantity");
-                        var unitTypeInput = row.querySelector(".unitType");
-                        var discountInput = row.querySelector(".discount");
-                        var totalPriceInput = row.querySelector(".totalPrice");
-                        var totalPriceHidden = row.querySelector(".totalPriceHidden");
-                        var totalWeightInput = row.querySelector(".totalWeight");
-
-                        var unitMultiplier = parseInt(unitTypeInput.value);
-                        var quantity = parseInt(quantityInput.value);
-                        var totalWeight = quantity * unitMultiplier;
-
-                        if (orderType === "export" && totalWeight > availableQuantity) {
-                            alert("Số lượng sản phẩm vượt quá tồn kho! Vui lòng nhập lại.");
-                            quantityInput.value = Math.floor(availableQuantity / unitMultiplier); // Tự động điều chỉnh số lượng phù hợp
-                            totalWeight = quantityInput.value * unitMultiplier; // Cập nhật lại tổng khối lượng
+                        function closeAddCustomerPopup() {
+                            $("#addCustomerPopup").hide();
                         }
 
+                        function saveNewCustomer() {
+                            let name = $("#newCustomerName").val().trim();
+                            let phone = $("#newCustomerPhone").val().trim();
 
-
-                        var discount = parseInt(discountInput.value) || 0;
-                        var totalDiscount = totalWeight * discount;
-                        var totalPrice = (totalWeight * pricePerKg) - totalDiscount;
-
-                        totalWeightInput.value = totalWeight;
-                        totalPriceHidden.value = totalPrice; // Lưu giá trị số
-                        totalPriceInput.value = formatNumberVND(totalPrice);
-
-                        updateTotalOrderPrice();
-                        saveOrderToSessionStorage();
-                    }
-
-
-
-
-
-
-
-
-
-                    function deleteRow(button) {
-                        var row = button.parentNode.parentNode;
-                        row.parentNode.removeChild(row);
-                        updateTotalOrderPrice();
-                        saveOrderToSessionStorage();
-                    }
-
-                    function updateTotalOrderPrice() {
-                        var total = 0;
-                        var totalDiscount = 0;
-                        var totalPriceInputs = document.querySelectorAll(".totalPriceHidden");
-                        var discountInputs = document.querySelectorAll(".discount");
-                        var quantityInputs = document.querySelectorAll(".quantity");
-                        var unitTypeInputs = document.querySelectorAll(".unitType");
-                        totalPriceInputs.forEach((input, index) => {
-                            total += parseInt(input.value) || 0;
-                            var discount = parseInt(discountInputs[index].value) || 0;
-                            var quantity = parseInt(quantityInputs[index].value);
-                            var unitMultiplier = parseInt(unitTypeInputs[index].value); // 1kg hoặc bao 10kg, 20kg, 50kg
-                            var totalWeight = quantity * unitMultiplier; // Tổng số kg của sản phẩm này
-
-                            totalDiscount += totalWeight * discount; // Tổng số tiền giảm giá của sản phẩm này
-                        });
-                        document.getElementById("totalOrderPrice").value = formatNumberVND(total);
-                        document.getElementById("totalDiscount").value = formatNumberVND(totalDiscount);
-                    }
-
-                    function saveOrderToSessionStorage() {
-                        var orderItems = [];
-                        document.querySelectorAll("#orderItems tbody tr").forEach(row => {
-                            var productID = row.querySelector("input[name='productID']").value;
-                            var productName = row.querySelector("input[name='productName']").value;
-                            var unitType = row.querySelector(".unitType").value;
-                            var quantity = row.querySelector(".quantity").value;
-                            var unitPriceHidden = row.querySelector(".unitPriceHidden").value;
-                            var discount = row.querySelector(".discount").value;
-
-                            var totalPriceHidden = row.querySelector(".totalPriceHidden").value;
-                            orderItems.push({productID, productName, unitType, quantity, unitPriceHidden, discount, totalPriceHidden});
-                        });
-                        sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
-                    }
-
-                    function loadOrderFromSessionStorage() {
-                        var orderItems = JSON.parse(sessionStorage.getItem("orderItems")) || [];
-                        orderItems.forEach(item => {
-                            addProductToOrder(item.productID, item.productName, item.unitPriceHidden);
-                            var lastRow = document.querySelector("#orderItems tbody tr:last-child");
-                            lastRow.querySelector(".unitType").value = item.unitType;
-                            lastRow.querySelector(".quantity").value = item.quantity;
-                            lastRow.querySelector(".discount").value = item.discount;
-                             lastRow.querySelector(".unitPriceHidden").value = item.unitPriceHidden;
-                            // Hiển thị giá trị định dạng VND
-                            lastRow.querySelector(".totalPriceHidden").value = item.totalPriceHidden;
-                            lastRow.querySelector(".totalPrice").value = formatNumberVND(item.totalPriceHidden);
-                             lastRow.querySelector(".unitPrice").value = formatNumberVND(item.unitPriceHidden);
-                        });
-                        updateTotalOrderPrice();
-                    }
-
-                </script>
-                </form>
-                <script>
-
-
-                    function formatNumberVND(number) {
-                        return new Intl.NumberFormat('vi-VN').format(number);
-                    }
-
-                </script>
-
-
-
-                <!--  
-                Tải thư viện jQuery phiên bản 3.6.0 từ CDN.
-Giúp sử dụng các hàm AJAX, chọn phần tử DOM, xử lý sự kiện dễ dàng hơn.
-                -->
-
-
-                <script>
-                    $(document).ready(function () {
-                        $("#orderForm").submit(function (event) {
-                            event.preventDefault(); // Ngăn chặn việc tải lại trang
-
-                            $("#orderStatus").text("⏳ Đơn hàng đang xử lý..."); // Hiển thị trạng thái ngay lập tức
-
-                            $.ajax({
-                                url: "CreateOrderServlet",
-                                type: "POST",
-                                data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
-                                dataType: "json",
-                                success: function (response) {
-                                    if (response.status === "processing") {
-                                        checkOrderStatus(); // Kiểm tra trạng thái đơn hàng
-                                    } else if (response.status === "error") {
-                                        $("#orderStatus").html("<span style='color: red;'>❌ " + response.message + "</span>");
-                                    }
-                                },
-
-                            });
-                        });
-
-                        var retryCount = 0;
-                        function checkOrderStatus() {
-                            if (retryCount >= 5) {
-                                $("#orderStatus").html("<span style='color: red;'>❌ Quá thời gian xử lý, vui lòng thử lại!</span>");
+                            if (name === "" || phone === "") {
+                                alert("Vui lòng nhập đầy đủ thông tin!");
                                 return;
                             }
 
-                            var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
-
+                            // Tạo object chứa đầy đủ dữ liệu theo yêu cầu của Servlet
+                            let customerData = {
+                                name: name,
+                                phone: phone,
+                                address: "", // Giá trị mặc định
+                                email: "", // Giá trị mặc định
+                                total: "0" // Để Servlet chấp nhận
+                            };
+                            // Gửi dữ liệu lên server để lưu khách hàng mới
                             $.ajax({
-                                url: "CheckOrderStatusServlet",
-                                type: "GET",
-                                data: {userId: userId},
-                                dataType: "json",
+                                url: "AddCustomer",
+                                type: "POST",
+                                data: customerData,
                                 success: function (response) {
-                                    if (response.status === "done") {
-                                        $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
+                                    // Kiểm tra nội dung phản hồi từ Servlet
+                                    // Tạo một thẻ div ẩn để chứa response HTML
+                                    let tempDiv = $("<div>").html(response);
+
+// Kiểm tra xem có thông báo thành công hay không
+                                    if (tempDiv.find("#successMessage").length > 0) {
+                                        alert("Khách hàng đã được thêm!");
+                                        closeAddCustomerPopup();
+                                    } else if (tempDiv.find("#errorMessage").length > 0) {
+                                        alert("Lỗi khi thêm khách hàng!");
                                     } else {
-                                        retryCount++;
-                                        setTimeout(checkOrderStatus, 2000); // Tiếp tục kiểm tra sau 2 giây
+                                        alert("Không tìm thấy phản hồi từ server!");
                                     }
+
                                 },
 
                             });
                         }
-                    });
+
+                    </script>
+
+                    <script>
+                        $(document).ready(function () {
+                            $("#orderForm").submit(function (event) {
+                                event.preventDefault(); // Ngăn chặn việc tải lại trang
+                                $("#orderStatus").text("⏳ Đơn hàng đang xử lý..."); // Hiển thị trạng thái ngay lập tức
+
+                                $.ajax({
+                                    url: "CreateOrderServlet",
+                                    type: "POST",
+                                    data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
+                                    dataType: "json",
+                                    success: function (response) {
+                                        if (response.status === "processing") {
+                                            checkOrderStatus(); // Kiểm tra trạng thái đơn hàng
+                                        } else if (response.status === "error") {
+                                            $("#orderStatus").html("<span style='color: red;'>❌ " + response.message + "</span>");
+                                        }
+                                    }
+
+                                });
+                            });
+                            var retryCount = 0;
+                            function checkOrderStatus() {
+                                var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
+
+                                if (retryCount >= 5) {
+
+                                    $("#orderStatus").html("<span style='color: red;'>❌ Quá thời gian xử lý, vui lòng thử lại!</span>");
+                                    // Gọi AJAX để xóa trạng thái đơn hàng khi bị timeout
+
+                                    $.ajax({
+                                        url: "CheckOrderStatusServlet",
+                                        type: "GET",
+                                        data: {userId: userId, clear: "true"},
+                                        dataType: "json",
+                                        success: function (response) {
+                                            console.log("✅ Đã xóa trạng thái đơn hàng sau timeout: " + response.status);
+                                        },
+                                        error: function () {
+                                            console.log("Lỗi khi xóa trạng thái đơn hàng.");
+                                        }
+                                    });
+                                    retryCount = 0;
+                                    return;
+                                }
+
+
+                                $.ajax({
+                                    url: "CheckOrderStatusServlet",
+                                    type: "GET",
+                                    data: {userId: userId},
+                                    dataType: "json",
+                                    success: function (response) {
+                                        if (response.status === "done") {
+                                            $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
+                                        } else if (response.status === "error") {
+                                            $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
+                                        } else {
+                                            retryCount++;
+                                            setTimeout(checkOrderStatus, 2000); // Tiếp tục kiểm tra sau 2 giây
+                                        }
+                                    }
+
+                                });
+                            }
+                        })
+                                ;
 
                 </script>
 
@@ -1105,13 +1176,13 @@ Giúp sử dụng các hàm AJAX, chọn phần tử DOM, xử lý sự kiện d
 
             </div>
 
-
-
         </div>
-    </div>
 
 
-</body>
+
+
+
+    </body>
 
 
 

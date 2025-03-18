@@ -1,7 +1,49 @@
 CREATE DATABASE ISPG4NV1;
 USE ISPG4NV1;
 
+CREATE TABLE ProductUnits (
+    unitID INT PRIMARY KEY IDENTITY(1,1),
+    productID INT NOT NULL,
+    unitSize INT NOT NULL CHECK (unitSize > 0),  -- Lưu đơn vị bao dưới dạng số kg
+    CONSTRAINT fk_product_unit FOREIGN KEY (productID) REFERENCES products(productID) ON DELETE CASCADE
+);
 
+
+CREATE TABLE store ( 
+storeID INT PRIMARY KEY IDENTITY(1,1), 
+ownerID INT NOT NULL,
+storeName VARCHAR(255) NOT NULL, 
+address NVARCHAR(255) NOT NULL, 
+phone VARCHAR(20) NOT NULL, 
+email VARCHAR(255) UNIQUE NOT NULL,
+logostore nvarchar(max) NULL,
+createAt DATETIME not null DEFAULT GETDATE(), 
+updateAt DATETIME NULL, 
+createBy INT not NULL, 
+isDelete TINYINT DEFAULT 0, 
+deleteAt DATETIME NULL, 
+deleteBy INT NULL 
+);
+
+ALTER TABLE OrderItems DROP CONSTRAINT FK__OrderItem__produ__34C8D9D1;
+
+ALTER TABLE customers ADD storeID INT NULL;
+ALTER TABLE DebtRecords ADD storeID INT NULL;
+ALTER TABLE DebtRecords ADD description nvarchar(max) NULL;
+ALTER TABLE orderitems ADD storeID INT NULL;
+ALTER TABLE productzones ADD storeID INT NULL;
+
+ALTER TABLE users ADD storeID INT NULL;
+ALTER TABLE users ADD CONSTRAINT fk_users_store FOREIGN KEY (storeID) REFERENCES store(storeID);
+
+ALTER TABLE zones ADD storeID INT NULL;
+ALTER TABLE zones ADD CONSTRAINT fk_zones_store FOREIGN KEY (storeID) REFERENCES store(storeID);
+
+ALTER TABLE products ADD storeID INT NULL;
+ALTER TABLE products ADD CONSTRAINT fk_products_store FOREIGN KEY (storeID) REFERENCES store(storeID);
+
+ALTER TABLE orders ADD storeID INT NULL;
+ALTER TABLE orders ADD CONSTRAINT fk_orders_store FOREIGN KEY (storeID) REFERENCES store(storeID);
 
 -- bang USERS
 CREATE TABLE users (
@@ -126,5 +168,4 @@ CREATE TABLE DebtRecords (
 	deleteBy int,
     FOREIGN KEY (customerID) REFERENCES customers(customerID)
 );
-
 

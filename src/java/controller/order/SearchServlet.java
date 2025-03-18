@@ -69,12 +69,12 @@ public class SearchServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        String keyword = request.getParameter("keyword");
-        System.out.println("Keyword nhận được: " + keyword);
+        String keyword = request.getParameter("searchProduct");
+
+        int orderType = Integer.parseInt(request.getParameter("orderType"));
 
         if (keyword != null && !keyword.trim().isEmpty()) {
             List<Products> products = DAOProduct.INSTANCE.searchProductsByName(keyword);
-            System.out.println("Số sản phẩm tìm thấy: " + products.size());
 
             if (products.isEmpty()) {
                 out.println("<p>Không tìm thấy sản phẩm.</p>");
@@ -83,38 +83,86 @@ public class SearchServlet extends HttpServlet {
                 out.println("<div class='search-suggestions'>");
 
                 for (Products product : products) {
-                    // Tạo một “thẻ chứa” (container) cho mỗi sản phẩm
-                    out.println("<div class='product-item' onclick=\"addProductToOrder('"
-                            + product.getProductID() + "','"
-                            + product.getProductName() + "','"
-                            + (int)product.getPrice()+ "','"
-                            + product.getQuantity() + "')\">");
 
-                    // Ảnh sản phẩm
-                out.println("<div class='product-image'>"
-                        + "<img src='" + product.getImage() + "' alt='Product Image' />"
-                        + "</div>");
+                    // Lấy danh sách unitSizes từ bảng ProductUnits (đã trả về List<Integer>)
+                    List<Integer> unitSizes = DAOProduct.INSTANCE.getProductUnitsByProductID(product.getProductID());
 
-                // Container chứa nội dung
-                out.println("<div class='product-content'>");
+                    // Chuyển danh sách unitSizes thành chuỗi JavaScript Array
+                    StringBuilder unitSizesStr = new StringBuilder("[");
+                    for (int i = 0; i < unitSizes.size(); i++) {
+                        unitSizesStr.append(unitSizes.get(i));
+                        if (i < unitSizes.size() - 1) {
+                            unitSizesStr.append(",");
+                        }
+                    }
+                    unitSizesStr.append("]");
 
-                // Hàng chứa tên, số lượng và giá
-                out.println("<div class='product-info'>");
-                out.println("<h3 class='product-name'>" + product.getProductName() + "</h3>");
-                out.println("<p class='product-quantity'>Số lượng: " + product.getQuantity() + "</p>");
-                out.println("<p class='product-price'>Giá: " + formatter.format(product.getPrice()) + "</p>");
-                out.println("</div>");
+                    if (orderType == 0) {
+                        // Xuất HTML với unitSizes được truyền vào addProductToOrder()
+                        out.println("<div class='product-item' onclick=\"addProductToOrder('"
+                                + product.getProductID() + "','"
+                                + product.getProductName() + "',"
+                                + unitSizesStr.toString() + ")\">");
 
-                // Mô tả sản phẩm
-                out.println("<p class='product-description'>"
-                        + (product.getDescription() != null ? product.getDescription() : "")
-                        + "</p>");
+                        // Ảnh sản phẩm
+                        out.println("<div class='product-image'>"
+                                + "<img src='" + product.getImage() + "' alt='Product Image' />"
+                                + "</div>");
 
-                out.println("</div>"); // đóng div .product-content
-                out.println("</div>"); // đóng div .product-item
-            }
+                        // Container chứa nội dung
+                        out.println("<div class='product-content'>");
 
-            out.println("</div>"); // đóng container lớn
+                        // Hàng chứa tên, số lượng và giá
+                        out.println("<div class='product-info'>");
+                        out.println("<h3 class='product-name'>" + product.getProductName() + "</h3>");
+                        out.println("<p class='product-quantity'>Số lượng: " + product.getQuantity() + "</p>");
+                        out.println("<p class='product-price'>Giá Bán: " + formatter.format(product.getPrice()) + "</p>");
+                        out.println("</div>");
+
+                        // Mô tả sản phẩm
+                        out.println("<p class='product-description'>"
+                                + (product.getDescription() != null ? product.getDescription() : "")
+                                + "</p>");
+
+                        out.println("</div>"); // đóng div .product-content
+                        out.println("</div>"); // đóng div .product-item
+
+                    } else {
+
+                        // Xuất HTML với unitSizes được truyền vào addProductToOrder()
+                        out.println("<div class='product-item' onclick=\"addProductToOrder('"
+                                + product.getProductID() + "','"
+                                + product.getProductName() + "','"
+                                + (int) product.getPrice() + "','"
+                                + product.getQuantity() + "',"
+                                + unitSizesStr.toString() + ")\">");
+                        // Ảnh sản phẩm
+                        out.println("<div class='product-image'>"
+                                + "<img src='" + product.getImage() + "' alt='Product Image' />"
+                                + "</div>");
+
+                        // Container chứa nội dung
+                        out.println("<div class='product-content'>");
+
+                        // Hàng chứa tên, số lượng và giá
+                        out.println("<div class='product-info'>");
+                        out.println("<h3 class='product-name'>" + product.getProductName() + "</h3>");
+                        out.println("<p class='product-quantity'>Số lượng: " + product.getQuantity() + "</p>");
+                        out.println("<p class='product-price'>Giá Bán: " + formatter.format(product.getPrice()) + "</p>");
+                        out.println("</div>");
+
+                        // Mô tả sản phẩm
+                        out.println("<p class='product-description'>"
+                                + (product.getDescription() != null ? product.getDescription() : "")
+                                + "</p>");
+
+                        out.println("</div>"); // đóng div .product-content
+                        out.println("</div>"); // đóng div .product-item
+                    }
+
+                }// kết thúc for
+
+                out.println("</div>"); // đóng container lớn
             }
         }
 
@@ -131,20 +179,37 @@ public class SearchServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String searchPhone = request.getParameter("searchCustomer");
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
 
-        if (searchPhone.equals("")) {
-            request.setAttribute("id", 0);
+        String searchValue = request.getParameter("keyword");
+        List<Customers> customers = DAOCustomers.INSTANCE.findByNameOrPhone(searchValue);
 
+        if (customers.isEmpty()) {
+            out.println("<p>Không tìm thấy khach hang.</p>");
+            out.println("<div class='customer-item add-new' onclick='openAddCustomerPopup()'>");
+            out.println("<p>➕ Thêm khách hàng mới</p>");
+            out.println("</div>");
         } else {
-            request.setAttribute("id", 0);
+            // Bạn có thể bọc toàn bộ danh sách trong 1 container lớn
 
-            List<Customers> customers = DAOCustomers.INSTANCE.findByPhone(searchPhone);
+            out.println("<div class='search-suggestions'>");
+            for (Customers customer : customers) {
+                out.println("<div class='customer-item' onclick=\"selectCustomer('"
+                        + customer.getCustomerID() + "', '"
+                        + customer.getName() + "', '"
+                        + customer.getPhone() + "', '"
+                        + customer.getTotalDebt() + "')\">");
 
-            request.setAttribute("customers", customers);
+                out.println("<h3>" + customer.getName() + "</h3>");
+                out.println("<p>SĐT: " + customer.getPhone() + "</p>");
+
+                out.println("</div>");
+            }
+            out.println("</div>");
+
         }
 
-        request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
     }
 
     /**

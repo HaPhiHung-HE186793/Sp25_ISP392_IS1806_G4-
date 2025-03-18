@@ -385,7 +385,7 @@ public class DAOUser extends DBContext {
     }
 
     public List<User> listUsers() {
-        String sql = "SELECT * FROM Users";
+        String sql = "SELECT * FROM Users ORDER BY ID DESC";
         List<User> UsersList = new ArrayList<User>();
         try {
             Statement state = conn.createStatement();
@@ -413,7 +413,7 @@ public class DAOUser extends DBContext {
     }
 
     public List<User> listUsersByOwner(int createBy) {
-        String sql = "SELECT * FROM Users WHERE createBy = ?";
+        String sql = "SELECT * FROM Users WHERE createBy = ? ORDER BY ID DESC";
         List<User> usersList = new ArrayList<>();
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -483,14 +483,17 @@ public class DAOUser extends DBContext {
     }
 
     public List<User> getUsersByKeyword(String keyword, List<User> U) {
-        List<User> users = new ArrayList<>();
-        for (User user : U) {
-            if (user.getUserName().contains(keyword) || user.getEmail().contains(keyword)) {
-                users.add(user);
-            }
+    List<User> users = new ArrayList<>();
+    String lowerKeyword = keyword.toLowerCase(); // Chuyển keyword thành chữ thường
+
+    for (User user : U) {
+        if (user.getUserName().toLowerCase().contains(lowerKeyword) || 
+            user.getEmail().toLowerCase().contains(lowerKeyword)) {
+            users.add(user);
         }
-        return users;
     }
+    return users;
+}
     
     public List<User> getUsersByAction(int selectedAction, List<User> U) {
         List<User> users = new ArrayList<>();

@@ -84,9 +84,11 @@ public class listUsers extends HttpServlet {
                 // Không cho phép chỉnh sửa user cùng role
                 if (Users.getRoleID() == user_current.getRoleID() && user_current.getID() != Users.getID()) {
                     error = "Không được phép chỉnh sửa.";
-                } else if (Users.getRoleID() == 3 && user_current.getRoleID() == 1) {
-                    error = "Không được phép chỉnh sửa.";
-                } else if (Users.getRoleID() == 1 && user_current.getRoleID() == 2) {
+                } else 
+//                    if (Users.getRoleID() == 3 && user_current.getRoleID() == 1) {
+//                    error = "Không được phép chỉnh sửa.";
+//                } else 
+                        if (Users.getRoleID() == 1 && user_current.getRoleID() == 2) {
                     error = "Không được phép chỉnh sửa.";
                 } else {
                     request.setAttribute("u", Users);
@@ -94,7 +96,7 @@ public class listUsers extends HttpServlet {
                     request.getRequestDispatcher("updateuser").forward(request, response);
                 }
             }
-        }
+        } else error = "";
 //        //block user
 //        if (request.getParameter("blockid") != null) {
 //            int blockid = Integer.parseInt(request.getParameter("blockid"));

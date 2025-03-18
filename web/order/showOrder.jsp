@@ -1,7 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.ShowOrder, java.util.Vector"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.text.DecimalFormat"%>
 <%
+    DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
     int currentPage = (int) request.getAttribute("currentPage");
     int totalPages = (int) request.getAttribute("totalPages");
     String customerName = (String) request.getAttribute("customerName");
@@ -57,10 +59,26 @@
             color: white;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
             transition: background-color 0.3s;
         }
         .action-button:hover {
             background-color: #c9302c; /* Màu đỏ tối hơn khi hover */
+        }
+        .blue-button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff; /* Màu xanh */
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .blue-button:hover {
+            background-color: #0056b3; /* Màu xanh tối hơn khi hover */
         }
         .table-container {
             overflow-x: auto;
@@ -70,11 +88,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            border: none;
         }
         th, td {
             padding: 10px;
-            border: 1px solid #ddd;
+/*            border: 1px solid #ddd;*/
             text-align: left;
+            border: none;
         }
         th {
             background-color: #f2f2f2;
@@ -106,10 +126,17 @@
         <jsp:include page="/Component/menu.jsp"></jsp:include>
 
         <div class="main-content">
+            <div class="notification">
+                Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
+            </div>
+            
             <h3><%= request.getAttribute("tableTitle") %></h3>
+            <div style="text-align: right; margin-bottom: 10px;">
+                <button class="blue-button" onclick="window.location.href='<%=request.getContextPath()%>/URLOrderIn?service=listshow'">Hóa đơn nhập</button>
+            </div>
             <div>
                 <label for="customerName">Tên khách hàng:</label>
-                <input type="text" id="customerName" placeholder="Enter customer name" value="<%= customerName != null ? customerName : "" %>">
+                <input type="text" id="customerName" placeholder="Nhập tên khách hàng" value="<%= customerName != null ? customerName : "" %>">
                 
                 <label for="datePicker">Ngày</label>
                 <input type="date" id="datePicker" value="<%= selectedDate != null ? selectedDate : "" %>">
@@ -123,9 +150,9 @@
                     <option value="0" <%= "0".equals(sortColumn) ? "selected" : "" %>>Mã hóa đơn</option>
                     <option value="1" <%= "1".equals(sortColumn) ? "selected" : "" %>>Tên khách hàng</option>
                     <option value="2" <%= "2".equals(sortColumn) ? "selected" : "" %>>Người tạo</option>
-                    <option value="3" <%= "3".equals(sortColumn) ? "selected" : "" %>>Tổng giá tiền</option>
-                    <option value="4" <%= "4".equals(sortColumn) ? "selected" : "" %>>Ngày tạo</option>
-                    <option value="5" <%= "5".equals(sortColumn) ? "selected" : "" %>>Ngày cập nhật</option>
+                    <option value="3" <%= "3".equals(sortColumn) ? "selected" : "" %>>Khách đã trả</option>
+                    <option value="4" <%= "4".equals(sortColumn) ? "selected" : "" %>>Thành tiền</option>
+                    <option value="5" <%= "5".equals(sortColumn) ? "selected" : "" %>>Ngày tạo</option>
                     <option value="6" <%= "6".equals(sortColumn) ? "selected" : "" %>>Cửu vạn</option>
                 </select>
                 <button class="action-button" onclick="performSort()">Sắp xếp</button>
@@ -137,9 +164,9 @@
                             <th>Mã hóa đơn</th>
                             <th>Tên khách hàng</th>
                             <th>Người tạo</th>
-                            <th>Tổng giá tiền</th>
-                            <th>Ngày tạo</th>
-                            <th>Ngày cập nhật</th>
+                            <th>Khách đã trả</th>
+                            <th>Thành tiền</th>                           
+                            <th>Ngày tạo</th>                           
                             <th>Cửu vạn</th>
                             <th>Trạng thái</th>
                             <th>Chi tiết</th>
@@ -155,9 +182,9 @@
                             <td><%= showOrder.getOrderID() %></td>
                             <td><%= showOrder.getName() %></td>
                             <td><%= showOrder.getUserName() %></td>
-                            <td><%= showOrder.getTotalAmount() %></td>
-                            <td><%= showOrder.getCreateAt() %></td>
-                            <td><%= showOrder.getUpdateAt() %></td>
+                            <td><%= decimalFormat.format(showOrder.getPaidAmount()) %></td>
+                            <td><%= decimalFormat.format(showOrder.getTotalAmount()) %></td>
+                            <td><%= showOrder.getCreateAt() %></td>                           
                             <td><%= showOrder.getPorter() %></td>
                             <td><%= showOrder.getStatus() %></td>
                             <td>
@@ -190,6 +217,9 @@
             <% if (currentPage < totalPages) { %>
                 <a href="URLOrder?page=<%= currentPage + 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
             <% } %>
+            </div>
+            <div class="back-button">
+                <a href="<%=request.getContextPath()%>/URLChart?service=listChart" class="action-button">Thống kê</a>
             </div>
         </div>
     </div>

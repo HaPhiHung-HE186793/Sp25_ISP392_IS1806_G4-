@@ -9,6 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
+import java.math.BigDecimal;
 import model.Products;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -20,53 +21,118 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.ResultSet;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class DAOProduct extends DBContext {
 
     public static DAOProduct INSTANCE = new DAOProduct();
 
-    public void exportProductQuantity(int productID, int quantitySold) {
+    public int getProductQuantity(int productId) {
+        int quantity = 0;
+        String sql = "SELECT quantity FROM products WHERE productID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                quantity = rs.getInt("quantity");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return quantity;
+    }
+
+    public Double getProductPrice(int productId) {
+        String sql = "SELECT price FROM products WHERE productID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("price");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy giá sản phẩm productID = " + productId + ": " + e.getMessage());
+        }
+
+        return 0.0; // Nếu lỗi hoặc không có sản phẩm thì trả về 0
+    }
+
+    public List<Integer> getProductUnitsByProductID(int productID) {
+        List<Integer> unitSizes = new ArrayList<>();
+        String sql = "SELECT unitSize FROM ProductUnits WHERE productID = ? ORDER BY unitSize ASC";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                unitSizes.add(rs.getInt("unitSize"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return unitSizes;
+    }
+
+    public boolean exportProductQuantity(int productID, int quantitySold) {
         String sql = "UPDATE products SET quantity = quantity - ? WHERE productID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantitySold);
             ps.setInt(2, productID);
 
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate(); // Số dòng bị ảnh hưởng
+
+            return affectedRows > 0; // Nếu có ít nhất 1 dòng bị ảnh hưởng -> thành công
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false; // Có lỗi -> trả về false
         }
-
     }
 
-    public void importProductQuantity(int productID, int quantityAdded) {
+    public boolean importProductQuantity(int productID, int quantityAdded) {
         String sql = "UPDATE products SET quantity = quantity + ? WHERE productID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantityAdded);
             ps.setInt(2, productID);
 
-            ps.executeUpdate();
-            
+            int affectedRows = ps.executeUpdate(); // Số dòng bị ảnh hưởng
+
+            return affectedRows > 0; // Nếu có ít nhất 1 dòng bị ảnh hưởng -> thành công
+
         } catch (SQLException e) {
             e.printStackTrace();
+            return false; // Có lỗi -> trả về false
         }
-       
     }
 
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
     public List<Products> searchProductsByName(String keyword) {
         List<Products> productsList = new ArrayList<>();
-        String sql = "SELECT * FROM products WHERE LOWER(productName) LIKE LOWER(?) AND isDelete = 0";
+        String sql = "SELECT * FROM products "
+                + "WHERE productName COLLATE Vietnamese_CI_AI LIKE ? "
+                + "AND isDelete = 0";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + keyword.toLowerCase() + "%"); // Chuyển keyword thành chữ thường
+            // Loại bỏ dấu trước khi tìm kiếm
+            String normalizedKeyword = removeVietnameseAccent(keyword.trim().toLowerCase());
+            ps.setString(1, "%" + normalizedKeyword + "%");  // Tìm kiếm gần đúng
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -78,7 +144,6 @@ public class DAOProduct extends DBContext {
                     product.setQuantity(rs.getInt("quantity"));
                     product.setImage(rs.getString("image"));
 
-                    // Giữ nguyên getString như yêu cầu
                     product.setCreateAt(rs.getString("createAt"));
                     product.setUpdateAt(rs.getString("updateAt"));
                     product.setCreateBy(rs.getInt("createBy"));
@@ -92,34 +157,30 @@ public class DAOProduct extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return productsList;
     }
 
-    public List<Products> searchProducts(String keywordName, String keywordDescription) {
+    public static String removeVietnameseAccent(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(str).replaceAll("")
+                .replaceAll("đ", "d")
+                .replaceAll("Đ", "D");
+    }
+
+    public List<Products> searchProducts(String keyword) {
         List<Products> productsList = new ArrayList<>();
-        String sql = "SELECT * FROM products WHERE isDelete = 0 ";
+        String sql = "SELECT * FROM products WHERE isDelete = 0";
 
-        List<String> conditions = new ArrayList<>();
-        if (keywordName != null && !keywordName.isEmpty()) {
-            conditions.add("LOWER(productName) LIKE LOWER(?)");
-        }
-        if (keywordDescription != null && !keywordDescription.isEmpty()) {
-            conditions.add("LOWER(description) LIKE LOWER(?)");
-        }
-
-        if (!conditions.isEmpty()) {
-            sql += " AND (" + String.join(" OR ", conditions) + ")";
+        if (keyword != null && !keyword.isEmpty()) {
+            sql += " AND (LOWER(productName) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))";
         }
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            int paramIndex = 1;
-
-            if (keywordName != null && !keywordName.isEmpty()) {
-                ps.setString(paramIndex++, "%" + keywordName.toLowerCase() + "%");
-            }
-            if (keywordDescription != null && !keywordDescription.isEmpty()) {
-                ps.setString(paramIndex++, "%" + keywordDescription.toLowerCase() + "%");
+            if (keyword != null && !keyword.isEmpty()) {
+                String searchKeyword = "%" + keyword.toLowerCase() + "%";
+                ps.setString(1, searchKeyword);
+                ps.setString(2, searchKeyword);
             }
 
             try (ResultSet rs = ps.executeQuery()) {

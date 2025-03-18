@@ -16,14 +16,12 @@ public class ControllerOrder extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-       
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-     //   processRequest(request, response);
-      DAOShowOrder dao = new DAOShowOrder();
+        DAOShowOrder dao = new DAOShowOrder();
         String service = request.getParameter("service");
         if (service == null) {
             service = "listshow";
@@ -51,17 +49,24 @@ public class ControllerOrder extends HttpServlet {
             sortOrder = "asc"; // Giá trị mặc định
         }
 
-        String sql = "SELECT o.orderID, c.name, u.userName, o.totalAmount, o.createAt, o.updateAt, o.porter, o.status " +
+        String sql = "SELECT o.orderID, c.name, u.userName, o.paidAmount, o.totalAmount, o.createAt, o.updateAt, o.porter, o.status, u.storeID, o.orderType " +
                      "FROM orders o " +
                      "JOIN customers c ON o.customerID = c.customerID " +
-                     "JOIN users u ON o.userID = u.ID ";
+                     "JOIN users u ON o.userID = u.ID "+
+                     "WHERE o.orderType = 1 ";
+
+        // Lấy storeID từ session
+        Integer storeID = (Integer) request.getSession().getAttribute("storeID");
+        if (storeID != null) {
+            sql += "AND u.storeID = " + storeID + " "; // Thêm điều kiện lọc theo storeID
+        }
 
         // Thêm điều kiện tìm kiếm
         if (customerName != null && !customerName.isEmpty()) {
-            sql += "WHERE c.name LIKE '%" + customerName + "%' ";
+            sql += (storeID != null ? "AND " : "WHERE ") + "c.name LIKE '%" + customerName + "%' ";
         }
         if (selectedDate != null && !selectedDate.isEmpty()) {
-            sql += (customerName != null ? "AND " : "WHERE ") + "CONVERT(date, o.createAt) = '" + selectedDate + "' ";
+            sql += (customerName != null ? "AND " : (storeID != null ? "AND " : "WHERE ")) + "CONVERT(date, o.createAt) = '" + selectedDate + "' ";
         }
 
         // Thêm điều kiện sắp xếp
@@ -102,14 +107,20 @@ public class ControllerOrder extends HttpServlet {
             // Tính tổng giá tiền cho tất cả các bản ghi
             String totalAmountSql = "SELECT SUM(o.totalAmount) FROM orders o " +
                                     "JOIN customers c ON o.customerID = c.customerID " +
-                                    "JOIN users u ON o.userID = u.ID ";
+                                    "JOIN users u ON o.userID = u.ID "+
+                                    "WHERE o.orderType = 1 ";
+
+            // Thêm điều kiện lọc theo storeID
+            if (storeID != null) {
+                totalAmountSql += "AND u.storeID = " + storeID + " ";
+            }
 
             // Thêm điều kiện tìm kiếm vào câu truy vấn tổng
             if (customerName != null && !customerName.isEmpty()) {
-                totalAmountSql += "WHERE c.name LIKE '%" + customerName + "%' ";
+                totalAmountSql += (storeID != null ? "AND " : "WHERE ") + "c.name LIKE '%" + customerName + "%' ";
             }
             if (selectedDate != null && !selectedDate.isEmpty()) {
-                totalAmountSql += (customerName != null ? "AND " : "WHERE ") + "CONVERT(date, o.createAt) = '" + selectedDate + "' ";
+                totalAmountSql += (customerName != null ? "AND " : (storeID != null ? "AND " : "WHERE ")) + "CONVERT(date, o.createAt) = '" + selectedDate + "' ";
             }
 
             totalAmount = dao.getTotalAmount(totalAmountSql); // Lấy tổng giá tiền từ database
@@ -118,7 +129,7 @@ public class ControllerOrder extends HttpServlet {
             request.setAttribute("tableTitle", "Danh sách hóa đơn");
             request.setAttribute("pageTitle", "order");
             request.setAttribute("currentPage", pageNumber);
-            request.setAttribute("totalPages", getTotalPages(dao, pageSize));
+            request.setAttribute("totalPages", getTotalPages(dao, pageSize, storeID)); // Gọi getTotalPages với storeID
             request.setAttribute("customerName", customerName);
             request.setAttribute("date", selectedDate);
             request.setAttribute("sortColumn", sortColumn);
@@ -140,11 +151,18 @@ public class ControllerOrder extends HttpServlet {
         return "Short description";
     }
 
-    private int getTotalPages(DAOShowOrder dao, int pageSize) {
+    private int getTotalPages(DAOShowOrder dao, int pageSize, Integer storeID) {
         String countSql = "SELECT COUNT(*) " +
                           "FROM orders o " +
                           "JOIN customers c ON o.customerID = c.customerID " +
-                          "JOIN users u ON o.userID = u.ID";
+                          "JOIN users u ON o.userID = u.ID "+
+                          "WHERE o.orderType = 1 ";
+
+        // Thêm điều kiện lọc theo storeID
+        if (storeID != null) {
+            countSql += "AND u.storeID = " + storeID + " ";
+        }
+
         int totalRecords = dao.getTotalRecords(countSql);
         if (totalRecords == 0) {
             return 1;

@@ -26,7 +26,35 @@ import service.WebAppListener;
 
 public class DAODebtRecords extends DBContext {
 
+<<<<<<< HEAD
     public DBContext db;
+=======
+    public boolean addDebtRecordFromOrder(DebtRecords record) {
+        String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus, createBy, isDelete) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(insertSQL)) {
+            ps.setInt(1, record.getCustomerID());
+            ps.setInt(2, record.getOrderID());
+            ps.setDouble(3, record.getAmount());
+            ps.setInt(4, record.getPaymentStatus());
+           
+           
+            ps.setInt(5, record.getCreateBy());
+            ps.setBoolean(6, record.isIsDelete());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi thêm bản ghi nợ: " + e.getMessage());
+            return false;
+        }
+
+        return updateCustomerDebt(record);
+    }
+    public boolean addDebtRecord(DebtRecords record) {
+        String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+>>>>>>> origin/main
 
     public DAODebtRecords() {
         db = new DBContext(); // Sử dụng kết nối từ DBContext
@@ -74,7 +102,62 @@ public class DAODebtRecords extends DBContext {
         List<DebtRecords> unprocessedList = new ArrayList<>();
         String selectSQL = "SELECT debtID, customerID, paymentStatus, amount, status FROM DebtRecords WHERE status = 0";
 
+<<<<<<< HEAD
         try (ResultSet rs = db.getData(selectSQL)) {
+=======
+        while (!success) {
+            double currentDebt = getCustomerTotalDebt(record.getCustomerID());
+            
+             
+
+            
+            // Tính toán tổng nợ mới dựa trên trạng thái thanh toán
+            double newDebt = (record.getPaymentStatus() == 1 || record.getPaymentStatus() == 2)
+                    ? currentDebt + record.getAmount()
+                    : currentDebt - record.getAmount();
+
+            String updateSQL = "UPDATE Customers SET totalDebt = ? WHERE customerID = ? AND totalDebt = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(updateSQL)) {
+                ps.setDouble(1, newDebt);
+                ps.setInt(2, record.getCustomerID());
+                ps.setDouble(3, currentDebt);
+
+                int updatedRows = ps.executeUpdate();
+                if (updatedRows > 0) {
+                    success = true; // Cập nhật thành công
+                }else{
+                    return false;
+                }
+            } catch (SQLException e) {
+                System.out.println("Lỗi khi cập nhật tổng nợ: " + e.getMessage());
+                return false;
+            }
+        }
+
+        return success;
+    }
+
+    public double getCustomerTotalDebt(int customerID) {
+        String sql = "SELECT totalDebt FROM Customers WHERE customerID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("totalDebt");
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi lấy tổng nợ: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public Vector<DebtRecords> getDeptRecords(String sql) {
+        Vector<DebtRecords> vector = new Vector<DebtRecords>();
+        try {
+            Statement state = conn.createStatement();
+            ResultSet rs = state.executeQuery(sql);
+>>>>>>> origin/main
             while (rs.next()) {
                 DebtRecords record = new DebtRecords();
                 record.setDebtID(rs.getInt("debtID"));

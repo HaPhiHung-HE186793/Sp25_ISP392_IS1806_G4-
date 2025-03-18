@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.Date;
+
 /**
  *
  * @author ADMIN
@@ -17,7 +19,25 @@ public class ShowOrder {
     private String updateAt;    
     private int porter; 
     private String status;
+    private int storeID;
+    private double paidAmount;
 
+    public ShowOrder(int orderID, String name, String userName, double totalAmount, String createAt, String updateAt, int porter, String status, int storeID, double paidAmount) {
+        this.orderID = orderID;
+        this.name = name;
+        this.userName = userName;
+        this.totalAmount = totalAmount;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.porter = porter;
+        this.status = status;
+        this.storeID = storeID;
+        this.paidAmount = paidAmount;
+    }
+
+    
+    
+    
     public ShowOrder(int orderID, String name, String userName, double totalAmount, String createAt, String updateAt, int porter, String status) {
         this.orderID = orderID;
         this.name = name;
@@ -95,5 +115,25 @@ public class ShowOrder {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public int getStoreID() {
+        return storeID;
+    }
+
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
+    }
+
+    
+
+    public double getPaidAmount() {
+        return paidAmount;
+    }
+
+    public void setPaidAmount(double paidAmount) {
+        this.paidAmount = paidAmount;
+    }
+    
+    
     
 }

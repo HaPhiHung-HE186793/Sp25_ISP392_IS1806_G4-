@@ -100,6 +100,11 @@
                                                ${user_update.getRoleID() == 2 ? "checked" : ""}>
                                         <label for="store_owner">Chủ Cửa Hàng</label>
                                     </div>
+                                    <div>
+                                        <input type="radio" name="roleID" value="3" id="employee" 
+                                               ${user_update.getRoleID() == 3 ? "checked" : ""}>
+                                        <label for="employee">Nhân Viên</label>
+                                    </div>
                                 </c:if>
                                 <c:if test="${u.getRoleID() == 2}">
                                     <div>

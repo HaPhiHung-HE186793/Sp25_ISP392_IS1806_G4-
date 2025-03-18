@@ -107,12 +107,13 @@ public class DAOCustomers extends DBContext {
         return null;
     }
 
-    public List<Customers> findByPhone(String searchPhone) {
+    public List<Customers> findByNameOrPhone(String searchValue) {
         List<Customers> customers = new ArrayList<>();
-        String sql = "SELECT * FROM customers WHERE phone LIKE ? AND isDelete = 0";
+        String sql = "SELECT * FROM customers WHERE (phone LIKE ? OR name LIKE ?) AND isDelete = 0";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + searchPhone + "%"); // Tìm số điện thoại chứa searchPhone
+            ps.setString(1, "%" + searchValue + "%"); // Tìm số điện thoại chứa searchPhone
+             ps.setString(2, "%" + searchValue + "%");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

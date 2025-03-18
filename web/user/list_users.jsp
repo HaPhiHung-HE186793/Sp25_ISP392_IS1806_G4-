@@ -210,10 +210,12 @@
                                                         url: "listusers",
                                                         data: {actionBlock: actionBlock, userIDBlock: userIDBlock},
                                                         success: function () {
+                                                            history.replaceState(null, "", "listusers"); // Xóa id khỏi URL
                                                             location.reload(); // Reload để cập nhật trạng thái
                                                         },
                                                         error: function () {
                                                             $("#error-message").text("Không được phép khóa tài khoản admin khác.").show();
+                                                            hideNotification('error-message');
                                                         }
                                                     });
                                                 });
