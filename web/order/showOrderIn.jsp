@@ -27,7 +27,7 @@
             const customerName = document.getElementById("customerName").value;
             const selectedDate = document.getElementById("datePicker").value;
 
-            let url = 'URLOrder?customerName=' + encodeURIComponent(customerName);
+            let url = 'URLOrderIn?customerName=' + encodeURIComponent(customerName);
             if (selectedDate) {
                 url += '&date=' + encodeURIComponent(selectedDate);
             }
@@ -39,7 +39,7 @@
         function performSort() {
             const columnIndex = document.getElementById("sortColumn").value;
             currentSortOrder = (currentSortOrder === 'asc') ? 'desc' : 'asc';
-            const url = 'URLOrder?sortColumn=' + columnIndex +
+            const url = 'URLOrderIn?sortColumn=' + columnIndex +
                         '&sortOrder=' + currentSortOrder +
                         '&customerName=<%= customerName != null ? customerName : "" %>' +
                         '&date=<%= selectedDate != null ? selectedDate : "" %>';
@@ -47,7 +47,7 @@
         }
 
         function resetFilters() {
-            window.location.href = 'URLOrder';
+            window.location.href = 'URLOrderIn';
         }
     </script>
     <style>
