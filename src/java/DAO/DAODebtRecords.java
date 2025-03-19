@@ -125,7 +125,42 @@ public class DAODebtRecords extends DBContext {
 
         return generatedDebtID; // Trả về debtID để thêm vào queue
     }
+    
+    
+    public int addDebtRecord1(DebtRecords record) {
+        String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus,createBy, isDelete,status) "
+                + "VALUES (?, ?, ?, ?, ?, ?,0)";
 
+        int generatedDebtID = -1;
+
+        try (PreparedStatement ps = db.conn.prepareStatement(insertSQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, record.getCustomerID());
+            ps.setInt(2, record.getOrderID());
+            ps.setBigDecimal(3, record.getAmount());
+            ps.setInt(4, record.getPaymentStatus());
+           
+            ps.setInt(5, record.getCreateBy());
+            ps.setBoolean(6, record.isIsDelete());
+            
+
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedDebtID = rs.getInt(1); // Lấy debtID vừa được tạo
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi thêm bản ghi nợ: " + e.getMessage());
+        }
+
+        return generatedDebtID; // Trả về debtID để thêm vào queue
+    }
+    
+
+
+
+    
     public void updateCustomerDebt(int customerId, int paymentStatus, BigDecimal amount) throws SQLException {
         String operation = switch (paymentStatus) {
             case 1, 2 ->

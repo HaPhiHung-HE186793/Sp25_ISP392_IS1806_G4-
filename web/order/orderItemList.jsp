@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.OrderItems, java.util.List, model.CustomerOrder, java.util.Vector, java.text.DecimalFormat"%>
+<%@page import="model.OrderItems, java.util.List, model.CustomerOrder, java.util.Vector, java.text.DecimalFormat, model.OrderPaper"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,25 +41,80 @@
         .page-link {
             padding: 5px 10px;
             text-decoration: none;
-            color: #000; /* Màu chữ mặc định */
-            transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
-            border: 1px solid #ccc; /* Viền mặc định */
-            border-radius: 4px; /* Bo góc */
-            margin: 0 2px; /* Khoảng cách giữa các nút */
+            color: #000;
+            transition: background-color 0.3s;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 2px;
         }
         .page-link:hover,
         .page-link:focus {
-            background-color: #1E90FF; /* Màu xanh nước biển khi hover hoặc focus */
-            color: white; /* Màu chữ khi hover hoặc focus */
-            outline: none; /* Bỏ viền mặc định */
+            background-color: #1E90FF;
+            color: white;
+            outline: none;
         }
         .page-link.active {
-            background-color: #1E90FF; /* Màu xanh nước biển cho nút đang hoạt động */
-            color: white; /* Màu chữ cho nút đang hoạt động */
+            background-color: #1E90FF;
+            color: white;
         }
         .refresh-container {
-            margin-top: 20px; /* Khoảng cách từ bảng */
-            text-align: left; /* Đặt nút ở bên trái */
+            margin-top: 20px;
+            text-align: left;
+        }
+        #orderPaperTable {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%; /* Giảm chiều ngang xuống 60% */
+            color: black; /* Đổi màu chữ thành đen */
+        }
+
+        .modal-table {
+            width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+            border-collapse: collapse; /* Gộp các đường viền của các ô lại với nhau */
+        }
+
+        .modal-table th, .modal-table td {
+            border: 1px solid #ccc; /* Thêm đường viền cho các ô */
+            padding: 8px; /* Thêm khoảng cách bên trong các ô */
+            text-align: left; /* Căn lề trái cho văn bản */
+        }
+
+        .modal-table th {
+            background-color: #f2f2f2; /* Màu nền cho hàng tiêu đề */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -75,26 +130,37 @@
             </div>
 
             <div class="customer-info">
-                <h3>Thông tin Khách Hàng</h3>
-                <%
-                List<CustomerOrder> list2 = (List<CustomerOrder>) request.getAttribute("data2");
-                if (list2 != null && !list2.isEmpty()) {
-                    for (CustomerOrder customerOrder : list2) {
-                %>
-                <p>
-                    Tên: <%= customerOrder.getName() %><br>
-                    Email: <%= customerOrder.getEmail() %><br>
-                    Điện thoại: <%= customerOrder.getPhone() %>
-                </p>
-                <%
+            <h3>Thông tin Khách Hàng</h3>
+            <%
+            List<CustomerOrder> list2 = (List<CustomerOrder>) request.getAttribute("data2");
+            if (list2 != null && !list2.isEmpty()) {
+                for (CustomerOrder customerOrder : list2) {
+                    String phone = customerOrder.getPhone();
+                    String maskedPhone;
+
+                    // Kiểm tra độ dài số điện thoại
+                    if (phone.length() > 5) {
+                        // Giữ 2 số đầu và 3 số cuối, thay thế phần giữa bằng dấu '*'
+                        maskedPhone = phone.substring(0, 2) + "****" + phone.substring(phone.length() - 3);
+                    } else {
+                        // Nếu số điện thoại quá ngắn, không thay đổi
+                        maskedPhone = phone;
                     }
-                } else {
-                %>
-                <p style="text-align: center;">Không có thông tin khách hàng</p>
-                <%
+            %>
+            <p>
+                Tên: <%= customerOrder.getName() %><br>
+                Email: <%= customerOrder.getEmail() %><br>
+                Điện thoại: <%= maskedPhone %>
+            </p>
+            <%
                 }
-                %>
-            </div>
+            } else {
+            %>
+            <p style="text-align: center;">Không có thông tin khách hàng</p>
+            <%
+            }
+            %>
+        </div>
 
             <div class="search-container">
                 <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get">
@@ -151,7 +217,83 @@
             </div>
             <div class="refresh-container">
                 <a href="<%=request.getContextPath()%>/URLOrderDetail?service=listOrderItem&orderId=<%= request.getParameter("orderId") %>" class="btn">Hiển thị lại</a>
+                <button id="toggleOrderPaper" class="btn">Phiếu Hóa Đơn</button>
             </div>
+
+            <!-- Modal for Order Paper -->
+            <div id="orderPaperModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Đơn Hàng</h3>
+                    
+                    <%
+                    Vector<OrderPaper> list3 = (Vector<OrderPaper>) request.getAttribute("data3");
+                    if (list3 != null && !list3.isEmpty()) {
+                        OrderPaper orderPaper = list3.get(0); // Lấy thông tin đơn hàng từ phần tử đầu tiên
+                    %>
+                    <p>Mã hóa đơn: <%= orderPaper.getOrderID() %></p>
+                    <p>Ngày tạo: <%= orderPaper.getCreateAt() %></p>
+                    <p>Tên khách hàng: <%= orderPaper.getName() %></p>
+                    <p>Người tạo: <%= orderPaper.getUserName() %></p>
+
+                    <h4>Chi tiết sản phẩm:</h4>
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>Mã sản phẩm</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số Lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                            for (OrderPaper order : list3) {
+                            %>
+                            <tr>
+                                <td><%= order.getOrderitemID() %></td>
+                                <td><%= order.getProductName() %></td>
+                                <td><%= decimalFormat.format(order.getPrice()) %></td>
+                                <td><%= order.getQuantity() %></td>
+                            </tr>
+                            <%
+                            }
+                            %>
+                        </tbody>
+                    </table>
+
+                    <p>Thành tiền: <%= decimalFormat.format(orderPaper.getTotalAmount()) %></p>
+                    <p>Đã trả: <%= decimalFormat.format(orderPaper.getPaidAmount()) %></p>
+
+                    <%
+                    } else {
+                    %>
+                    <p>Không có thông tin đơn hàng</p>
+                    <%
+                    }
+                    %>
+                </div>
+            </div>
+
+            <script>
+                document.getElementById("toggleOrderPaper").onclick = function() {
+                    var modal = document.getElementById("orderPaperModal");
+                    modal.style.display = "block";
+                };
+
+                document.querySelector(".close").onclick = function() {
+                    var modal = document.getElementById("orderPaperModal");
+                    modal.style.display = "none";
+                };
+
+                window.onclick = function(event) {
+                    var modal = document.getElementById("orderPaperModal");
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                };
+            </script>
+
             <div class="pagination" aria-label="Order Pagination">
                 <% 
                 int currentPage = (Integer) request.getAttribute("currentPage");
@@ -177,6 +319,7 @@
     </div>
 
 </body>
+<<<<<<< HEAD
             <script>
                 
                       // Lấy các phần tử cần ẩn/hiện
@@ -210,4 +353,6 @@
 
             </script>
 
+=======
+>>>>>>> origin/main
 </html>

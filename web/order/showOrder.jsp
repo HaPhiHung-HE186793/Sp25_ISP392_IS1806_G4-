@@ -92,7 +92,6 @@
         }
         th, td {
             padding: 10px;
-/*            border: 1px solid #ddd;*/
             text-align: left;
             border: none;
         }
@@ -118,6 +117,20 @@
             padding: 10px;
             border-top: 2px solid #ddd;
             text-align: right;
+        }
+        .reminder-button {
+            background-color: #00aaff; /* Màu xanh nước biển */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+            margin-top: 15px; /* Khoảng cách với các phần trên */
+        }
+        .reminder-button:hover {
+            background-color: #0088cc; /* Màu tối hơn khi hover */
         }
     </style>
 </head>
@@ -222,9 +235,13 @@
             <div class="back-button">
                 <a href="<%=request.getContextPath()%>/URLChart?service=listChart" class="action-button">Thống kê</a>
             </div>
+            <div class="back-button">
+                <a href="<%=request.getContextPath()%>/URLRemindOrder?service=listChart" class="reminder-button">Nhắc nhở thanh toán</a> <!-- Chỉnh sửa màu và khoảng cách -->
+            </div>
         </div>
     </div>
 </body>
+<<<<<<< HEAD
 
 
             <script>
@@ -259,4 +276,6 @@
                         openAddNewDebt.addEventListener('click', toggleAddNewDebt);
 
             </script>
+=======
+>>>>>>> origin/main
 </html>

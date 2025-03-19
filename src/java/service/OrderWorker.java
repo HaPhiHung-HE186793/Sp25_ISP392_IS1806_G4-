@@ -125,12 +125,12 @@ public class OrderWorker extends Thread {
             if (debtAmount.compareTo(BigDecimal.ZERO) != 0) {
                 System.out.println("📄 Đang tạo bản ghi nợ...");
 
-                DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, debtAmount.doubleValue(), paymentStatus, orderTask.getUserId(), false);
+                DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, debtAmount, paymentStatus, orderTask.getUserId(), false,0);
 
                 DAODebtRecords dao = new DAODebtRecords();
                 // cần xử lí thêm việc tạo nợ có cần thành công không
-                Boolean success = dao.addDebtRecordFromOrder(debtRecord);
-                if (success == false) {
+                int success = dao.addDebtRecord1(debtRecord);
+                if (success <0) {
                     conn.rollback(); // 🔥 Nếu tạo đơn hàng thất bại, rollback toàn bộ
                     processedOrders.put(orderTask.getUserId(), -1);
 
