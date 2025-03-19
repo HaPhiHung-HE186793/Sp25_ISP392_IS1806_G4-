@@ -454,7 +454,7 @@
 
                     <script>
                         function openNewTab() {
-                            window.open('CreateOrderServlet', '_blank');
+                            window.open('CreateImportOrderServlet', '_blank');
                         }
                     </script>
 
@@ -1075,27 +1075,9 @@
                                     },
                                 });
                             });
-                            var retryCount = 0;
+                           
                             function checkOrderStatus() {
-                                if (retryCount >= 5) {
-                                    $("#orderStatus").html("<span style='color: red;'>❌ Quá thời gian xử lý, vui lòng thử lại!</span>");
-                                    // Gọi AJAX để xóa trạng thái đơn hàng khi bị timeout
-
-                                    $.ajax({
-                                        url: "CheckOrderStatusServlet",
-                                        type: "GET",
-                                        data: {userId: userId, clear: "true"},
-                                        dataType: "json",
-                                        success: function (response) {
-                                            console.log("✅ Đã xóa trạng thái đơn hàng sau timeout: " + response.status);
-                                        },
-                                        error: function () {
-                                            console.log("Lỗi khi xóa trạng thái đơn hàng.");
-                                        }
-                                    });
-                                    retryCount = 0;
-                                    return;
-                                }
+                                
 
                                 var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
 
@@ -1110,8 +1092,8 @@
                                         } else if (response.status === "error") {
                                             $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
                                         } else {
-                                            retryCount++;
-                                            setTimeout(checkOrderStatus, 2000); // Tiếp tục kiểm tra sau 2 giây
+                                            
+                                            setTimeout(checkOrderStatus, 1000); // Tiếp tục kiểm tra sau 2 giây
                                         }
                                     },
                                 });

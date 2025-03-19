@@ -504,6 +504,7 @@
                                     console.log("Clear timeout");
                                     clearTimeout(currentLoad);
                                 }
+                                
                                 let that = this;
                                 currentLoad = setTimeout(function () {
                                     console.log("fetch customer");
@@ -589,7 +590,10 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="text-align: right;"><strong>Tổng tiền đã giảm:</strong></td>
-                                                <td colspan="4"><input type="text" id="totalDiscount" name="totalDiscount" readonly></td>
+                                                <td colspan="4">
+                                                    <input type="hidden" id="totalDiscount" name="totalDiscount">
+                                                    <input type="text" id="totalDiscountHidden" name="totalDiscountHidden"readonly >
+                                                </td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -699,13 +703,6 @@
 
                                 </script>
 
-
-
-                                <!-- Thêm khách hàng mới -->
-
-
-
-                                <!-- JavaScript -->
 
 
 
@@ -984,7 +981,8 @@
                                 });
                                 document.getElementById("totalOrderPriceHidden").value = total; // Lưu giá trị số thực
                                 document.getElementById("totalOrderPrice").value = formatNumberVND(total);
-                                document.getElementById("totalDiscount").value = formatNumberVND(totalDiscount);
+                                document.getElementById("totalDiscount").value = totalDiscount;
+                                document.getElementById("totalDiscountHidden").value = formatNumberVND(totalDiscount);
                             }
 
 
@@ -1018,7 +1016,7 @@
                             <input type="text" id="newCustomerName" name="name" placeholder="Nhập tên khách hàng" required>
 
                             <label for="newCustomerPhone">Số điện thoại:</label>
-                            <input type="text" id="newCustomerPhone" name="phone" placeholder="Nhập số điện thoại" required>
+                            <input type="number" id="newCustomerPhone" name="phone" placeholder="Nhập số điện thoại" required>
 
                             <!-- Các input ẩn để Servlet nhận đủ dữ liệu -->
                             <input type="hidden" name="address" value="">
@@ -1116,31 +1114,9 @@
 
                                 });
                             });
-                            var retryCount = 0;
+                           
                             function checkOrderStatus() {
                                 var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
-
-                                if (retryCount >= 5) {
-
-                                    $("#orderStatus").html("<span style='color: red;'>❌ Quá thời gian xử lý, vui lòng thử lại!</span>");
-                                    // Gọi AJAX để xóa trạng thái đơn hàng khi bị timeout
-
-                                    $.ajax({
-                                        url: "CheckOrderStatusServlet",
-                                        type: "GET",
-                                        data: {userId: userId, clear: "true"},
-                                        dataType: "json",
-                                        success: function (response) {
-                                            console.log("✅ Đã xóa trạng thái đơn hàng sau timeout: " + response.status);
-                                        },
-                                        error: function () {
-                                            console.log("Lỗi khi xóa trạng thái đơn hàng.");
-                                        }
-                                    });
-                                    retryCount = 0;
-                                    return;
-                                }
-
 
                                 $.ajax({
                                     url: "CheckOrderStatusServlet",
@@ -1153,8 +1129,8 @@
                                         } else if (response.status === "error") {
                                             $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
                                         } else {
-                                            retryCount++;
-                                            setTimeout(checkOrderStatus, 2000); // Tiếp tục kiểm tra sau 2 giây
+                                            
+                                            setTimeout(checkOrderStatus, 1000); // Tiếp tục kiểm tra sau 1 giây
                                         }
                                     }
 

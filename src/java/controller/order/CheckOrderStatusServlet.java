@@ -56,6 +56,8 @@ public class CheckOrderStatusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         int userId = Integer.parseInt(request.getParameter("userId"));
         boolean clearStatus = request.getParameter("clear") != null;
         if (clearStatus) {
@@ -69,8 +71,7 @@ public class CheckOrderStatusServlet extends HttpServlet {
         Integer orderId = OrderWorker.getProcessedOrder(userId);
         
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+       
 
         if (orderId == null) {
             response.getWriter().write("{\"status\": \"pending\"}");
