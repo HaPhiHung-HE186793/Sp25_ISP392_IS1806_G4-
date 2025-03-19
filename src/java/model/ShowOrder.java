@@ -21,6 +21,22 @@ public class ShowOrder {
     private String status;
     private int storeID;
     private double paidAmount;
+    private String email;
+
+    public ShowOrder(int orderID, String name, String userName, double totalAmount, String createAt, String updateAt, int porter, String status, int storeID, double paidAmount, String email) {
+        this.orderID = orderID;
+        this.name = name;
+        this.userName = userName;
+        this.totalAmount = totalAmount;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.porter = porter;
+        this.status = status;
+        this.storeID = storeID;
+        this.paidAmount = paidAmount;
+        this.email = email;
+    }
+    
 
     public ShowOrder(int orderID, String name, String userName, double totalAmount, String createAt, String updateAt, int porter, String status, int storeID, double paidAmount) {
         this.orderID = orderID;
@@ -132,6 +148,14 @@ public class ShowOrder {
 
     public void setPaidAmount(double paidAmount) {
         this.paidAmount = paidAmount;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
     
     

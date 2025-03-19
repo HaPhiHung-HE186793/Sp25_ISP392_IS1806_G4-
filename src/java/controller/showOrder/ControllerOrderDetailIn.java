@@ -19,6 +19,8 @@ import DAO.DAOCustomerOrder;
 import jakarta.servlet.RequestDispatcher;
 import java.util.List;
 import java.util.Vector;
+import DAO.DAOOrderPaper;
+import model.OrderPaper;
 /**
  *
  * @author ADMIN
@@ -63,6 +65,7 @@ public class ControllerOrderDetailIn extends HttpServlet {
             throws ServletException, IOException {
         DAOOrderItems dao = DAOOrderItems.INSTANCE;
         DAOCustomerOrder dao2 = new DAOCustomerOrder();
+        DAOOrderPaper dao3 = new DAOOrderPaper();
 
         String service = request.getParameter("service");
         if (service == null) {
@@ -85,10 +88,17 @@ public class ControllerOrderDetailIn extends HttpServlet {
                      "JOIN orders od ON o.orderID = od.orderID " +
                      "JOIN users u ON od.userID = u.ID " +
                      "WHERE od.orderID = " +orderId;
+        String sql2 = "select o.orderID , t.orderitemID , t.productName, t.price, t.quantity, o.createAt, c.name, i.userName, o.orderType, i.storeID, t.unitPrice, o.paidAmount, o.totalAmount " +
+                     "from orders o " +
+                     "join users i on i.ID = o.userID " +
+                     "join OrderItems t on o.orderID = t.orderID " +
+                     "join customers c on o.customerID = c.customerID " +
+                     "WHERE t.orderID = " +orderId;
 
         Integer storeID = (Integer) request.getSession().getAttribute("storeID");
         if (storeID != null) {
             sql += " AND u.storeID = "+storeID ;
+            sql2 += " AND i.storeID = "+storeID ;
         }
         if (productName != null && !productName.isEmpty()) {
             sql += (storeID != null ? " AND " : " WHERE ") + "o.productName LIKE '%" + productName + "%' ";
@@ -101,6 +111,7 @@ public class ControllerOrderDetailIn extends HttpServlet {
                 "SELECT o.orderID, c.name, c.email, c.phone FROM orders o JOIN customers c ON o.customerID = c.customerID WHERE o.orderID = " +
                 orderId
             );
+            Vector<OrderPaper> list3 = dao3.getOrderPaper(sql2);
 
             // Tính tổng số bản ghi để tính tổng số trang
             int totalPages = getTotalPages(dao, pageSize, orderId, storeID);
@@ -108,6 +119,7 @@ public class ControllerOrderDetailIn extends HttpServlet {
             // Cài đặt các thuộc tính cho JSP
             request.setAttribute("data", list);
             request.setAttribute("data2", list2);
+            request.setAttribute("data3", list3);
             request.setAttribute("tableTitle", "Danh sách sản phẩm trong hóa đơn nhập");
             request.setAttribute("papeTitle", "Orders manage");
             request.setAttribute("currentPage", pageNumber);

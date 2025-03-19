@@ -72,7 +72,7 @@
         }
 
         .left-buttons .btn {
-            background-color: #66bb6a; /* Màu xanh lá cây nhạt */
+            background-color: #66bb6a; /* Màu xanh lá cây nhạt cho 2 nút */
             margin-right: 10px; /* Khoảng cách giữa các nút bên trái */
         }
 
@@ -81,11 +81,26 @@
         }
 
         .back-button {
-            background-color: #d9534f; /* Màu nút quay lại */
+            background-color: #d9534f; /* Màu nút "Quay lại" */
+            padding: 5px 20px; /* Tăng kích thước để chữ ở giữa */
+            display: flex; /* Sử dụng Flexbox để căn giữa chữ */
+            justify-content: center; /* Căn giữa chữ */
+            align-items: center; /* Căn giữa theo chiều dọc */
         }
 
         .back-button:hover {
             background-color: #c9302c; /* Màu tối hơn khi hover */
+        }
+
+        /* Cố định vị trí cho các nút */
+        .fixed-buttons {
+            position: fixed;
+            bottom: 20px; /* Cách đáy 20px */
+            left: 20px; /* Cách bên trái 20px */
+            z-index: 1000; /* Đảm bảo nút nằm trên các phần tử khác */
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Khoảng cách giữa các nút */
         }
     </style>
 </head>
@@ -142,7 +157,6 @@
                     <label for="year">Chọn năm:</label>
                     <select name="year" id="year">
                         <% 
-                            // Sử dụng lại selectedYear đã khai báo
                             if (yearsArray != null && yearsArray.length > 0) {
                                 for (Integer year : yearsArray) { 
                         %>
@@ -223,11 +237,9 @@
             </script>
 
             <!-- Nút hiển thị sản phẩm bán chạy nhất và khách hàng mua nhiều nhất -->
-            <div class="button-container">
-                <div class="left-buttons">
-                    <button id="bestSellingButton" onclick="toggleBestSellingModal()" class="btn">Sản phẩm bán chạy nhất</button>
-                    <button id="bestCustomerButton" onclick="toggleBestCustomerModal()" class="btn">Khách hàng mua nhiều nhất</button>
-                </div>
+            <div class="fixed-buttons">
+                <button id="bestSellingButton" onclick="toggleBestSellingModal()" class="btn">Sản phẩm bán chạy nhất</button>
+                <button id="bestCustomerButton" onclick="toggleBestCustomerModal()" class="btn">Khách hàng mua nhiều nhất</button>
                 <a href="<%=request.getContextPath()%>/URLOrder?service=listshow" class="btn back-button">Quay lại</a>
             </div>
 
@@ -262,7 +274,6 @@
                     <h2>Khách hàng mua nhiều nhất</h2>
                     <div id="bestCustomerContent">
                         <%
-                            
                             Vector<BestSeller> bestCustomer = (Vector<BestSeller>) request.getAttribute("bestCustomer");
                             if (bestCustomer != null && !bestCustomer.isEmpty()) {
                                 for (BestSeller customer : bestCustomer) {
