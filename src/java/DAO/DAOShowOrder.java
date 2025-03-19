@@ -44,6 +44,34 @@ public class DAOShowOrder extends DBContext {
 //    }
 //    return vector;
 //}
+    public Vector<ShowOrder> getRemindOrder(String sql) {
+    Vector<ShowOrder> vector = new Vector<ShowOrder>();
+    try {
+        System.out.println("Executing SQL: " + sql); // Ghi lại câu lệnh SQL
+        Statement state = conn.createStatement();
+        ResultSet rs = state.executeQuery(sql);
+        while (rs.next()) {
+            int orderID = rs.getInt("orderID");
+            String name = rs.getString("name");
+            String userName = rs.getString("userName");
+            double totalAmount = rs.getDouble("totalAmount");
+            String createAt = rs.getString("createAt");
+            String updateAt = rs.getString("updateAt");
+            int porter = rs.getInt("porter");
+            String status = rs.getString("status");
+            int storeID = rs.getInt("storeID");
+            double paidAmount = rs.getDouble("paidAmount");
+            String email = rs.getString("email");
+
+            ShowOrder showOrder = new ShowOrder(orderID, name, userName, totalAmount, createAt, updateAt, porter, status, storeID, paidAmount,email);
+            vector.add(showOrder);
+        }
+    } catch (SQLException ex) {
+        System.err.println("SQL Error in getShowOrder: " + ex.getMessage());
+        ex.printStackTrace(); // Ghi lại lỗi SQL
+    }
+    return vector;
+}
     public Vector<ShowOrder> getShowOrder(String sql) {
     Vector<ShowOrder> vector = new Vector<ShowOrder>();
     try {
