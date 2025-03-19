@@ -49,6 +49,15 @@ public class DebtRecords {
         this.status = status;
     }
 
+     public DebtRecords(int customerID, int orderID, BigDecimal amount, int paymentStatus, int createBy, boolean isDelete) {
+        this.customerID = customerID;
+        this.orderID = orderID;
+        this.amount = amount;
+        this.paymentStatus = paymentStatus;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+    }
+
  
     
     
