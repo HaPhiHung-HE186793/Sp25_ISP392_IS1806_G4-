@@ -1,6 +1,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+
+<div class="header">
+    <div class="name-project">
+        <h2>Rice storage </h2>
+
+
+    </div>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -93,9 +101,15 @@
             <a href="<%=request.getContextPath()%>/CreateImportOrderServlet">Hóa đơn nhập</a>
             <a href="<%=request.getContextPath()%>/URLOrder?service=listshow">Quản lý thanh toán</a>
             <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý khách hàng</a>
+                   <a href="<%=request.getContextPath()%>/ListZone">Quản lý kho</a>
+
         </c:if>
         <a href="<%=request.getContextPath()%>/updateprofile">Hồ sơ người dùng</a>
     </div>
 </body>
 </html>
+
+
+</div>
+    
 

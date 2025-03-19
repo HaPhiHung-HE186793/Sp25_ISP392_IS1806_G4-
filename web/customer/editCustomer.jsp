@@ -9,7 +9,14 @@
         <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <title>Bảng Điều Khiển</title>
-
+        <style>
+.newDebt-input {
+    border-radius: 5px;
+    padding: 10px;
+    width: 200%;
+    margin: 15px;
+}
+        </style>
 
     </head>
 
@@ -36,7 +43,7 @@
                         </c:if>
                     </div>
 
-                    <form action="UpdateCustomer" method="post"  >
+                    <form action="UpdateCustomer" method="post"  style="margin-left: 100px;">
                         <table>                      
 
                             <tbody class="newDebt-tableTbody">
@@ -85,56 +92,7 @@
 
     </body>
 
-    <div class="newDebt">
-        <form action="AddCustomer" method="post" >
-            <div class="newDebt-container">
-                <button class="newDebt-add">
-                    Thêm mới 
-                </button>
-                <button class="newDebt-close js-close-newDebt">
-                    close
-                </button>
-
-                <div class="newDebt-header">Thông tin người nợ
-                </div>
-
-                <div class="newDebt-body"> 
-                    <table>
-                        <thead id="newDebt-tableHeader">
-                        </thead>
-                        <tbody class="newDebt-tableTbody">
-
-                            <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
-                                <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A" required> </td>                                    
-                            </tr>                            
-                            <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Địa chỉ:</div></td>
-                                <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
-                            </tr>                                   
-                            <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> SĐT (*):</div></td>
-                                <td ><input class="newDebt-input" name="phone" type="number" required> </td>                                    
-                            </tr>                                   
-                            <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Email:</div></td>
-                                <td ><input class="newDebt-input" name="email" type="text" > </td>                                    
-                            </tr>                                   
-                            <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Tổng nợ:</div></td>
-                                <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" readonly> </td>                                    
-                            </tr>  
-                            <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Người tạo:</div></td>
-                                <td ><input class="newDebt-input newDebt-total"  type="text" placeholder="${sessionScope.username}" readonly> </td>                                    
-                            </tr>  
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </form>
-    </div>
+   
 
     <script>
         // Lấy tbody

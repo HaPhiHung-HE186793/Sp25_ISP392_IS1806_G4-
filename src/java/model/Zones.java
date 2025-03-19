@@ -9,6 +9,7 @@ package model;
  * @author ADMIN
  */
 public class Zones {
+
     private int zoneID;
     private String zoneName;
     private String createAt; // Có thể sử dụng LocalDateTime nếu cần
@@ -17,11 +18,12 @@ public class Zones {
     private boolean isDelete; // Giả sử isDelete là kiểu int
     private String deleteAt; // Có thể sử dụng LocalDateTime nếu cần
     private int deleteBy;
+    private int storeID;
 
     public Zones() {
     }
 
-    public Zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID) {
         this.zoneID = zoneID;
         this.zoneName = zoneName;
         this.createAt = createAt;
@@ -30,16 +32,7 @@ public class Zones {
         this.isDelete = isDelete;
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
-    }
-
-    public Zones(String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
-        this.zoneName = zoneName;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.createBy = createBy;
-        this.isDelete = isDelete;
-        this.deleteAt = deleteAt;
-        this.deleteBy = deleteBy;
+        this.storeID = storeID;
     }
 
     public int getZoneID() {
@@ -106,6 +99,18 @@ public class Zones {
         this.deleteBy = deleteBy;
     }
 
-    
+    public int getStoreID() {
+        return storeID;
+    }
+
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
+    }
+
+    @Override
+    public String toString() {
+        return "Zones{" + "zoneID=" + zoneID + ", zoneName=" + zoneName + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", storeID=" + storeID + '}';
+    }
+
     
 }

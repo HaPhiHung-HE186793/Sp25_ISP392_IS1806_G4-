@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +84,8 @@
                                     <td >${o.getEmail()}</td>
                                     <td >${o.getPhone()}</td>
                                     <td style="max-width: 150px;">${o.getAddress()}</td>
-                                    <td >${o.getTotalDebt()}</td>
+                                     <td><fmt:setLocale value="de_DE" />
+                                        <fmt:formatNumber value="${o.getTotalDebt()}" type="number" minFractionDigits="0" /> VND</td>
                                     <td ">${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
 

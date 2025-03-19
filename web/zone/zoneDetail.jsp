@@ -45,8 +45,8 @@
                                                 </select>-->
                         <form action="ListCustomer" method="post" >
 
-                            <input name="name" type="text" placeholder="Tìm kiếm" value="${searchName}">
-                            <button style="background-color: #5bc0de;" >Lọc</button>
+                        <input name="name" type="text" placeholder="Tìm kiếm" value="${searchName}">
+                        <button style="background-color: #5bc0de;" >Lọc</button>
                         </form>
                         <button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</button> 
 
@@ -69,7 +69,7 @@
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
-                            <c:forEach items="${listZone}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" >
+                             <c:forEach items="${listZone}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" >
 
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
@@ -111,7 +111,7 @@
                     close
                 </button>
 
-                <div class="newDebt-header">Thông tin kho
+                <div class="newDebt-header">Thông tin người nợ
                 </div>
 
                 <div class="newDebt-body"> 
@@ -121,10 +121,25 @@
                         <tbody class="newDebt-tableTbody">
 
                             <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Tên kho:</div></td>
-                                <td ><input class="newDebt-input" name="name" type="text"  required> </td>                                    
-                            </tr>                                                              
-             
+                                <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
+                                <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A" required> </td>                                    
+                            </tr>                            
+                            <tr class="newDebt-tableTbody-tr">
+                                <td ><div class="newDebt-text"> Địa chỉ:</div></td>
+                                <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
+                            </tr>                                   
+                            <tr class="newDebt-tableTbody-tr">
+                                <td ><div class="newDebt-text"> SĐT (*):</div></td>
+                                <td ><input class="newDebt-input" name="phone" type="number" required> </td>                                    
+                            </tr>                                   
+                            <tr class="newDebt-tableTbody-tr">
+                                <td ><div class="newDebt-text"> Email:</div></td>
+                                <td ><input class="newDebt-input" name="email" type="text" > </td>                                    
+                            </tr>                                   
+                            <tr class="newDebt-tableTbody-tr">
+                                <td ><div class="newDebt-text"> Tổng nợ:</div></td>
+                                <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" value="0" readonly> </td>                                    
+                            </tr>  
                             <tr class="newDebt-tableTbody-tr">
                                 <td ><div class="newDebt-text"> Người tạo:</div></td>
                                 <td ><input class="newDebt-input newDebt-total"  type="text" placeholder="${sessionScope.username}" readonly> </td>                                    
@@ -173,11 +188,4 @@
 
 
 
-
-
-    </script>
-
-
-
-</html>
 

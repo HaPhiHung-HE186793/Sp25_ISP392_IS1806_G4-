@@ -33,7 +33,10 @@
                             </tr>
                             <tr>
                                 <td>Giá:</td>
-                                <td><input type="number" name="price" min="0" required></td>
+                                <td>
+                                    <input type="text" id="price" name="price" value="${param.price != null ? param.price : product.price}" required oninput="formatPrice(this)">
+                                    <span id="error-message" style="color: red;"></span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Ảnh:</td>
@@ -47,7 +50,7 @@
                                 <td>Tạo bởi (User ID):</td>
                                 <td>
                                     <input type="hidden" name="createBy" value="${sessionScope.userID}" required>
-                                    <span id="createByDisplay">${sessionScope.userID}</span>
+                                    <span id="createByDisplay">${sessionScope.username}</span>
                                 </td>
                             </tr>
                             <tr>
@@ -70,6 +73,37 @@
                     reader.readAsDataURL(file);
                 }
             });
+            function formatPrice(input) {
+                input.value = input.value.replace(/^0+(\d+)/, '$1'); // Xóa số 0 ở đầu
+                if (input.value < 0) {
+                    document.getElementById("error-message").textContent = "Giá không được âm!";
+                } else {
+                    document.getElementById("error-message").textContent = "";
+                }
+            }
+
+            function validateForm() {
+                let priceInput = document.getElementById("price");
+                let price = parseFloat(priceInput.value);
+
+                if (isNaN(price) || price < 0) {
+                    alert("Giá không thể âm hoặc không hợp lệ!");
+                    return false;
+                }
+
+                priceInput.value = price;
+                return true;
+            }
         </script>
     </body>
+<<<<<<< HEAD
+
+
+    <script>
+        // Your JavaScript code can go here if needed.
+    </script>
+
 </html>
+=======
+</html>
+>>>>>>> origin/main

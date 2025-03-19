@@ -4,24 +4,34 @@
  */
 package model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author ADMIN
  */
 public class DebtRecords {
+
     private int debtID;
     private int customerID;
     private int orderID;
-    private double amount; 
+    private BigDecimal amount;
     private int paymentStatus;
-    private String createAt; 
-    private String updateAt; 
+    private String createAt;
+    private String updateAt;
     private int createBy;
-    private boolean isDelete; 
-    private String deleteAt; 
+    private boolean isDelete;
+    private String deleteAt;
     private int deleteBy;
+    private int storeID;
+    private String description;
+    private String img;
+    private int status;
 
-    public DebtRecords(int debtID, int customerID, int orderID, double amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public DebtRecords() {
+    }
+
+    public DebtRecords(int debtID, int customerID, int orderID, BigDecimal amount, int paymentStatus, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID, String description, String img, int status) {
         this.debtID = debtID;
         this.customerID = customerID;
         this.orderID = orderID;
@@ -33,26 +43,18 @@ public class DebtRecords {
         this.isDelete = isDelete;
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
+        this.storeID = storeID;
+        this.description = description;
+        this.img = img;
+        this.status = status;
     }
 
-    public DebtRecords(int customerID, int orderID, double amount, int paymentStatus, int createBy, boolean isDelete) {
-        this.customerID = customerID;
-        this.orderID = orderID;
-        this.amount = amount;
-        this.paymentStatus = paymentStatus;
-        this.createAt = createAt;
-        
-        this.createBy = createBy;
-        this.isDelete = isDelete;
-        
-    }
+ 
     
     
     
     
 
-    public DebtRecords() {
-    }
 
     public int getDebtID() {
         return debtID;
@@ -78,11 +80,11 @@ public class DebtRecords {
         this.orderID = orderID;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -142,11 +144,42 @@ public class DebtRecords {
         this.deleteBy = deleteBy;
     }
 
+    public int getStoreID() {
+        return storeID;
+    }
+
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "DebtRecords{" + "debtID=" + debtID + ", customerID=" + customerID + ", orderID=" + orderID + ", amount=" + amount + ", paymentStatus=" + paymentStatus + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
+        return "DebtRecords{" + "debtID=" + debtID + ", customerID=" + customerID + ", orderID=" + orderID + ", amount=" + amount + ", paymentStatus=" + paymentStatus + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", storeID=" + storeID + ", description=" + description + ", img=" + img + ", status=" + status + '}';
     }
 
     
-    
-}
+   }

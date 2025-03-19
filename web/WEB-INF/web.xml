@@ -35,14 +35,11 @@
         <url-pattern>/createstore</url-pattern>
         <url-pattern>/storedetail</url-pattern>
         <url-pattern>/updatestore</url-pattern>
+        <url-pattern>/ListZones</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
         <servlet-class>controller.login.loginController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ListDebt</servlet-name>
-        <servlet-class>controller.debt.ListDebt</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>createUser</servlet-name>
@@ -128,11 +125,13 @@
         <servlet-name>verifyOTPServlet</servlet-name>
         <servlet-class>controller.user.verifyOTPServlet</servlet-class>
     </servlet>
+    
     <servlet>
+
         <servlet-name>CreateImportOrderServlet</servlet-name>
         <servlet-class>controller.order.CreateImportOrderServlet</servlet-class>
-</servlet>
-        <servlet>
+    </servlet>
+    <servlet>
         <servlet-name>ListStore</servlet-name>
         <servlet-class>controller.store.ListStore</servlet-class>
     </servlet>
@@ -148,6 +147,19 @@
         <servlet-name>StoreDetail</servlet-name>
         <servlet-class>controller.store.StoreDetail</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ListZones</servlet-name>
+        <servlet-class>controller.zone.ListZones</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ListZone</servlet-name>
+        <servlet-class>controller.zone.ListZone</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddZone</servlet-name>
+        <servlet-class>controller.zone.AddZone</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
         <url-pattern>/forgotpass</url-pattern>
@@ -159,10 +171,6 @@
     <servlet-mapping>
         <servlet-name>verifyOTPController</servlet-name>
         <url-pattern>/verifyOTP</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ListDebt</servlet-name>
-        <url-pattern>/ListDebt</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>createUser</servlet-name>
@@ -269,14 +277,22 @@
         <url-pattern>/verifyotp</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ListZone</servlet-name>
+        <url-pattern>/ListZone</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddZone</servlet-name>
+        <url-pattern>/AddZone</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
 
         <servlet-name>CreateImportOrderServlet</servlet-name>
         <url-pattern>/CreateImportOrderServlet</url-pattern>
-</servlet-mapping>
-        <servlet-mapping>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ListStore</servlet-name>
         <url-pattern>/liststore</url-pattern>
-
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CreateStore</servlet-name>
@@ -290,4 +306,13 @@
         <servlet-name>StoreDetail</servlet-name>
         <url-pattern>/storedetail</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListZones</servlet-name>
+        <url-pattern>/ListZones</url-pattern>
+    </servlet-mapping>
+    
+    <listener>
+        <listener-class>service.WebAppListener</listener-class>
+    </listener>
+
 </web-app>
