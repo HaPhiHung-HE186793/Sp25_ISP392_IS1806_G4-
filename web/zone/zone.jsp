@@ -17,7 +17,8 @@
     <body>
         <div id="main">
 
-            <jsp:include page="/Component/menu.jsp"></jsp:include>
+             <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
 
                 <div class="main-content">
                     <div class="notification">
@@ -178,6 +179,24 @@
     </script>
 
 
+            <script>
+                
+                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Lấy phần tử có class này
+                        const newDebt = document.querySelector('.menu'); // Lấy phần tử cần ẩn/hiện
+                        const newDebt1 = document.querySelector('.main-content'); // Lấy phần tử cần ẩn/hiện
+                        const newDebt2 = document.querySelector('.sidebar'); // Lấy phần tử cần ẩn/hiện
 
+// Hàm toggle hiển thị
+                        function toggleAddNewDebt() {
+                            newDebt.classList.toggle('hiden'); // Nếu có class 'hiden' thì xóa, nếu chưa có thì thêm
+                            newDebt1.classList.toggle('hiden'); // Nếu có class 'hiden' thì xóa, nếu chưa có thì thêm
+                            newDebt2.classList.toggle('hiden'); // Nếu có class 'hiden' thì xóa, nếu chưa có thì thêm
+
+                        }
+
+// Gán sự kiện click
+                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+                
+            </script>
 </html>
 
