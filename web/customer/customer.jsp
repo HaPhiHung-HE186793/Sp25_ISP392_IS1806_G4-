@@ -18,7 +18,7 @@
     <body>
         <div id="main">
 
-                      <jsp:include page="/Component/header.jsp"></jsp:include>
+            <jsp:include page="/Component/header.jsp"></jsp:include>
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
 
                 <div class="main-content">
@@ -47,11 +47,11 @@
                                                 </select>-->
                         <form action="ListCustomer" method="post" >
 
-                        <input name="name" type="text" placeholder="Tìm kiếm" value="${searchName}">
-                        <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
-                        <input name="startDate" type="date" value="${searchStartDate}">
-                        <input name="endDate" type="date" value="${searchEndDate}">
-                        <button style="background-color: #5bc0de;" >Lọc</button>
+                            <input name="name" type="text" placeholder="Tìm kiếm" value="${searchName}">
+                            <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
+                            <input name="startDate" type="date" value="${searchStartDate}">
+                            <input name="endDate" type="date" value="${searchEndDate}">
+                            <button style="background-color: #5bc0de;" >Lọc</button>
                         </form>
                         <button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</button> 
 
@@ -76,7 +76,7 @@
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
-                             <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" >
+                            <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}" >
 
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
@@ -85,10 +85,10 @@
                                     <td >${o.getEmail()}</td>
                                     <td >${o.getPhone()}</td>
                                     <td style="max-width: 150px;">${o.getAddress()}</td>
-                                     <td><fmt:setLocale value="de_DE" />
+                                    <td><fmt:setLocale value="de_DE" />
                                         <fmt:formatNumber value="${o.getTotalDebt()}" type="number" minFractionDigits="0" /> VND</td>
-                                    <td ">${o.getCreateAt()}</td>
-                                    <td >${o.getUpdateAt()}</td>
+<td><fmt:formatDate value="${o.getCreateAt()}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+<td><fmt:formatDate value="${o.getUpdateAt()}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 
                                     <td> 
                                         <a href="UpdateCustomer?customerid=${o.getCustomerID()}">
@@ -111,55 +111,53 @@
     </body>
 
     <div class="newDebt">
-        <form action="AddCustomer" method="post" >
+        <form action="AddCustomer" method="post" onsubmit="return validatePhone()">
+
             <div class="newDebt-container">
                 <button class="newDebt-add">
                     Thêm mới 
                 </button>
                 <button class="newDebt-close js-close-newDebt">
-                    close
+                    Close
                 </button>
 
-                <div class="newDebt-header">Thông tin người nợ
-                </div>
+                <div class="newDebt-header">Thông tin người nợ</div>
 
                 <div class="newDebt-body"> 
                     <table>
-                        <thead id="newDebt-tableHeader">
-                        </thead>
+                        <thead id="newDebt-tableHeader"></thead>
                         <tbody class="newDebt-tableTbody">
-
                             <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
-                                <td ><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A" required> </td>                                    
+                                <td><div class="newDebt-text"> Họ và tên (*):</div></td>
+                                <td><input class="newDebt-input" name="name" type="text" placeholder="Nguyen Van A" required></td>                                    
                             </tr>                            
                             <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Địa chỉ:</div></td>
-                                <td ><textarea class="newDebt-input" name="address" rows="5" cols="10" name="feedback"></textarea><br></td>                                    
+                                <td><div class="newDebt-text"> Địa chỉ:</div></td>
+                                <td><textarea class="newDebt-input" name="address" rows="5" cols="10"></textarea></td>                                    
                             </tr>                                   
                             <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> SĐT (*):</div></td>
-                                <td ><input class="newDebt-input" name="phone" type="number" required> </td>                                    
+                                <td><div class="newDebt-text"> SĐT (*):</div></td>
+                                <td><input class="newDebt-input" name="phone" type="text" required></td>                                    
                             </tr>                                   
                             <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Email:</div></td>
-                                <td ><input class="newDebt-input" name="email" type="text" > </td>                                    
+                                <td><div class="newDebt-text"> Email:</div></td>
+                                <td><input class="newDebt-input" name="email" type="text"></td>                                    
                             </tr>                                   
                             <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Tổng nợ:</div></td>
-                                <td ><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" value="0" readonly> </td>                                    
+                                <td><div class="newDebt-text"> Tổng nợ:</div></td>
+                                <td><input class="newDebt-input newDebt-total" name="total" type="number" placeholder="0" value="0" readonly></td>                                    
                             </tr>  
                             <tr class="newDebt-tableTbody-tr">
-                                <td ><div class="newDebt-text"> Người tạo:</div></td>
-                                <td ><input class="newDebt-input newDebt-total"  type="text" placeholder="${sessionScope.username}" readonly> </td>                                    
+                                <td><div class="newDebt-text"> Người tạo:</div></td>
+                                <td><input class="newDebt-input newDebt-total" type="text" placeholder="${sessionScope.username}" readonly></td>                                    
                             </tr>  
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </form>
     </div>
+
 
     <script>
         // Lấy tbody
@@ -203,36 +201,67 @@
 
     <script>
 
- // Lấy các phần tử cần ẩn/hiện
-                        const openAddNew = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt0 = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+        // Lấy các phần tử cần ẩn/hiện
+        const openAddNew = document.querySelector('.js-hidden-menu'); // Nút toggle
+        const newDebt0 = document.querySelector('.menu'); // Menu
+        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
 // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt0.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("menuHidden") === "true") {
+                newDebt0.classList.add('hiden');
+                newDebt1.classList.add('hiden');
+                newDebt2.classList.add('hiden');
+            }
+        });
 
 // Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt0.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
+        function toggleAddNewDebt() {
+            newDebt0.classList.toggle('hiden');
+            newDebt1.classList.toggle('hiden');
+            newDebt2.classList.toggle('hiden');
 
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt0.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
+            // Lưu trạng thái vào localStorage
+            const isHidden = newDebt0.classList.contains('hiden');
+            localStorage.setItem("menuHidden", isHidden);
+        }
 
 // Gán sự kiện click
-                        openAddNew.addEventListener('click', toggleAddNewDebt);
+        openAddNew.addEventListener('click', toggleAddNewDebt);
+
+
+
 
 
     </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var phoneInput = document.querySelector("input[name='phone']");
+        
+        phoneInput.addEventListener("input", function() {
+            var phoneValue = phoneInput.value.replace(/\D/g, ""); // Chỉ giữ lại số
+            if (phoneValue.length > 10) {
+                phoneValue = phoneValue.slice(0, 10); // Giới hạn tối đa 10 số
+            }
+            phoneInput.value = phoneValue;
+        });
+    });
+
+    function validatePhone() {
+        var phone = document.querySelector("input[name='phone']").value;
+        var phoneRegex = /^[0-9]{10}$/; // Chỉ cho phép đúng 10 chữ số
+
+        if (!phoneRegex.test(phone)) {
+            alert("Số điện thoại phải có đúng 10 chữ số và không được âm!");
+            return false; // Ngăn form submit nếu nhập sai
+        }
+        return true;
+    }
+</script>
+
+
+
 </html>
 

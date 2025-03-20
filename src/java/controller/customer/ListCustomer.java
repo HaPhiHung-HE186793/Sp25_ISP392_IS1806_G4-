@@ -49,10 +49,10 @@ public class ListCustomer extends HttpServlet {
         HttpSession session = request.getSession();
         List<Customers> listCustomer = new ArrayList<>();
         Integer role = (Integer) session.getAttribute("roleID");
-        Integer createBy = (Integer) session.getAttribute("createBy");
+        Integer storeID = (Integer) session.getAttribute("storeID");
         
   
-        listCustomer = dao.listCustomersByRole(createBy);
+        listCustomer = dao.listCustomersByRole(storeID);
 
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = listCustomer.size();
@@ -121,10 +121,10 @@ public class ListCustomer extends HttpServlet {
         HttpSession session = request.getSession();
         List<Customers> listCustomer = new ArrayList<>();
         int role = (Integer) session.getAttribute("roleID");
-        int createBy = (Integer) session.getAttribute("createBy");
+        int storeID = (Integer) session.getAttribute("storeID");
 
 
-        listCustomer = dao.listCustomersByRoleSearchName(createBy, sql);
+        listCustomer = dao.listCustomersByRoleSearchName(storeID, sql);
         request.setAttribute("searchName", name);
         request.setAttribute("searchNumber", number);
         request.setAttribute("searchStartDate", startDate);

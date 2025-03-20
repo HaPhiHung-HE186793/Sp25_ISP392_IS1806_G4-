@@ -253,7 +253,7 @@ public class DAODebtRecords extends DBContext {
         String sql = " SELECT * FROM debtRecords d \n"
                 + " JOIN customers c ON d.customerID = c.customerID\n"
                 + " WHERE c.customerID = ? \n"
-                + name + " ORDER BY d.updateAt DESC";
+                + name + " ORDER BY d.debtID DESC";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, createBylis); // Truyền tham số vào dấu ?
