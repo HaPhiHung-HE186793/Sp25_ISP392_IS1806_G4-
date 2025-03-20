@@ -14,7 +14,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
-        <title>Bảng Điều Khiển</title>
+        <% 
+    String invoiceNumber = (String) request.getAttribute("invoiceNumber");
+        %>
+
+        <title>Hóa đơn <%= invoiceNumber %></title>
+
 
         <style>
             :root {
@@ -450,13 +455,26 @@
                 <div class="main-content">
 
 
+
+
                     <button onclick="openNewTab()">Thêm hóa đơn</button>
 
                     <script>
+                        // Kiểm tra số hóa đơn hiện tại trong localStorage
+                        let invoiceCount = localStorage.getItem("invoiceCount");
+
+                        if (!invoiceCount) {
+                            localStorage.setItem("invoiceCount", 1); // Nếu chưa có, đặt là 1
+                        }
+
                         function openNewTab() {
-                            window.open('CreateImportOrderServlet', '_blank');
+                            let invoiceNumber = parseInt(localStorage.getItem("invoiceCount")) + 1;
+                            localStorage.setItem("invoiceCount", invoiceNumber);
+
+                            window.open('CreateImportOrderServlet?invoice=' + invoiceNumber, '_blank');
                         }
                     </script>
+
 
                     <h1 style="text-align: center">
                         Hóa Đơn Nhập
@@ -674,7 +692,10 @@
                                     function selectCustomer(id, name, phone, debt) {
                                         $("#customerId").val(id);
                                         $("#customerName").text("Khách hàng: " + name);
-                                        $("#customerPhone").text("SĐT: " + phone);
+
+                                        // Ẩn 3 số cuối số điện thoại
+                                        let maskedPhone = phone.slice(0, -3) + "***";
+                                        $("#customerPhone").text("SĐT: " + maskedPhone);
 
                                         // Xác định cách hiển thị tổng nợ
                                         if (debt < 0) {
@@ -687,6 +708,7 @@
 
                                         $("#customerInfo").show(); // Hiển thị div chứa thông tin khách hàng
                                     }
+
 
                                 </script>
 
@@ -747,8 +769,8 @@
                                     }
 
                                 </script>
-                                
-                               
+
+
 
 
 
@@ -775,18 +797,18 @@
                                             $excessOption.show();
                                             $debtOption.show();
                                             $balanceOptions.show();
-                                             autoSelectOption("refund");
+                                            autoSelectOption("refund");
                                         } else if (balance < 0) {
                                             // Khách trả thiếu
                                             $excessOption.hide();
                                             $debtOption.show();
                                             $balanceOptions.show();
-                                             autoSelectOption("debt");
+                                            autoSelectOption("debt");
                                         } else {
                                             // Thanh toán đúng số tiền
                                             $balanceOptions.hide();
                                         }
-                                        
+
                                     }
                                     function autoSelectOption(value) {
                                         $("input[name='balanceAction'][value='" + value + "']").prop("checked", true);
@@ -1060,7 +1082,8 @@
                             $("#orderForm").submit(function (event) {
                                 event.preventDefault(); // Ngăn chặn việc tải lại trang
                                 $("#orderStatus").text("⏳ Đơn hàng đang xử lý..."); // Hiển thị trạng thái ngay lập tức
-
+                                // Disable nút submit để tránh spam
+                                $("#submitOrder").prop("disabled", true);
                                 $.ajax({
                                     url: "CreateOrderServlet",
                                     type: "POST",
@@ -1075,9 +1098,9 @@
                                     },
                                 });
                             });
-                           
+
                             function checkOrderStatus() {
-                                
+
 
                                 var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
 
@@ -1089,17 +1112,18 @@
                                     success: function (response) {
                                         if (response.status === "done") {
                                             $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
+
                                         } else if (response.status === "error") {
                                             $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
                                         } else {
-                                            
+
                                             setTimeout(checkOrderStatus, 1000); // Tiếp tục kiểm tra sau 2 giây
                                         }
                                     },
                                 });
                             }
-                        })
-                                ;
+
+                        });
 
                 </script>
 

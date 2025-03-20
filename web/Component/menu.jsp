@@ -87,6 +87,8 @@
         </c:if>
         <c:if test="${sessionScope.roleID==2}">
             <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
+            <a href="<%=request.getContextPath()%>/HistoryImportPriceServlet">Lịch sử giá</a>
+            
         </c:if>
         <c:if test="${sessionScope.roleID == 2 or sessionScope.roleID == 3}">
             <a href="<%=request.getContextPath()%>/CreateOrderServlet">Hóa đơn xuất</a>

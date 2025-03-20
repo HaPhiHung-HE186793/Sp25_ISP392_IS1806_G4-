@@ -2,20 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.order;
+package controller.products;
 
+import DAO.DAOProduct;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
+import model.ProductPriceHistory;
 
 /**
  *
  * @author Admin
  */
-public class CreateImportOrderServlet extends HttpServlet {
+public class HistoryImportPriceServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,10 +39,10 @@ public class CreateImportOrderServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateImportOrderServlet</title>");
+            out.println("<title>Servlet HistoryImportPriceServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateImportOrderServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet HistoryImportPriceServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,14 +60,48 @@ public class CreateImportOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String invoiceNumber = request.getParameter("invoice");
+        HttpSession session = request.getSession();
+        int userId = (int) session.getAttribute("userID");
+        int currentPage = 1; // Mặc định trang đầu tiên
+        int recordsPerPage = 5; // Số bản ghi mỗi trang
 
-        if (invoiceNumber == null) {
-            invoiceNumber = "1"; // Khi mở trang lần đầu tiên
+        // Lấy số trang từ request
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            try {
+                currentPage = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                currentPage = 1; // Nếu lỗi, quay về trang 1
+            }
         }
 
-        request.setAttribute("invoiceNumber", invoiceNumber);
-        request.getRequestDispatcher("order/importOrder.jsp").forward(request, response);
+        // Lấy từ khóa tìm kiếm từ request
+        String keyword = request.getParameter("keyword");
+        if (keyword == null) {
+            keyword = ""; // Nếu không có từ khóa, tìm tất cả
+        }
+        String sortOrder = request.getParameter("sortOrder");
+        if (sortOrder == null || (!sortOrder.equals("asc") && !sortOrder.equals("desc"))) {
+            sortOrder = "desc"; // Mặc định hiển thị mới nhất → cũ nhất
+        }
+
+        List<ProductPriceHistory> HistoryList = new ArrayList<>();
+        HistoryList = DAOProduct.INSTANCE.getImportPriceHistory(keyword, currentPage, recordsPerPage, userId, sortOrder);
+
+        // Lấy tổng số bản ghi để tính tổng số trang
+        int totalRecords = DAOProduct.INSTANCE.getTotalHistoryRecords(keyword, userId); // Truyền keyword + userId vào
+        int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
+
+        request.setAttribute("HistoryList", HistoryList);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("sortOrder", sortOrder); // ✅ Thêm sortOrder để giữ trạng thái sắp xếp
+
+        // Kiểm tra giá trị của danh sách trước khi chuyển tiếp
+        System.out.println("Size of HistoryList: " + HistoryList.size());
+        request.getRequestDispatcher("product/historyImportPrice.jsp").forward(request, response);
+
     }
 
     /**
