@@ -125,9 +125,7 @@
         <servlet-name>verifyOTPServlet</servlet-name>
         <servlet-class>controller.user.verifyOTPServlet</servlet-class>
     </servlet>
-    
     <servlet>
-
         <servlet-name>CreateImportOrderServlet</servlet-name>
         <servlet-class>controller.order.CreateImportOrderServlet</servlet-class>
     </servlet>
@@ -151,7 +149,6 @@
         <servlet-name>ListZones</servlet-name>
         <servlet-class>controller.zone.ListZones</servlet-class>
     </servlet>
-
     <servlet>
         <servlet-name>ListZone</servlet-name>
         <servlet-class>controller.zone.ListZone</servlet-class>
@@ -159,6 +156,14 @@
     <servlet>
         <servlet-name>AddZone</servlet-name>
         <servlet-class>controller.zone.AddZone</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HistoryImportPriceServlet</servlet-name>
+        <servlet-class>controller.products.HistoryImportPriceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HistoryExportPriceServlet</servlet-name>
+        <servlet-class>controller.products.HistoryExportPriceServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -284,9 +289,7 @@
         <servlet-name>AddZone</servlet-name>
         <url-pattern>/AddZone</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
-
         <servlet-name>CreateImportOrderServlet</servlet-name>
         <url-pattern>/CreateImportOrderServlet</url-pattern>
     </servlet-mapping>
@@ -310,9 +313,15 @@
         <servlet-name>ListZones</servlet-name>
         <url-pattern>/ListZones</url-pattern>
     </servlet-mapping>
-    
     <listener>
         <listener-class>service.WebAppListener</listener-class>
     </listener>
-
+    <servlet-mapping>
+        <servlet-name>HistoryImportPriceServlet</servlet-name>
+        <url-pattern>/HistoryImportPriceServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HistoryExportPriceServlet</servlet-name>
+        <url-pattern>/HistoryExportPriceServlet</url-pattern>
+    </servlet-mapping>
 </web-app>
