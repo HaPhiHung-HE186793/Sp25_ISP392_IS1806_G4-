@@ -70,8 +70,11 @@ public class AddCustomer extends HttpServlet {
         String email = request.getParameter("email");
         String totalDebtStr = request.getParameter("total");
         Integer createBy = (Integer) session.getAttribute("userID");
+        Integer storeID = (Integer) session.getAttribute("storeID");
+
         BigDecimal debt = BigDecimal.ZERO;
         String debtStr = request.getParameter("debt");
+
         if (debtStr != null && !debtStr.trim().isEmpty()) {
             try {
                 debt = new BigDecimal(debtStr);
@@ -79,6 +82,12 @@ public class AddCustomer extends HttpServlet {
                 response.sendRedirect("ListCustomer");
                 return;
             }
+        }
+
+        if (phone == null || !phone.matches("\\d{10}")) {
+            request.setAttribute("errorMessage", "Số điện thoại không hợp lệ. Vui lòng nhập đúng 10 chữ số.");
+            new ListCustomer().doGet(request, response);
+            return;
         }
 
         try {
@@ -112,6 +121,7 @@ public class AddCustomer extends HttpServlet {
         customer.setCreateBy(createBy);
         customer.setEmail(email);
         customer.setIsDelete(isDelete);
+        customer.setStoreID(storeID);
 
         int result = dao.insertNewCustomer(customer);
         if (result > 0) {

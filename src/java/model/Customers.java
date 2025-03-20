@@ -23,11 +23,13 @@ public class Customers {
     private boolean isDelete;  
     private String deleteAt;   
     private int deleteBy;
+    private int storeID;
+    
 
     public Customers() {
     }
 
-    public Customers(int customerID, String name, String email, String phone, String address, BigDecimal totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Customers(int customerID, String name, String email, String phone, String address, BigDecimal totalDebt, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID) {
         this.customerID = customerID;
         this.name = name;
         this.email = email;
@@ -40,6 +42,7 @@ public class Customers {
         this.isDelete = isDelete;
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
+        this.storeID = storeID;
     }
 
     public int getCustomerID() {
@@ -138,11 +141,19 @@ public class Customers {
         this.deleteBy = deleteBy;
     }
 
-    @Override
-    public String toString() {
-        return "Customers{" + "customerID=" + customerID + ", name=" + name + ", email=" + email + ", phone=" + phone + ", address=" + address + ", totalDebt=" + totalDebt + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + '}';
+    public int getStoreID() {
+        return storeID;
     }
 
-   
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
+    }
+
+    @Override
+    public String toString() {
+        return "Customers{" + "customerID=" + customerID + ", name=" + name + ", email=" + email + ", phone=" + phone + ", address=" + address + ", totalDebt=" + totalDebt + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", storeID=" + storeID + '}';
+    }
+
+    
     
 }

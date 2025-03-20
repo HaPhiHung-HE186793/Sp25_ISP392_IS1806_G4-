@@ -57,27 +57,9 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="name-project">
-            <h2>Rice Storage</h2>
-        </div>
-        <div class="balance">
-            <div class="dropdown">
-    <button class="dropbtn">
-        ${sessionScope.username} <!-- Hiển thị tên người dùng -->
-    </button>
-    <div class="dropdown-content">
-        <a href="<%=request.getContextPath()%>/updateprofile">Hồ sơ</a>
-        <form action="<%=request.getContextPath()%>/loginURL?logoutUser" method="POST">
-            <input type="submit" name="submit" value="Đăng xuất" class="logout-button">
-            <input type="hidden" name="service" value="logoutUser">
-        </form>
-    </div>
-</div>
-        </div>
-    </div>
+
     <div class="sidebar">
-        <div class="logo">Bảng Điều Khiển</div>
+        <div class="logo">Bảng Điều Khiển </div>
         <c:if test="${sessionScope.roleID == 2 or sessionScope.roleID == 3}">
         <a href="<%=request.getContextPath()%>/ListProducts">Danh sách sản phẩm</a>
         </c:if>

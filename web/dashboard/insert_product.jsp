@@ -11,7 +11,9 @@
     </head>
     <body>
         <div id="main">
-            <jsp:include page="/Component/menu.jsp"></jsp:include>
+                          <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+
                 <div class="main-content">
                     <div class="notification">
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
@@ -94,16 +96,41 @@
                 priceInput.value = price;
                 return true;
             }
+            
+            
+                  // Lấy các phần tử cần ẩn/hiện
+                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+                        const newDebt = document.querySelector('.menu'); // Menu
+                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+                        document.addEventListener("DOMContentLoaded", function () {
+                            if (localStorage.getItem("menuHidden") === "true") {
+                                newDebt.classList.add('hiden');
+                                newDebt1.classList.add('hiden');
+                                newDebt2.classList.add('hiden');
+                            }
+                        });
+
+// Hàm toggle hiển thị
+                        function toggleAddNewDebt() {
+                            newDebt.classList.toggle('hiden');
+                            newDebt1.classList.toggle('hiden');
+                            newDebt2.classList.toggle('hiden');
+
+                            // Lưu trạng thái vào localStorage
+                            const isHidden = newDebt.classList.contains('hiden');
+                            localStorage.setItem("menuHidden", isHidden);
+                        }
+
+// Gán sự kiện click
+                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+
         </script>
     </body>
-<<<<<<< HEAD
 
 
-    <script>
-        // Your JavaScript code can go here if needed.
-    </script>
 
 </html>
-=======
-</html>
->>>>>>> origin/main
+

@@ -31,51 +31,7 @@ public class DAOCustomers extends DBContext {
     public static DAOCustomers INSTANCE = new DAOCustomers();
 
 
-    public List<Customers> searchCustomers(String name, String phone) {
-        List<Customers> customers = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM customers WHERE isDelete = 0");
-        if (name != null && !name.isEmpty()) {
-            sql.append(" AND name LIKE ?");
-        }
-        if (phone != null && !phone.isEmpty()) {
-            sql.append(" AND phone LIKE ?");
-        }
-//        if (fromDate != null && !fromDate.isEmpty()) sql.append(" AND createAt >= ?");
-//        if (toDate != null && !toDate.isEmpty()) sql.append(" AND createAt <= ?");
-
-        try (PreparedStatement pre = conn.prepareStatement(sql.toString())) {
-            int index = 1;
-            if (name != null && !name.isEmpty()) {
-                pre.setString(index++, "%" + name + "%");
-            }
-            if (phone != null && !phone.isEmpty()) {
-                pre.setString(index++, "%" + phone + "%");
-            }
-//            if (fromDate != null && !fromDate.isEmpty()) pre.setString(index++, fromDate);
-//            if (toDate != null && !toDate.isEmpty()) pre.setString(index++, toDate);
-
-            ResultSet rs = pre.executeQuery();
-            while (rs.next()) {
-                customers.add(new Customers(
-                        rs.getInt("customerID"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("address"),
-                        rs.getBigDecimal("totalDebt"),
-                        rs.getString("createAt"),
-                        rs.getString("updateAt"),
-                        rs.getInt("createBy"),
-                        rs.getBoolean("isDelete"),
-                        rs.getString("deleteAt"),
-                        rs.getInt("deleteBy")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return customers;
-    }
+ 
 
     public Customers getCustomer(String id) {
         String sql = " select * from customers where customerID = ?";
@@ -97,8 +53,10 @@ public class DAOCustomers extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");  // Chuyển sang boolean
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                                int storeID = rs.getInt("storeID");
 
-                return new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+
+                return new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
 
             }
         } catch (SQLException ex) {
@@ -129,7 +87,8 @@ public class DAOCustomers extends DBContext {
                         rs.getInt("createBy"),
                         rs.getBoolean("isDelete"),
                         rs.getString("deleteAt"),
-                        rs.getInt("deleteBy")
+                        rs.getInt("deleteBy"),
+                        rs.getInt("storeID")
                 );
                 customers.add(customer);
             }
@@ -140,37 +99,7 @@ public class DAOCustomers extends DBContext {
         return customers;
     }
 
-    public List<Customers> findByName(String name) {
-        List<Customers> customers = new ArrayList<>();
-        String sql = "SELECT * FROM customers WHERE name LIKE ? AND isDelete = 0";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + name + "%"); // Tìm số điện thoại chứa searchPhone
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Customers customer = new Customers(
-                        rs.getInt("customerID"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("address"),
-                        rs.getBigDecimal("totalDebt"),
-                        rs.getString("createAt"),
-                        rs.getString("updateAt"),
-                        rs.getInt("createBy"),
-                        rs.getBoolean("isDelete"),
-                        rs.getString("deleteAt"),
-                        rs.getInt("deleteBy")
-                );
-                customers.add(customer);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return customers;
-    }
+    
 
     public Vector<Customers> getCustomers(String sql) {
         Vector<Customers> vector = new Vector<Customers>();
@@ -178,20 +107,21 @@ public class DAOCustomers extends DBContext {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
             while (rs.next()) {
-                int customerID = rs.getInt("customerID");
-                String name = rs.getString("name");
+                 int customerID = rs.getInt("customerID");
+                String customerName = rs.getString("name");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");  // Sử dụng double cho tổng nợ
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
-                Boolean isDelete = rs.getBoolean("isDelete");  // Chuyển sang boolean
+                Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
                 vector.add(customer);
             }
         } catch (SQLException ex) {
@@ -292,7 +222,7 @@ public class DAOCustomers extends DBContext {
 
     public int insertNewCustomer(Customers customer) {
         int n = 0;
-        String sql = "INSERT INTO customers (name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO customers (name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete,storeID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, customer.getName()); // name
@@ -304,6 +234,8 @@ public class DAOCustomers extends DBContext {
             pre.setString(7, customer.getUpdateAt()); // updateAt
             pre.setInt(8, customer.getCreateBy()); // createBy
             pre.setBoolean(9, customer.isIsDelete()); // isDelete
+                        pre.setInt(10, customer.getStoreID()); // isDelete
+
             n = pre.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DAOCustomers.class.getName()).log(Level.SEVERE, null, ex);
@@ -318,20 +250,21 @@ public class DAOCustomers extends DBContext {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
             while (rs.next()) {
-                int customerID = rs.getInt("customerID");
-                String name = rs.getString("name");
+               int customerID = rs.getInt("customerID");
+                String customerName = rs.getString("name");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                BigDecimal totalDebt = rs.getBigDecimal("totalDebt"); // Sử dụng double cho tổng nợ
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");
                 String createAt = rs.getString("createAt");
                 String updateAt = rs.getString("updateAt");
                 int createBy = rs.getInt("createBy");
-                Boolean isDelete = rs.getBoolean("isDelete"); // Giả sử isDelete là kiểu int
+                Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
                 list.add(customer); // Thêm vào danh sách thay vì in ra
             }
         } catch (SQLException ex) {
@@ -349,44 +282,7 @@ public class DAOCustomers extends DBContext {
             ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
             while (rs.next()) {
                 int customerID = rs.getInt("customerID");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                String phone = rs.getString("phone");
-                String address = rs.getString("address");
-                BigDecimal totalDebt = rs.getBigDecimal("totalDebt"); // Sử dụng double cho tổng nợ
-                String createAt = rs.getString("createAt");
-                String updateAt = rs.getString("updateAt");
-                int createBy = rs.getInt("createBy");
-                Boolean isDelete = rs.getBoolean("isDelete"); // Giả sử isDelete là kiểu int
-                String deleteAt = rs.getString("deleteAt");
-                int deleteBy = rs.getInt("deleteBy");
-
-                Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-                list.add(customer); // Thêm vào danh sách thay vì in ra
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return list; // Trả về danh sách khách hàng
-    }
-
-    public List<Customers> listCustomersByRole(int createBylis) {
-        List<Customers> list = new ArrayList<>();
-        String sql = "";
-
-            sql = "SELECT c.*\n"
-                    + "FROM customers c\n"
-                    + "JOIN users u ON c.createBy = u.ID\n"
-                    + "WHERE u.createBy = ?;";
-
-        try {
-            PreparedStatement pre = conn.prepareStatement(sql);
-            pre.setInt(1, createBylis);
-
-            ResultSet rs = pre.executeQuery();
-            while (rs.next()) {
-                int customerID = rs.getInt("customerID");
-                String name = rs.getString("name");
+                String customerName = rs.getString("name");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
@@ -397,8 +293,47 @@ public class DAOCustomers extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
+                list.add(customer); // Thêm vào danh sách thay vì in ra
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list; // Trả về danh sách khách hàng
+    }
+
+    public List<Customers> listCustomersByRole(int ID) {
+        List<Customers> list = new ArrayList<>();
+        String sql = "";
+
+            sql = "SELECT c.*\n"
+                    + "FROM customers c\n"
+                    + "JOIN users u ON c.createBy = u.ID\n"
+                    + "WHERE c.storeID = ?;";
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, ID);
+
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+               int customerID = rs.getInt("customerID");
+                String customerName = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                BigDecimal totalDebt = rs.getBigDecimal("totalDebt");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                int storeID = rs.getInt("storeID");
+
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
                 list.add(customer);
             }
         } catch (SQLException ex) {
@@ -407,7 +342,7 @@ public class DAOCustomers extends DBContext {
         return list;
     }
 
-    public List<Customers> listCustomersByRoleSearchName(int createBylis, String name) {
+    public List<Customers> listCustomersByRoleSearchName(int storeIDa, String name) {
         List<Customers> list = new ArrayList<>();
         String sql = "";
 
@@ -415,12 +350,12 @@ public class DAOCustomers extends DBContext {
             sql = " SELECT c.* \n"
                     + "FROM customers c\n"
                     + "JOIN users u ON c.createBy = u.ID\n"
-                    + "WHERE u.createBy = ? "
+                    + "WHERE c.storeID = ? "
                     + name;
 
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
-            pre.setInt(1, createBylis);
+            pre.setInt(1, storeIDa);
 
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
@@ -436,8 +371,9 @@ public class DAOCustomers extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
                 list.add(customer);
             }
         } catch (SQLException ex) {

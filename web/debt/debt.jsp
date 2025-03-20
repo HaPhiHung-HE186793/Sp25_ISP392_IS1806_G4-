@@ -8,7 +8,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style.css">
+        <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <title>Bảng Điều Khiển</title>
         <style>
@@ -58,9 +58,10 @@
 
     <body>
         <div id="main">
-
-            <jsp:include page="/Component/menu.jsp"></jsp:include>
-
+            <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+            
+            
                 <div class="main-content">
                     <div class="notification">
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
@@ -266,8 +267,41 @@
         }
 
 
-    </script>
 
+
+    </script>
+    <script>
+ // Lấy các phần tử cần ẩn/hiện
+                        const openAddNew = document.querySelector('.js-hidden-menu'); // Nút toggle
+                        const newDebt0 = document.querySelector('.menu'); // Menu
+                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+                        document.addEventListener("DOMContentLoaded", function () {
+                            if (localStorage.getItem("menuHidden") === "true") {
+                                newDebt0.classList.add('hiden');
+                                newDebt1.classList.add('hiden');
+                                newDebt2.classList.add('hiden');
+                            }
+                        });
+
+// Hàm toggle hiển thị
+                        function toggleAddNewDebt() {
+                            newDebt0.classList.toggle('hiden');
+                            newDebt1.classList.toggle('hiden');
+                            newDebt2.classList.toggle('hiden');
+
+                            // Lưu trạng thái vào localStorage
+                            const isHidden = newDebt0.classList.contains('hiden');
+                            localStorage.setItem("menuHidden", isHidden);
+                        }
+
+// Gán sự kiện click
+                        openAddNew.addEventListener('click', toggleAddNewDebt);
+
+
+    </script>
 
 </html>
 

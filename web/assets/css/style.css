@@ -77,7 +77,16 @@ body {
     font-size: 13px;
     margin-left: 210px;
     padding: 20px;
+
+}
+
+.main-content.hiden{
     margin-top: 50px;
+    margin-left: 0px;
+}
+
+.menu-hiden:hover{
+    opacity: 0.8;
 }
 
 .header {
@@ -310,6 +319,15 @@ button:hover {
 
 }
 
+.menu{
+    display: flex;
+    margin-top: 50px;
+}
+
+.menu.hiden{
+    display: none;
+}
+
 .newDebt-close:hover {
     opacity: 1;
 }
@@ -466,7 +484,7 @@ button:hover {
     }
 
     .newDebt-notificationError {
-        color: red; 
+        color: red;
         margin: 15px;
         transition: opacity 0.5s ease-in-out;
         /*>>>>>>> Stashed changes*/
