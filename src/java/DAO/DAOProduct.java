@@ -33,6 +33,59 @@ public class DAOProduct extends DBContext {
 
     public static DAOProduct INSTANCE = new DAOProduct();
 
+    
+    public boolean updateImportPrice(int productId, BigDecimal importPrice) {
+    String sql = "UPDATE products SET importPrice = ? WHERE productID = ?";
+    
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setBigDecimal(1, importPrice);
+        stmt.setInt(2, productId);
+
+        int rowsUpdated = stmt.executeUpdate();
+        return rowsUpdated > 0; // Trả về true nếu cập nhật thành công
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    
+    return false;
+}
+public BigDecimal getImportPrice(int productId) {
+    String sql = "SELECT importPrice FROM products WHERE productID = ?";
+    BigDecimal importPrice = BigDecimal.ZERO;
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, productId);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            importPrice = rs.getBigDecimal("importPrice");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return importPrice;
+}
+public boolean logPriceChange(int productId, BigDecimal newPrice, String priceType, int userId) {
+    String sql = "INSERT INTO ProductPriceHistory (productID, price, priceType, changedBy) VALUES (?, ?, ?, ?)";
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, productId);
+        stmt.setBigDecimal(2, newPrice);
+        stmt.setString(3, priceType); // 'import' hoặc 'sell'
+        stmt.setInt(4, userId);
+
+        int rowsAffected = stmt.executeUpdate();
+        return rowsAffected > 0; // Trả về true nếu ghi thành công
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false; // Trả về false nếu có lỗi
+}
+
+
+
+    
     public int getProductQuantity(int productId) {
         int quantity = 0;
         String sql = "SELECT quantity FROM products WHERE productID = ?";

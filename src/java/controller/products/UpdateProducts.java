@@ -17,11 +17,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
 
 @MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2, // 2MB: Kích thước tối đa lưu vào bộ nhớ trước khi ghi vào file
-    maxFileSize = 1024 * 1024 * 10,      // 10MB: Kích thước file tối đa
-    maxRequestSize = 1024 * 1024 * 50    // 50MB: Kích thước tối đa của toàn bộ request
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB: Kích thước tối đa lưu vào bộ nhớ trước khi ghi vào file
+        maxFileSize = 1024 * 1024 * 10, // 10MB: Kích thước file tối đa
+        maxRequestSize = 1024 * 1024 * 50 // 50MB: Kích thước tối đa của toàn bộ request
 )
 @WebServlet(name = "UpdateProduct", urlPatterns = {"/UpdateProduct"})
 public class UpdateProducts extends HttpServlet {
@@ -60,6 +62,8 @@ public class UpdateProducts extends HttpServlet {
             DAOProduct dao = new DAOProduct();
             Products existingProduct = dao.getProductById(productId);
             String image = existingProduct.getImage(); // Giữ ảnh cũ mặc định
+            //quynh
+            double oldPrice = existingProduct.getPrice();
 
             // Xử lý upload ảnh mới (nếu có)
             Part imagePart = request.getPart("image");
@@ -92,8 +96,17 @@ public class UpdateProducts extends HttpServlet {
 
             // Cập nhật sản phẩm vào DB
             boolean updated = dao.updateProduct(productId, productName, description, price, image, updateAt);
+//quynh
+            HttpSession session = request.getSession();
+            int userId = (int) session.getAttribute("userID");
 
             if (updated) {
+                //quynh
+               // chỉ ghi log nếu giá thay đổi
+               if(oldPrice!=price){
+                   boolean logged = DAOProduct.INSTANCE.logPriceChange(productId, BigDecimal.valueOf(price), "sell", userId);
+               }
+
                 request.setAttribute("message", "Cập nhật sản phẩm thành công");
             } else {
                 request.setAttribute("message", "Lỗi: Cập nhật sản phẩm thất bại");
