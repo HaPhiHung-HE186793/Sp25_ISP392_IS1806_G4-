@@ -112,9 +112,9 @@ public class CreateOrderServlet extends HttpServlet {
                 status = request.getParameter("status");
             }
 
-        }else{
+        } else {
             status = request.getParameter("status");
-        
+
         }
 
         Double totalOrderPrice = Double.parseDouble(request.getParameter("totalOrderPriceHidden")); // Tổng tiền
@@ -181,8 +181,10 @@ public class CreateOrderServlet extends HttpServlet {
                         response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
                         return;
                     }
+                      OrderItems orderItem;
 
-                    OrderItems orderItem = new OrderItems(productID, productName, expectedPrice, actualUnitPrice, quantity, discount);
+                         orderItem = new OrderItems(productID, productName, expectedPrice, actualUnitPrice, quantity, discount);
+                   
 
                     orderDetails.add(orderItem);
 

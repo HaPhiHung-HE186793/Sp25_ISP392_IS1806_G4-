@@ -18,9 +18,11 @@ public class OrderItems {
     private int quantity;
     private String description;
     private double discount;
+    private double importPrice;
 
     public OrderItems() {
     }
+    
 
     
      public OrderItems(int orderitemID, int orderID, int productID, String productName, double price, double unitPrice, int quantity) {
@@ -69,10 +71,29 @@ public class OrderItems {
         this.price = price;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
-        
         this.discount = discount;
     
     }
+    public OrderItems(int productID, String productName, double price, double unitPrice, int quantity,double discount,double importPrice ) {
+        this.productID = productID;
+        this.productName = productName;
+        this.price = price;
+        this.unitPrice = unitPrice;
+        this.quantity = quantity;
+        this.importPrice = importPrice;
+        this.discount = discount;
+    
+    }
+    
+
+    public double getImportPrice() {
+        return importPrice;
+    }
+
+    public void setImportPrice(double importPrice) {
+        this.importPrice = importPrice;
+    }
+    
 
     public double getDiscount() {
         return discount;

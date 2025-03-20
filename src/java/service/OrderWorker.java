@@ -125,12 +125,12 @@ public class OrderWorker extends Thread {
             if (debtAmount.compareTo(BigDecimal.ZERO) != 0) {
                 System.out.println("📄 Đang tạo bản ghi nợ...");
 
-                DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, debtAmount, paymentStatus, orderTask.getUserId(), false,0);
+                DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, debtAmount, paymentStatus, orderTask.getUserId(), false, 0);
 
                 DAODebtRecords dao = new DAODebtRecords();
                 // cần xử lí thêm việc tạo nợ có cần thành công không
                 int success = dao.addDebtRecord1(debtRecord);
-                if (success <0) {
+                if (success < 0) {
                     conn.rollback(); // 🔥 Nếu tạo đơn hàng thất bại, rollback toàn bộ
                     processedOrders.put(orderTask.getUserId(), -1);
 
@@ -166,27 +166,54 @@ public class OrderWorker extends Thread {
                 } else if (orderType == 0) {
                     //  Nhập kho: Tăng số lượng sản phẩm trong kho
                     DAOProduct.INSTANCE.importProductQuantity(detail.getProductID(), detail.getQuantity());
+                    // Lấy giá nhập cũ trước khi cập nhật
+                    BigDecimal oldPrice = DAOProduct.INSTANCE.getImportPrice(detail.getProductID());
+
+                    // Cập nhật giá nhập mới
+                    BigDecimal newPrice = new BigDecimal(detail.getUnitPrice());
+
+                    // Chỉ cập nhật nếu giá mới khác giá cũ
+                    if (oldPrice == null || oldPrice.compareTo(newPrice) != 0) {
+                        boolean updated = DAOProduct.INSTANCE.updateImportPrice(detail.getProductID(), newPrice);
+
+                        if (updated) {
+                            System.out.println("✅ Đã cập nhật giá nhập kho cho sản phẩm ID: " + detail.getProductID());
+
+                            // Chỉ ghi log nếu giá đã thay đổi
+                            boolean logged = DAOProduct.INSTANCE.logPriceChange(detail.getProductID(), newPrice, "import", orderTask.getUserId());
+                            if (logged) {
+                                System.out.println("📜 Đã ghi lịch sử thay đổi giá nhập!");
+                            } else {
+                                System.out.println("⚠️ Lỗi khi ghi lịch sử giá nhập!");
+                            }
+                        } else {
+                            System.out.println("❌ Không thể cập nhật giá nhập!");
+                        }
+                    } else {
+                        System.out.println("🔄 Giá nhập không thay đổi, không cần cập nhật!");
+                    }
+                }
 
                 }
 
-            }
-
-            conn.commit(); // ✅ Nếu tất cả đều OK, commit thay đổi vào database
-            processedOrders.put(orderTask.getUserId(), orderId);
-            System.out.println("✅ [DONE] Đơn hàng đã xử lý xong! User ID: " + orderTask.getUserId() + " | Order ID: " + orderId);
-        } catch (SQLException e) {
+                conn.commit(); // ✅ Nếu tất cả đều OK, commit thay đổi vào database
+                processedOrders.put(orderTask.getUserId(), orderId);
+                System.out.println("✅ [DONE] Đơn hàng đã xử lý xong! User ID: " + orderTask.getUserId() + " | Order ID: " + orderId);
+            }catch (SQLException e) {
             if (conn != null) {
                 conn.rollback();
             }
             e.printStackTrace();
             processedOrders.put(orderTask.getUserId(), -1);
-        } finally {
+        }finally {
             if (conn != null) {
-            conn.setAutoCommit(true);// đặt lại trạng thái mặc đinh
-        }
+                conn.setAutoCommit(true);// đặt lại trạng thái mặc đinh
+            }
         }
 
-    }
+        }
+
+    
 
     public static Integer getProcessedOrder(int userId) {
         Integer status = processedOrders.get(userId);
