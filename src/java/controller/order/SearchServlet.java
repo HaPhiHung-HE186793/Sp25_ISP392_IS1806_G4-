@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.NumberFormat;
@@ -72,9 +73,11 @@ public class SearchServlet extends HttpServlet {
         String keyword = request.getParameter("searchProduct");
 
         int orderType = Integer.parseInt(request.getParameter("orderType"));
+         HttpSession session = request.getSession();
+         int userId = (int) session.getAttribute("userID");
 
         if (keyword != null && !keyword.trim().isEmpty()) {
-            List<Products> products = DAOProduct.INSTANCE.searchProductsByName(keyword);
+            List<Products> products = DAOProduct.INSTANCE.searchProductsByName(keyword,userId);
 
             if (products.isEmpty()) {
                 out.println("<p>Không tìm thấy sản phẩm.</p>");
@@ -199,9 +202,12 @@ public class SearchServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        Integer storeID = (Integer) session.getAttribute("storeID");
+
 
         String searchValue = request.getParameter("keyword");
-        List<Customers> customers = DAOCustomers.INSTANCE.findByNameOrPhone(searchValue);
+        List<Customers> customers = DAOCustomers.INSTANCE.findByNameOrPhone(searchValue,storeID);
 
         if (customers.isEmpty()) {
             out.println("<p>Không tìm thấy khach hang.</p>");

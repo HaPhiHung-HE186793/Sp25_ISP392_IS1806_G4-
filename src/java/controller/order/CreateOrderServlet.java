@@ -108,6 +108,9 @@ public class CreateOrderServlet extends HttpServlet {
         int customerId = Integer.parseInt(request.getParameter("customerId")); // ID khách hàng
 
         int userId = (int) session.getAttribute("userID");
+       
+       
+
 
         String status;
         if (orderType.equals("1")) {// xuất

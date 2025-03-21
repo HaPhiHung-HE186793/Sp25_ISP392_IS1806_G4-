@@ -3,9 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.store;
+package controller.schedule;
 
-import DAO.DAOStore;
+import DAO.DAOSchedule;
+import DAO.DAOUser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,19 +14,21 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.Store;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import model.pagination.Pagination;
+import java.util.List;
+import model.Schedule;
+import model.Store;
 import model.User;
+import model.pagination.Pagination;
 
 /**
  *
  * @author nguyenanh
  */
-public class ListStore extends HttpServlet {
-    DAOStore dao = new DAOStore();
+public class workSchedule extends HttpServlet {
+   DAOUser dao = new DAOUser();
+   DAOSchedule daos = new DAOSchedule();
     Pagination Page;
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -42,10 +45,10 @@ public class ListStore extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ListStore</title>");  
+            out.println("<title>Servlet workSchedule</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ListStore at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet workSchedule at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,58 +65,46 @@ public class ListStore extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         Integer roleID = (Integer) session.getAttribute("roleID");
-        Integer userID = (Integer) session.getAttribute("userID");
-        Integer storeID = (Integer) session.getAttribute("storeID");
         User user_current = (User) session.getAttribute("user");
-        if (user_current.getRoleID() != 1) {
-            response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+        if (roleID == 3) {
+            response.sendRedirect("ListProducts"); 
             return;
         }
-        String error = null;
-
+        if (roleID == 1) {
+            response.sendRedirect("listusers"); 
+            return;
+        }
+        
         if (request.getParameter("id") != null && !(request.getParameter("id") == "")) {
             int id = Integer.parseInt(request.getParameter("id"));
-            Store Store = dao.getStoreById(id);
-            if (Store != null) {               
-                    request.setAttribute("Store", Store);
-                    session.setAttribute("storeIdUpdate", Store.getStoreID());
-                    request.getRequestDispatcher("updatestore").forward(request, response);
+            Schedule schedule = daos.getScheduleById(id);
+            if (schedule != null) {
+                request.setAttribute("schedule", schedule);
+                session.setAttribute("scheduleIdUpdate", id);
+                request.getRequestDispatcher("updateschedule").forward(request, response);
             }
-        }
-        if (request.getParameter("idDetail") != null && !(request.getParameter("id") == "")) {
-            int id = Integer.parseInt(request.getParameter("idDetail"));
-            Store Store = dao.getStoreById(id);
-            if (Store != null) {               
-                    request.setAttribute("Store", Store);
-                    request.getRequestDispatcher("storedetail").forward(request, response);
-            }
-        }
+        }  
+        
+        List<Schedule>  schedule = daos.listSchedule(user_current.getStoreID());
 
-
-        List<Store> Store = null;
-        Store = dao.listStore();
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalStore = Store.size();
-        int pageSize = 4;
+        int totalSchedule = schedule.size();
+        int pageSize = 9;
         int currentPage = 1;
 
         if (request.getParameter("cp") != null) {
             currentPage = Integer.parseInt(request.getParameter("cp"));
         }
-
-        Pagination page = new Pagination(totalStore, pageSize, currentPage);
+        Pagination page = new Pagination(totalSchedule, pageSize, currentPage);
         session.setAttribute("page", page);
-        request.setAttribute("currentPageUrl", "liststore"); // Hoặc "products"
+        request.setAttribute("currentPageUrl", "workschedule"); // Hoặc "products"
         
-
-        String endDateCreate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        request.setAttribute("endDateCreate", endDateCreate);
-        request.setAttribute("error", error);
-        request.setAttribute("user_current", user_current);
-        session.setAttribute("Store", Store);
-        request.getRequestDispatcher("store/listStore.jsp").forward(request, response);
+        String endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        request.setAttribute("endDate", endDate);
+        request.setAttribute("schedule", schedule);
+        request.getRequestDispatcher("/schedule/workSchedule.jsp").forward(request, response);
     } 
 
     /** 
@@ -128,57 +119,76 @@ public class ListStore extends HttpServlet {
     throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user_current = (User) session.getAttribute("user");
-        List<Store> filteredStore = dao.listStore();
+        List<Schedule> filteredSchedules = daos.listSchedule(user_current.getStoreID());
         String mess = null;
-        String keyword1 = request.getParameter("keyword1");
-        String startDateCreate = request.getParameter("startDateCreate");
-        String endDateCreate = request.getParameter("endDateCreate");
+        String keyword1 = request.getParameter("keyword");
+        String startDateCreate = request.getParameter("startDate");
+        String endDateCreate = request.getParameter("endDate");
         String action = request.getParameter("selectedAction");
         Integer selectedAction = (action != null && !action.isEmpty()) ? Integer.parseInt(action) : null;        
 
-        
+        String error = null;
+        String actionBlock = request.getParameter("actionBlock");
+        String ScheduleIDBlock = request.getParameter("ScheduleIDBlock");
+        if (ScheduleIDBlock != null && !(ScheduleIDBlock == "")) { 
+            int id = Integer.parseInt(ScheduleIDBlock);
+            if ("block".equals(actionBlock)) {
+                // Gọi DAO để khóa user
+                Integer deleteBy = (Integer) session.getAttribute("userID");
+                daos.blockScheduleByID(id, deleteBy);
+            } else if ("unlock".equals(actionBlock)) {
+                // Gọi DAO để mở khóa user
+                daos.unblockScheduleByID(id);
+            }
+
+        }
+        if (error != null) {
+            response.setStatus(400); // Báo lỗi cho AJAX
+            response.getWriter().write(error);
+        } else {
+            response.setStatus(200);
+        }
 
         //search
         if (keyword1 != null && !keyword1.isEmpty()) {
-            List<Store> tempStore = dao.getStoreByKeyword(keyword1, filteredStore);
-            if (!tempStore.isEmpty()) {
-                filteredStore = tempStore; // Chỉ cập nhật nếu có kết quả
+            List<Schedule> tempSchedule = daos.getScheduleByKeyword(keyword1, filteredSchedules);
+            if (!tempSchedule.isEmpty()) {
+                filteredSchedules = tempSchedule; // Chỉ cập nhật nếu có kết quả
             } else {
-            mess = "Không tìm thấy cửa hàng nào.";
+            mess = "Không tìm thấy ca làm việc nào.";
             }
         }
         if (startDateCreate != null && !startDateCreate.isEmpty()) {
-            List<Store> tempStore = dao.getStoreByDate(startDateCreate, endDateCreate, filteredStore);
-            if (!tempStore.isEmpty()) {
-                filteredStore = tempStore; // Chỉ cập nhật nếu có kết quả
+            List<Schedule> tempSchedule = daos.getScheduleByDate(startDateCreate, endDateCreate, filteredSchedules);
+            if (!tempSchedule.isEmpty()) {
+                filteredSchedules = tempSchedule; // Chỉ cập nhật nếu có kết quả
             } else {
-            mess = "Không tìm thấy cửa hàng nào.";
+            mess = "Không tìm thấy ca làm việc nào.";
             }
         }
         if (selectedAction != null && selectedAction != -1) {
-            List<Store> tempStore = dao.getStoreByAction(selectedAction, filteredStore);
-            if (!tempStore.isEmpty()) {
-                filteredStore = tempStore; // Chỉ cập nhật nếu có kết quả
+            List<Schedule> tempSchedule = daos.getScheduleByAction(selectedAction, filteredSchedules);
+            if (!tempSchedule.isEmpty()) {
+                filteredSchedules = tempSchedule; // Chỉ cập nhật nếu có kết quả
             } else {
-            mess = "Không tìm thấy cửa hàng nào.";
+            mess = "Không tìm thấy ca làm việc nào.";
             }
         }
-        if (filteredStore == null || filteredStore.isEmpty()) {
-            mess = "Không tìm thấy cửa hàng nào.";
+        if (filteredSchedules == null || filteredSchedules.isEmpty()) {
+            mess = "Không tìm thấy ca làm việc nào.";
             System.out.println(mess);
-            filteredStore = dao.listStore();
-
+            filteredSchedules = daos.listSchedule(user_current.getStoreID());
         }
 
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalUsers = filteredStore.size();
-        int pageSize = 4;
+        int totalUsers = filteredSchedules.size();
+        int pageSize = 9;
         int currentPage = 1;
 
         if (request.getParameter("cp") != null) {
             currentPage = Integer.parseInt(request.getParameter("cp"));
         }
-        request.setAttribute("currentPageUrl", "liststore"); // Hoặc "products"
+        request.setAttribute("currentPageUrl", "workschedule"); // Hoặc "products"
 
         Pagination page = new Pagination(totalUsers, pageSize, currentPage);
         session.setAttribute("page", page);
@@ -186,16 +196,16 @@ public class ListStore extends HttpServlet {
         // Lấy danh sách user theo trang hiện tại
         int startIndex = page.getStartItem();
         int endIndex = Math.min(startIndex + pageSize, totalUsers);
-        List<Store> paginatedUsers = filteredStore.subList(startIndex, endIndex);
+        List<Schedule> paginatedUsers = filteredSchedules.subList(startIndex, endIndex);
 
         request.setAttribute("mess", mess);
-        request.setAttribute("Store", filteredStore);
-        request.setAttribute("keyword1", keyword1);
-        request.setAttribute("startDateCreate", startDateCreate);
-        request.setAttribute("endDateCreate", endDateCreate);
+        request.setAttribute("schedule", filteredSchedules);
+        request.setAttribute("keyword", keyword1);
+        request.setAttribute("startDate", startDateCreate);
+        request.setAttribute("endDate", endDateCreate);
         request.setAttribute("selectedAction", selectedAction);
         request.setAttribute("user_current", user_current);
-        request.getRequestDispatcher("store/listStore.jsp").forward(request, response);
+        request.getRequestDispatcher("/schedule/workSchedule.jsp").forward(request, response);
     }
 
     /** 

@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -133,6 +135,8 @@
 
 
                             <button type="submit">Tìm kiếm</button>
+                            <button type="button" onclick="resetFilters()">Xóa bộ lọc</button> <!-- Thêm nút này -->
+
                         </form>
 
                     </div>
@@ -170,7 +174,9 @@
                                         <img src="${history.image}" alt="Ảnh sản phẩm" width="50" height="50">
                                     </td>
                                     <td>${history.productName}</td>
-                                    <td>${history.price}</td>
+                                    <td>
+                                        <fmt:formatNumber value="${history.price}" type="number" groupingUsed="true" />
+                                    </td>
                                     <td>${history.changedAt}</td>
                                     <td>${history.changedBy}</td>
                                 </tr>
@@ -178,7 +184,7 @@
                         </tbody>
                     </table>
                 </div>
-               
+
                 <div class="pagination">
                     <c:if test="${currentPage > 1}">
                         <a href="HistoryImportPriceServlet?page=${currentPage - 1}&sortOrder=${sortOrder}">&laquo; Trước</a>
@@ -229,6 +235,14 @@
                             }
 
         </script>
+        <script>
+            function resetFilters() {
+                document.getElementById('searchInput').value = ''; // Xóa từ khóa tìm kiếm
+                document.getElementById('sortOrder').value = 'desc'; // Đặt sắp xếp về mặc định
+                document.getElementById('searchForm').submit(); // Submit lại form
+            }
+        </script>
+
 
 
 

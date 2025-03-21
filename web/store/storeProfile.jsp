@@ -1,8 +1,9 @@
 <%-- 
-    Document   : storeDetail
-    Created on : 6 thg 3, 2025, 21:16:46
+    Document   : storeProfile
+    Created on : 20 thg 3, 2025, 15:44:25
     Author     : nguyenanh
 --%>
+
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.ArrayList" %>
@@ -14,8 +15,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <title>Store Detail</title>
+        <title>Store Profile</title>
         <style>
             :root {
                 --primary-color: #2a2a2a;
@@ -27,7 +29,6 @@
                 --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
                 --transition: all 0.3s ease;
             }
-            
 
             .store-container {
                 max-width: 800px;
@@ -146,25 +147,25 @@
                 margin-right: 10px;
                 font-size: 18px;
             }
-            
-            .button-group {
-            margin-top: 20px;
-            display: flex;
-            gap: 220px;
-            justify-content: center;
-        }
 
-        .button-group button {
-            padding: 12px 24px;
-            font-size: 12px;
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+            .button-group {
+                margin-top: 20px;
+                display: flex;
+                gap: 220px;
+                justify-content: center;
+            }
+
+            .button-group button {
+                padding: 12px 24px;
+                font-size: 12px;
+                color: white;
+                border: none;
+                border-radius: var(--border-radius);
+                cursor: pointer;
+                transition: var(--transition);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
 
 
             @media (max-width: 768px) {
@@ -207,8 +208,8 @@
     </head>
     <body>
         <div id="main">
-                      <jsp:include page="/Component/header.jsp"></jsp:include>
-            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>  
+            <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>  
                 <div class="main-content">
                     <div class="notification">
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
@@ -222,10 +223,10 @@
                     </div>
                     <div class="store-info">
                         <div class="row">
-                                    <p><label><i class="fas fa-user"></i> Owner:</label> <span>
-                                <c:forEach var="owner" items="${Store.getOwnerName()}">
-                                            ${owner} <br>
-                                        </c:forEach>
+                            <p><label><i class="fas fa-user"></i> Owner:</label> <span>
+                                    <c:forEach var="owner" items="${Store.getOwnerName()}">
+                                        ${owner} <br>
+                                    </c:forEach>
                                 </span></p>
                             <p><label><i class="fas fa-map-marker-alt"></i> Address:</label> <span>${Store.getAddress()}</span></p>
                         </div>
@@ -239,53 +240,34 @@
                         </div>
                         <p><label><i class="fas fa-users"></i> Number of Employees:</label> <span>${Store.CountStaff()}</span></p>
                     </div>
-                        <div class="button-group">
-                    <button onclick="window.location.href = 'liststore'"  
-                            style="padding: 5px 15px; font-size: 14px;gap:30px ; min-width: 80px; background-color: #4e54c8; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                        Quay về danh sách cửa hàng
-                    </button>
-                            </div>
+                    <div class="button-group">
+                        <c:if test="${user_current.getRoleID() == 3}">
+                            <button onclick="window.location.href = 'ListProducts'"  
+                                    style="padding: 5px 15px; font-size: 14px;gap:30px ; min-width: 80px; background-color: #4e54c8; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                Quay về danh sách sản phẩm
+                            </button>
+                        </c:if>                        
+                    </div>
+                    <div class="button-group">
+                    <c:if test="${user_current.getRoleID() == 2}">
+                            <button onclick="window.location.href = 'ListProducts'"  
+                                    style="padding: 5px 15px; font-size: 14px;gap:30px ; min-width: 80px; background-color: #4e54c8; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                Quay về danh sách sản phẩm
+                            </button>
+                            
+                            <button onclick="window.location.href = 'storeprofile?id=${Store.getStoreID()}'"  
+                                                style="padding: 5px 15px; font-size: 14px; min-width: 80px; background-color: #5bc0de; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                            Cập nhật
+                            </button>
+                        </c:if>
+                    </div>  
                 </div>  
 
             </div>
         </div>
     </body>
-
     
-                <script>
-                
-                 // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
-
-// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
-
-// Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
-
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
-
-// Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
-
-            </script>
-            
-            <script>
+    <script>
                 
                // Lấy các phần tử cần ẩn/hiện
                         const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
@@ -318,7 +300,9 @@
 
                 
             </script>
+
 </html>
+
 
 
 

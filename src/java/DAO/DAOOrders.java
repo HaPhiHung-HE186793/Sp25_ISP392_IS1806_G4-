@@ -9,6 +9,7 @@ package DAO;
  * @author ADMIN
  */
 import DAL.DBContext;
+import jakarta.servlet.http.HttpSession;
 import model.Orders;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
@@ -24,11 +25,33 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 public class DAOOrders extends DBContext{
+
     
     public static DAOOrders INSTANCE= new DAOOrders();
     
+    public Integer getStoreIdByUserId(int userId) {
+        String sql = "SELECT storeID FROM users WHERE ID = ?";
+        Integer storeId = null;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                storeId = rs.getInt("storeID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return storeId;
+    }
+    
     public int createOrder(int customerId,int userID,int createBy,BigDecimal totalAmount, String status,int orderType,BigDecimal paidAmount ) throws SQLException {
-        String sql = "INSERT INTO orders (customerID,userID,createBy, totalAmount, status,orderType,paidAmount) VALUES (?, ?, ?, ?, ?,?,?)";
+        
+        int orderID =getStoreIdByUserId(userID);
+        
+        String sql = "INSERT INTO orders (customerID,userID,createBy, totalAmount, status,orderType,paidAmount,storeID) VALUES (?, ?, ?, ?, ?,?,?,?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, customerId);
             stmt.setInt(2, userID);
@@ -39,6 +62,7 @@ public class DAOOrders extends DBContext{
             stmt.setString(5, status);
             stmt.setInt(6, orderType);
              stmt.setBigDecimal(7, paidAmount);
+             stmt.setInt(8, orderID);
             
             stmt.executeUpdate();
             

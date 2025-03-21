@@ -14,6 +14,75 @@
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <title>Create User</title>
     </head>
+    <!-- Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<!-- jQuery và Select2 JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- CSS tùy chỉnh cho Select2 màu đen -->
+<style>
+    /* Thay đổi màu nền và màu chữ cho dropdown Select2 */
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        color: #000;
+        border: 1px solid #333;
+        height: 24px ; /* Giảm chiều cao */        
+        line-height: 24px;
+    }
+    
+    /* Màu chữ cho text hiển thị */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #555;
+        line-height: 24px;
+        
+    }
+    
+    /* Màu nền cho dropdown menu */
+    .select2-container--default .select2-dropdown {
+        background-color: #000;
+        border: 1px solid #333;
+    }
+    
+    /* Màu chữ và nền cho các option */
+    .select2-container--default .select2-results__option {
+        color: #fff;
+        background-color: #333;
+    }
+    
+    /* Màu nền khi hover option */
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #333;
+        color: #fff;
+    }
+    
+    /* Màu nền cho option đã chọn */
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: #444;
+    }
+    
+    /* Màu cho mũi tên dropdown */
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #000 transparent transparent transparent;
+    }
+
+        /* Search Input */
+        .search-box input[type="text"] {
+            width: 65%;
+            padding: 2px 8px;
+            font-size: 13px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .search-suggestions {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            padding: 5px;
+        }
+    </style>
 
     <body>
 
@@ -65,6 +134,9 @@
                                 <th>Email</th>
                                 <th>Mật khẩu</th>
                                 <th>Xác nhận mật khẩu</th>
+                                    <c:if test="${u.getRoleID() == 1}">
+                                    <th>Cửa hàng</th>  
+                                    </c:if>                                 
                                 <th>Chức năng</th>
                                 <th style="border-left: 1px solid black;">Hành động</th>
                             </tr>
@@ -88,6 +160,19 @@
                                 <input name="cfpass" id="cfpass" type="password" 
                                        placeholder="Xác nhận mật khẩu" >                                
                             </td>
+                            <c:if test="${u.getRoleID() == 1}">
+                                <td>
+                                    <select name="storeid" id="sortColumn" class="store-select">
+                                        <option value="">Chọn cửa hàng</option>
+                                        <c:forEach var="store" items="${storeList}">
+                                            <option  value="${store.getStoreID()}" ${store.getStoreID() eq sortColumn ? "selected" : ""}>${store.getStoreName()}</option>
+                                        </c:forEach>
+                                    </select>
+                                </td>
+                            </c:if> 
+                            <c:if test="${u.getRoleID() == 2}">
+                                <input hidden name="storeid" value="${user.getStoreID()}">
+                            </c:if> 
                             <td>
                                 <c:if test="${u.getRoleID() == 1}">
                                     <div>
@@ -107,8 +192,7 @@
                                 </c:if>
                             </td>
                             <td style="border-left: 1px solid black;">     
-                                <button type="button" onclick="sendOTP()">Tạo tài khoản</button>
-                                <button hidden type="submit" class="btn btn-primary"></button>
+                                <button type="submit">Tạo tài khoản</button>                                
                             </td>
                         </form>
                         </tr>
@@ -135,56 +219,63 @@
         </div>
     </body>
     <script>
-        function sendOTP() {
-            let email = document.getElementById("email").value;
-            if (email === "") {
-                alert("Vui lòng nhập email trước khi gửi OTP!");
-                return;
+
+    $(document).ready(function () {
+        $(".store-select").select2({
+            placeholder: "Tìm kiếm cửa hàng...",
+            allowClear: true
+        });
+        // Ẩn dropdown khi click ra ngoài
+        $(document).on("click", function (e) {
+            if (!$(e.target).closest(".select2-container").length) {
+                $(".store-select").select2("close");
             }
+        });
+    });
 
-            fetch("sendotp", {
-                method: "POST",
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                body: "email=" + encodeURIComponent(email)
-            })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {                            
-                            document.getElementById("otpModal").style.display = "flex"; // Chỉ hiển thị modal nếu thành công
-                        } else {
-                            alert("Lỗi: " + data.message); // Hiển thị lỗi nếu có
+        // search store
+        $(document).ready(function () {
+            $("#searchStoreInput").on("input", function () {
+                let query = $(this).val();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: "searchstore",
+                        type: "POST",
+                        data: {keyword: query},
+                        success: function (data) {
+                            if (data.trim() !== "") {
+                                $("#storeSuggestions").html(data).show();
+                            } else {
+                                $("#storeSuggestions").hide();
+                            }
                         }
-                    })
-                    .catch(error => console.error("Lỗi gửi OTP:", error));
+                    });
+                } else {
+                    $("#storeSuggestions").hide();
+                }
+            });
+
+            // Ẩn dropdown khi click ra ngoài
+            $(document).on("click", function (event) {
+                if (!$(event.target).closest("#searchStoreInput, #storeSuggestions").length) {
+                    $("#storeSuggestions").hide();
+                }
+            });
+
+            // Hiển thị dropdown khi focus vào ô tìm kiếm (nếu có dữ liệu)
+            $("#searchStoreInput").on("focus", function () {
+                if ($(this).val().length > 0) {
+                    $("#storeSuggestions").show();
+                }
+            });
+        });
+
+// Chọn cửa hàng từ dropdown
+        function selectStore(id, name) {
+            $("#searchStoreInput").val(name);
+            $("#selectedStoreId").val(id);
+            $("#storeSuggestions").hide();
         }
-
-
-        function verifyOTP() {
-            let userOTP = document.getElementById("otpInput").value;
-
-            fetch("verifyotp", {
-                method: "POST",
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                body: "otp=" + encodeURIComponent(userOTP)
-            })
-                    .then(response => response.text())
-                    .then(result => {
-                        if (result === "OTP verified") {
-                            closeOtpModal();
-                            document.getElementById("createUserForm").submit();
-                        } else {
-                            document.getElementById("otpError").style.display = "block"; // Hiển thị lỗi
-                            setTimeout(() => document.getElementById("otpError").style.display = "none", 3000);
-                        }
-                    })
-                    .catch(error => console.error("Lỗi xác thực OTP:", error));
-        }
-
-        function closeOtpModal() {
-            document.getElementById("otpModal").style.display = "none";
-        }
-
-
 
 
         // Hàm ẩn thông báo sau 3 giây
@@ -208,7 +299,7 @@
             const cfpass = document.getElementById("cfpass");
             const passError = document.getElementById("passError");
             const form = document.querySelector("createUserForm");
-
+            
             function validatePassword() {
                 if (password.value !== cfpass.value) {
                     passError.style.display = "block"; // Hiện lỗi
@@ -229,6 +320,60 @@
                 }
             });
         });
+
+
+
+
+
+
+//        function sendOTP() {
+//            let email = document.getElementById("email").value;
+//            if (email === "") {
+//                alert("Vui lòng nhập email trước khi gửi OTP!");
+//                return;
+//            }
+//
+//            fetch("sendotp", {
+//                method: "POST",
+//                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+//                body: "email=" + encodeURIComponent(email)
+//            })
+//                    .then(response => response.json())
+//                    .then(data => {
+//                        if (data.success) {                            
+//                            document.getElementById("otpModal").style.display = "flex"; // Chỉ hiển thị modal nếu thành công
+//                        } else {
+//                            alert("Lỗi: " + data.message); // Hiển thị lỗi nếu có
+//                        }
+//                    })
+//                    .catch(error => console.error("Lỗi gửi OTP:", error));
+//        }
+//
+//
+//        function verifyOTP() {
+//            let userOTP = document.getElementById("otpInput").value;
+//
+//            fetch("verifyotp", {
+//                method: "POST",
+//                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+//                body: "otp=" + encodeURIComponent(userOTP)
+//            })
+//                    .then(response => response.text())
+//                    .then(result => {
+//                        if (result === "OTP verified") {
+//                            closeOtpModal();
+//                            document.getElementById("createUserForm").submit();
+//                        } else {
+//                            document.getElementById("otpError").style.display = "block"; // Hiển thị lỗi
+//                            setTimeout(() => document.getElementById("otpError").style.display = "none", 3000);
+//                        }
+//                    })
+//                    .catch(error => console.error("Lỗi xác thực OTP:", error));
+//        }
+//
+//        function closeOtpModal() {
+//            document.getElementById("otpModal").style.display = "none";
+//        }
 
     </script>
             <script>

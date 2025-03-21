@@ -159,7 +159,7 @@ public class DAOUser extends DBContext {
 
     public int insertNewUser(User user) {
         int n = 0;
-        String sql = "INSERT INTO Users (userName, userPassword, email, roleID, createBy) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (userName, userPassword, email, roleID, createBy, storeID) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, user.getUserName()); // userName
@@ -167,6 +167,11 @@ public class DAOUser extends DBContext {
             pre.setString(3, user.getEmail()); // email
             pre.setInt(4, user.getRoleID()); // roleID
             pre.setInt(5, user.getCreateBy()); // createBy
+            if (user.getStoreID() == 0) {
+                pre.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                pre.setInt(6, user.getStoreID());
+            }
             n = pre.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DAOUser.class.getName()).log(Level.SEVERE, null, ex);
@@ -403,8 +408,9 @@ public class DAOUser extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int storeID = rs.getInt("storeID");
 
-                UsersList.add(new User(userID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy));
+                UsersList.add(new User(userID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -412,12 +418,12 @@ public class DAOUser extends DBContext {
         return UsersList;
     }
 
-    public List<User> listUsersByOwner(int createBy) {
-        String sql = "SELECT * FROM Users WHERE createBy = ? ORDER BY ID DESC";
+    public List<User> listUsersByStoreID(int storeID) {
+        String sql = "SELECT * FROM Users WHERE storeID = ? and roleID = 3 ORDER BY ID DESC";
         List<User> usersList = new ArrayList<>();
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, createBy);
+            ps.setInt(1, storeID);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -433,8 +439,8 @@ public class DAOUser extends DBContext {
                 boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
-
-                usersList.add(new User(userID, username, password, email, roleID, image, createAt, updateAt, createdBy, isDelete, deleteAt, deleteBy));
+                int storeid = rs.getInt("storeid");
+                usersList.add(new User(userID, username, password, email, roleID, image, createAt, updateAt, createdBy, isDelete, deleteAt, deleteBy, storeid));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -483,18 +489,18 @@ public class DAOUser extends DBContext {
     }
 
     public List<User> getUsersByKeyword(String keyword, List<User> U) {
-    List<User> users = new ArrayList<>();
-    String lowerKeyword = keyword.toLowerCase(); // Chuyển keyword thành chữ thường
+        List<User> users = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase(); // Chuyển keyword thành chữ thường
 
-    for (User user : U) {
-        if (user.getUserName().toLowerCase().contains(lowerKeyword) || 
-            user.getEmail().toLowerCase().contains(lowerKeyword)) {
-            users.add(user);
+        for (User user : U) {
+            if (user.getUserName().toLowerCase().contains(lowerKeyword)
+                    || user.getEmail().toLowerCase().contains(lowerKeyword)) {
+                users.add(user);
+            }
         }
+        return users;
     }
-    return users;
-}
-    
+
     public List<User> getUsersByAction(int selectedAction, List<User> U) {
         List<User> users = new ArrayList<>();
         for (User user : U) {

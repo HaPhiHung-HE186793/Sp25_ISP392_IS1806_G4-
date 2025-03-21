@@ -57,9 +57,27 @@ public class DAOOrderItems extends DBContext {
         }
         return totalRecords;
     }
+    public Integer getStoreIdByOrderID(int orderID) {
+        String sql = "SELECT storeID FROM orders WHERE orderID = ?";
+        Integer storeId = null;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, orderID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                storeId = rs.getInt("storeID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return storeId;
+    }
 
     public boolean createOrderItem(int orderID, int productID, String productName, BigDecimal price, BigDecimal unitPrice, int quantity) {
-        String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+        int storeId =getStoreIdByOrderID(orderID);
+        String sql = "INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity,storeID) VALUES (?, ?, ?, ?, ?, ?,?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderID);
@@ -68,6 +86,7 @@ public class DAOOrderItems extends DBContext {
             ps.setBigDecimal(4, price);
             ps.setBigDecimal(5, unitPrice);
             ps.setInt(6, quantity);
+             ps.setInt(7, storeId);
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0; // Trả về true nếu có ít nhất một dòng được thêm
