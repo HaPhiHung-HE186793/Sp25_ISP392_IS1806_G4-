@@ -4,6 +4,9 @@
  */
 package model;
 
+import DAO.DAOStore;
+import java.util.List;
+
 /**
  *
  * @author ADMIN
@@ -21,7 +24,8 @@ public class User {
     private Boolean isDelete;
     private String deleteAt;
     private int deleteBy;
-    String creatorName;
+    private String creatorName;
+    private String storeName;
     private int storeID;
 
     public User() {
@@ -184,6 +188,13 @@ public class User {
         this.storeID = storeID;
     }
     
+    public String getStoreName() {
+        DAOStore daos = new DAOStore();
+        String name = daos.getStoreNamesByStoreID(storeID);
+        return name;
+    }
+
+              
     
     @Override
     public String toString() {
