@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -116,6 +118,7 @@
     <body>
         <div id="main">
             <jsp:include page="/Component/menu.jsp"></jsp:include>
+
                 <div class="main-content">
                     <h2>Lịch Sử Giá Xuất</h2>
 
@@ -133,7 +136,7 @@
 
 
                             <button type="submit">Tìm kiếm</button>
-                                <button type="button" onclick="resetFilters()">Xóa bộ lọc</button> <!-- Thêm nút này -->
+                            <button type="button" onclick="resetFilters()">Xóa bộ lọc</button> <!-- Thêm nút này -->
 
                         </form>
 
@@ -160,7 +163,7 @@
                                 <tr>
                                     <th>Hình ảnh</th>
                                     <th>Tên sản phẩm</th>
-                                    <th>Giá nhập</th>
+                                    <th>Giá bán</th>
                                     <th>Ngày thay đổi</th>
                                     <th>Người thay đổi</th>
                                 </tr>
@@ -172,7 +175,9 @@
                                         <img src="${history.image}" alt="Ảnh sản phẩm" width="50" height="50">
                                     </td>
                                     <td>${history.productName}</td>
-                                    <td>${history.price}</td>
+                                    <td>
+                                        <fmt:formatNumber value="${history.price}" type="number" groupingUsed="true" />
+                                    </td>
                                     <td>${history.changedAt}</td>
                                     <td>${history.changedBy}</td>
                                 </tr>
@@ -231,12 +236,12 @@
 
         </script>
         <script>
-    function resetFilters() {
-        document.getElementById('searchInput').value = ''; // Xóa từ khóa tìm kiếm
-        document.getElementById('sortOrder').value = 'desc'; // Đặt sắp xếp về mặc định
-        document.getElementById('searchForm').submit(); // Submit lại form
-    }
-</script>
+            function resetFilters() {
+                document.getElementById('searchInput').value = ''; // Xóa từ khóa tìm kiếm
+                document.getElementById('sortOrder').value = 'desc'; // Đặt sắp xếp về mặc định
+                document.getElementById('searchForm').submit(); // Submit lại form
+            }
+        </script>
 
 
 

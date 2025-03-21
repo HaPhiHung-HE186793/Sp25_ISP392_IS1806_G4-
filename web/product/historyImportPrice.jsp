@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -172,7 +174,9 @@
                                         <img src="${history.image}" alt="Ảnh sản phẩm" width="50" height="50">
                                     </td>
                                     <td>${history.productName}</td>
-                                    <td>${history.price}</td>
+                                    <td>
+                                        <fmt:formatNumber value="${history.price}" type="number" groupingUsed="true" />
+                                    </td>
                                     <td>${history.changedAt}</td>
                                     <td>${history.changedBy}</td>
                                 </tr>
