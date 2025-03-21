@@ -46,14 +46,30 @@ public class Store{
         this.logostore = logostore;
     }
 
-    public Store(String storeName, int createBy, String address, String phone, String email, String logostore) {
+    public Store(int storeID, String storeName, int createBy, String address, String phone, String email, String logostore) {
+        this.storeID = storeID;
         this.storeName = storeName;
         this.createBy = createBy;
         this.address = address;
         this.phone = phone;
         this.email = email;
         this.logostore = logostore;
-    }        
+    }    
+
+    public Store(int storeID, String storeName) {
+        this.storeID = storeID;
+        this.storeName = storeName;
+    }
+    
+
+public Store( String storeName, int createBy, String address, String phone, String email, String logostore) {
+        this.storeName = storeName;
+        this.createBy = createBy;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.logostore = logostore;
+    }     
 
     // Getter và Setter
 
@@ -161,6 +177,11 @@ public class Store{
     public String getCreateName() { 
         DAOStore dao = new DAOStore();
         return dao.getUserNamebyID(createBy);
+    }
+    
+    public int CountStaff() { 
+        DAOStore dao = new DAOStore();
+        return dao.CountStaff(storeID);
     }
 
     @Override

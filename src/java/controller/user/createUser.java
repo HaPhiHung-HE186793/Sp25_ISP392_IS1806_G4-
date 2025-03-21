@@ -4,6 +4,7 @@
  */
 package controller.user;
 
+import DAO.DAOStore;
 import DAO.DAOUser;
 import model.User;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.regex.Pattern;
 import utils.mail;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import model.Store;
 
 /**
  *
@@ -40,6 +42,7 @@ import java.util.concurrent.Executors;
 public class createUser extends HttpServlet {
 
     DAO.DAOUser daou = new DAOUser();
+    DAO.DAOStore daos = new DAOStore();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
     private static ExecutorService emailExecutor = Executors.newSingleThreadExecutor(); // Tạo luồng riêng để gửi email
 
@@ -52,7 +55,11 @@ public class createUser extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String roleParam = request.getParameter("roleID");
-
+        String storeidParam = request.getParameter("storeid");
+        int storeid = 0;
+        if(storeidParam != null){
+           storeid = Integer.parseInt(storeidParam);
+        }
         // Xác định roleID từ giá trị radio button
         int roleID = 0; // Mặc định giá trị không hợp lệ
         if (roleParam != null) {
@@ -76,18 +83,18 @@ public class createUser extends HttpServlet {
         // lấy id của user hiện tại
         Integer createBy = (Integer) session.getAttribute("userID");        
 
-        //Customer customer = new Customer(fullName,);
         // Kiểm tra dữ liệu nhập
-//        if (userName == null || userName.trim().isEmpty()) {
-//            errors.add("Vui lòng nhập đầy đủ họ tên!");
-//        }
-//        if (email == null || email.trim().isEmpty()) {
-//            errors.add("Vui lòng nhập email!");
-//        } else if (!Pattern.matches(EMAIL_REGEX, email)) {
-//            errors.add("Email không hợp lệ!");
-//        } else if (daou.isEmailExists(email)) {
-//            errors.add("Email đã tồn tại!");
-//        }
+        if (userName == null || userName.trim().isEmpty()) {
+            errors.add("Vui lòng nhập đầy đủ họ tên!");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            errors.add("Vui lòng nhập email!");
+        } else if (!Pattern.matches(EMAIL_REGEX, email)) {
+            errors.add("Email không hợp lệ!");
+        } else 
+        if (daou.isEmailExists(email)) {
+            errors.add("Email đã tồn tại!");
+        }
 
         // Nếu có lỗi, quay lại trang createUser.jsp với danh sách lỗi và dữ liệu đã nhập
         if (!errors.isEmpty()) {
@@ -95,6 +102,8 @@ public class createUser extends HttpServlet {
             request.setAttribute("userName", userName);
             request.setAttribute("emaill", email);
             request.setAttribute("u", user_current);
+            List<Store> listStore = daos.listStore();
+        request.setAttribute("storeList", listStore);
             request.getRequestDispatcher("/user/createUser.jsp").forward(request, response);
             return;
         }
@@ -107,6 +116,7 @@ public class createUser extends HttpServlet {
         newUser.setRoleID(roleID);
         newUser.setCreateBy(createBy);
         newUser.setIsDelete(false);
+        newUser.setStoreID(storeid);
         daou.insertNewUser(newUser);
 
         //gửi email password được sinh ra cho người dùng
@@ -115,6 +125,8 @@ public class createUser extends HttpServlet {
 
         emailExecutor.shutdown(); // Đóng executor sau khi gửi xong
 
+        List<Store> listStore = daos.listStore();
+        request.setAttribute("storeList", listStore);
         request.setAttribute("success", "Thêm thành công!");
         request.setAttribute("userName", userName);
         request.setAttribute("emaill", email);
@@ -143,6 +155,8 @@ public class createUser extends HttpServlet {
             response.sendRedirect("ListProducts"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
             return;
         }
+        List<Store> listStore = daos.listStore();
+        request.setAttribute("storeList", listStore);
         request.setAttribute("u", user_current);
         request.setAttribute("showOTP", false);
         request.getRequestDispatcher("user/createUser.jsp").forward(request, response);

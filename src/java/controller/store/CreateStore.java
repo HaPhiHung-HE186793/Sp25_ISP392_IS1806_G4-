@@ -44,7 +44,7 @@ public class CreateStore extends HttpServlet {
         String storeName = request.getParameter("storeName");
         Part filePart = request.getPart("logo");
         String phone = request.getParameter("phone");
-        String email = request.getParameter("email");
+        String email = request.getParameter("email");          
         String address = request.getParameter("address");
 
         String imageLink = "";
@@ -75,10 +75,18 @@ public class CreateStore extends HttpServlet {
         if (storeName == null || storeName.trim().isEmpty()) {
             errors.add("Vui lòng nhập đầy đủ họ tên!");
         }
-        if (email == null || email.trim().isEmpty()) {
-            errors.add("Vui lòng nhập email!");
-        } else if (!Pattern.matches(EMAIL_REGEX, email)) {
-            errors.add("Email không hợp lệ!");
+        if (phone == null || phone.trim().isEmpty()) {
+            errors.add("Vui lòng nhập số điện thoại!");
+        } else if (!phone.matches("0\\d{9}")) {
+            errors.add("Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0!");
+        }
+        if (address == null || address.trim().isEmpty()) {
+            errors.add("Vui lòng nhập địa chỉ!");
+        }
+        if (email != null && !email.trim().isEmpty()) {
+            if (!Pattern.matches(EMAIL_REGEX, email)) {
+                errors.add("Email không hợp lệ!");
+            }
         }
         if (!errors.isEmpty()) {
             request.setAttribute("errors", errors);

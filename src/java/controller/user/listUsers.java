@@ -4,6 +4,7 @@
  */
 package controller.user;
 
+import DAO.DAOStore;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -25,6 +26,7 @@ import model.User;
 public class listUsers extends HttpServlet {
 
     DAOUser dao = new DAOUser();
+    DAOStore daos = new DAOStore();
     Pagination Page;
 
     /**
@@ -77,7 +79,7 @@ public class listUsers extends HttpServlet {
         }
         String error = null;
 
-        if (request.getParameter("id") != null) {
+        if (request.getParameter("id") != null && !(request.getParameter("id") == "")) {
             int id = Integer.parseInt(request.getParameter("id"));
             User Users = dao.getUserbyID(id);
             if (Users != null) {
@@ -96,7 +98,7 @@ public class listUsers extends HttpServlet {
                     request.getRequestDispatcher("updateuser").forward(request, response);
                 }
             }
-        } else error = "";
+        } 
 //        //block user
 //        if (request.getParameter("blockid") != null) {
 //            int blockid = Integer.parseInt(request.getParameter("blockid"));
@@ -119,7 +121,7 @@ public class listUsers extends HttpServlet {
         if (roleID == 1) {
             U = dao.listUsers();
         } else {
-            U = dao.listUsersByOwner(user_current.getID());
+            U = dao.listUsersByStoreID(user_current.getStoreID());
         }
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = U.size();
@@ -137,7 +139,7 @@ public class listUsers extends HttpServlet {
         for (User user : U) {
             User u = dao.getUserbyID(user.getCreateBy());
             String creatorName = u.getUserName();
-            user.setCreatorName(creatorName);
+            user.setCreatorName(creatorName);                     
         }
 
         String endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -145,7 +147,7 @@ public class listUsers extends HttpServlet {
         request.setAttribute("error", error);
         request.setAttribute("user_current", user_current);
         session.setAttribute("U", U);
-        request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
+        request.getRequestDispatcher("user/listUsers.jsp").forward(request, response);
 
     }
 
@@ -175,7 +177,7 @@ public class listUsers extends HttpServlet {
         String error = null;
         String actionBlock = request.getParameter("actionBlock");
         String userIDBlock = request.getParameter("userIDBlock");
-        if (userIDBlock != null) {
+        if (userIDBlock != null && !(userIDBlock == "")) { 
             int id = Integer.parseInt(userIDBlock);
             User U = dao.getUserbyID(id);
             if (U.getRoleID() == 1) {
@@ -202,7 +204,7 @@ public class listUsers extends HttpServlet {
         if (user_current.getRoleID() == 1) {
             filteredUsers = dao.listUsers();
         } else {
-            filteredUsers = dao.listUsersByOwner(user_current.getID());
+            filteredUsers = dao.listUsersByStoreID(user_current.getStoreID());
         }
 
         if (role != null && role != -1) {
@@ -237,7 +239,7 @@ public class listUsers extends HttpServlet {
             System.out.println(mess);
             filteredUsers = (user_current.getRoleID() == 1)
                     ? dao.listUsers()
-                    : dao.listUsersByOwner(user_current.getID());
+                    : dao.listUsersByStoreID(user_current.getStoreID());
 
         }
 
@@ -274,7 +276,7 @@ public class listUsers extends HttpServlet {
         request.setAttribute("endDate", endDate);
         request.setAttribute("selectedAction", selectedAction);
         request.setAttribute("user_current", user_current);
-        request.getRequestDispatcher("user/list_users.jsp").forward(request, response);
+        request.getRequestDispatcher("user/listUsers.jsp").forward(request, response);
     }
 
     /**

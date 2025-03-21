@@ -141,6 +141,23 @@ public class DAOStore extends DBContext {
         return userNames;
     }
 
+    public String getStoreNamesByStoreID(int storeID) {
+        String storeNames = null;
+        String sql = "SELECT storeName FROM store WHERE storeID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, storeID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                storeNames = rs.getString("storeName");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return storeNames;
+    }
+
     public String getUserNamebyID(int id) {
         String username = null;  // Khởi tạo biến user là null
         String sql = "SELECT * FROM users WHERE ID = " + id;  // Câu truy vấn tìm user theo ID
@@ -156,6 +173,39 @@ public class DAOStore extends DBContext {
             ex.printStackTrace();
         }
         return username;  // Trả về đối tượng user nếu tìm thấy, hoặc null nếu không tìm thấy
+    }
+
+    public int CountStaff(int id) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) AS total FROM users WHERE storeid = ? AND roleid = 3";
+        try (PreparedStatement pre = conn.prepareStatement(sql)) {
+            pre.setInt(1, id); // Thiết lập giá trị cho tham số storeid
+            ResultSet rs = pre.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt("total"); // Lấy giá trị COUNT(*) từ kết quả
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+
+    public List<Store> searchStoresByName(String keyword) {
+        List<Store> stores = new ArrayList<>();
+        String sql = "SELECT * FROM Store WHERE (storeName LIKE ? OR phone LIKE ?) AND isDelete = 0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                stores.add(new Store(rs.getInt("storeID"), rs.getString("storeName")));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return stores;
     }
 
     public List<Store> getStoreByKeyword(String keyword, List<Store> S) {
@@ -189,6 +239,12 @@ public class DAOStore extends DBContext {
             }
         }
         return store;
+    }
+
+    public static void main(String[] args) {
+        DAOStore dao = new DAOStore();
+        int s = dao.CountStaff(1);
+        System.out.println(s);
     }
 
 }

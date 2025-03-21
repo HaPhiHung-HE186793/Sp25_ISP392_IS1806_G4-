@@ -487,11 +487,12 @@ button:hover {
 }
 /*<<<<<<< Updated upstream*/
 .pagination {
+    margin-left: -350px;
     font-size: 13px;
-    margin-top: -17px;
-    display: flex; /* Hiển thị các nút trên một hàng */
-    justify-content: center; /* Căn giữa các nút */
-    list-style: none; /* Bỏ dấu chấm nếu có */
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    list-style: none;
     padding: 0;
 }
 

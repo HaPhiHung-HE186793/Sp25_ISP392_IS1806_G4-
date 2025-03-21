@@ -4,6 +4,7 @@
  */
 package controller.user;
 
+import DAO.DAOStore;
 import DAO.DAOUser;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
+import model.Store;
 import model.User;
 import utils.mail;
 
@@ -26,6 +28,7 @@ import utils.mail;
  */
 public class updateUser extends HttpServlet {
 
+    DAO.DAOStore daos = new DAOStore();
     DAO.DAOUser daou = new DAOUser();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
     mail sendEmail = new mail();
@@ -80,6 +83,8 @@ public class updateUser extends HttpServlet {
         if (userid == null) {
             response.sendRedirect("ListProducts");
         }
+        List<Store> listStore = daos.listStore();
+        request.setAttribute("storeList", listStore);
         User user = daou.getUserbyID(userid);
         request.setAttribute("user_update", user);
         request.setAttribute("u", user_current);
@@ -149,6 +154,8 @@ public class updateUser extends HttpServlet {
 //        }
 
         if (!errors.isEmpty()) {
+            List<Store> listStore = daos.listStore();
+        request.setAttribute("storeList", listStore);
             request.setAttribute("errors", errors);
             request.setAttribute("userName", userName);
             request.setAttribute("email", email);
@@ -225,6 +232,8 @@ public class updateUser extends HttpServlet {
         // lay ra user sau khi update
         User user = daou.getUserbyID(userid);
         request.setAttribute("user_update", user);
+        List<Store> listStore = daos.listStore();
+        request.setAttribute("storeList", listStore);
         request.setAttribute("u", user_current);
         request.setAttribute("success", "Cập nhât thành công!");
         request.getRequestDispatcher("/user/updateUser.jsp").forward(request, response);
