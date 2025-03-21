@@ -176,11 +176,19 @@
                     </table>
 
                 </div>
+<<<<<<< HEAD
                                                                 <%@include file="/Component/pagination.jsp" %>
 
+=======
+                            <%@include file="/Component/pagination.jsp" %>
+>>>>>>> origin/main
             </div>
 
         </div>
+<<<<<<< HEAD
+=======
+        
+>>>>>>> origin/main
 
     </body>
 

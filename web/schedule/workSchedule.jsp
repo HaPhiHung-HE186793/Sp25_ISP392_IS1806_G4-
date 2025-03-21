@@ -423,9 +423,10 @@
 
                     </div>
                 </div>
+                 <%@include file="/Component/pagination.jsp" %>           
             </div>
         </div>
-        <%@include file="/Component/pagination.jsp" %>
+        
         <%@include file="/Component/footer.jsp" %>
 
         <div id="myModal" class="modal">
