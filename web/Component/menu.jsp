@@ -115,9 +115,7 @@
             <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý zone</a>
 
             <a href="<%=request.getContextPath()%>/storeprofile">Hồ sơ cửa hàng</a>
-
-        </c:if>
-        <a href="<%=request.getContextPath()%>/updateprofile">Hồ sơ người dùng</a>
+        </c:if>        
     </div>
 </body>
 </html>
