@@ -241,7 +241,6 @@
         </div>
     </div>
 </body>
-<<<<<<< HEAD
 
 
             <script>
@@ -276,6 +275,4 @@
                         openAddNewDebt.addEventListener('click', toggleAddNewDebt);
 
             </script>
-=======
->>>>>>> origin/main
 </html>

@@ -118,7 +118,7 @@
                                     <td ><textarea class="newDebt-input newDebt-total"  rows="5" cols="10" >${debtRecords.getDescription()}</textarea><br></td>                                    
                                 </tr>                                    
                                 <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Tổng nợ:</div></td>
+                                    <td ><div class="newDebt-text"> Ngày lập phiếu:</div></td>
                                     <td ><input class="newDebt-input newDebt-total"  value="${debtRecords.getUpdateAt()}" type="datetime-local" placeholder="0" readonly> </td>                                    
                                 </tr>  
                                 <tr class="newDebt-tableTbody-tr">  

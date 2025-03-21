@@ -94,7 +94,7 @@
 
                             <button style="background-color: #5bc0de;" >Lọc</button>
                         </form>
-                        <!--<button onclick="window.location.href = '<%=request.getContextPath()%>/ListDebtCustomer?id=${customerid}'">Bỏ lọc</button>--> 
+                        <button onclick="window.location.href = '<%=request.getContextPath()%>/ListDebtCustomer?customerid=${customerid}'">Bỏ lọc</button>
 
 
                         <button class="addNewDebt js-open-newDebt">Tạo phiếu nợ</button>
@@ -174,9 +174,10 @@
 
                         </tbody>
                     </table>
-                                    <%@include file="/Component/pagination.jsp" %>
 
                 </div>
+                                                                <%@include file="/Component/pagination.jsp" %>
+
             </div>
 
         </div>
