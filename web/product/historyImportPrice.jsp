@@ -178,19 +178,21 @@
                         </tbody>
                     </table>
                 </div>
+               
                 <div class="pagination">
                     <c:if test="${currentPage > 1}">
-                        <a href="HistoryImportPriceServlet?page=${currentPage - 1}">&laquo; Trước</a>
+                        <a href="HistoryImportPriceServlet?page=${currentPage - 1}&sortOrder=${sortOrder}">&laquo; Trước</a>
                     </c:if>
 
                     <c:forEach var="i" begin="1" end="${totalPages}">
-                        <a href="HistoryImportPriceServlet?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                        <a href="HistoryImportPriceServlet?page=${i}&sortOrder=${sortOrder}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                     </c:forEach>
 
                     <c:if test="${currentPage < totalPages}">
-                        <a href="HistoryImportPriceServlet?page=${currentPage + 1}">Sau &raquo;</a>
+                        <a href="HistoryImportPriceServlet?page=${currentPage + 1}&sortOrder=${sortOrder}">Sau &raquo;</a>
                     </c:if>
                 </div>
+
 
 
 
