@@ -46,11 +46,12 @@ public class ListDebtCustomer extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Integer storeID = (Integer) session.getAttribute("storeID");
 
         DAODebtRecords dao = new DAODebtRecords();
         DAOCustomers daoC = new DAOCustomers();
         String customerid = request.getParameter("customerid");
-        Customers customers = daoC.getCustomer(customerid);
+        Customers customers = daoC.getCustomer(customerid, storeID);
         if (customers == null) {
             response.sendRedirect("ListCustomer");
         }
@@ -91,11 +92,12 @@ public class ListDebtCustomer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Integer storeID = (Integer) session.getAttribute("storeID");
 
         DAODebtRecords dao = new DAODebtRecords();
         DAOCustomers daoC = new DAOCustomers();
         String customerid = (String) session.getAttribute("customerid");
-        Customers customers = daoC.getCustomer(customerid);
+        Customers customers = daoC.getCustomer(customerid,storeID);
 
         if (customers == null) {
             response.sendRedirect("ListCustomer");

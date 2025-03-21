@@ -1,8 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<!DOCTYPE html>
 <html lang="en">
 
     <head>
@@ -17,6 +16,20 @@
                 padding: 10px;
                 width: 200%;
                 margin: 15px;
+            }
+
+
+            .newDebt-input {
+                font-size: 12px;
+                border-radius: 5px;
+                padding: 6px;
+                width: 100%;
+                margin: 15px;
+            }
+
+
+            .newDebt-text {
+                font-size: 13px;
             }
         </style>
 
@@ -46,53 +59,78 @@
                         </c:if>
                     </div>
 
-                    <form action="UpdateCustomer" method="post"  style="margin-left: 100px;" onsubmit="return validatePhone()">
+                    <form action="UpdateCustomer" method="post"  style="margin-left: 100px;">
                         <table>                      
 
                             <tbody class="newDebt-tableTbody">
-                                <tr >
-                                    <td ><input name="id" value="${customers.getCustomerID()}" type="hidden"> </td>                                    
-                                </tr>  
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Họ và tên (*):</div></td>
-                                    <td ><input class="newDebt-input" name="name" value="${customers.getName()}" type="text" placeholder="Nguyen Van A" required> </td>                                    
-                                </tr>                            
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Địa chỉ:</div></td>
-                                    <td ><textarea class="newDebt-input" name="address" value="${customers.getAddress()}" rows="5" cols="10" name="feedback">${customers.getAddress()}</textarea><br></td>                                    
-                                </tr>                                   
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> SĐT (*):</div></td>
-                                    <td ><input class="newDebt-input" name="phone" value="${customers.getPhone()}" type="text" required> </td>                                    
-                                </tr>                       
-             
-                                <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Email:</div></td>
-                                    <td ><input class="newDebt-input" name="email" value="${customers.getEmail()}" type="text" > </td>                                    
-                                </tr>                                   
-                   
+
+
 
                                 <tr class="newDebt-tableTbody-tr">
-                                    <td><div class="newDebt-text"> Tổng nợ (VND):</div></td>
+                                    <td ><div class="newDebt-text"> ID:</div></td>
+                                    <td ><input class="newDebt-input newDebt-total"  value="${debtRecords.getDebtID()}" type="text" > </td>                                    
+                                </tr>                            
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td><div class="newDebt-text">Trạng thái:</div></td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${debtRecords.getPaymentStatus() == 0}">
+                                                <input class="newDebt-input newDebt-total" name="total" value="Vay nợ" type="text" placeholder="0" readonly>
+                                            </c:when>
+                                            <c:when test="${debtRecords.getPaymentStatus() == 1}">
+                                                <input class="newDebt-input newDebt-total" name="total" value="Trả nợ" type="text" placeholder="0" readonly>
+                                            </c:when>
+                                            <c:when test="${debtRecords.getPaymentStatus() == 2}">
+                                                <input class="newDebt-input newDebt-total" name="total" value="Đi vay" type="text" placeholder="0" readonly>
+                                            </c:when>
+                                            <c:when test="${debtRecords.getPaymentStatus() == 3}">
+                                                <input class="newDebt-input newDebt-total" name="total" value="Đi trả" type="text" placeholder="0" readonly>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <input class="newDebt-input newDebt-total" name="total" value="Không xác định" type="text" placeholder="0" readonly>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                </tr>
+
+
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td><div class="newDebt-text"> Số tiền (VND):</div></td>
                                     <td>
                                         <input class="newDebt-input newDebt-total" name="total" 
-                                               value="<fmt:formatNumber value='${customers.getTotalDebt()}' type='number' minFractionDigits='0' />" 
+                                               value="<fmt:formatNumber value='${debtRecords.getAmount()}' type='number' minFractionDigits='0' />" 
                                                type="text" placeholder="0" readonly> 
                                     </td>                                    
                                 </tr>
 
+
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text"> Ảnh :</div></td>
+                                    <td class="table-cell" style="width: 400px; height: 100px;"> 
+                                        <c:if test="${not empty debtRecords.getImg()}">
+                                            <img src="${debtRecords.getImg()}" class="product-image" style="width: 400px;height: 400px  ; cursor: pointer; object-fit: contain;"
+                                                 onclick="showImageModal('${debtRecords.getImg()}')">
+                                        </c:if>
+                                    </td>  
+                                </tr>                                   
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text">Ghi chú :</div></td>
+                                    <td ><textarea class="newDebt-input newDebt-total"  rows="5" cols="10" >${debtRecords.getDescription()}</textarea><br></td>                                    
+                                </tr>                                    
+                                <tr class="newDebt-tableTbody-tr">
+                                    <td ><div class="newDebt-text"> Tổng nợ:</div></td>
+                                    <td ><input class="newDebt-input newDebt-total"  value="${debtRecords.getUpdateAt()}" type="datetime-local" placeholder="0" readonly> </td>                                    
+                                </tr>  
                                 <tr class="newDebt-tableTbody-tr">  
 
                                 </tr>  
                             </tbody>
 
                         </table>
-                        <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">
+                        <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListDebtCustomer?customerid=${debtRecords.getCustomerID()}'">
                             Quay lại
                         </button>
-                        <button class="table-update-add" style="margin-left:10px;">
-                            Cập nhật
-                        </button>
+
 
                     </form>
 
@@ -175,31 +213,5 @@
 
     </script>
 
-    
-        <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var phoneInput = document.querySelector("input[name='phone']");
-
-            phoneInput.addEventListener("input", function () {
-                var phoneValue = phoneInput.value.replace(/\D/g, ""); // Chỉ giữ lại số
-                if (phoneValue.length > 10) {
-                    phoneValue = phoneValue.slice(0, 10); // Giới hạn tối đa 10 số
-                }
-                phoneInput.value = phoneValue;
-            });
-        });
-
-        function validatePhone() {
-            var phone = document.querySelector("input[name='phone']").value;
-            var phoneRegex = /^[0-9]{10}$/; // Chỉ cho phép đúng 10 chữ số
-
-            if (!phoneRegex.test(phone)) {
-                alert("Số điện thoại phải có đúng 10 chữ số và không được âm!");
-                return false; // Ngăn form submit nếu nhập sai
-            }
-            return true;
-        }
-    </script>
-    
 </html>
 

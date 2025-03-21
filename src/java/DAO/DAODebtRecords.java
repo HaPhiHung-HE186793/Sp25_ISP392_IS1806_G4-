@@ -31,67 +31,61 @@ public class DAODebtRecords extends DBContext {
     public DAODebtRecords() {
         db = new DBContext(); // Sử dụng kết nối từ DBContext
     }
-// public void processDebtQueue() {
-//        String selectSQL = "SELECT debtID, paymentStatus , amount FROM DebtRecords WHERE status = 0";
-//
-//        try {
-//            ResultSet rs = db.getData(selectSQL);
-//            conn.setAutoCommit(false);
-//            while (rs.next()) {
-//                int debtID = rs.getInt("debtID");
-//                int paymentStatus = rs.getInt("paymentStatus");
-//                double amount = rs.getDouble("amount");
-//
-//                // Cập nhật số dư trong bảng customer
-//                updateCustomerDebt(debtID, paymentStatus, amount);
-//
-//                // Đánh dấu nợ là đã xử lý
-//                markDebtAsProcessed(debtID);
-//            }
-//            conn.commit();
-//        } catch (SQLException e) {
-//            if (conn != null) {
-//                try {
-//                    conn.rollback();
-//                } catch (SQLException rollbackEx) {
-//                    rollbackEx.printStackTrace();
-//                }
-//            }
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (conn != null) {
-//                    conn.close(); // Đóng kết nối ở đây
-//                }
-//            } catch (SQLException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//    }
 
-//    private static final BlockingQueue<DebtRecords> debtQueue = new LinkedBlockingQueue<>();
-    public List<DebtRecords> getUnprocessedDebts() {
-    List<DebtRecords> unprocessedList = new ArrayList<>();
-    String selectSQL = "SELECT debtID, customerID, paymentStatus, amount, status FROM DebtRecords WHERE status = 0";
+    public DebtRecords getDebt(String id, int storeid) {
+        String sql = " select * from DebtRecords where debtID = ? and  storeID = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, id); // Truyền tham số vào dấu ?
+            pre.setInt(2, storeid); // Truyền tham số vào dấu ?
 
-    try (ResultSet rs = db.getData(selectSQL)) {
-        while (rs.next()) {
-            DebtRecords record = new DebtRecords();
-            record.setDebtID(rs.getInt("debtID"));
-            record.setCustomerID(rs.getInt("customerID"));
-            record.setPaymentStatus(rs.getInt("paymentStatus"));
-            record.setAmount(rs.getBigDecimal("amount"));
-            record.setStatus(rs.getInt("status"));
-            unprocessedList.add(record);
+            ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
+
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                BigDecimal amount = rs.getBigDecimal("amount");  // Sử dụng double cho tổng nợ
+                int paymentStatus = rs.getInt("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");  // Chuyển sang boolean
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                int storeID = rs.getInt("storeID");
+                String description = rs.getString("description");
+                String img = rs.getString("img");
+                int status = rs.getInt("status");
+
+                return new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID, description, img, status);
+
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return null;
     }
-    return unprocessedList;
-}
 
+    public List<DebtRecords> getUnprocessedDebts() {
+        List<DebtRecords> unprocessedList = new ArrayList<>();
+        String selectSQL = "SELECT debtID, customerID, paymentStatus, amount, status FROM DebtRecords WHERE status = 0";
 
- 
+        try (ResultSet rs = db.getData(selectSQL)) {
+            while (rs.next()) {
+                DebtRecords record = new DebtRecords();
+                record.setDebtID(rs.getInt("debtID"));
+                record.setCustomerID(rs.getInt("customerID"));
+                record.setPaymentStatus(rs.getInt("paymentStatus"));
+                record.setAmount(rs.getBigDecimal("amount"));
+                record.setStatus(rs.getInt("status"));
+                unprocessedList.add(record);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return unprocessedList;
+    }
 
     public int addDebtRecord(DebtRecords record) {
         String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete,storeID,description,img,status) "
@@ -125,8 +119,7 @@ public class DAODebtRecords extends DBContext {
 
         return generatedDebtID; // Trả về debtID để thêm vào queue
     }
-    
-    
+
     public int addDebtRecord1(DebtRecords record) {
         String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus,createBy, isDelete,status) "
                 + "VALUES (?, ?, ?, ?, ?, ?,0)";
@@ -138,10 +131,9 @@ public class DAODebtRecords extends DBContext {
             ps.setInt(2, record.getOrderID());
             ps.setBigDecimal(3, record.getAmount());
             ps.setInt(4, record.getPaymentStatus());
-           
+
             ps.setInt(5, record.getCreateBy());
             ps.setBoolean(6, record.isIsDelete());
-            
 
             ps.executeUpdate();
 
@@ -156,11 +148,7 @@ public class DAODebtRecords extends DBContext {
 
         return generatedDebtID; // Trả về debtID để thêm vào queue
     }
-    
 
-
-
-    
     public void updateCustomerDebt(int customerId, int paymentStatus, BigDecimal amount) throws SQLException {
         String operation = switch (paymentStatus) {
             case 1, 2 ->

@@ -165,6 +165,10 @@
         <servlet-name>HistoryExportPriceServlet</servlet-name>
         <servlet-class>controller.products.HistoryExportPriceServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DetailDebtCustomer</servlet-name>
+        <servlet-class>controller.debt.DetailDebtCustomer</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
         <url-pattern>/forgotpass</url-pattern>
@@ -323,5 +327,9 @@
     <servlet-mapping>
         <servlet-name>HistoryExportPriceServlet</servlet-name>
         <url-pattern>/HistoryExportPriceServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DetailDebtCustomer</servlet-name>
+        <url-pattern>/DetailDebtCustomer</url-pattern>
     </servlet-mapping>
 </web-app>

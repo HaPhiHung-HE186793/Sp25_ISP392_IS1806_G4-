@@ -1,12 +1,7 @@
-CREATE DATABASE ISPG4NV1;
+
 USE ISPG4NV1;
 
-CREATE TABLE ProductUnits (
-    unitID INT PRIMARY KEY IDENTITY(1,1),
-    productID INT NOT NULL,
-    unitSize INT NOT NULL CHECK (unitSize > 0),  -- Lưu đơn vị bao dưới dạng số kg
-    CONSTRAINT fk_product_unit FOREIGN KEY (productID) REFERENCES products(productID) ON DELETE CASCADE
-);
+
 
 
 CREATE TABLE store ( 
@@ -25,25 +20,8 @@ deleteAt DATETIME NULL,
 deleteBy INT NULL 
 );
 
-ALTER TABLE OrderItems DROP CONSTRAINT FK__OrderItem__produ__34C8D9D1;
 
-ALTER TABLE customers ADD storeID INT NULL;
-ALTER TABLE DebtRecords ADD storeID INT NULL;
-ALTER TABLE DebtRecords ADD description nvarchar(max) NULL;
-ALTER TABLE orderitems ADD storeID INT NULL;
-ALTER TABLE productzones ADD storeID INT NULL;
 
-ALTER TABLE users ADD storeID INT NULL;
-ALTER TABLE users ADD CONSTRAINT fk_users_store FOREIGN KEY (storeID) REFERENCES store(storeID);
-
-ALTER TABLE zones ADD storeID INT NULL;
-ALTER TABLE zones ADD CONSTRAINT fk_zones_store FOREIGN KEY (storeID) REFERENCES store(storeID);
-
-ALTER TABLE products ADD storeID INT NULL;
-ALTER TABLE products ADD CONSTRAINT fk_products_store FOREIGN KEY (storeID) REFERENCES store(storeID);
-
-ALTER TABLE orders ADD storeID INT NULL;
-ALTER TABLE orders ADD CONSTRAINT fk_orders_store FOREIGN KEY (storeID) REFERENCES store(storeID);
 
 -- bang USERS
 CREATE TABLE users (
@@ -65,10 +43,10 @@ CREATE TABLE users (
 CREATE TABLE customers (
     customerID INT PRIMARY KEY IDENTITY(1,1),
     [name] nVARCHAR(30) NOT NULL,
-    email nVARCHAR(30) NOT NULL UNIQUE,
-    phone nVARCHAR(15),
-	[address] nvarchar(100),
-	totalDebt DECIMAL(18,2),
+    email nVARCHAR(30) NOT NULL ,
+    phone nVARCHAR(10),
+	[address] nvarchar(MAX),
+	totalDebt DECIMAL(18,2) default 0,
 	createAt DATETIME not null DEFAULT GETDATE(),
 	updateAt DATETIME,
 	createBy int not null, -- ma cua user 
@@ -124,6 +102,13 @@ CREATE TABLE products (
 	deleteBy int 
 );
 
+CREATE TABLE ProductUnits (
+    unitID INT PRIMARY KEY IDENTITY(1,1),
+    productID INT NOT NULL,
+    unitSize INT NOT NULL CHECK (unitSize > 0),  -- Lưu đơn vị bao dưới dạng số kg
+    CONSTRAINT fk_product_unit FOREIGN KEY (productID) REFERENCES products(productID) ON DELETE CASCADE
+);
+
 CREATE TABLE ProductZones (
     productID INT NOT NULL,
     zoneID INT NOT NULL,
@@ -166,6 +151,66 @@ CREATE TABLE DebtRecords (
 	isDelete bit DEFAULT 0, -- 1 la da xoa, 0 la chua xoa
 	deleteAt DATETIME,
 	deleteBy int,
+	img nvarchar(MAX),
+	status int,
     FOREIGN KEY (customerID) REFERENCES customers(customerID)
 );
 
+ALTER TABLE customers ADD storeID INT NULL;
+ALTER TABLE DebtRecords ADD storeID INT NULL;
+ALTER TABLE DebtRecords ADD description nvarchar(max) NULL;
+ALTER TABLE orderitems ADD storeID INT NULL;
+ALTER TABLE productzones ADD storeID INT NULL;
+
+ALTER TABLE users ADD storeID INT NULL;
+ALTER TABLE users ADD CONSTRAINT fk_users_store FOREIGN KEY (storeID) REFERENCES store(storeID);
+
+ALTER TABLE zones ADD storeID INT NULL;
+ALTER TABLE zones ADD CONSTRAINT fk_zones_store FOREIGN KEY (storeID) REFERENCES store(storeID);
+
+ALTER TABLE products ADD storeID INT NULL;
+ALTER TABLE products ADD CONSTRAINT fk_products_store FOREIGN KEY (storeID) REFERENCES store(storeID);
+
+ALTER TABLE orders ADD storeID INT NULL;
+ALTER TABLE orders ADD CONSTRAINT fk_orders_store FOREIGN KEY (storeID) REFERENCES store(storeID);
+
+
+
+-- Thêm dữ liệu vào bảng store
+INSERT INTO store (ownerID, storeName, address, phone, email, createBy)
+VALUES
+(1, 'Store A', '123 Main St', '0123456789', 'storeA@example.com', 1),
+(2, 'Store B', '456 Side St', '0987654321', 'storeB@example.com', 2);
+
+-- Thêm dữ liệu vào bảng users với các role: 1 (admin), 2 (owner), 3 (staff)
+INSERT INTO users (userName, userPassword, email, roleID, [image], createBy, storeID)
+VALUES
+('admin1', 'password123', 'admin1@example.com', 1, 'admin1.jpg', 1, NULL),
+('owner1', 'password123', 'owner1@example.com', 2, 'owner1.jpg', 1, 1),
+('owner2', 'password123', 'owner2@example.com', 2, 'owner2.jpg', 1, 2),
+('staff1', 'password123', 'staff1@example.com', 3, 'staff1.jpg', 2, 1),
+('staff2', 'password123', 'staff2@example.com', 3, 'staff2.jpg', 2, 2);
+
+-- Thêm dữ liệu vào bảng customers
+INSERT INTO customers ([name], email, phone, [address], createBy, storeID)
+VALUES
+('Customer A', 'customerA@example.com', '0912345678', '789 Market St', 2, 1),
+('Customer B', 'customerB@example.com', '0923456789', '159 Shop St', 3, 2);
+
+-- Thêm dữ liệu vào bảng products
+INSERT INTO products (productName, [description], price, quantity, [image], createBy, storeID)
+VALUES
+('Rice A', 'High-quality rice', 100.00, 50, 'riceA.jpg', 2, 1),
+('Rice B', 'Organic rice', 120.00, 30, 'riceB.jpg', 3, 2);
+
+-- Thêm dữ liệu vào bảng orders
+INSERT INTO orders (customerID, userID, totalAmount, createBy, storeID, [status])
+VALUES
+(1, 4, 500.00, 2, 1, 'Pending'),
+(2, 5, 360.00, 3, 2, 'Completed');
+
+-- Thêm dữ liệu vào bảng orderitems
+INSERT INTO OrderItems (orderID, productID, productName, price, unitPrice, quantity, [description], storeID)
+VALUES
+(1, 1, 'Rice A', 100.00, 100.00, 5, 'Order 1 - Rice A', 1),
+(2, 2, 'Rice B', 120.00, 120.00, 3, 'Order 2 - Rice B', 2);

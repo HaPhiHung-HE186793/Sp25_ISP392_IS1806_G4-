@@ -82,13 +82,26 @@
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getCustomerID()}</td>
                                     <td >${o.getName()}</td>
-                                    <td >${o.getEmail()}</td>
+                                    <td style="  max-width: 50px; /* Điều chỉnh độ rộng tối đa theo nhu cầu */
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;">${o.getEmail()}</td>
                                     <td >${o.getPhone()}</td>
-                                    <td style="max-width: 150px;">${o.getAddress()}</td>
-                                    <td><fmt:setLocale value="de_DE" />
+                                    <td style="  max-width: 100px; /* Điều chỉnh độ rộng tối đa theo nhu cầu */
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;">${o.getAddress()}</td>
+                                    <td style="max-width: 100px;
+                                        margin-top: 7px;
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        display: inline-block;
+                                        text-align: center;
+                                        vertical-align: middle;"><fmt:setLocale value="de_DE" />
                                         <fmt:formatNumber value="${o.getTotalDebt()}" type="number" minFractionDigits="0" /> VND</td>
-<td><fmt:formatDate value="${o.getCreateAt()}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-<td><fmt:formatDate value="${o.getUpdateAt()}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+                                    <td >${o.getCreateAt()}</td>
+                                    <td>${o.getUpdateAt()}</td>
 
                                     <td> 
                                         <a href="UpdateCustomer?customerid=${o.getCustomerID()}">
@@ -236,30 +249,30 @@
 
     </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var phoneInput = document.querySelector("input[name='phone']");
-        
-        phoneInput.addEventListener("input", function() {
-            var phoneValue = phoneInput.value.replace(/\D/g, ""); // Chỉ giữ lại số
-            if (phoneValue.length > 10) {
-                phoneValue = phoneValue.slice(0, 10); // Giới hạn tối đa 10 số
-            }
-            phoneInput.value = phoneValue;
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var phoneInput = document.querySelector("input[name='phone']");
+
+            phoneInput.addEventListener("input", function () {
+                var phoneValue = phoneInput.value.replace(/\D/g, ""); // Chỉ giữ lại số
+                if (phoneValue.length > 10) {
+                    phoneValue = phoneValue.slice(0, 10); // Giới hạn tối đa 10 số
+                }
+                phoneInput.value = phoneValue;
+            });
         });
-    });
 
-    function validatePhone() {
-        var phone = document.querySelector("input[name='phone']").value;
-        var phoneRegex = /^[0-9]{10}$/; // Chỉ cho phép đúng 10 chữ số
+        function validatePhone() {
+            var phone = document.querySelector("input[name='phone']").value;
+            var phoneRegex = /^[0-9]{10}$/; // Chỉ cho phép đúng 10 chữ số
 
-        if (!phoneRegex.test(phone)) {
-            alert("Số điện thoại phải có đúng 10 chữ số và không được âm!");
-            return false; // Ngăn form submit nếu nhập sai
+            if (!phoneRegex.test(phone)) {
+                alert("Số điện thoại phải có đúng 10 chữ số và không được âm!");
+                return false; // Ngăn form submit nếu nhập sai
+            }
+            return true;
         }
-        return true;
-    }
-</script>
+    </script>
 
 
 

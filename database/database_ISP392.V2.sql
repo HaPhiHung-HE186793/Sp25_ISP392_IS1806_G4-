@@ -40,7 +40,7 @@ CREATE TABLE users (
 CREATE TABLE customers (
     customerID INT PRIMARY KEY IDENTITY(1,1),
     [name] NVARCHAR(30) NOT NULL,
-    email NVARCHAR(30) NOT NULL UNIQUE,
+    email NVARCHAR(30) NOT NULL ,
     phone NVARCHAR(15),
     [address] NVARCHAR(100),
     totalDebt DECIMAL(18,2) DEFAULT 0,
