@@ -133,6 +133,8 @@
 
 
                             <button type="submit">Tìm kiếm</button>
+                                <button type="button" onclick="resetFilters()">Xóa bộ lọc</button> <!-- Thêm nút này -->
+
                         </form>
 
                     </div>
@@ -228,6 +230,14 @@
                             }
 
         </script>
+        <script>
+    function resetFilters() {
+        document.getElementById('searchInput').value = ''; // Xóa từ khóa tìm kiếm
+        document.getElementById('sortOrder').value = 'desc'; // Đặt sắp xếp về mặc định
+        document.getElementById('searchForm').submit(); // Submit lại form
+    }
+</script>
+
 
 
 
