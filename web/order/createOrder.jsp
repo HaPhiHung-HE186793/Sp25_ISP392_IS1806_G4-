@@ -15,7 +15,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
-        <title>Bảng Điều Khiển</title>
+        <% 
+     String invoiceNumber = (String) request.getAttribute("invoiceNumber");
+        %>
+
+        <title>Hóa đơn <%= invoiceNumber %></title>
+
+
 
         <style>
             :root {
@@ -125,6 +131,20 @@
             #orderItems input {
                 text-align: center;
             }
+            #orderItems th:nth-child(3),
+            #orderItems td:nth-child(3) {
+                width: 7px; /* Điều chỉnh độ rộng theo ý muốn */
+                min-width: 70px;
+                text-align: center;
+            }
+            #orderItems th:nth-child(4),
+            #orderItems td:nth-child(4) {
+                width: 60px; /* Giảm chiều rộng cột */
+                min-width: 60px;
+                text-align: center;
+            }
+
+
 
 
 
@@ -445,7 +465,7 @@
 
     <body>
         <div id="main">
-                        <jsp:include page="/Component/header.jsp"></jsp:include>
+            <jsp:include page="/Component/header.jsp"></jsp:include>
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
 
 
@@ -458,10 +478,22 @@
                     <button onclick="openNewTab()">Thêm hóa đơn</button>
 
                     <script>
+                        // Kiểm tra số hóa đơn hiện tại trong localStorage
+                        let invoiceCount = localStorage.getItem("invoiceCount");
+
+                        if (!invoiceCount) {
+                            localStorage.setItem("invoiceCount", 1); // Nếu chưa có, đặt là 1
+                        }
+
                         function openNewTab() {
-                            window.open('CreateOrderServlet', '_blank');
+                            let invoiceNumber = parseInt(localStorage.getItem("invoiceCount")) + 1;
+                            localStorage.setItem("invoiceCount", invoiceNumber);
+
+                            window.open('CreateOrderServlet?invoice=' + invoiceNumber, '_blank');
                         }
                     </script>
+
+
 
 
 
@@ -505,7 +537,7 @@
                                     console.log("Clear timeout");
                                     clearTimeout(currentLoad);
                                 }
-                                
+
                                 let that = this;
                                 currentLoad = setTimeout(function () {
                                     console.log("fetch customer");
@@ -687,7 +719,10 @@
                                     function selectCustomer(id, name, phone, debt) {
                                         $("#customerId").val(id);
                                         $("#customerName").text("Khách hàng: " + name);
-                                        $("#customerPhone").text("SĐT: " + phone);
+
+                                        // Ẩn 3 số cuối số điện thoại
+                                        let maskedPhone = phone.slice(0, -3) + "***";
+                                        $("#customerPhone").text("SĐT: " + maskedPhone);
 
                                         // Xác định cách hiển thị tổng nợ
                                         if (debt < 0) {
@@ -700,6 +735,7 @@
 
                                         $("#customerInfo").show(); // Hiển thị div chứa thông tin khách hàng
                                     }
+
 
 
                                 </script>
@@ -1095,82 +1131,76 @@
                     </script>
 
                     <script>
-                        $(document).ready(function () {
-                            $("#orderForm").submit(function (event) {
-                                event.preventDefault(); // Ngăn chặn việc tải lại trang
+                        
+                                            $(document).ready(function () {
+                                $("#orderForm").submit(function (event) {
+                        event.preventDefault(); // Ngăn chặn việc tải lại trang
                                 $("#orderStatus").text("⏳ Đơn hàng đang xử lý..."); // Hiển thị trạng thái ngay lập tức
+                                $("#submitOrder").prop("disabled", true); // Disable nút submit
 
                                 $.ajax({
-                                    url: "CreateOrderServlet",
-                                    type: "POST",
-                                    data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
-                                    dataType: "json",
-                                    success: function (response) {
+                                url: "CreateOrderServlet",
+                                        type: "POST",
+                                        data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
+                                        dataType: "json",
+                                        success: function (response) {
                                         if (response.status === "processing") {
-                                            checkOrderStatus(); // Kiểm tra trạng thái đơn hàng
+                                        checkOrderStatus(); // Kiểm tra trạng thái đơn hàng
                                         } else if (response.status === "error") {
-                                            $("#orderStatus").html("<span style='color: red;'>❌ " + response.message + "</span>");
+                                        $("#orderStatus").html("<span style='color: red;'>❌ " + response.message + "</span>");
                                         }
-                                    }
-
+                                        }
                                 });
-                            });
-                           
-                            function checkOrderStatus() {
+                        });
+                                function checkOrderStatus() {
                                 var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
 
-                                $.ajax({
-                                    url: "CheckOrderStatusServlet",
-                                    type: "GET",
-                                    data: {userId: userId},
-                                    dataType: "json",
-                                    success: function (response) {
-                                        if (response.status === "done") {
-                                            $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
-                                        } else if (response.status === "error") {
-                                            $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
-                                        } else {
-                                            
-                                            setTimeout(checkOrderStatus, 1000); // Tiếp tục kiểm tra sau 1 giây
-                                        }
-                                    }
+                                        $.ajax({
+                                        url: "CheckOrderStatusServlet",
+                                                type: "GET",
+                                                data: {userId: userId},
+                                                dataType: "json",
+                                                success: function (response) {
+                                                if (response.status === "done") {
+                                                $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
+                                                } else if (response.status === "error") {
+                                                $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
+                                                } else {
+                                                setTimeout(checkOrderStatus, 1000); // Tiếp tục kiểm tra sau 1 giây
+                                                }
+                                                }
+                                        });
+                                }
 
-                                });
-                            }
-                        })
-                                ;
-                                
-                                
-                                
-                                
-                           // Lấy các phần tử cần ẩn/hiện
+                        // ---- Code từ GitHub ----
+                        // Lấy các phần tử cần ẩn/hiện
                         const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+                                const newDebt = document.querySelector('.menu'); // Menu
+                                const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+                                const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
-// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
+                                // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+                                document.addEventListener("DOMContentLoaded", function () {
+                                if (localStorage.getItem("menuHidden") === "true") {
                                 newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
+                                        newDebt1.classList.add('hiden');
+                                        newDebt2.classList.add('hiden');
+                                }
+                                });
+                                // Hàm toggle hiển thị
+                                        function toggleAddNewDebt() {
+                                        newDebt.classList.toggle('hiden');
+                                                newDebt1.classList.toggle('hiden');
+                                                newDebt2.classList.toggle('hiden');
+                                                // Lưu trạng thái vào localStorage
+                                                const isHidden = newDebt.classList.contains('hiden');
+                                                localStorage.setItem("menuHidden", isHidden);
+                                        }
 
-// Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
-
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
-
-// Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+                                // Gán sự kiện click
+                                openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+                                        });
+                                   
 
 
                 </script>

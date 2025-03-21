@@ -73,6 +73,13 @@ public class CreateOrderServlet extends HttpServlet {
             throws ServletException, IOException {
         // Kiểm tra nếu phản hồi chưa được commit, tiến hành forward
         if (!response.isCommitted()) {
+            String invoiceNumber = request.getParameter("invoice");
+
+            if (invoiceNumber == null) {
+                invoiceNumber = "1"; // Khi mở trang lần đầu tiên
+            }
+
+            request.setAttribute("invoiceNumber", invoiceNumber);
             request.getRequestDispatcher("order/createOrder.jsp").forward(request, response);
         } else {
             // Nếu đã commit, có thể xử lý một thông báo lỗi hoặc ghi log
@@ -181,10 +188,9 @@ public class CreateOrderServlet extends HttpServlet {
                         response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
                         return;
                     }
-                      OrderItems orderItem;
+                    OrderItems orderItem;
 
-                         orderItem = new OrderItems(productID, productName, expectedPrice, actualUnitPrice, quantity, discount);
-                   
+                    orderItem = new OrderItems(productID, productName, expectedPrice, actualUnitPrice, quantity, discount);
 
                     orderDetails.add(orderItem);
 

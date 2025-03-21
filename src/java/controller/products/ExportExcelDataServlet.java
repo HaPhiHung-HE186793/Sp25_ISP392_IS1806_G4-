@@ -2,51 +2,54 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.order;
 
+package controller.products;
+
+import DAO.DAOProduct;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.ProductPriceHistory;
 
 /**
  *
  * @author Admin
  */
-public class CreateImportOrderServlet extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+public class ExportExcelDataServlet extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateImportOrderServlet</title>");
+            out.println("<title>Servlet ExportExcelDataServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateImportOrderServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ExportExcelDataServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -54,20 +57,27 @@ public class CreateImportOrderServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String invoiceNumber = request.getParameter("invoice");
+    throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        if (invoiceNumber == null) {
-            invoiceNumber = "1"; // Khi mở trang lần đầu tiên
-        }
+        HttpSession session = request.getSession();
+        int userId = (int) session.getAttribute("userID");
+        String priceType = request.getParameter("priceType");
 
-        request.setAttribute("invoiceNumber", invoiceNumber);
-        request.getRequestDispatcher("order/importOrder.jsp").forward(request, response);
-    }
+        // Lấy toàn bộ dữ liệu (không phân trang)
+        List<ProductPriceHistory> historyList = DAOProduct.INSTANCE.getAllImportPriceHistory(userId,priceType);
 
-    /**
+        // Chuyển danh sách sang JSON
+        String json = new Gson().toJson(historyList);
+
+        PrintWriter out = response.getWriter();
+        out.print(json);
+        out.flush();
+    } 
+
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -75,13 +85,12 @@ public class CreateImportOrderServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override

@@ -166,8 +166,13 @@
         <servlet-class>controller.products.HistoryExportPriceServlet</servlet-class>
     </servlet>
     <servlet>
+<<<<<<< HEAD
         <servlet-name>DetailDebtCustomer</servlet-name>
         <servlet-class>controller.debt.DetailDebtCustomer</servlet-class>
+=======
+        <servlet-name>ExportExcelDataServlet</servlet-name>
+        <servlet-class>controller.products.ExportExcelDataServlet</servlet-class>
+>>>>>>> origin/main
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -329,7 +334,12 @@
         <url-pattern>/HistoryExportPriceServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+<<<<<<< HEAD
         <servlet-name>DetailDebtCustomer</servlet-name>
         <url-pattern>/DetailDebtCustomer</url-pattern>
+=======
+        <servlet-name>ExportExcelDataServlet</servlet-name>
+        <url-pattern>/ExportExcelDataServlet</url-pattern>
+>>>>>>> origin/main
     </servlet-mapping>
 </web-app>

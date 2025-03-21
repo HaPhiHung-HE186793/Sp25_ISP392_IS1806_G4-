@@ -87,6 +87,8 @@ public class SearchServlet extends HttpServlet {
                     // Lấy danh sách unitSizes từ bảng ProductUnits (đã trả về List<Integer>)
                     List<Integer> unitSizes = DAOProduct.INSTANCE.getProductUnitsByProductID(product.getProductID());
 
+                    // Lấy danh sách zones từ bảng ProductZones
+                    List<String> zones = DAOProduct.INSTANCE.getZonesByProductID(product.getProductID());
                     // Chuyển danh sách unitSizes thành chuỗi JavaScript Array
                     StringBuilder unitSizesStr = new StringBuilder("[");
                     for (int i = 0; i < unitSizes.size(); i++) {
@@ -96,12 +98,22 @@ public class SearchServlet extends HttpServlet {
                         }
                     }
                     unitSizesStr.append("]");
+                    // Chuyển danh sách zones thành chuỗi JavaScript Array
+                    StringBuilder zonesStr = new StringBuilder("[");
+                    for (int i = 0; i < zones.size(); i++) {
+                        zonesStr.append("\"").append(zones.get(i)).append("\"");
+                        if (i < zones.size() - 1) {
+                            zonesStr.append(",");
+                        }
+                    }
+                    zonesStr.append("]");
 
                     if (orderType == 0) {
                         // Xuất HTML với unitSizes được truyền vào addProductToOrder()
                         out.println("<div class='product-item' onclick=\"addProductToOrder('"
                                 + product.getProductID() + "','"
                                 + product.getProductName() + "',"
+                               
                                 + unitSizesStr.toString() + ")\">");
 
                         // Ảnh sản phẩm
@@ -123,6 +135,8 @@ public class SearchServlet extends HttpServlet {
                         out.println("<p class='product-description'>"
                                 + (product.getDescription() != null ? product.getDescription() : "")
                                 + "</p>");
+                         // Hiển thị danh sách zones
+                        out.println("<p class='product-zones'>Kho: " + String.join(", ", zones) + "</p>");
 
                         out.println("</div>"); // đóng div .product-content
                         out.println("</div>"); // đóng div .product-item
@@ -135,11 +149,13 @@ public class SearchServlet extends HttpServlet {
                                 + product.getProductName() + "','"
                                 + (int) product.getPrice() + "','"
                                 + product.getQuantity() + "',"
+                                
                                 + unitSizesStr.toString() + ")\">");
                         // Ảnh sản phẩm
                         out.println("<div class='product-image'>"
                                 + "<img src='" + product.getImage() + "' alt='Product Image' />"
                                 + "</div>");
+                        
 
                         // Container chứa nội dung
                         out.println("<div class='product-content'>");
@@ -155,6 +171,8 @@ public class SearchServlet extends HttpServlet {
                         out.println("<p class='product-description'>"
                                 + (product.getDescription() != null ? product.getDescription() : "")
                                 + "</p>");
+                        // Hiển thị danh sách zones
+                        out.println("<p class='product-zones'>Kho: " + String.join(", ", zones) + "</p>");
 
                         out.println("</div>"); // đóng div .product-content
                         out.println("</div>"); // đóng div .product-item
