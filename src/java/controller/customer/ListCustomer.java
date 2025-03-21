@@ -127,8 +127,8 @@ public class ListCustomer extends HttpServlet {
         listCustomer = dao.listCustomersByRoleSearchName(storeID, sql);
         request.setAttribute("searchName", name);
         request.setAttribute("searchNumber", number);
-        request.setAttribute("searchStartDate", startDate);
-        request.setAttribute("searchEndDate", endDate);
+        request.setAttribute("startDate", startDate);
+        request.setAttribute("endDate", endDate);
         request.setAttribute("listCustomer", listCustomer);
 
 

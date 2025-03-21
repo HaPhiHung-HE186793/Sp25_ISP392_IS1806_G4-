@@ -89,8 +89,8 @@
                                                             <option value="2">Ngày lập phiếu</option>
                             
                                                         </select>-->
-                            <input name="startDate" type="date" value="${searchStartDate}">
-                            <input name="endDate" type="date" value="${searchEndDate}">
+                            <input name="searchStartDate" type="date" value="${searchStartDate}">
+                            <input name="searchEndDate" type="date" value="${searchEndDate}">
 
                             <button style="background-color: #5bc0de;" >Lọc</button>
                         </form>
@@ -174,11 +174,12 @@
 
                         </tbody>
                     </table>
+                                    <%@include file="/Component/pagination.jsp" %>
 
                 </div>
             </div>
+
         </div>
-        <%@include file="/Component/pagination.jsp" %>
 
     </body>
 

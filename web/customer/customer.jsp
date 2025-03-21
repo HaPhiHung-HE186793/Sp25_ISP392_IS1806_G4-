@@ -49,8 +49,8 @@
 
                             <input name="name" type="text" placeholder="Tìm kiếm" value="${searchName}">
                             <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
-                            <input name="startDate" type="date" value="${searchStartDate}">
-                            <input name="endDate" type="date" value="${searchEndDate}">
+                            <input name="startDate" type="date" value="${startDate}">
+                            <input name="endDate" type="date" value="${endDate}">
                             <button style="background-color: #5bc0de;" >Lọc</button>
                         </form>
                         <button onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">Bỏ lọc</button> 
@@ -105,10 +105,10 @@
 
                                     <td> 
                                         <a href="UpdateCustomer?customerid=${o.getCustomerID()}">
-                                            <button class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700">Edit</button>
+                                            <button class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700">Chỉnh sửa</button>
                                         </a>
                                         <a href="ListDebtCustomer?customerid=${o.getCustomerID()}">
-                                            <button class="addNewDebt js-open-newDebt">More</button>
+                                            <button class="addNewDebt js-open-newDebt">Chi tiết </button>
                                         </a>
                                     </td>
                                 </tr>   
@@ -116,10 +116,11 @@
                         </tbody>
                     </table>
                 </div>
+                                <%@include file="/Component/pagination.jsp" %>
+
             </div>
         </div>
 
-        <%@include file="/Component/pagination.jsp" %>
 
     </body>
 
@@ -131,7 +132,7 @@
                     Thêm mới 
                 </button>
                 <button class="newDebt-close js-close-newDebt">
-                    Close
+                    Đóng
                 </button>
 
                 <div class="newDebt-header">Thông tin người nợ</div>

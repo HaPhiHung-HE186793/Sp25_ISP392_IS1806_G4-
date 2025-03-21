@@ -106,8 +106,8 @@ public class ListDebtCustomer extends HttpServlet {
         // Lấy các tham số từ request
 //        String name = request.getParameter("name");
         String sortBy = request.getParameter("sortBy");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+        String startDate = request.getParameter("searchStartDate");
+        String endDate = request.getParameter("searchEndDate");
         String sql = "";
 //// Điều kiện name   
 //        if (name != null && !name.isEmpty()) {
