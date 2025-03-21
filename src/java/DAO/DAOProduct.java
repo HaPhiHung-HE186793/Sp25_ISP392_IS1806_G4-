@@ -399,16 +399,19 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
     }
 
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
-    public List<Products> searchProductsByName(String keyword) {
+    public List<Products> searchProductsByName(String keyword, int userId) {
+         int storeId = getStoreIdByUserId(userId);
+        
         List<Products> productsList = new ArrayList<>();
         String sql = "SELECT * FROM products "
                 + "WHERE productName COLLATE Vietnamese_CI_AI LIKE ? "
-                + "AND isDelete = 0";
+                + "AND isDelete = 0 AND storeID = ? ";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             // Loại bỏ dấu trước khi tìm kiếm
             String normalizedKeyword = removeVietnameseAccent(keyword.trim().toLowerCase());
             ps.setString(1, "%" + normalizedKeyword + "%");  // Tìm kiếm gần đúng
+             ps.setInt(2, storeId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
