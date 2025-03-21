@@ -27,14 +27,16 @@
             --transition: all 0.3s ease;
         }
 
-        body {
-            background-color: #1a1a1a;
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-        }
+        .table-container {
+        background-color: #222 !important;
+        padding: 61px 20px !important;
+        border-radius: 4px !important;
+        overflow-y: scroll !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #555 #333 !important;
+        max-height: 600px !important;
+    }
+        
 
         .store-container {
             max-width: 800px;
@@ -258,7 +260,7 @@
                                     <p>
                                         <label><i class="fas fa-image"></i>Logo:</label>
                                         <input name="logo" id="logo" type="file" 
-                                               placeholder="Logo cửa hàng" value="${logo}" required>
+                                               placeholder="Logo cửa hàng" value="${logo}">
                                     </p>
                                 </div>
                                 <div class="row">
@@ -270,7 +272,7 @@
                                     <p>
                                         <label><i class="fas fa-envelope"></i> Email:</label>
                                         <input name="email" id="email" type="email" 
-                                               placeholder="Email" value="${email}" required>
+                                               placeholder="Email" value="${email}">
                                     </p>
                                 </div>
                                 <div class="row">                

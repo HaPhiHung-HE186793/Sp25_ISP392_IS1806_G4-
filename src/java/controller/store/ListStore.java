@@ -73,7 +73,7 @@ public class ListStore extends HttpServlet {
         }
         String error = null;
 
-        if (request.getParameter("id") != null) {
+        if (request.getParameter("id") != null && !(request.getParameter("id") == "")) {
             int id = Integer.parseInt(request.getParameter("id"));
             Store Store = dao.getStoreById(id);
             if (Store != null) {               
@@ -82,7 +82,7 @@ public class ListStore extends HttpServlet {
                     request.getRequestDispatcher("updatestore").forward(request, response);
             }
         }
-        if (request.getParameter("idDetail") != null) {
+        if (request.getParameter("idDetail") != null && !(request.getParameter("id") == "")) {
             int id = Integer.parseInt(request.getParameter("idDetail"));
             Store Store = dao.getStoreById(id);
             if (Store != null) {               
