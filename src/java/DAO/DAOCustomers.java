@@ -30,14 +30,13 @@ public class DAOCustomers extends DBContext {
 
     public static DAOCustomers INSTANCE = new DAOCustomers();
 
-
- 
-
-    public Customers getCustomer(String id) {
-        String sql = " select * from customers where customerID = ?";
+    public Customers getCustomer(String id, int storeid) {
+        String sql = " select * from customers where customerID = ? and  storeID = ?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, id); // Truyền tham số vào dấu ?
+                        pre.setInt(2, storeid); // Truyền tham số vào dấu ?
+
             ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
 
             while (rs.next()) {
@@ -53,10 +52,9 @@ public class DAOCustomers extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");  // Chuyển sang boolean
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
-                                int storeID = rs.getInt("storeID");
+                int storeID = rs.getInt("storeID");
 
-
-                return new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
+                return new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
 
             }
         } catch (SQLException ex) {
@@ -71,7 +69,7 @@ public class DAOCustomers extends DBContext {
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + searchValue + "%"); // Tìm số điện thoại chứa searchPhone
-             ps.setString(2, "%" + searchValue + "%");
+            ps.setString(2, "%" + searchValue + "%");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -99,15 +97,13 @@ public class DAOCustomers extends DBContext {
         return customers;
     }
 
-    
-
     public Vector<Customers> getCustomers(String sql) {
         Vector<Customers> vector = new Vector<Customers>();
         try {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
             while (rs.next()) {
-                 int customerID = rs.getInt("customerID");
+                int customerID = rs.getInt("customerID");
                 String customerName = rs.getString("name");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
@@ -121,7 +117,7 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
                 vector.add(customer);
             }
         } catch (SQLException ex) {
@@ -179,17 +175,16 @@ public class DAOCustomers extends DBContext {
 
     public int updateCustomer(Customers customer) {
         int n = 0;
-        String sql = "UPDATE customers SET name=?, email=?, phone=?, address=?, totalDebt=?, updateAt=?, isDelete=? WHERE customerID=?";
+        String sql = "UPDATE customers SET name=?, email=?, phone=?, address=?, updateAt=?, isDelete=? WHERE customerID=?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, customer.getName()); // name
             pre.setString(2, customer.getEmail()); // email
             pre.setString(3, customer.getPhone()); // phone
             pre.setString(4, customer.getAddress()); // address
-            pre.setBigDecimal(5, customer.getTotalDebt()); // totalDebt
-            pre.setString(6, customer.getUpdateAt()); // updateAt
-            pre.setBoolean(7, customer.isIsDelete()); // isDelete
-            pre.setInt(8, customer.getCustomerID()); // customerID
+            pre.setString(5, customer.getUpdateAt()); // updateAt
+            pre.setBoolean(6, customer.isIsDelete()); // isDelete
+            pre.setInt(7, customer.getCustomerID()); // customerID
             n = pre.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DAOCustomers.class.getName()).log(Level.SEVERE, null, ex);
@@ -234,7 +229,7 @@ public class DAOCustomers extends DBContext {
             pre.setString(7, customer.getUpdateAt()); // updateAt
             pre.setInt(8, customer.getCreateBy()); // createBy
             pre.setBoolean(9, customer.isIsDelete()); // isDelete
-                        pre.setInt(10, customer.getStoreID()); // isDelete
+            pre.setInt(10, customer.getStoreID()); // isDelete
 
             n = pre.executeUpdate();
         } catch (SQLException ex) {
@@ -250,7 +245,7 @@ public class DAOCustomers extends DBContext {
             Statement state = conn.createStatement();
             ResultSet rs = state.executeQuery(sql);
             while (rs.next()) {
-               int customerID = rs.getInt("customerID");
+                int customerID = rs.getInt("customerID");
                 String customerName = rs.getString("name");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
@@ -264,7 +259,7 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
                 list.add(customer); // Thêm vào danh sách thay vì in ra
             }
         } catch (SQLException ex) {
@@ -295,7 +290,7 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
                 list.add(customer); // Thêm vào danh sách thay vì in ra
             }
         } catch (SQLException ex) {
@@ -308,10 +303,14 @@ public class DAOCustomers extends DBContext {
         List<Customers> list = new ArrayList<>();
         String sql = "";
 
-            sql = "SELECT c.*\n"
-                    + "FROM customers c\n"
-                    + "JOIN users u ON c.createBy = u.ID\n"
-                    + "WHERE c.storeID = ?;";
+        sql = "SELECT c.customerID, c.name, c.email, c.phone, \n"
+                + "    c.address, c.totalDebt,c.storeID, \n"
+                + "	FORMAT(c.createAt, 'yyyy-MM-dd HH:mm:ss') AS createAt, \n"
+                + "    FORMAT(c.updateAt, 'yyyy-MM-dd HH:mm:ss') AS updateAt, \n"
+                + "    c.createBy, c.isDelete, c.deleteAt, c.deleteBy\n"
+                + "FROM customers c\n"
+                + "JOIN users u ON c.createBy = u.ID\n"
+                + "WHERE c.storeID = ?  ORDER BY c.customerID DESC; ";
 
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
@@ -319,7 +318,7 @@ public class DAOCustomers extends DBContext {
 
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
-               int customerID = rs.getInt("customerID");
+                int customerID = rs.getInt("customerID");
                 String customerName = rs.getString("name");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
@@ -333,7 +332,7 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
                 list.add(customer);
             }
         } catch (SQLException ex) {
@@ -346,12 +345,15 @@ public class DAOCustomers extends DBContext {
         List<Customers> list = new ArrayList<>();
         String sql = "";
 
-      
-            sql = " SELECT c.* \n"
-                    + "FROM customers c\n"
-                    + "JOIN users u ON c.createBy = u.ID\n"
-                    + "WHERE c.storeID = ? "
-                    + name;
+        sql = " SELECT c.customerID, c.name, c.email, c.phone, \n"
+                + "    c.address, c.totalDebt,c.storeID, \n"
+                + "	FORMAT(c.createAt, 'yyyy-MM-dd HH:mm:ss') AS createAt, \n"
+                + "    FORMAT(c.updateAt, 'yyyy-MM-dd HH:mm:ss') AS updateAt, \n"
+                + "    c.createBy, c.isDelete, c.deleteAt, c.deleteBy\n"
+                + "FROM customers c\n"
+                + "JOIN users u ON c.createBy = u.ID\n"
+                + "WHERE c.storeID = ? "
+                + name + " ORDER BY c.customerID DESC";
 
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
@@ -373,7 +375,7 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
-                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID);
+                Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
                 list.add(customer);
             }
         } catch (SQLException ex) {
@@ -384,11 +386,11 @@ public class DAOCustomers extends DBContext {
 
     public static void main(String[] args) {
         DAOCustomers dao = new DAOCustomers();
-        List<Customers> list = dao.listCustomersByRoleSearchName(2,"");
+        List<Customers> list = dao.listCustomersByRoleSearchName(2, "");
         for (Customers customers : list) {
             System.out.println(customers.toString());
         }
-       
+
 //
 //    // 1. Thêm một khách hàng mới
 //    Customers newCustomer = new Customers(3, "Nguyễn Thu B", "nguyenvanb@gmail.com", "0987654321", "456 Đường XYZ", 2000.0, "2023-01-02", "2023-01-02", 1, false, null, 0);

@@ -17,39 +17,39 @@
                 width: 150%;
                 margin: 15px;
             }
-            
+
             .fixed-cell {
-    width: 150px;  /* Cố định chiều rộng */
-    height: 60px;  /* Cố định chiều cao */
-    overflow: hidden; /* Ẩn nội dung vượt quá */
-    text-overflow: ellipsis; /* Hiển thị dấu "..." nếu nội dung quá dài */
-    white-space: nowrap; /* Không xuống dòng */
-}
+                width: 150px;  /* Cố định chiều rộng */
+                height: 60px;  /* Cố định chiều cao */
+                overflow: hidden; /* Ẩn nội dung vượt quá */
+                text-overflow: ellipsis; /* Hiển thị dấu "..." nếu nội dung quá dài */
+                white-space: nowrap; /* Không xuống dòng */
+            }
 
-.scrollable-cell {
-    width: 150px;  /* Cố định chiều rộng */
-    max-height: 60px; /* Cố định chiều cao */
-    overflow-y: auto; /* Cho phép cuộn dọc nếu nội dung vượt quá */
-    word-wrap: break-word; /* Tự động xuống dòng */
-    display: block; /* Bắt buộc để overflow hoạt động */
-    padding: 5px;
-}
+            .scrollable-cell {
+                width: 150px;  /* Cố định chiều rộng */
+                max-height: 60px; /* Cố định chiều cao */
+                overflow-y: auto; /* Cho phép cuộn dọc nếu nội dung vượt quá */
+                word-wrap: break-word; /* Tự động xuống dòng */
+                display: block; /* Bắt buộc để overflow hoạt động */
+                padding: 5px;
+            }
 
-.image-cell {
-    width: 70px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255, 255, 255, 0.1); /* Màu nền nhẹ để dễ nhìn */
-}
+            .image-cell {
+                width: 70px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(255, 255, 255, 0.1); /* Màu nền nhẹ để dễ nhìn */
+            }
 
-.product-image {
-    width: 50px;
-    height: 50px;
-    object-fit: contain; /* Hiển thị ảnh mà không bị méo */
-    cursor: pointer;
-}
+            .product-image {
+                width: 50px;
+                height: 50px;
+                object-fit: contain; /* Hiển thị ảnh mà không bị méo */
+                cursor: pointer;
+            }
 
 
         </style>
@@ -60,8 +60,8 @@
         <div id="main">
             <jsp:include page="/Component/header.jsp"></jsp:include>
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
-            
-            
+
+
                 <div class="main-content">
                     <div class="notification">
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
@@ -115,6 +115,8 @@
                                 <th>Ghi chú</th>
                                 <th>thời gian tạo</th>
                                 <th>Ngày lập phiếu</th>
+                                <th>Hành động</th>
+
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
@@ -139,11 +141,33 @@
                                         </c:if>
                                     </td>
 
-                                    <td><fmt:setLocale value="de_DE" />
-                                        <fmt:formatNumber value="${o.getAmount()}" type="number" minFractionDigits="0" /> VND </td>
-                                    <td class="scrollable-cell" style="max-width: 150px;">${o.getDescription()}</td>
+                                    <td style="max-width: 100px;
+                                        margin-top: 20px;
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        display: inline-block;
+                                        text-align: center;
+                                        vertical-align: middle;">
+                                        <fmt:setLocale value="de_DE" />
+                                        <fmt:formatNumber value="${o.getAmount()}" type="number" minFractionDigits="0" /> VND
+                                    </td>
+
+
+
+                                    <td style="  max-width: 100px; /* Điều chỉnh độ rộng tối đa theo nhu cầu */
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;">${o.getDescription()}</td>
+
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
+
+                                    <td> 
+                                        <a href="DetailDebtCustomer?debtid=${o.getDebtID()}">
+                                            <button class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700">Chi tiết</button>
+                                        </a>
+                                    </td>
                                 </tr>
 
                             </c:forEach>   
@@ -164,11 +188,12 @@
                 <i class="ti-close"></i>
             </div>
             <div class="detailImg-img">
-                <img id="largeImage" src="" >
+                <img id="largeImage" src="" style="        max-width: 700px;
+                     max-height: 700px;">
             </div>
         </div>
     </div>
-    
+
 
 
 
@@ -234,6 +259,10 @@
         </div>
     </div>
 
+
+
+
+
     <script>
         // Lấy tbody
 
@@ -250,12 +279,11 @@
             const inputs = newDebt.querySelectorAll('input,textarea');
             inputs.forEach(input => input.value = '');
         }
-
-
         openAddNewDebt.addEventListener('click', showAddNewDebt);
-
-
         closeNewDebt.addEventListener('click', hideAddNewDebt);
+
+
+
 
         function showImageModal(imgSrc) {
             document.getElementById("largeImage").src = imgSrc;
@@ -267,38 +295,36 @@
         }
 
 
-
-
     </script>
+
+
     <script>
- // Lấy các phần tử cần ẩn/hiện
-                        const openAddNew = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt0 = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+        // Lấy các phần tử cần ẩn/hiện
+        const openAddNew = document.querySelector('.js-hidden-menu'); // Nút toggle
+        const newDebt0 = document.querySelector('.menu'); // Menu
+        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
 // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt0.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
-
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("menuHidden") === "true") {
+                newDebt0.classList.add('hiden');
+                newDebt1.classList.add('hiden');
+                newDebt2.classList.add('hiden');
+            }
+        });
 // Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt0.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
-
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt0.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
+        function toggleAddNewDebt() {
+            newDebt0.classList.toggle('hiden');
+            newDebt1.classList.toggle('hiden');
+            newDebt2.classList.toggle('hiden');
+            // Lưu trạng thái vào localStorage
+            const isHidden = newDebt0.classList.contains('hiden');
+            localStorage.setItem("menuHidden", isHidden);
+        }
 
 // Gán sự kiện click
-                        openAddNew.addEventListener('click', toggleAddNewDebt);
+        openAddNew.addEventListener('click', toggleAddNewDebt);
 
 
     </script>

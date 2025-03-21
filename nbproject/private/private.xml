@@ -9,6 +9,7 @@
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/showOrderIn.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/WEB-INF/web.xml</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOForget.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/debt/detailDebt.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/changePassword.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/store/updateStore.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order/showOrder.jsp</file>
@@ -19,8 +20,10 @@
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/order/CheckOrderStatusServlet.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/META-INF/context.xml</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/service/OrderWorker.java</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/DetailDebtCustomer.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/home.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/order.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/model/Customers.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/debt/ListDebtCustomer.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/customer/ListCustomer.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/zone/ListZone.java</file>
@@ -47,6 +50,7 @@
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/model/DebtRecords.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOCustomers.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/dashboard/insert_product.jsp</file>
+            <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/controller/login/loginController.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAO/DAOShowOrder.java</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/web/customer/customer.jsp</file>
             <file>file:/C:/Users/Tiend/Desktop/Sp25_ISP392_IS1806_G4-/src/java/DAL/DBContext.java</file>

@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.customer;
+package controller.debt;
 
 import DAO.DAOCustomers;
+import DAO.DAODebtRecords;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +13,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import model.Customers;
+import model.DebtRecords;
 
 /**
  *
  * @author TIEN DAT PC
  */
-public class UpdateCustomer extends HttpServlet {
+public class DetailDebtCustomer extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,23 +43,27 @@ public class UpdateCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String customerid = request.getParameter("customerid");
-        DAOCustomers dao = new DAOCustomers();
         HttpSession session = request.getSession();
         Integer storeID = (Integer) session.getAttribute("storeID");
-        Customers customers = dao.getCustomer(customerid, storeID);
-        if (customers == null) {
-            response.sendRedirect("ListCustomer");
+
+        DAODebtRecords dao = new DAODebtRecords();
+        DAOCustomers daoC = new DAOCustomers();
+        String debtId = request.getParameter("debtid");
+        DebtRecords debtRecords = dao.getDebt(debtId, storeID);
+
+        if (debtRecords == null || debtId == null || debtId.trim().isEmpty()) {
+            response.sendRedirect("ListDebtCustomer");
+            return; // Dừng xử lý tiếp
         }
-        request.setAttribute("customers", customers);
+        request.setAttribute("debtRecords", debtRecords);
         // Lấy message từ session và đặt vào request
         String message = (String) session.getAttribute("message");
         if (message != null) {
             request.setAttribute("message", message);
             session.removeAttribute("message"); // Xóa sau khi dùng để tránh hiển thị lại
         }
-        request.getRequestDispatcher("customer/editCustomer.jsp").forward(request, response);
+        request.getRequestDispatcher("debt/detailDebt.jsp").forward(request, response);
+
     }
 
     /**
@@ -73,38 +77,6 @@ public class UpdateCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        int id = Integer.parseInt(request.getParameter("id"));
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
-        String email = request.getParameter("email");
-
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String updateAt = now.format(formatter);  // Thời gian hiện tại
-
-        boolean isDelete = false;
-        String deleteAt = null;
-        Integer deleteBy = null;
-        DAOCustomers dao = new DAOCustomers();
-
-        Customers customer = new Customers();
-        customer.setCustomerID(id);
-        customer.setName(name);
-        customer.setAddress(address);
-        customer.setPhone(phone);
-        customer.setUpdateAt(updateAt);
-        customer.setEmail(email);
-        customer.setIsDelete(isDelete);
-        int result = dao.updateCustomer(customer);
-        if (result > 0) {
-            session.setAttribute("message", "success");
-        } else {
-            session.setAttribute("message", "error");
-        }
-        response.sendRedirect("UpdateCustomer?customerid=" + id);
-
     }
 
     /**

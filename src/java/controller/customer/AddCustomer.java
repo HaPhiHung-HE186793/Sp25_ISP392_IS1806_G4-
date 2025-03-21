@@ -103,7 +103,7 @@ public class AddCustomer extends HttpServlet {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createAt = now.format(formatter);  // Thời gian hiện tại
         String updateAt = createAt;  // Ban đầu updateAt cũng là thời gian hiện tại
 

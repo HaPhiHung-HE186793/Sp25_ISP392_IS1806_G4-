@@ -42,6 +42,7 @@ public class AddNewCustomerDebt extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
 
         DAOCustomers daoCus = new DAOCustomers();
         response.setContentType("text/html;charset=UTF-8");
@@ -50,6 +51,7 @@ public class AddNewCustomerDebt extends HttpServlet {
         String description = request.getParameter("description");
         int paymentStatus = Integer.parseInt(request.getParameter("typeDebt"));
         String updateAt = request.getParameter("dateTime");
+        Integer storeID = (Integer) session.getAttribute("storeID");
 
         BigDecimal debt = BigDecimal.ZERO;
         String debtStr = request.getParameter("debt");
@@ -78,17 +80,14 @@ public class AddNewCustomerDebt extends HttpServlet {
             imageLink = "Image/" + fileName;
         }
 
-              LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createAt = now.format(formatter);  // Thời gian hiện tại
 
         if (updateAt == null || updateAt.trim().isEmpty()) {
             updateAt = createAt;
-        } 
+        }
 
-        
-
-        HttpSession session = request.getSession();
         boolean isDelete = false;
         Integer createBy = (Integer) session.getAttribute("userID");
         DAODebtRecords dao = new DAODebtRecords();
@@ -105,8 +104,9 @@ public class AddNewCustomerDebt extends HttpServlet {
                 debtRecord.setCreateBy(createBy);
                 debtRecord.setDescription(description);
                 debtRecord.setImg(imageLink);
-                debtRecord.setStoreID(1);
                 debtRecord.setDescription(description);
+                debtRecord.setStoreID(storeID);
+
                 int debtID = dao.addDebtRecord(debtRecord); // Thêm vào database và lấy debtID
 
                 // Cập nhật lại debtID trong đối tượng DebtRecord trước khi đẩy vào queue

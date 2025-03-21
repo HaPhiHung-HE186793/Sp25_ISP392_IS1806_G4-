@@ -285,6 +285,48 @@ button:hover {
 }
 
 
+.detailImg{  
+    position: fixed;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.4);
+    align-items: center;/* nam giữa chiều cao */
+    justify-content: center;/* nam giữa chiều ngang */
+    ;}
+
+
+.detailImg-container {
+    max-width: 700px;
+    background-color: #181818;
+    min-height: 100px;
+    position: relative;
+    animation: modalFadeIn ease 0.7s; /* dùng để chuyển động với EASE là kiểu tốc độ nhanh dần với Time là 0.7s */
+
+}
+
+.detailImg-close{
+    margin: 7px 14px;
+    border: 1px solid;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #000;
+    padding: 3px 10px;
+    cursor: pointer;
+    opacity: 0.8;
+    background-color: #bbb !important;  
+}
+
+
+.detailImg-img{
+        max-width: 700px;
+        max-height: 700px;
+
+}
+
+
 .addNewDebt {
     background-color: #33CC33 !important;
     padding: 6.5px 8px !important;
