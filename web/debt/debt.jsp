@@ -176,9 +176,10 @@
                     </table>
 
                 </div>
+                            <%@include file="/Component/pagination.jsp" %>
             </div>
         </div>
-        <%@include file="/Component/pagination.jsp" %>
+        
 
     </body>
 

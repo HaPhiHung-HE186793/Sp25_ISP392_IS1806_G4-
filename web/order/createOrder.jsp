@@ -853,7 +853,7 @@
                                 <div class="action-buttons">
 
                                     <button type="submit" id="submitOrder">Tạo Hóa Đơn</button>
-                                    <button id="printOrderBtn" type="button" class="print-btn">In Hóa Đơn</button>
+                                    <button id="printOrderBtn" type="button" class="print-btn">Thanh toán bằng VNPAY</button>
                                 </div>
 
                                 <p id="orderStatus"></p>
@@ -862,20 +862,41 @@
                         </div>
 
 
+<script>
+document.getElementById("printOrderBtn").addEventListener("click", function() {
+    // Lấy giá trị từ input paidAmount
+    let paidAmountValue = document.getElementById("paidAmount").value || 0;
 
+    // Chuyển đổi sang số nguyên để đảm bảo đúng định dạng
+    let amountValue = parseInt(paidAmountValue, 10) || 0;
 
+    // Tạo một form ẩn
+    let form = document.createElement("form");
+    form.method = "POST";
+    form.action = "vnpay_payment";
 
+    // Thêm input hidden cho số tiền thanh toán
+    let amountInput = document.createElement("input");
+    amountInput.type = "hidden";
+    amountInput.name = "amount";
+    amountInput.value = amountValue; // Gán giá trị từ paidAmount
 
+    // Thêm input hidden cho orderId
+    let orderIdInput = document.createElement("input");
+    orderIdInput.type = "hidden";
+    orderIdInput.name = "orderId";
+    orderIdInput.value = "1";
 
+    // Gắn input vào form
+    form.appendChild(amountInput);
+    form.appendChild(orderIdInput);
+    document.body.appendChild(form);
 
+    // Submit form
+    form.submit();
+});
 
-
-
-
-
-
-
-
+</script>
 
 
 
