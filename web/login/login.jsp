@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('<%=request.getContextPath()%>/image2/logao3.jpg'); /* Đường dẫn đến hình ảnh */
+            background-image: url('<%=request.getContextPath()%>/image2/logao4.jpg'); /* Đường dẫn đến hình ảnh */
             
             background-size: cover; /* Đảm bảo hình ảnh phủ kín */
             background-position: center; /* Căn giữa hình ảnh */
