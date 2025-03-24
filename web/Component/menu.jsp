@@ -93,29 +93,29 @@
     <div class="sidebar">
         <div class="logo">Bảng Điều Khiển </div>
         <c:if test="${sessionScope.roleID == 2 or sessionScope.roleID == 3}">
+        <a href="<%=request.getContextPath()%>/dashboard">Trang chủ</a>
         <a href="<%=request.getContextPath()%>/ListProducts">Danh sách sản phẩm</a>
         </c:if>
         <c:if test="${sessionScope.roleID==1}">
             <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
             <a href="<%=request.getContextPath()%>/liststore">Danh sách cửa hàng</a>
         </c:if>
-        <c:if test="${sessionScope.roleID==2}">
-            <a href="<%=request.getContextPath()%>/listusers">Danh sách người dùng</a>
-            <a href="<%=request.getContextPath()%>/HistoryImportPriceServlet">Lịch sử giá</a>
-
-            <a href="<%=request.getContextPath()%>/workschedule">Ca làm việc</a>
-
-        </c:if>
+        
         <c:if test="${sessionScope.roleID == 2 or sessionScope.roleID == 3}">
             <a href="<%=request.getContextPath()%>/CreateOrderServlet">Hóa đơn xuất</a>
             <a href="<%=request.getContextPath()%>/CreateImportOrderServlet">Hóa đơn nhập</a>
             <a href="<%=request.getContextPath()%>/URLOrder?service=listshow">Quản lý thanh toán</a>
             <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý khách hàng</a>
-
             <a href="<%=request.getContextPath()%>/ListCustomer">Quản lý zone</a>
-
+        </c:if>   
+            <c:if test="${sessionScope.roleID==2}">
+            <a href="<%=request.getContextPath()%>/listusers">Danh sách nhân viên</a>
+            <a href="<%=request.getContextPath()%>/HistoryImportPriceServlet">Lịch sử giá</a>
+<!--            <a href="<%=request.getContextPath()%>/workschedule">Ca làm việc</a>-->
+        </c:if>
+         <c:if test="${sessionScope.roleID == 2 or sessionScope.roleID == 3}">            
             <a href="<%=request.getContextPath()%>/storeprofile">Hồ sơ cửa hàng</a>
-        </c:if>        
+        </c:if>  
     </div>
 </body>
 </html>

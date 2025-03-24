@@ -22,7 +22,7 @@
     </head>
     <style>
         /* Enhanced Modal and UI Styles */
-        
+
 
         .modal {
             display: none;
@@ -391,21 +391,21 @@
                                     <td>${s.isIsDelete() ? "Đã khóa" : "Hoạt động"}</span></td>
                                     <td>
                                         <div style="display: flex; gap: 10px; align-items: center;">
-                                        <button class="action-btn edit-btn"><i class="fas fa-edit" onclick="window.location.href = 'workschedule?id=${s.getScheduleID()}'"></i></button>                                        
-                                        <c:choose>
-                                            <c:when test="${s.isIsDelete()}">
-                                                <form class="toggleStatusForm" data-action="unlock">
-                                                    <input type="hidden" name="ScheduleIDBlock" value="${s.getScheduleID()}">                                                    
-                                                    <button class="action-btn power-btn-locked toggleStatusBtn"><i class="fas fa-power-off"></i></button>
-                                                </form>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <form class="toggleStatusForm" data-action="block">
-                                                    <input type="hidden" name="ScheduleIDBlock" value="${s.getScheduleID()}">
-                                                    <button class="action-btn power-btn-active toggleStatusBtn"><i class="fas fa-power-off"></i></button>
-                                                </form>
-                                            </c:otherwise>
-                                        </c:choose>
+                                            <button class="action-btn edit-btn"><i class="fas fa-edit" onclick="window.location.href = 'workschedule?id=${s.getScheduleID()}'"></i></button>                                        
+                                                <c:choose>
+                                                    <c:when test="${s.isIsDelete()}">
+                                                    <form class="toggleStatusForm" data-action="unlock">
+                                                        <input type="hidden" name="ScheduleIDBlock" value="${s.getScheduleID()}">                                                    
+                                                        <button class="action-btn power-btn-locked toggleStatusBtn"><i class="fas fa-power-off"></i></button>
+                                                    </form>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <form class="toggleStatusForm" data-action="block">
+                                                        <input type="hidden" name="ScheduleIDBlock" value="${s.getScheduleID()}">
+                                                        <button class="action-btn power-btn-active toggleStatusBtn"><i class="fas fa-power-off"></i></button>
+                                                    </form>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </td>
                                 </tr>
@@ -423,10 +423,15 @@
 
                     </div>
                 </div>
-                 <%@include file="/Component/pagination.jsp" %>           
+                <div style="display: flex; align-items: center; gap: 180px;">
+                    <div style="color: #fbfbfb; font-size: 15px; margin: 20px 0; padding: 10px; line-height: 1.6; letter-spacing: 1px;">
+                        Showing 1 - 10 out of ${sessionScope.page.getTotalPage()}
+                    </div>
+                    <%@include file="/Component/pagination.jsp" %>
+                </div>          
             </div>
         </div>
-        
+
         <%@include file="/Component/footer.jsp" %>
 
         <div id="myModal" class="modal">
@@ -474,9 +479,9 @@
                 </form>
             </div>
         </div>
-        
-        
-        
+
+
+
 
 
     </body>
@@ -505,7 +510,7 @@
                                     closeModal();
                                 }
                             }
-                            
+
                             function updateModal() {
                                 document.getElementById("updateModal").style.display = "block";
                             }
@@ -513,32 +518,32 @@
                             function closeUpdateModal() {
                                 document.getElementById("updateModal").style.display = "none";
                             }
-                                                        
-                            
-                            
-                            
-                            //ajax submit block, unlock
-                                            $(document).ready(function () {
-                                                $(".toggleStatusBtn").click(function () {
-                                                    event.preventDefault();
-                                                    var form = $(this).closest(".toggleStatusForm");
-                                                    var ScheduleIDBlock = form.find("input[name='ScheduleIDBlock']").val();
-                                                    var actionBlock = form.data("action"); // "block" hoặc "unlock"
 
-                                                    $.ajax({
-                                                        type: "POST",
-                                                        url: "workschedule",
-                                                        data: {actionBlock: actionBlock, ScheduleIDBlock: ScheduleIDBlock},
-                                                        success: function () {
-                                                            location.reload(); // Reload để cập nhật trạng thái
-                                                        },
-                                                        error: function () {
-                                                            $("#error-message").text("Không xóa được ca làm việc.").show();
-                                                            hideNotification('error-message');
-                                                        }
-                                                    });
-                                                });
-                                            });
+
+
+
+                            //ajax submit block, unlock
+                            $(document).ready(function () {
+                                $(".toggleStatusBtn").click(function () {
+                                    event.preventDefault();
+                                    var form = $(this).closest(".toggleStatusForm");
+                                    var ScheduleIDBlock = form.find("input[name='ScheduleIDBlock']").val();
+                                    var actionBlock = form.data("action"); // "block" hoặc "unlock"
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "workschedule",
+                                        data: {actionBlock: actionBlock, ScheduleIDBlock: ScheduleIDBlock},
+                                        success: function () {
+                                            location.reload(); // Reload để cập nhật trạng thái
+                                        },
+                                        error: function () {
+                                            $("#error-message").text("Không xóa được ca làm việc.").show();
+                                            hideNotification('error-message');
+                                        }
+                                    });
+                                });
+                            });
 
 
 
@@ -586,38 +591,38 @@
 
     </script>
     <script>
-                
-               // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+        // Lấy các phần tử cần ẩn/hiện
+        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+        const newDebt = document.querySelector('.menu'); // Menu
+        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
 // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("menuHidden") === "true") {
+                newDebt.classList.add('hiden');
+                newDebt1.classList.add('hiden');
+                newDebt2.classList.add('hiden');
+            }
+        });
 
 // Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
+        function toggleAddNewDebt() {
+            newDebt.classList.toggle('hiden');
+            newDebt1.classList.toggle('hiden');
+            newDebt2.classList.toggle('hiden');
 
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
+            // Lưu trạng thái vào localStorage
+            const isHidden = newDebt.classList.contains('hiden');
+            localStorage.setItem("menuHidden", isHidden);
+        }
 
 // Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
 
-                
-            </script>
+
+    </script>
 
 </html>
 

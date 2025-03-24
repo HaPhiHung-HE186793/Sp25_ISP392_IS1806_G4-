@@ -104,7 +104,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
                     switch (user.getRoleID()) {
                         case 2: 
                         case 3: 
-                            dao.dispatch(request, response, "ListProducts");
+                            response.sendRedirect("dashboard");
                             break;
                         default:
                             request.setAttribute("message", "Invalid role.");

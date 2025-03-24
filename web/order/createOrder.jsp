@@ -853,7 +853,7 @@
                                 <div class="action-buttons">
 
                                     <button type="submit" id="submitOrder">Tạo Hóa Đơn</button>
-                                    <button id="printOrderBtn" type="button" class="print-btn">Thanh toán bằng VNPAY</button>
+<!--                                    <button id="printOrderBtn" type="button" class="print-btn">Thanh toán bằng VNPAY</button>-->
                                 </div>
 
                                 <p id="orderStatus"></p>
@@ -862,10 +862,16 @@
                         </div>
 
 
+
                         <script>
                             document.getElementById("printOrderBtn").addEventListener("click", function () {
                                 // Lấy giá trị từ input paidAmount
                                 let paidAmountValue = document.getElementById("paidAmount").value || 0;
+                        </script>
+<!--<script>
+document.getElementById("printOrderBtn").addEventListener("click", function() {
+    // Lấy giá trị từ input paidAmount
+    let paidAmountValue = document.getElementById("paidAmount").value || 0;
 
                                 // Chuyển đổi sang số nguyên để đảm bảo đúng định dạng
                                 let amountValue = parseInt(paidAmountValue, 10) || 0;
@@ -894,9 +900,10 @@
 
                                 // Submit form
                                 form.submit();
-                            });
+                            });                      
 
-                        </script>
+</script>-->
+
 
 
 
