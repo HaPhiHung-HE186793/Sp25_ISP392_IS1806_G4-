@@ -117,7 +117,7 @@ public class CreateOrderServlet extends HttpServlet {
             Double totalDiscount = Double.parseDouble(request.getParameter("totalDiscount"));
             if (totalDiscount >= 200000) {
 
-                status = "Tổng tiền đã giảm : " + totalDiscount + "<br>" + request.getParameter("status");
+                status = "CẢNH BÁO!Giảm Giá : " + totalDiscount +"\n"+ request.getParameter("status");
             } else {
                 status = request.getParameter("status");
             }
@@ -187,7 +187,7 @@ public class CreateOrderServlet extends HttpServlet {
                     }
                     calculatedTotalAmount = calculatedTotalAmount + expectedPrice;
 
-                    if (quantity <= 0 || unitPrice <= 0 || price <= 0 || discount < 0) {
+                    if (quantity <= 0 || unitPrice <= 0 || price < 0 || discount < 0) {
                         response.getWriter().write("{\"status\": \"error\", \"message\": \"Lỗi khi tạo đơn hàng, vui lòng thử lại.\"}");
                         return;
                     }

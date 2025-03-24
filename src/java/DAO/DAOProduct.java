@@ -34,11 +34,11 @@ public class DAOProduct extends DBContext {
 
     public static DAOProduct INSTANCE = new DAOProduct();
 
-public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String priceType) {
-    List<ProductPriceHistory> historyList = new ArrayList<>();
-    int storeId = getStoreIdByUserId(userId);
+    public List<ProductPriceHistory> getAllExportPriceHistory(int userId, String priceType) {
+        List<ProductPriceHistory> historyList = new ArrayList<>();
+        int storeId = getStoreIdByUserId(userId);
 
-    String sql = """
+        String sql = """
         SELECT pph.productID, p.productName, pph.price, pph.priceType, pph.changedAt, u.userName AS changedBy
         FROM ProductPriceHistory pph
         JOIN products p ON pph.productID = p.productID
@@ -47,107 +47,161 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
         ORDER BY pph.changedAt DESC
     """;
 
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, storeId);
-        ps.setString(2, priceType); // Truyền giá trị 'import' hoặc 'sell'
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                historyList.add(new ProductPriceHistory(
-                        rs.getInt("productID"),
-                        rs.getString("productName"),
-                        rs.getDouble("price"),
-                        rs.getString("priceType"),
-                        rs.getString("changedAt"),
-                        rs.getString("changedBy")
-                ));
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, storeId);
+            ps.setString(2, priceType); // Truyền giá trị 'import' hoặc 'sell'
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    historyList.add(new ProductPriceHistory(
+                            rs.getInt("productID"),
+                            rs.getString("productName"),
+                            rs.getDouble("price"),
+                            rs.getString("priceType"),
+                            rs.getString("changedAt"),
+                            rs.getString("changedBy")
+                    ));
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return historyList;
     }
-    return historyList;
-}
 
-
-
-    public int getTotalHistoryRecords(String keyword, int userId) {
-    int storeId = getStoreIdByUserId(userId);
-    int totalRecords = 0;
-
-    String sql = """
-        SELECT COUNT(*) AS total
-        FROM ProductPriceHistory pph
-        JOIN products p ON pph.productID = p.productID
-        WHERE p.storeID = ? 
-          AND pph.priceType = 'import' 
-          AND p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?
-    """;
-
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, storeId);
-        ps.setString(2, "%" + keyword + "%");
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                totalRecords = rs.getInt("total");
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return totalRecords;
-}
-    
-    public int getTotalHistoryExportRecords(String keyword, int userId) {
-    int storeId = getStoreIdByUserId(userId);
-    int totalRecords = 0;
-
-    String sql = """
-        SELECT COUNT(*) AS total
-        FROM ProductPriceHistory pph
-        JOIN products p ON pph.productID = p.productID
-        WHERE p.storeID = ? 
-          AND pph.priceType = 'sell' 
-          AND p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?
-    """;
-
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, storeId);
-        ps.setString(2, "%" + keyword + "%");
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                totalRecords = rs.getInt("total");
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return totalRecords;
-}
-
-
-    public List<ProductPriceHistory> getImportPriceHistory(String keyword, int page, int recordsPerPage, int userId, String sortOrder) {
-        int storeId = getStoreIdByUserId(userId);
+    public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String priceType) {
         List<ProductPriceHistory> historyList = new ArrayList<>();
-        int offset = (page - 1) * recordsPerPage;
+        int storeId = getStoreIdByUserId(userId);
 
         String sql = """
-        SELECT pph.historyID, pph.productID, p.productName, p.image, 
-               pph.price, pph.priceType, pph.changedAt, u.userName AS changedByName
+        SELECT pph.productID, p.productName, pph.price, pph.priceType, pph.changedAt, 
+               u.userName AS changedBy, c.name AS supplierName  -- Thêm tên nhà cung cấp
         FROM ProductPriceHistory pph
         JOIN products p ON pph.productID = p.productID
         JOIN users u ON pph.changedBy = u.ID
-        WHERE p.storeID = ? 
-          AND pph.priceType = 'import' 
-          AND p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?
-        ORDER BY pph.changedAt %s
-        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-    """.formatted(sortOrder); // Chèn thứ tự sắp xếp vào SQL
+        LEFT JOIN customers c ON pph.supplierID = c.customerID  -- Liên kết với bảng customers
+        WHERE p.storeID = ? AND pph.priceType = ?  -- Lọc theo priceType
+        ORDER BY pph.changedAt DESC
+    """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, storeId);
-            ps.setString(2, "%" + keyword + "%");
-            ps.setInt(3, offset);
-            ps.setInt(4, recordsPerPage);
+            ps.setString(2, priceType); // Truyền giá trị 'import' hoặc 'sell'
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    historyList.add(new ProductPriceHistory(
+                            rs.getInt("productID"),
+                            rs.getString("productName"),
+                            rs.getDouble("price"),
+                            rs.getString("priceType"),
+                            rs.getString("changedAt"),
+                            rs.getString("changedBy"),
+                            rs.getString("supplierName") // Truyền tên nhà cung cấp vào đối tượng ProductPriceHistory
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return historyList;
+    }
+
+    public int getTotalHistoryRecords(String keyword, int userId, String startDate, String endDate) {
+        int storeId = getStoreIdByUserId(userId);
+        int totalRecords = 0;
+        System.out.println(startDate);
+        System.out.println(endDate);
+
+        // Truy vấn SQL
+        String sql = """
+        SELECT COUNT(*) AS total
+        FROM ProductPriceHistory pph
+        JOIN products p ON pph.productID = p.productID
+        WHERE p.storeID = ? 
+          AND pph.priceType = 'import'
+          AND (p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ? OR ? = '')
+          AND (pph.changedAt BETWEEN ? AND DATEADD(SECOND, -1, DATEADD(DAY, 1, ?)))
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, storeId);                       // Tham số storeID
+            ps.setString(2, "%" + keyword + "%");        // Tham số keyword cho tìm kiếm tên sản phẩm
+            ps.setString(3, keyword);                    // Để so sánh nếu keyword trống
+            ps.setString(4, startDate);                  // Truyền startDate
+            ps.setString(5, endDate);                    // Truyền endDate (cuối ngày)
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalRecords = rs.getInt("total");   // Trả về tổng số bản ghi
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In lỗi ra nếu có vấn đề với SQL
+        }
+        return totalRecords;
+    }
+
+    public int getTotalHistoryExportRecords(String keyword, int userId, String startDate, String endDate) {
+        int storeId = getStoreIdByUserId(userId);
+        int totalRecords = 0;
+
+        String sql = """
+        SELECT COUNT(*) AS total
+        FROM ProductPriceHistory pph
+        JOIN products p ON pph.productID = p.productID
+        WHERE p.storeID = ? 
+          AND pph.priceType = 'sell'
+          AND p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?
+          AND (pph.changedAt BETWEEN ? AND DATEADD(SECOND, -1, DATEADD(DAY, 1, ?)))  -- Bao trọn ngày cuối
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, storeId);                   // Tham số storeID
+            ps.setString(2, "%" + keyword + "%");    // Tham số keyword cho tìm kiếm tên sản phẩm
+            ps.setString(3, startDate);              // Tham số startDate (ngày bắt đầu)
+            ps.setString(4, endDate);                // Tham số endDate (ngày kết thúc)
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalRecords = rs.getInt("total"); // Trả về tổng số bản ghi
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalRecords;
+    }
+
+    public List<ProductPriceHistory> getImportPriceHistory(String keyword, int page, int recordsPerPage, int userId, String sortOrder, String startDate, String endDate) {
+        int storeId = getStoreIdByUserId(userId);  // Lấy storeID theo userId
+        List<ProductPriceHistory> historyList = new ArrayList<>();
+        int offset = (page - 1) * recordsPerPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            keyword = "";  // Xử lý keyword nếu null hoặc trống
+        }
+
+        String sql = """
+        SELECT pph.historyID, pph.productID, p.productName, p.image, 
+               pph.price, pph.priceType, pph.changedAt, u.userName AS changedByName, c.[name] AS supplierName
+        FROM ProductPriceHistory pph
+        JOIN products p ON pph.productID = p.productID
+        JOIN users u ON pph.changedBy = u.ID
+        LEFT JOIN customers c ON pph.supplierID = c.customerID  -- Join nhà cung cấp (nếu có)
+        WHERE p.storeID = ?  -- Lọc theo storeID trong ProductPriceHistory
+          AND pph.priceType = 'import'
+          AND (p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ? OR ? = '')
+          AND (pph.changedAt BETWEEN ? AND DATEADD(SECOND, -1, DATEADD(DAY, 1, ?)))  -- Lọc thời gian trong khoảng startDate và endDate
+        ORDER BY pph.changedAt %s
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+    """.formatted(sortOrder);
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, storeId);                       // Thêm tham số storeID
+            ps.setString(2, "%" + keyword + "%");        // Lọc theo tên sản phẩm (nếu có)
+            ps.setString(3, keyword);                    // Bỏ qua lọc tên sản phẩm nếu keyword rỗng
+            ps.setString(4, startDate);                  // Lọc theo ngày bắt đầu
+            ps.setString(5, endDate);                    // Lọc theo ngày kết thúc
+            ps.setInt(6, offset);                        // Phân trang
+            ps.setInt(7, recordsPerPage);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -159,7 +213,8 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
                             rs.getDouble("price"),
                             rs.getString("priceType"),
                             rs.getString("changedAt"),
-                            rs.getString("changedByName")
+                            rs.getString("changedByName"),
+                            rs.getString("supplierName") // Lấy tên nhà cung cấp (nếu có)
                     );
                     historyList.add(history);
                 }
@@ -169,31 +224,36 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
         }
         return historyList;
     }
-    
-    
-    public List<ProductPriceHistory> getExportPriceHistory(String keyword, int page, int recordsPerPage, int userId, String sortOrder) {
+
+    public List<ProductPriceHistory> getExportPriceHistory(String keyword, int page, int recordsPerPage, int userId, String sortOrder, String startDate, String endDate) {
         int storeId = getStoreIdByUserId(userId);
         List<ProductPriceHistory> historyList = new ArrayList<>();
         int offset = (page - 1) * recordsPerPage;
 
         String sql = """
         SELECT pph.historyID, pph.productID, p.productName, p.image, 
-               pph.price, pph.priceType, pph.changedAt, u.userName AS changedByName
+               pph.price, pph.priceType, pph.changedAt, u.userName AS changedByName, c.[name] AS supplierName
         FROM ProductPriceHistory pph
         JOIN products p ON pph.productID = p.productID
         JOIN users u ON pph.changedBy = u.ID
+        LEFT JOIN customers c ON pph.supplierID = c.customerID  -- Join nhà cung cấp (nếu có)
         WHERE p.storeID = ? 
-          AND pph.priceType = 'sell' 
-          AND p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?
+          AND pph.priceType = 'sell'
+          AND pph.storeID = ?  -- Lọc theo storeID
+          AND p.productName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?  
+          AND (pph.changedAt BETWEEN ? AND DATEADD(SECOND, -1, DATEADD(DAY, 1, ?)))  -- Thêm toàn bộ ngày cuối cùng
         ORDER BY pph.changedAt %s
         OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-    """.formatted(sortOrder); // Chèn thứ tự sắp xếp vào SQL
+    """.formatted(sortOrder);
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, storeId);
-            ps.setString(2, "%" + keyword + "%");
-            ps.setInt(3, offset);
-            ps.setInt(4, recordsPerPage);
+            ps.setInt(1, storeId);  // Lọc theo storeID của sản phẩm
+            ps.setInt(2, storeId);  // Lọc theo storeID trong ProductPriceHistory
+            ps.setString(3, "%" + keyword + "%");
+            ps.setString(4, startDate);             // Thêm tham số lọc ngày bắt đầu
+            ps.setString(5, endDate);               // Thêm tham số lọc ngày kết thúc
+            ps.setInt(6, offset);
+            ps.setInt(7, recordsPerPage);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -268,10 +328,10 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
         return storeId;
     }
 
-    public boolean logPriceChange(int productId, BigDecimal newPrice, String priceType, int userId) {
+    public boolean logPriceChange(int productId, BigDecimal newPrice, String priceType, int userId, Integer supplierID) {
         int storeId = getStoreIdByUserId(userId);
 
-        String sql = "INSERT INTO ProductPriceHistory (productID, price, priceType, changedBy,storeID) VALUES (?, ?, ?, ?,?)";
+        String sql = "INSERT INTO ProductPriceHistory (productID, price, priceType, changedBy,storeID,supplierID) VALUES (?, ?, ?, ?,?,?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, productId);
@@ -279,6 +339,11 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
             stmt.setString(3, priceType); // 'import' hoặc 'sell'
             stmt.setInt(4, userId);
             stmt.setInt(5, storeId);
+            if (supplierID == null) {
+                stmt.setNull(6, java.sql.Types.INTEGER);  // Chèn NULL nếu không có supplierID
+            } else {
+                stmt.setInt(6, supplierID);  // Chèn giá trị supplierID bình thường nếu có
+            }
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0; // Trả về true nếu ghi thành công
@@ -323,27 +388,27 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
 
         return 0.0; // Nếu lỗi hoặc không có sản phẩm thì trả về 0
     }
+
     public List<String> getZonesByProductID(int productID) {
-    List<String> zones = new ArrayList<>();
-    String sql = "SELECT z.zoneName FROM ProductZones pz " +
-                 "JOIN zones z ON pz.zoneID = z.zoneID " +
-                 "WHERE pz.productID = ? AND pz.isDelete = 0 " +
-                 "ORDER BY z.zoneName ASC";
+        List<String> zones = new ArrayList<>();
+        String sql = "SELECT z.zoneName FROM ProductZones pz "
+                + "JOIN zones z ON pz.zoneID = z.zoneID "
+                + "WHERE pz.productID = ? AND pz.isDelete = 0 "
+                + "ORDER BY z.zoneName ASC";
 
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, productID);
-        ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, productID);
+            ResultSet rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            zones.add(rs.getString("zoneName"));
+            while (rs.next()) {
+                zones.add(rs.getString("zoneName"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return zones;
     }
-
-    return zones;
-}
-
 
     public List<Integer> getProductUnitsByProductID(int productID) {
         List<Integer> unitSizes = new ArrayList<>();
@@ -400,8 +465,8 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
 
     // Phương thức tìm kiếm sản phẩm theo tên (hỗ trợ tìm kiếm gần đúng)
     public List<Products> searchProductsByName(String keyword, int userId) {
-         int storeId = getStoreIdByUserId(userId);
-        
+        int storeId = getStoreIdByUserId(userId);
+
         List<Products> productsList = new ArrayList<>();
         String sql = "SELECT * FROM products "
                 + "WHERE productName COLLATE Vietnamese_CI_AI LIKE ? "
@@ -411,7 +476,7 @@ public List<ProductPriceHistory> getAllImportPriceHistory(int userId, String pri
             // Loại bỏ dấu trước khi tìm kiếm
             String normalizedKeyword = removeVietnameseAccent(keyword.trim().toLowerCase());
             ps.setString(1, "%" + normalizedKeyword + "%");  // Tìm kiếm gần đúng
-             ps.setInt(2, storeId);
+            ps.setInt(2, storeId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

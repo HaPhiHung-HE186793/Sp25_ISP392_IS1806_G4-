@@ -19,10 +19,36 @@ public class ProductPriceHistory {
     private String priceType;
     private String changedAt;
     private String changedBy;
+    private String supplier;
 
 
     public ProductPriceHistory() {
     }
+
+    public ProductPriceHistory(int historyID, int productID, String productName, String image, double price, String priceType, String changedAt, String changedBy, String supplier) {
+        this.historyID = historyID;
+        this.productID = productID;
+        this.productName = productName;
+        this.image = image;
+        this.price = price;
+        this.priceType = priceType;
+        this.changedAt = changedAt;
+        this.changedBy = changedBy;
+        this.supplier = supplier;
+    }
+    
+    public ProductPriceHistory(int productID, String productName,double price, String priceType, String changedAt, String changedBy, String supplier) {
+        
+        this.productID = productID;
+        this.productName = productName;
+       
+        this.price = price;
+        this.priceType = priceType;
+        this.changedAt = changedAt;
+        this.changedBy = changedBy;
+        this.supplier = supplier;
+    }
+    
 
     public ProductPriceHistory(int historyID, int productID, String productName, String image, double price, String priceType, String changedAt, String changedBy) {
         this.historyID = historyID;
@@ -44,6 +70,14 @@ public class ProductPriceHistory {
         this.priceType = priceType;
         this.changedAt = changedAt;
         this.changedBy = changedBy;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
     }
     
     

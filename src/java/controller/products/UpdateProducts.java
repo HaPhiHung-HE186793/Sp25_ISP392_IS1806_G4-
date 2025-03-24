@@ -104,7 +104,7 @@ public class UpdateProducts extends HttpServlet {
                 //quynh
                // chỉ ghi log nếu giá thay đổi
                if(oldPrice!=price){
-                   boolean logged = DAOProduct.INSTANCE.logPriceChange(productId, BigDecimal.valueOf(price), "sell", userId);
+                   boolean logged = DAOProduct.INSTANCE.logPriceChange(productId, BigDecimal.valueOf(price), "sell", userId,null);
                }
 
                 request.setAttribute("message", "Cập nhật sản phẩm thành công");

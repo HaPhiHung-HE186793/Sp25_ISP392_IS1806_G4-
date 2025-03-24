@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.ProductPriceHistory;
@@ -84,12 +85,27 @@ public class HistoryImportPriceServlet extends HttpServlet {
         if (sortOrder == null || (!sortOrder.equals("asc") && !sortOrder.equals("desc"))) {
             sortOrder = "desc"; // Mặc định hiển thị mới nhất → cũ nhất
         }
+        String startDate = request.getParameter("startDate"); // Ngày bắt đầu
+        String endDate = request.getParameter("endDate");     // Ngày kết thúc
+        System.out.println("Raw startDate from request: " + startDate); // Giá trị gốc từ URL
+        System.out.println("Raw endDate from request: " + endDate);
+        if (startDate == null || startDate.isEmpty()) {
+            startDate = "2025-01-01";  // Ngày bắt đầu mặc định từ rất lâu
+        }
+        if (endDate == null || endDate.isEmpty()) {
+            endDate = LocalDate.now().toString();  // Ngày kết thúc mặc định là ngày hiện tại
+        }
+
+       
 
         List<ProductPriceHistory> HistoryList = new ArrayList<>();
-        HistoryList = DAOProduct.INSTANCE.getImportPriceHistory(keyword, currentPage, recordsPerPage, userId, sortOrder);
+        HistoryList = DAOProduct.INSTANCE.getImportPriceHistory(
+                keyword, currentPage, recordsPerPage, userId, sortOrder, startDate, endDate
+        );
 
         // Lấy tổng số bản ghi để tính tổng số trang
-        int totalRecords = DAOProduct.INSTANCE.getTotalHistoryRecords(keyword, userId); // Truyền keyword + userId vào
+        int totalRecords = DAOProduct.INSTANCE.getTotalHistoryRecords(keyword, userId, startDate, endDate); // Truyền keyword + userId vào
+        System.out.println("Total records: " + totalRecords);
         int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
 
         request.setAttribute("HistoryList", HistoryList);
@@ -97,6 +113,8 @@ public class HistoryImportPriceServlet extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("keyword", keyword);
         request.setAttribute("sortOrder", sortOrder); // ✅ Thêm sortOrder để giữ trạng thái sắp xếp
+        
+        request.setAttribute("endDate", endDate);
 
         // Kiểm tra giá trị của danh sách trước khi chuyển tiếp
         System.out.println("Size of HistoryList: " + HistoryList.size());

@@ -862,41 +862,41 @@
                         </div>
 
 
-<script>
-document.getElementById("printOrderBtn").addEventListener("click", function() {
-    // Lấy giá trị từ input paidAmount
-    let paidAmountValue = document.getElementById("paidAmount").value || 0;
+                        <script>
+                            document.getElementById("printOrderBtn").addEventListener("click", function () {
+                                // Lấy giá trị từ input paidAmount
+                                let paidAmountValue = document.getElementById("paidAmount").value || 0;
 
-    // Chuyển đổi sang số nguyên để đảm bảo đúng định dạng
-    let amountValue = parseInt(paidAmountValue, 10) || 0;
+                                // Chuyển đổi sang số nguyên để đảm bảo đúng định dạng
+                                let amountValue = parseInt(paidAmountValue, 10) || 0;
 
-    // Tạo một form ẩn
-    let form = document.createElement("form");
-    form.method = "POST";
-    form.action = "vnpay_payment";
+                                // Tạo một form ẩn
+                                let form = document.createElement("form");
+                                form.method = "POST";
+                                form.action = "vnpay_payment";
 
-    // Thêm input hidden cho số tiền thanh toán
-    let amountInput = document.createElement("input");
-    amountInput.type = "hidden";
-    amountInput.name = "amount";
-    amountInput.value = amountValue; // Gán giá trị từ paidAmount
+                                // Thêm input hidden cho số tiền thanh toán
+                                let amountInput = document.createElement("input");
+                                amountInput.type = "hidden";
+                                amountInput.name = "amount";
+                                amountInput.value = amountValue; // Gán giá trị từ paidAmount
 
-    // Thêm input hidden cho orderId
-    let orderIdInput = document.createElement("input");
-    orderIdInput.type = "hidden";
-    orderIdInput.name = "orderId";
-    orderIdInput.value = "1";
+                                // Thêm input hidden cho orderId
+                                let orderIdInput = document.createElement("input");
+                                orderIdInput.type = "hidden";
+                                orderIdInput.name = "orderId";
+                                orderIdInput.value = "1";
 
-    // Gắn input vào form
-    form.appendChild(amountInput);
-    form.appendChild(orderIdInput);
-    document.body.appendChild(form);
+                                // Gắn input vào form
+                                form.appendChild(amountInput);
+                                form.appendChild(orderIdInput);
+                                document.body.appendChild(form);
 
-    // Submit form
-    form.submit();
-});
+                                // Submit form
+                                form.submit();
+                            });
 
-</script>
+                        </script>
 
 
 
@@ -956,6 +956,7 @@ document.getElementById("printOrderBtn").addEventListener("click", function() {
                                 cell4.innerHTML = '<input type="number" name="totalWeight" class="totalWeight" readonly >';
                                 //không cho phép nhập âm số lượng và giảm giá
 
+                               
 
 
 
@@ -974,6 +975,11 @@ document.getElementById("printOrderBtn").addEventListener("click", function() {
                                     if (this.value < 0) {
                                         this.value = 0; // Đặt giá trị tối thiểu là 1
                                     }
+                                     if (parseFloat(this.value) > pricePerKg) {
+                                        alert("Giảm giá không được vượt quá giá của 1 kg gạo!");
+                                        this.value = pricePerKg; // Đặt lại giá trị bằng giá gốc nếu vượt quá
+                                    }
+                                    recalculateRow(newRow, pricePerKg, availableQuantity);
                                 });
                                 unitTypeInput.addEventListener('change', () => recalculateRow(newRow, pricePerKg, availableQuantity));
                                 discountInput.addEventListener('input', () => recalculateRow(newRow, pricePerKg, availableQuantity));
@@ -1152,76 +1158,76 @@ document.getElementById("printOrderBtn").addEventListener("click", function() {
                     </script>
 
                     <script>
-                        
-                                            $(document).ready(function () {
-                                $("#orderForm").submit(function (event) {
-                        event.preventDefault(); // Ngăn chặn việc tải lại trang
+
+                        $(document).ready(function () {
+                            $("#orderForm").submit(function (event) {
+                                event.preventDefault(); // Ngăn chặn việc tải lại trang
                                 $("#orderStatus").text("⏳ Đơn hàng đang xử lý..."); // Hiển thị trạng thái ngay lập tức
                                 $("#submitOrder").prop("disabled", true); // Disable nút submit
 
                                 $.ajax({
-                                url: "CreateOrderServlet",
-                                        type: "POST",
-                                        data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
-                                        dataType: "json",
-                                        success: function (response) {
+                                    url: "CreateOrderServlet",
+                                    type: "POST",
+                                    data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
+                                    dataType: "json",
+                                    success: function (response) {
                                         if (response.status === "processing") {
-                                        checkOrderStatus(); // Kiểm tra trạng thái đơn hàng
+                                            checkOrderStatus(); // Kiểm tra trạng thái đơn hàng
                                         } else if (response.status === "error") {
-                                        $("#orderStatus").html("<span style='color: red;'>❌ " + response.message + "</span>");
+                                            $("#orderStatus").html("<span style='color: red;'>❌ " + response.message + "</span>");
                                         }
-                                        }
+                                    }
                                 });
-                        });
-                                function checkOrderStatus() {
+                            });
+                            function checkOrderStatus() {
                                 var userId = ${sessionScope.userID}; // Đảm bảo lấy đúng userID từ session
 
-                                        $.ajax({
-                                        url: "CheckOrderStatusServlet",
-                                                type: "GET",
-                                                data: {userId: userId},
-                                                dataType: "json",
-                                                success: function (response) {
-                                                if (response.status === "done") {
-                                                $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
-                                                } else if (response.status === "error") {
-                                                $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
-                                                } else {
-                                                setTimeout(checkOrderStatus, 1000); // Tiếp tục kiểm tra sau 1 giây
-                                                }
-                                                }
-                                        });
-                                }
-
-                        // ---- Code từ GitHub ----
-                        // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                                const newDebt = document.querySelector('.menu'); // Menu
-                                const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                                const newDebt2 = document.querySelector('.sidebar'); // Sidebar
-
-                                // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                                document.addEventListener("DOMContentLoaded", function () {
-                                if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                        newDebt1.classList.add('hiden');
-                                        newDebt2.classList.add('hiden');
-                                }
-                                });
-                                // Hàm toggle hiển thị
-                                        function toggleAddNewDebt() {
-                                        newDebt.classList.toggle('hiden');
-                                                newDebt1.classList.toggle('hiden');
-                                                newDebt2.classList.toggle('hiden');
-                                                // Lưu trạng thái vào localStorage
-                                                const isHidden = newDebt.classList.contains('hiden');
-                                                localStorage.setItem("menuHidden", isHidden);
+                                $.ajax({
+                                    url: "CheckOrderStatusServlet",
+                                    type: "GET",
+                                    data: {userId: userId},
+                                    dataType: "json",
+                                    success: function (response) {
+                                        if (response.status === "done") {
+                                            $("#orderStatus").text("✅ Tạo đơn hàng thành công!");
+                                        } else if (response.status === "error") {
+                                            $("#orderStatus").text("❌ Lỗi: Tạo đơn hàng không thành công!");
+                                        } else {
+                                            setTimeout(checkOrderStatus, 1000); // Tiếp tục kiểm tra sau 1 giây
                                         }
+                                    }
+                                });
+                            }
 
-                                // Gán sự kiện click
-                                openAddNewDebt.addEventListener('click', toggleAddNewDebt);
-                                        });
-                                   
+                            // ---- Code từ GitHub ----
+                            // Lấy các phần tử cần ẩn/hiện
+                            const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+                            const newDebt = document.querySelector('.menu'); // Menu
+                            const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+                            const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+                            // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+                            document.addEventListener("DOMContentLoaded", function () {
+                                if (localStorage.getItem("menuHidden") === "true") {
+                                    newDebt.classList.add('hiden');
+                                    newDebt1.classList.add('hiden');
+                                    newDebt2.classList.add('hiden');
+                                }
+                            });
+                            // Hàm toggle hiển thị
+                            function toggleAddNewDebt() {
+                                newDebt.classList.toggle('hiden');
+                                newDebt1.classList.toggle('hiden');
+                                newDebt2.classList.toggle('hiden');
+                                // Lưu trạng thái vào localStorage
+                                const isHidden = newDebt.classList.contains('hiden');
+                                localStorage.setItem("menuHidden", isHidden);
+                            }
+
+                            // Gán sự kiện click
+                            openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+                        });
+
 
 
                 </script>
