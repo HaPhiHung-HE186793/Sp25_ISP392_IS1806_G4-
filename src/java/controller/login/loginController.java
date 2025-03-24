@@ -89,6 +89,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
                 session.setAttribute("username", user.getUserName());
                 session.setAttribute("createBy", user.getCreateBy());
                 session.setAttribute("storeID", user.getStoreID());
+                session.setAttribute("storeName", user.getStoreName());
                 
                 if (user.getIsDelete()) {
                     request.setAttribute("message", "Tài khoản của bạn đã bị cấm.");
