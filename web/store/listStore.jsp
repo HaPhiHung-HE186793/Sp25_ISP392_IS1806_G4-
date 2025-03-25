@@ -30,7 +30,7 @@
     </style>
     <body>
         <div id="main">
-                       <jsp:include page="/Component/header.jsp"></jsp:include>
+            <jsp:include page="/Component/header.jsp"></jsp:include>
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div> 
 
                 <div class="main-content">
@@ -146,13 +146,17 @@
                         </tbody>
                     </table>    
                     <div style="margin-left: -220px;" >
-
                     </div>
                 </div>
-                            <%@include file="/Component/pagination.jsp" %>
+                <div style="display: flex; align-items: center; gap: 180px;">
+                    <div style="color: #fbfbfb; font-size: 15px; margin: 20px 0; padding: 10px; line-height: 1.6; letter-spacing: 1px;">
+                        Trang ${sessionScope.page.getCurrentPage()} - 10 out of ${sessionScope.page.getTotalPage()}
+                    </div>
+                    <%@include file="/Component/pagination.jsp" %>
+                </div>                      
             </div>
         </div>
-        
+
         <%@include file="/Component/footer.jsp" %>
 
 
@@ -162,77 +166,77 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
-        // Hàm ẩn thông báo sau 3 giây
-        function hideNotification(notificationId) {
-            setTimeout(function () {
-                var notification = document.getElementById(notificationId);
-                if (notification) {
-                    notification.style.display = 'none';
-                }
-            }, 3000); // 3000 milliseconds = 3 seconds
-        }
+                                            // Hàm ẩn thông báo sau 3 giây
+                                            function hideNotification(notificationId) {
+                                                setTimeout(function () {
+                                                    var notification = document.getElementById(notificationId);
+                                                    if (notification) {
+                                                        notification.style.display = 'none';
+                                                    }
+                                                }, 3000); // 3000 milliseconds = 3 seconds
+                                            }
 
-        hideNotification('errorNotification');
-        hideNotification('messageNotification');
+                                            hideNotification('errorNotification');
+                                            hideNotification('messageNotification');
 
-        //ajax submit block, unlock
-        $(document).ready(function () {
-            $(".toggleStatusBtn").click(function () {
-                var form = $(this).closest(".toggleStatusForm");
-                var userIDBlock = form.find("input[name='storeIDBlock']").val();
-                var actionBlock = form.data("action"); // "block" hoặc "unlock"
+                                            //ajax submit block, unlock
+                                            $(document).ready(function () {
+                                                $(".toggleStatusBtn").click(function () {
+                                                    var form = $(this).closest(".toggleStatusForm");
+                                                    var userIDBlock = form.find("input[name='storeIDBlock']").val();
+                                                    var actionBlock = form.data("action"); // "block" hoặc "unlock"
 
-                $.ajax({
-                    type: "POST",
-                    url: "liststore",
-                    data: {actionBlock: actionBlock, userIDBlock: userIDBlock},
-                    success: function () {
-                        history.replaceState(null, "", "liststore"); // Xóa id khỏi URL
-                        location.reload(); // Reload để cập nhật trạng thái
-                    },
-                    error: function () {
-                        $("#error-message").text("Không được phép khóa tài khoản admin khác.").show();
-                        hideNotification('error-message');
-                    }
-                });
-            });
-        });
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: "liststore",
+                                                        data: {actionBlock: actionBlock, userIDBlock: userIDBlock},
+                                                        success: function () {
+                                                            history.replaceState(null, "", "liststore"); // Xóa id khỏi URL
+                                                            location.reload(); // Reload để cập nhật trạng thái
+                                                        },
+                                                        error: function () {
+                                                            $("#error-message").text("Không được phép khóa tài khoản admin khác.").show();
+                                                            hideNotification('error-message');
+                                                        }
+                                                    });
+                                                });
+                                            });
 
 
     </script>
 
-    
-                <script>
-                
-                     // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+    <script>
+
+        // Lấy các phần tử cần ẩn/hiện
+        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+        const newDebt = document.querySelector('.menu'); // Menu
+        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
 // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("menuHidden") === "true") {
+                newDebt.classList.add('hiden');
+                newDebt1.classList.add('hiden');
+                newDebt2.classList.add('hiden');
+            }
+        });
 
 // Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
+        function toggleAddNewDebt() {
+            newDebt.classList.toggle('hiden');
+            newDebt1.classList.toggle('hiden');
+            newDebt2.classList.toggle('hiden');
 
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
+            // Lưu trạng thái vào localStorage
+            const isHidden = newDebt.classList.contains('hiden');
+            localStorage.setItem("menuHidden", isHidden);
+        }
 
 // Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
 
-                
-            </script>
+
+    </script>
 </html>

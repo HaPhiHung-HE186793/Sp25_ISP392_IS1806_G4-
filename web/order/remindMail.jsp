@@ -73,7 +73,8 @@ String orderId = (String) request.getAttribute("orderId");
 </head>
 <body>
     <div id="main">
-        <jsp:include page="/Component/menu.jsp"></jsp:include>
+               <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
         <div class="main-content">
             <div class="notification">
                 Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4

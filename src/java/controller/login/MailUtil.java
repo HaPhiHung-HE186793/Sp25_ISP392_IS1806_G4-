@@ -21,7 +21,7 @@ public class MailUtil {
     // Method to send OTP via email
     public static void sendOTP(String to, String otp) {
         String subject = "Your OTP Code";
-        String content = "Your OTP code is: " + otp + ". This code is valid for 5 minutes.";
+        String content = "Your OTP code is: " + otp + ". This code is valid for 1 minutes.";
 
         // Email credentials
         String username = "esmartlearnisp@gmail.com";

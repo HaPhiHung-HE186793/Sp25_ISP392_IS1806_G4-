@@ -180,7 +180,7 @@ public class OrderWorker extends Thread {
                             System.out.println("✅ Đã cập nhật giá nhập kho cho sản phẩm ID: " + detail.getProductID());
 
                             // Chỉ ghi log nếu giá đã thay đổi
-                            boolean logged = DAOProduct.INSTANCE.logPriceChange(detail.getProductID(), newPrice, "import", orderTask.getUserId());
+                            boolean logged = DAOProduct.INSTANCE.logPriceChange(detail.getProductID(), newPrice, "import", orderTask.getUserId(),orderTask.getCustomerId());
                             if (logged) {
                                 System.out.println("📜 Đã ghi lịch sử thay đổi giá nhập!");
                             } else {

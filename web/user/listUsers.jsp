@@ -140,7 +140,7 @@
                                     <option value="3" ${selectedRole == 3 ? 'selected' : ''}>Nhân viên bán hàng</option>
                                 </select>
                                 <select name="storeid" id="sortColumn" class="store-select" onchange="this.form.submit()">
-                                    <option value="">Chọn cửa hàng</option>
+                                    <option value="-1">Chọn cửa hàng</option>
                                     <c:forEach var="store" items="${storeList}">
                                         <option  value="${store.getStoreID()}" ${store.getStoreID() eq sortColumn ? "selected" : ""}>${store.getStoreName()}</option>
                                     </c:forEach>
@@ -251,7 +251,12 @@
                     <div style="margin-left: -220px;" >
                     </div>                             
                 </div>
-                           <%@include file="/Component/pagination.jsp" %>
+                            <div style="display: flex; align-items: center; gap: 180px;">
+                                <div style="color: #fbfbfb; font-size: 15px; margin: 20px 0; padding: 10px; line-height: 1.6; letter-spacing: 1px;">
+                                    Trang ${sessionScope.page.getCurrentPage()} - 10 out of ${sessionScope.page.getTotalPage()}
+                                </div>
+                                <%@include file="/Component/pagination.jsp" %>
+                            </div>
             </div>                            
         </div>
         

@@ -122,8 +122,9 @@
     </style>
 </head>
 <body>
-    <div id="main">
-        <jsp:include page="/Component/menu.jsp"></jsp:include>
+   <div id="main">
+               <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
 
         <div class="main-content">
             <div class="notification">
@@ -133,17 +134,17 @@
             <h3><%= request.getAttribute("tableTitle") %></h3>
             
             <div>
-                <label for="customerName">Tên khách hàng:</label>
+                
                 <input type="text" id="customerName" placeholder="Nhập tên khách hàng" value="<%= customerName != null ? customerName : "" %>">
                 
-                <label for="datePicker">Ngày</label>
+                
                 <input type="date" id="datePicker" value="<%= selectedDate != null ? selectedDate : "" %>">
                 
                 <button class="action-button" onclick="performSearch()">Tìm kiếm</button>
                 <button class="action-button" onclick="resetFilters()">Đặt lại</button>
             </div>
             <div>
-                <label for="sortColumn">Sắp xếp:</label>
+                
                 <select id="sortColumn">
                     <option value="0" <%= "0".equals(sortColumn) ? "selected" : "" %>>Mã hóa đơn</option>
                     <option value="1" <%= "1".equals(sortColumn) ? "selected" : "" %>>Tên khách hàng</option>
@@ -162,7 +163,8 @@
                             <th>Tên khách hàng</th>
                             <th>Người tạo</th>
                             <th>Khách đã trả</th>
-                            <th>Thành tiền</th>                           
+                            <th>Thành tiền</th> 
+                            <th>Tiền còn thiếu</th>
                             <th>Ngày tạo</th>                           
                             <th>Cửu vạn</th>
                             <th>Trạng thái</th>
@@ -181,6 +183,14 @@
                             <td><%= showOrder.getUserName() %></td>
                             <td><%= decimalFormat.format(showOrder.getPaidAmount()) %></td>
                             <td><%= decimalFormat.format(showOrder.getTotalAmount()) %></td>
+                            <td>
+                            <%
+                                double paidAmount = showOrder.getPaidAmount(); // Số tiền khách đã trả
+                                double total = showOrder.getTotalAmount(); // Tổng số tiền 
+                                double remainingAmount = total - paidAmount; // Tính tiền còn thiếu
+                            %>
+                            <%= decimalFormat.format(remainingAmount) %>
+                        </td>
                             <td><%= showOrder.getCreateAt() %></td>                           
                             <td><%= showOrder.getPorter() %></td>
                             <td><%= showOrder.getStatus() %></td>

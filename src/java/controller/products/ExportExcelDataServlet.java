@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.ProductPriceHistory;
 
@@ -64,9 +65,18 @@ public class ExportExcelDataServlet extends HttpServlet {
         HttpSession session = request.getSession();
         int userId = (int) session.getAttribute("userID");
         String priceType = request.getParameter("priceType");
+        List<ProductPriceHistory>historyList=new ArrayList<>(); ;
+        if(priceType.equals("import")){
+         // Lấy toàn bộ dữ liệu (không phân trang)
+        historyList = DAOProduct.INSTANCE.getAllImportPriceHistory(userId,priceType);
+        }
+        else{
+        
+         historyList = DAOProduct.INSTANCE.getAllExportPriceHistory(userId,priceType);
 
-        // Lấy toàn bộ dữ liệu (không phân trang)
-        List<ProductPriceHistory> historyList = DAOProduct.INSTANCE.getAllImportPriceHistory(userId,priceType);
+        }
+
+       
 
         // Chuyển danh sách sang JSON
         String json = new Gson().toJson(historyList);

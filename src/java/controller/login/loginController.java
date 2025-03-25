@@ -89,6 +89,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
                 session.setAttribute("username", user.getUserName());
                 session.setAttribute("createBy", user.getCreateBy());
                 session.setAttribute("storeID", user.getStoreID());
+                session.setAttribute("storeName", user.getStoreName());
                 
                 if (user.getIsDelete()) {
                     request.setAttribute("message", "Tài khoản của bạn đã bị cấm.");
@@ -104,7 +105,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
                     switch (user.getRoleID()) {
                         case 2: 
                         case 3: 
-                            dao.dispatch(request, response, "ListProducts");
+                            response.sendRedirect("dashboard");
                             break;
                         default:
                             request.setAttribute("message", "Invalid role.");

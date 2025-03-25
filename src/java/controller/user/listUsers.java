@@ -16,6 +16,7 @@ import java.util.List;
 import DAO.DAOUser;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import model.Store;
 import model.pagination.Pagination;
 import model.User;
 
@@ -78,6 +79,8 @@ public class listUsers extends HttpServlet {
             return;
         }
         String error = null;
+        
+        List<Store> storeList = daos.listStore();
 
         if (request.getParameter("id") != null && !(request.getParameter("id") == "")) {
             int id = Integer.parseInt(request.getParameter("id"));
@@ -144,6 +147,7 @@ public class listUsers extends HttpServlet {
 
         String endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         request.setAttribute("endDate", endDate);
+        request.setAttribute("storeList", storeList);
         request.setAttribute("error", error);
         request.setAttribute("user_current", user_current);
         session.setAttribute("U", U);
@@ -171,10 +175,13 @@ public class listUsers extends HttpServlet {
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
         String action = request.getParameter("action");
+        String storeIdPara = request.getParameter("storeid");
         Integer selectedAction = (action != null && !action.isEmpty()) ? Integer.parseInt(action) : null;
         Integer role = (roleParam != null && !roleParam.isEmpty()) ? Integer.parseInt(roleParam) : null;
+        Integer storeId = (storeIdPara != null && !storeIdPara.isEmpty()) ? Integer.parseInt(storeIdPara) : null;
 
         String error = null;
+        List<Store> storeList = daos.listStore();
         String actionBlock = request.getParameter("actionBlock");
         String userIDBlock = request.getParameter("userIDBlock");
         if (userIDBlock != null && !(userIDBlock == "")) { 
@@ -212,6 +219,14 @@ public class listUsers extends HttpServlet {
         }
         if (keyword != null && !keyword.isEmpty()) {
             List<User> tempUsers = dao.getUsersByKeyword(keyword, filteredUsers);
+            if (!tempUsers.isEmpty()) {
+                filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
+            } else {
+                mess = "Không tìm thấy người dùng nào.";
+            }
+        }
+        if (storeId != null && storeId != -1) {
+            List<User> tempUsers = dao.getUsersByStore(storeId, filteredUsers);
             if (!tempUsers.isEmpty()) {
                 filteredUsers = tempUsers; // Chỉ cập nhật nếu có kết quả
             } else {
@@ -267,6 +282,7 @@ public class listUsers extends HttpServlet {
         int endIndex = Math.min(startIndex + pageSize, totalUsers);
         List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
 
+        request.setAttribute("storeList", storeList);
         request.setAttribute("mess", mess);
         request.setAttribute("error", error);
         request.setAttribute("U", filteredUsers);

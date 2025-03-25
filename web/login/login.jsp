@@ -7,7 +7,10 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e9ecef; /* Light gray background */
+            background-image: url('<%=request.getContextPath()%>/image2/logao4.jpg'); /* Đường dẫn đến hình ảnh */
+            
+            background-size: cover; /* Đảm bảo hình ảnh phủ kín */
+            background-position: center; /* Căn giữa hình ảnh */
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,7 +21,7 @@
         }
 
         div {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9); /* Nền trắng với độ trong suốt */
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);

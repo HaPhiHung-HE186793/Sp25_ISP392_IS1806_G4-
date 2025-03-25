@@ -63,7 +63,7 @@
                         </thead>
                         <tbody id="productTableBody">
                             <c:forEach items="${products}" var="p" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
-                                <c:if test="${(sessionScope.roleID == 2) or (not p.isIsDelete() and (sessionScope.roleID != 1 and sessionScope.roleID != 3))}">
+                                <c:if test="${(sessionScope.roleID == 2) or (not p.isIsDelete() and (sessionScope.roleID != 1 ))}">
                                     <tr class="no-rows">
                                         <td>${p.getProductID()}</td>
                                         <td>${p.getProductName()}</td>

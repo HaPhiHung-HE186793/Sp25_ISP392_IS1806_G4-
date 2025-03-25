@@ -36,10 +36,19 @@
         <url-pattern>/storedetail</url-pattern>
         <url-pattern>/updatestore</url-pattern>
         <url-pattern>/ListZones</url-pattern>
+<<<<<<< HEAD
+=======
+        <url-pattern>/vnpay_payment</url-pattern>
+        <url-pattern>/vnpay_return</url-pattern>
+>>>>>>> origin/main
         <url-pattern>/workschedule</url-pattern>
         <url-pattern>/createschedule</url-pattern>
         <url-pattern>/storeprofile</url-pattern>
         <url-pattern>/updateschedule</url-pattern>
+<<<<<<< HEAD
+=======
+        <url-pattern>/dashboard</url-pattern>
+>>>>>>> origin/main
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -194,12 +203,17 @@
         <servlet-class>controller.schedule.updateSchedule</servlet-class>
     </servlet>
     <servlet>
+<<<<<<< HEAD
         <servlet-name>BanAndUnbanCustomer</servlet-name>
         <servlet-class>controller.customer.BanAndUnbanCustomer</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ListHistoryDebt</servlet-name>
         <servlet-class>controller.debt.ListHistoryDebt</servlet-class>
+=======
+        <servlet-name>dashboard</servlet-name>
+        <servlet-class>controller.products.DashBoard</servlet-class>
+>>>>>>> origin/main
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -385,11 +399,16 @@
         <url-pattern>/updateschedule</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+<<<<<<< HEAD
         <servlet-name>BanAndUnbanCustomer</servlet-name>
         <url-pattern>/BanAndUnbanCustomer</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ListHistoryDebt</servlet-name>
         <url-pattern>/ListHistoryDebt</url-pattern>
+=======
+        <servlet-name>dashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+>>>>>>> origin/main
     </servlet-mapping>
 </web-app>

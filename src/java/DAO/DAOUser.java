@@ -510,6 +510,15 @@ public class DAOUser extends DBContext {
         }
         return users;
     }
+    public List<User> getUsersByStore(int storeid, List<User> U) {
+        List<User> users = new ArrayList<>();
+        for (User user : U) {
+            if (user.getStoreID() == storeid) {
+                users.add(user);
+            }
+        }
+        return users;
+    }
 
     public List<User> getUsersByDate(String startDate, String endDate, List<User> U) {
         List<User> users = new ArrayList<>();

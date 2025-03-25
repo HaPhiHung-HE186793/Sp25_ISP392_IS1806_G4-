@@ -57,34 +57,20 @@
             .blue-button:hover {
                 background-color: #0056b3;
             }
+            .search-container input[type="date"] {
+                padding: 5px;         /* Giảm khoảng padding bên trong input để input gọn hơn */
+                width: 140px;         /* Giảm chiều rộng của ô nhập ngày */
+                font-size: 12px;      /* Giảm kích thước chữ bên trong ô nhập ngày */
+            }
+
             .search-container {
-                margin-bottom: 20px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
+                margin-bottom: 20px;  /* Giữ khoảng cách giữa phần tìm kiếm và các phần bên dưới */
+                display: flex;        /* Xếp các thành phần (label, input) ngang hàng với nhau */
+                align-items: center;  /* Căn chỉnh các thành phần theo chiều dọc cho đều nhau */
+                gap: 10px;            /* Khoảng cách giữa các thành phần (label, input, button) */
+                flex-wrap: wrap;      /* Nếu không đủ không gian, các thành phần sẽ tự động xuống dòng */
             }
-            .search-container label {
-                font-weight: bold;
-            }
-            .search-container input {
-                padding: 8px;
-                width: 250px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 14px;
-            }
-            .search-container button {
-                padding: 8px 15px;
-                border: none;
-                background-color: #28a745;
-                color: white;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-            }
-            .search-container button:hover {
-                background-color: #218838;
-            }
+
             .pagination {
                 margin-top: 20px;
                 text-align: center;
@@ -113,14 +99,23 @@
 
 
 
+
         </style>
     </head>
     <body>
         <div id="main">
+<<<<<<< HEAD
                         <jsp:include page="/Component/header.jsp"></jsp:include>
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+=======
+
+            <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+
+>>>>>>> origin/main
                 <div class="main-content">
                     <h2>Lịch Sử Giá Nhập</h2>
+                    
 
                     <div class="search-container">
 
@@ -134,41 +129,46 @@
                             <option value="asc" <c:if test="${sortOrder == 'asc'}">selected</c:if>>Cũ nhất → Mới nhất</option>
                             </select>
 
+                            
 
-                            <button type="submit">Tìm kiếm</button>
-                            <button type="button" onclick="resetFilters()">Xóa bộ lọc</button> <!-- Thêm nút này -->
+                        <label for="endDate">Đến ngày:</label>
+                        <input type="date" id="endDate" name="endDate" value="${endDate}">
 
-                        </form>
-
-                    </div>
-
-
-
+                        <button type="submit">Tìm kiếm</button>
+                        <button type="button" onclick="resetFilters()">Xóa bộ lọc</button>  
+                    </form>
 
 
+                </div>
 
 
-                    <div style="text-align: right;">
-                        <button type="button" onclick="exportToExcel()">Xuất Excel</button>
-                        <button type="button" onclick="redirectToSellPriceHistory()">Xem Lịch Sử Giá Bán</button>
-                    </div>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 
-                    <div class="table-container">
 
 
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <th>Hình ảnh</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Giá nhập</th>
-                                    <th>Ngày thay đổi</th>
-                                    <th>Người thay đổi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+
+                <div style="text-align: right;">
+                    <button type="button" onclick="exportToExcel()">Xuất Excel</button>
+                    <button type="button" onclick="redirectToSellPriceHistory()">Xem Lịch Sử Giá Bán</button>
+                </div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+                <div class="table-container">
+
+
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá nhập</th>
+                                <th>Nhà Cung Cấp</th>
+                                <th>Ngày thay đổi</th>
+                                <th>Người thay đổi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             <c:forEach var="history" items="${HistoryList}">
                                 <tr>
                                     <td>
@@ -178,6 +178,7 @@
                                     <td>
                                         <fmt:formatNumber value="${history.price}" type="number" groupingUsed="true" />
                                     </td>
+                                    <td>${history.supplier}</td>
                                     <td>${history.changedAt}</td>
                                     <td>${history.changedBy}</td>
                                 </tr>
@@ -188,17 +189,37 @@
 
                 <div class="pagination">
                     <c:if test="${currentPage > 1}">
-                        <a href="HistoryImportPriceServlet?page=${currentPage - 1}&sortOrder=${sortOrder}">&laquo; Trước</a>
+                        <a href="<c:url value='HistoryImportPriceServlet'>
+                               <c:param name='page' value='${currentPage - 1}' />
+                               <c:param name='sortOrder' value='${sortOrder}' />
+                              
+                               <c:param name='endDate' value='${endDate}' />
+                               <c:param name='keyword' value='${keyword}' />
+                           </c:url>">&laquo; Trước</a>
                     </c:if>
 
                     <c:forEach var="i" begin="1" end="${totalPages}">
-                        <a href="HistoryImportPriceServlet?page=${i}&sortOrder=${sortOrder}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                        <a href="<c:url value='HistoryImportPriceServlet'>
+                               <c:param name='page' value='${i}' />
+                               <c:param name='sortOrder' value='${sortOrder}' />
+                              
+                               <c:param name='endDate' value='${endDate}' />
+                               <c:param name='keyword' value='${keyword}' />
+                           </c:url>" class="${i == currentPage ? 'active' : ''}">${i}</a>
                     </c:forEach>
 
                     <c:if test="${currentPage < totalPages}">
-                        <a href="HistoryImportPriceServlet?page=${currentPage + 1}&sortOrder=${sortOrder}">Sau &raquo;</a>
+                        <a href="<c:url value='HistoryImportPriceServlet'>
+                               <c:param name='page' value='${currentPage + 1}' />
+                               <c:param name='sortOrder' value='${sortOrder}' />
+                               
+                               <c:param name='endDate' value='${endDate}' />
+                               <c:param name='keyword' value='${keyword}' />
+                           </c:url>">Sau &raquo;</a>
                     </c:if>
                 </div>
+
+
 
 
 
@@ -208,40 +229,78 @@
 
 
         <script>
-                            async function exportToExcel() {
-                                try {
-                                    let response = await fetch("ExportExcelDataServlet?priceType=import");
-                                    let data = await response.json();
+                        async function exportToExcel() {
+                            try {
+                                let response = await fetch("ExportExcelDataServlet?priceType=import");
+                                let data = await response.json();
 
-                                    let worksheet = XLSX.utils.json_to_sheet(data.map(item => ({
-                                            "Tên sản phẩm": item.productName,
-                                            "Giá": item.price,
-                                            "Loại giá": item.priceType,
-                                            "Ngày thay đổi": item.changedAt,
-                                            "Người thay đổi": item.changedBy // Giờ đây là userName thay vì ID
-                                        })));
+                                let worksheet = XLSX.utils.json_to_sheet(data.map(item => ({
+                                        "Tên sản phẩm": item.productName,
+                                        "Giá": item.price,
+                                        "Nhà Cung Cấp": item.supplier,
+                                        "Ngày thay đổi": item.changedAt,
+                                        "Người thay đổi": item.changedBy // Giờ đây là userName thay vì ID
+                                    })));
 
-                                    let workbook = XLSX.utils.book_new();
-                                    XLSX.utils.book_append_sheet(workbook, worksheet, "LichSuGiaNhap");
+                                let workbook = XLSX.utils.book_new();
+                                XLSX.utils.book_append_sheet(workbook, worksheet, "LichSuGiaNhap");
 
-                                    XLSX.writeFile(workbook, "LichSuGiaNhap.xlsx");
-                                } catch (error) {
-                                    console.error("Lỗi khi xuất Excel:", error);
-                                    alert("Có lỗi xảy ra khi xuất Excel!");
-                                }
+                                XLSX.writeFile(workbook, "LichSuGiaNhap.xlsx");
+                            } catch (error) {
+                                console.error("Lỗi khi xuất Excel:", error);
+                                alert("Có lỗi xảy ra khi xuất Excel!");
                             }
+                        }
 
-                            function redirectToSellPriceHistory() {
-                                window.location.href = "HistoryExportPriceServlet";
-                            }
+                        function redirectToSellPriceHistory() {
+                            window.location.href = "HistoryExportPriceServlet";
+                        }
 
         </script>
         <script>
             function resetFilters() {
                 document.getElementById('searchInput').value = ''; // Xóa từ khóa tìm kiếm
                 document.getElementById('sortOrder').value = 'desc'; // Đặt sắp xếp về mặc định
+                
+                document.getElementById('endDate').value = '';   // Xóa ngày kết thúc
                 document.getElementById('searchForm').submit(); // Submit lại form
             }
+
+
+
+        </script>
+        <script>
+
+            // Lấy các phần tử cần ẩn/hiện
+            const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+            const newDebt = document.querySelector('.menu'); // Menu
+            const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+            const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+            document.addEventListener("DOMContentLoaded", function () {
+                if (localStorage.getItem("menuHidden") === "true") {
+                    newDebt.classList.add('hiden');
+                    newDebt1.classList.add('hiden');
+                    newDebt2.classList.add('hiden');
+                }
+            });
+
+// Hàm toggle hiển thị
+            function toggleAddNewDebt() {
+                newDebt.classList.toggle('hiden');
+                newDebt1.classList.toggle('hiden');
+                newDebt2.classList.toggle('hiden');
+
+                // Lưu trạng thái vào localStorage
+                const isHidden = newDebt.classList.contains('hiden');
+                localStorage.setItem("menuHidden", isHidden);
+            }
+
+// Gán sự kiện click
+            openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+
+
         </script>
 
    <script>

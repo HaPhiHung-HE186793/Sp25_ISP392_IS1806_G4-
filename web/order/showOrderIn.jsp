@@ -136,17 +136,17 @@
                 <button class="blue-button" onclick="window.location.href='<%=request.getContextPath()%>/URLOrder?service=listshow'">Hóa đơn xuất</button>
             </div>
             <div>
-                <label for="customerName">Tên khách hàng:</label>
+                
                 <input type="text" id="customerName" placeholder="Nhập tên khách hàng" value="<%= customerName != null ? customerName : "" %>">
                 
-                <label for="datePicker">Ngày</label>
+                
                 <input type="date" id="datePicker" value="<%= selectedDate != null ? selectedDate : "" %>">
                 
                 <button class="action-button" onclick="performSearch()">Tìm kiếm</button>
                 <button class="action-button" onclick="resetFilters()">Đặt lại</button>
             </div>
             <div>
-                <label for="sortColumn">Sắp xếp:</label>
+                
                 <select id="sortColumn">
                     <option value="0" <%= "0".equals(sortColumn) ? "selected" : "" %>>Mã hóa đơn</option>
                     <option value="1" <%= "1".equals(sortColumn) ? "selected" : "" %>>Tên khách hàng</option>
