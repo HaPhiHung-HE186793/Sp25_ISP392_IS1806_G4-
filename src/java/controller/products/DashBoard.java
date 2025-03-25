@@ -80,10 +80,9 @@ public class DashBoard extends HttpServlet {
         } catch (NumberFormatException e) {
             viewRevenue = 0; // Giá trị mặc định nếu lỗi
         }
-        
+
         Map<String, Double> revenueByViewType;
 
-        
         if (viewType != null) {
             if (viewRevenue == 1) {
                 revenueByViewType = productDAO.getRevenueCurrentMonthByViewType(viewType, storeId); // Tháng này
@@ -119,22 +118,24 @@ public class DashBoard extends HttpServlet {
             return;
         }
         double totalRevenue7Day = productDAO.getTotalRevenueLast7Days(storeId);;    // 7 ngày qua   
-        double      totalRevenueThisMonth = productDAO.getTotalRevenueThisMonth(storeId); // Tháng này
-         double       totalRevenueLastMonth = productDAO.getTotalRevenueLastMonth(storeId); // Tháng trước
-        
-
+        double totalRevenueThisMonth = productDAO.getTotalRevenueThisMonth(storeId); // Tháng này
+        double totalRevenueLastMonth = productDAO.getTotalRevenueLastMonth(storeId); // Tháng trước
 
         String[] productNames = productDAO.getTop3BestSellingRice(storeId);
         String[] totalSold = productDAO.getTop3TotalSold(storeId);
         String[] totalRevenue = productDAO.getTop3TotalRevenue(storeId);
-        Double[] totalRevenueDouble = Arrays.stream(totalRevenue)
-                .map(Double::parseDouble)
-                .toArray(Double[]::new);
+        Double[] totalRevenueDouble;
+        if (totalRevenue == null || totalRevenue.length == 0) {
+            totalRevenueDouble = new Double[]{0.0, 0.0, 0.0};
+        } else {
+            totalRevenueDouble = Arrays.stream(totalRevenue)
+                    .map(Double::parseDouble)
+                    .toArray(Double[]::new);
+        }
 
         int totalOrderToday = productDAO.getTotalOrdersToday(storeId);
         double totalRevenueToday = productDAO.getTotalRevenueToday(storeId);
         double revenueChange = productDAO.getRevenueChangePercentage(storeId);
-        
 
         request.setAttribute("viewRevenue", viewRevenue);
         request.setAttribute("productNames", productNames);

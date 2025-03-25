@@ -104,15 +104,12 @@
     </head>
     <body>
         <div id="main">
-<<<<<<< HEAD
+
                         <jsp:include page="/Component/header.jsp"></jsp:include>
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
-=======
 
-            <jsp:include page="/Component/header.jsp"></jsp:include>
-            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
 
->>>>>>> origin/main
+
                 <div class="main-content">
                     <h2>Lịch Sử Giá Nhập</h2>
                     

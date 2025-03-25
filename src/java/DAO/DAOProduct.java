@@ -1042,7 +1042,7 @@ public double getTotalRevenueLast7Days(int storeId) {
     String[] totalRevenue = new String[3];
     String sql = """
         WITH MonthlySales AS (
-            SELECT TOP 3 oi.productID, p.productName, SUM(oi.quantity * oi.price) AS totalRevenue
+            SELECT TOP 3 oi.productID, p.productName, SUM(oi.price) AS totalRevenue
             FROM OrderItems oi
             JOIN orders o ON oi.orderID = o.orderID
             JOIN products p ON oi.productID = p.productID
@@ -1318,9 +1318,8 @@ public Map<String, Double> getRevenueCurrentMonthByViewType(String viewType, int
 //        int removeResult = dao.removeProduct(4); // Giả sử ID của sản phẩm cần xóa
 //        System.out.println("Remove result: " + removeResult);
         // 4. Liệt kê tất cả sản phẩm
-        Map<String, Double> revenueByViewType = dao.getRevenueByViewType("hour", 2);
-        Map<String, Double> a = dao.getRevenueLast7DaysByViewType("hour", 2);
-        System.out.println(revenueByViewType);
-        System.out.println(a);
+        Map<String, Double> revenueByViewType = dao.getRevenueByViewType("hour", 3);
+        String[] a = dao.getTop3TotalRevenue(2);
+        System.out.println(a[0] + a[1]);
     }
 }

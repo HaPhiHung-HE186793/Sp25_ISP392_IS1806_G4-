@@ -103,11 +103,9 @@
     </head>
     <body>
         <div id="main">
-<<<<<<< HEAD
+
                         <jsp:include page="/Component/header.jsp"></jsp:include>
-=======
-            <jsp:include page="/Component/header.jsp"></jsp:include>
->>>>>>> origin/main
+
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
 
                 <div class="main-content">

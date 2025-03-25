@@ -314,6 +314,7 @@
                 margin-bottom: 8px;
                 font-size: 14px;
                 color: #333;
+                width: 150px;
             }
 
             .product-stats {
@@ -324,8 +325,9 @@
             }
 
             .product-quantity {
+                margin: 0 auto 5px auto;
                 margin-bottom: 5px;
-                width: 90px;
+                width: 100px;
             }
 
             .product-revenue {
@@ -348,6 +350,8 @@
                 <%
                     double revenueChange = (double) request.getAttribute("revenueChange");
                     String changeClass = (revenueChange < 0) ? "negative" : "positive";
+                    String iconClass = (revenueChange < 0) ? "fas fa-arrow-down" : "fas fa-arrow-up";
+                    String bgColorClass = (revenueChange < 0) ? "red" : "blue"; // Đỏ nếu giảm, xanh nếu tăng
                 %>
                 <div class="dashboard-row">
                     <!-- Today's Sales Results -->
@@ -368,8 +372,8 @@
                                 </div>
 
                                 <div class="stat-box">
-                                    <div class="stat-icon red">
-                                        <i class="fas fa-arrow-down"></i>
+                                    <div class="stat-icon <%= bgColorClass %>">
+                                        <i class="<%= iconClass %>"></i>
                                     </div>
                                     <div class="stat-info">
                                         <div class="stat-value percentage <%= changeClass %>">
@@ -411,17 +415,15 @@
                         <h3>TỔNG DOANH THU </h3>
                         <div class="revenue-amount">
                             <i class="fas fa-circle-info"></i>
-                            <c:if test="${viewRevenue == 0}">
-                                <span><fmt:formatNumber value="${totalRevenue7Day}" type="number" groupingUsed="true" maxFractionDigits="0" />đ</span>
-                            </c:if>
-
-                            <c:if test="${viewRevenue == 1}">
-                                <span><fmt:formatNumber value="${totalRevenueThisMonth}" type="number" groupingUsed="true" maxFractionDigits="0" />đ</span>
-                            </c:if>
-
-                            <c:if test="${viewRevenue == 2}">
-                                <span><fmt:formatNumber value="${totalRevenueLastMonth}" type="number" groupingUsed="true" maxFractionDigits="0" />đ</span>
-                            </c:if>
+                            <span id="revenue7Day" class="revenue-value">
+                                <fmt:formatNumber value="${totalRevenue7Day}" type="number" groupingUsed="true" maxFractionDigits="0" />đ
+                            </span>
+                            <span id="revenueThisMonth" class="revenue-value" style="display: none;">
+                                <fmt:formatNumber value="${totalRevenueThisMonth}" type="number" groupingUsed="true" maxFractionDigits="0" />đ
+                            </span>
+                            <span id="revenueLastMonth" class="revenue-value" style="display: none;">
+                                <fmt:formatNumber value="${totalRevenueLastMonth}" type="number" groupingUsed="true" maxFractionDigits="0" />đ
+                            </span>
                         </div>
                         <div class="dropdown">
                             <select name="viewRevenue" id="viewRevenue" onchange="updateChartOnChange()">
@@ -448,6 +450,23 @@
 
 
         <script>
+            function updateRevenueDisplayFromJson(data, viewRevenue) {     
+
+        // Ẩn tất cả
+        document.querySelectorAll(".revenue-value").forEach(el => el.style.display = "none");
+
+        // Hiển thị giá trị phù hợp
+        if (viewRevenue === "0") {
+            document.getElementById("revenue7Day").style.display = "inline";
+        } else if (viewRevenue === "1") {
+            document.getElementById("revenueThisMonth").style.display = "inline";
+        } else if (viewRevenue === "2") {
+            document.getElementById("revenueLastMonth").style.display = "inline";
+        }
+    }
+
+    // Gọi khi tải trang để hiển thị giá trị phù hợp với `viewRevenue`
+    document.addEventListener("DOMContentLoaded", updateRevenueDisplayFromJson);
             document.addEventListener('DOMContentLoaded', function () {
                 // Tab switching
                 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -546,6 +565,7 @@
                         .then(response => response.json())
                         .then(data => {
                             updateChart(data);
+                    updateRevenueDisplayFromJson(data, viewRevenue);
                         })
                         .catch(error => console.error('Lỗi khi lấy dữ liệu từ Servlet:', error));
             }

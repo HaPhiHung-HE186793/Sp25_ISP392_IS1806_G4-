@@ -283,6 +283,7 @@ public class listUsers extends HttpServlet {
         List<User> paginatedUsers = filteredUsers.subList(startIndex, endIndex);
 
         request.setAttribute("storeList", storeList);
+        request.setAttribute("sortColumn", storeId);
         request.setAttribute("mess", mess);
         request.setAttribute("error", error);
         request.setAttribute("U", filteredUsers);
