@@ -118,6 +118,11 @@ public class DashBoard extends HttpServlet {
             out.flush();
             return;
         }
+        double totalRevenue7Day = productDAO.getTotalRevenueLast7Days(storeId);;    // 7 ngày qua   
+        double      totalRevenueThisMonth = productDAO.getTotalRevenueThisMonth(storeId); // Tháng này
+         double       totalRevenueLastMonth = productDAO.getTotalRevenueLastMonth(storeId); // Tháng trước
+        
+
 
         String[] productNames = productDAO.getTop3BestSellingRice(storeId);
         String[] totalSold = productDAO.getTop3TotalSold(storeId);
@@ -129,7 +134,7 @@ public class DashBoard extends HttpServlet {
         int totalOrderToday = productDAO.getTotalOrdersToday(storeId);
         double totalRevenueToday = productDAO.getTotalRevenueToday(storeId);
         double revenueChange = productDAO.getRevenueChangePercentage(storeId);
-        double totalRevenueThisMonth = productDAO.getTotalRevenueThisMonth(storeId);
+        
 
         request.setAttribute("viewRevenue", viewRevenue);
         request.setAttribute("productNames", productNames);
@@ -137,6 +142,8 @@ public class DashBoard extends HttpServlet {
         request.setAttribute("totalRevenue", totalRevenueDouble);
         request.setAttribute("totalOrderToday", totalOrderToday);
         request.setAttribute("totalRevenueThisMonth", totalRevenueThisMonth);
+        request.setAttribute("totalRevenue7Day", totalRevenue7Day);
+        request.setAttribute("totalRevenueLastMonth", totalRevenueLastMonth);
         request.setAttribute("totalRevenueToday", totalRevenueToday);
         request.setAttribute("revenueChange", revenueChange);
 

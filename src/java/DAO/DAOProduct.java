@@ -853,6 +853,56 @@ public class DAOProduct extends DBContext {
     }    
     return totalRevenue;
 }
+    // Hàm lấy tổng doanh thu của tháng trước
+public double getTotalRevenueLastMonth(int storeId) {
+    double totalRevenue = 0;
+    String sql = """
+        SELECT SUM(totalAmount) AS totalRevenue 
+        FROM orders 
+        WHERE storeId = ? 
+          AND MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) 
+          AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next() && rs.getBigDecimal("totalRevenue") != null) {
+                totalRevenue = rs.getDouble("totalRevenue");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }    
+    return totalRevenue;
+}
+
+   // Hàm lấy tổng doanh thu 7 ngày qua
+public double getTotalRevenueLast7Days(int storeId) {
+    double totalRevenue = 0;
+    String sql = """
+        SELECT SUM(totalAmount) AS totalRevenue 
+        FROM orders 
+        WHERE storeId = ? 
+          AND createAt >= DATEADD(DAY, -7, GETDATE())
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next() && rs.getBigDecimal("totalRevenue") != null) {
+                totalRevenue = rs.getDouble("totalRevenue");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }    
+    return totalRevenue;
+}
+
+
 
 
 

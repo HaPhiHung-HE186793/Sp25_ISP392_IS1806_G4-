@@ -408,10 +408,20 @@
                 <!-- Monthly Revenue -->
                 <div class="card">
                     <div class="card-header">
-                        <h3>DOANH THU THÁNG NÀY</h3>
+                        <h3>TỔNG DOANH THU </h3>
                         <div class="revenue-amount">
                             <i class="fas fa-circle-info"></i>
-                            <span><fmt:formatNumber value="${totalRevenueThisMonth}" type="number" groupingUsed="true" maxFractionDigits="0" />đ</span>
+                            <c:if test="${viewRevenue == 0}">
+                                <span><fmt:formatNumber value="${totalRevenue7Day}" type="number" groupingUsed="true" maxFractionDigits="0" />đ</span>
+                            </c:if>
+
+                            <c:if test="${viewRevenue == 1}">
+                                <span><fmt:formatNumber value="${totalRevenueThisMonth}" type="number" groupingUsed="true" maxFractionDigits="0" />đ</span>
+                            </c:if>
+
+                            <c:if test="${viewRevenue == 2}">
+                                <span><fmt:formatNumber value="${totalRevenueLastMonth}" type="number" groupingUsed="true" maxFractionDigits="0" />đ</span>
+                            </c:if>
                         </div>
                         <div class="dropdown">
                             <select name="viewRevenue" id="viewRevenue" onchange="updateChartOnChange()">
@@ -532,7 +542,7 @@
 
 
             function fetchDataFromServlet(viewType, viewRevenue) {
-                fetch('dashboard?viewType=' + viewType + '&viewRevenue=' +viewRevenue)
+                fetch('dashboard?viewType=' + viewType + '&viewRevenue=' + viewRevenue)
                         .then(response => response.json())
                         .then(data => {
                             updateChart(data);
