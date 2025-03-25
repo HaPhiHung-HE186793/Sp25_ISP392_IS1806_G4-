@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.customer;
+package controller.debt;
 
 import DAO.DAOCustomers;
+import DAO.DAODebtRecords;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,17 +13,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import model.Customers;
-import model.User;
+import model.DebtRecords;
 import model.pagination.Pagination;
 
 /**
  *
  * @author TIEN DAT PC
  */
-public class ListCustomer extends HttpServlet {
+public class ListHistoryDebt extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,17 +45,20 @@ public class ListCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        DAOCustomers dao = new DAOCustomers();
         HttpSession session = request.getSession();
-        List<Customers> listCustomer = new ArrayList<>();
-        Integer role = (Integer) session.getAttribute("roleID");
         Integer storeID = (Integer) session.getAttribute("storeID");
-        
-  
-        listCustomer = dao.listCustomersByRole(storeID,role);
+        int role = (Integer) session.getAttribute("roleID");
+        if (role == 3) {
+            response.sendRedirect("ListDebtCustomer");
+            return; // Dừng xử lý tiếp
+        }
+        DAODebtRecords dao = new DAODebtRecords();
+
+        List<DebtRecords> listHistoryDebt = dao.listAllHistory(storeID + "");
+        request.setAttribute("listHistoryDebt", listHistoryDebt);
 
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalUsers = listCustomer.size();
+        int totalUsers = listHistoryDebt.size();
         int pageSize = 10;
         int currentPage = 1;
 
@@ -67,13 +70,9 @@ public class ListCustomer extends HttpServlet {
         session.setAttribute("page", page);
         int startIndex = page.getStartItem();
         int endIndex = Math.min(startIndex + pageSize, totalUsers);
-        List<Customers> paginatedUsers = listCustomer.subList(startIndex, endIndex);
-        request.setAttribute("currentPageUrl", "ListCustomer");
-
-
-        request.setAttribute("listCustomer", listCustomer);
-        request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
-
+        List<DebtRecords> paginatedUsers = listHistoryDebt.subList(startIndex, endIndex);
+        request.setAttribute("currentPageUrl", "ListHistoryDebt");
+        request.getRequestDispatcher("debt/historyDebt.jsp").forward(request, response);
     }
 
     /**
@@ -87,53 +86,58 @@ public class ListCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        DAOCustomers dao = new DAOCustomers();
+        HttpSession session = request.getSession();
+        Integer storeID = (Integer) session.getAttribute("storeID");
 
-        // Lấy các tham số từ request
-        String name = request.getParameter("name");
-        String number = request.getParameter("number");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        
-        
-        
-        String sql = "";
-// Điều kiện name
-        if (name != null && !name.isEmpty()) {
-            sql += "AND c.name LIKE '%" + name + "%' ";
+        DAODebtRecords dao = new DAODebtRecords();
+        int role = (Integer) session.getAttribute("roleID");
+        if (role == 3) {
+            response.sendRedirect("ListDebtCustomer");
+            return; // Dừng xử lý tiếp
         }
 
-// Điều kiện startDate
+        // Lấy các tham số từ request
+//        String name = request.getParameter("name");
+        String sortBy = request.getParameter("sortBy");
+        String startDate = request.getParameter("searchStartDate");
+        String endDate = request.getParameter("searchEndDate");
+        String sql = "";
+//// Điều kiện name   
+//        if (name != null && !name.isEmpty()) {
+//            sql += " AND c.name LIKE '%" + name + "%' ";
+//        }
+
+//        if (sortBy != null) {
+//            switch (sortBy) {
+//                case "2":
         if (startDate != null && !startDate.isEmpty()) {
-            sql +=  "and CONVERT(date, c.updateAt) >= '" + startDate + "' ";
+            sql += " and CONVERT(date, d.createAt) >= '" + startDate + "' ";
         }
 
 // Điều kiện endDate
         if (endDate != null && !endDate.isEmpty()) {
-            sql += "and CONVERT(date, c.updateAt) <= '" + endDate + "' ";
+            sql += " and CONVERT(date, d.createAt) <= '" + endDate + "' ";
         }
+//                case "1":
+//                    if (startDate != null && !startDate.isEmpty()) {
+//                        sql += " and CONVERT(date, d.createAt) >= '" + startDate + "' ";
+//                    }
+//
+//// Điều kiện endDate
+//                    if (endDate != null && !endDate.isEmpty()) {
+//                        sql += " and CONVERT(date, d.createAt) <= '" + endDate + "' ";
+//                    }
+//            }
 
-// Điều kiện number
-        if (number != null && !number.isEmpty()) {
-            sql += "and c.phone like '%" + number + "%' ";
-        }
+        List<DebtRecords> listHistoryDebt = dao.listHistorySearchName(storeID + "", sql);
 
-        HttpSession session = request.getSession();
-        List<Customers> listCustomer = new ArrayList<>();
-        int role = (Integer) session.getAttribute("roleID");
-        int storeID = (Integer) session.getAttribute("storeID");
+        request.setAttribute("listHistoryDebt", listHistoryDebt);
+        request.setAttribute("searchStartDate", startDate);
+        request.setAttribute("searchEndDate", endDate);
+//            request.setAttribute("sortBy", sortBy);
 
-
-        listCustomer = dao.listCustomersByRoleSearchName(storeID, sql,role);
-        request.setAttribute("searchName", name);
-        request.setAttribute("searchNumber", number);
-        request.setAttribute("startDate", startDate);
-        request.setAttribute("endDate", endDate);
-        request.setAttribute("listCustomer", listCustomer);
-
-
-       // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalUsers = listCustomer.size();
+        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
+        int totalUsers = listHistoryDebt.size();
         int pageSize = 10;
         int currentPage = 1;
 
@@ -145,11 +149,10 @@ public class ListCustomer extends HttpServlet {
         session.setAttribute("page", page);
         int startIndex = page.getStartItem();
         int endIndex = Math.min(startIndex + pageSize, totalUsers);
-        List<Customers> paginatedUsers = listCustomer.subList(startIndex, endIndex);
-        request.setAttribute("currentPageUrl", "ListCustomer");
-        // Lưu kết quả vào request
-        // Chuyển tiếp kết quả tới JSP
-        request.getRequestDispatcher("customer/customer.jsp").forward(request, response);
+        List<DebtRecords> paginatedUsers = listHistoryDebt.subList(startIndex, endIndex);
+        request.setAttribute("currentPageUrl", "ListHistoryDebt");
+
+        request.getRequestDispatcher("debt/historyDebt.jsp").forward(request, response);
     }
 
     /**
@@ -160,9 +163,6 @@ public class ListCustomer extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-
     }// </editor-fold>
 
-    
-    }
-
+}

@@ -70,35 +70,25 @@
 
                     <div class="table-container">
                         <div class="table-header">
-                            <h3>Chi tiết công nợ</h3>
-                            <h3>Người nợ: ${customers.getName()}</h3>
+                            <h3>Lịch sử công nợ</h3>
 
-                        <c:if test="${message == 'success'}">
-                            <div class="newDebt-notification">Thêm nợ thành công </div>
-                        </c:if>
-
-                        <c:if test="${message == 'error'}">
-                            <div class="newDebt-notificationError">Thêm nợ thất bại.</div>
-                        </c:if>
-
-                    </div>
-                    <div class="filters">
-                        <form action="ListDebtCustomer" method="post" >
-                            <!--                            <select name="sortBy">
-                                                            <option value="0">Trạng thái</option>
-                                                            <option value="1">Thời gian tạo</option>
-                                                            <option value="2">Ngày lập phiếu</option>
-                            
-                                                        </select>-->
-                            <input name="searchStartDate" type="date" value="${searchStartDate}">
+                        </div>
+                        <div class="filters">
+                            <form action="ListHistoryDebt" method="post" >
+                                <!--                            <select name="sortBy">
+                                                                <option value="0">Trạng thái</option>
+                                                                <option value="1">Thời gian tạo</option>
+                                                                <option value="2">Ngày lập phiếu</option>
+                                
+                                                            </select>-->
+                                <input name="searchStartDate" type="date" value="${searchStartDate}">
                             <input name="searchEndDate" type="date" value="${searchEndDate}">
 
                             <button style="background-color: #5bc0de;" >Lọc</button>
                         </form>
-                        <button onclick="window.location.href = '<%=request.getContextPath()%>/ListDebtCustomer?customerid=${customerid}'">Bỏ lọc</button>
+                        <button onclick="window.location.href = '<%=request.getContextPath()%>/ListHistoryDebt'">Bỏ lọc</button>
 
 
-                        <button class="addNewDebt js-open-newDebt">Tạo phiếu nợ</button>
                         <button type="button" class="table-update-add" style=" background-color: #33CC33" onclick="window.location.href = '<%=request.getContextPath()%>/ListCustomer'">
                             Quay lại
                         </button>
@@ -110,6 +100,7 @@
                         <thead id="table-header">
                             <tr>
                                 <th>ID</th>
+                                <th>Tên</th>
                                 <th>Trạng thái</th>
                                 <th>Ảnh</th>
                                 <th>Số tiền</th>
@@ -121,10 +112,11 @@
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
-                            <c:forEach items="${listCustomer}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
+                            <c:forEach items="${listHistoryDebt}" var="o" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
                                 <tr class="no-rows">
                                     <!--<td colspan="8" style="text-align: center;">No rows found</td>-->
                                     <td >${o.getDebtID()}</td>
+                                    <td >${o.getNameCustomer()}</td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${o.getPaymentStatus() == 0}">Khách hàng vay nợ</c:when>

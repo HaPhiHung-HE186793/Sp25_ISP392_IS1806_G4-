@@ -57,7 +57,7 @@ public class AddNewCustomerDebt extends HttpServlet {
         String debtStr = request.getParameter("debt");
         if (debtStr != null && !debtStr.trim().isEmpty()) {
             try {
-                debt = new BigDecimal(debtStr);
+                debt = new BigDecimal(debtStr).abs();
             } catch (NumberFormatException e) {
                 response.sendRedirect("ListCustomer");
                 return;

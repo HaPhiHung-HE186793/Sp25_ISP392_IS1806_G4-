@@ -238,7 +238,10 @@ public class DAODebtRecords extends DBContext {
 
     public List<DebtRecords> listCustomersByRoleSearchName(String createBylis, String name) {
         List<DebtRecords> list = new ArrayList<>();
-        String sql = " SELECT * FROM debtRecords d \n"
+        String sql = "SELECT d.debtID, d.customerID, d.orderID, d.amount, d.paymentStatus, \n"
+                + "	FORMAT(d.createAt, 'yyyy-MM-dd HH:mm:ss') AS createAt, \n"
+                + "    FORMAT(d.updateAt, 'yyyy-MM-dd HH:mm:ss') AS updateAt, \n"
+                + "    d.createBy, d.isDelete, d.deleteAt, d.deleteBy, d.storeID, d.description, d.img,d.status FROM debtRecords d \n"
                 + " JOIN customers c ON d.customerID = c.customerID\n"
                 + " WHERE c.customerID = ? \n"
                 + name + " ORDER BY d.debtID DESC";
@@ -273,9 +276,55 @@ public class DAODebtRecords extends DBContext {
         return list;
     }
 
+    
+    public List<DebtRecords> listHistorySearchName(String createBylis, String name) {
+        List<DebtRecords> list = new ArrayList<>();
+        String sql = "SELECT d.debtID, d.customerID, d.orderID, d.amount, d.paymentStatus, \n"
+                + "	FORMAT(d.createAt, 'yyyy-MM-dd HH:mm:ss') AS createAt, \n"
+                + "    FORMAT(d.updateAt, 'yyyy-MM-dd HH:mm:ss') AS updateAt, \n"
+                + "    d.createBy, d.isDelete, d.deleteAt, d.deleteBy, d.storeID, d.description, d.img,d.status , c.name FROM debtRecords d \n"
+                + " JOIN customers c ON d.customerID = c.customerID\n"
+                + " WHERE d.storeID = ? \n"
+                + name + " ORDER BY d.debtID DESC";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, createBylis); // Truyền tham số vào dấu ?
+            ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
+
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                BigDecimal amount = rs.getBigDecimal("amount");
+                int paymentStatus = rs.getInt("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                int store = rs.getInt("storeID");
+                String description = rs.getString("description");
+                String img = rs.getString("img");
+                int status = rs.getInt("status");
+
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, store, description, img, status);
+                list.add(record);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+    
+    
+    
     public List<DebtRecords> listAllbyName(String id) {
         List<DebtRecords> list = new ArrayList<>();
-        String sql = " SELECT * FROM debtRecords d \n"
+        String sql = "SELECT d.debtID, d.customerID, d.orderID, d.amount, d.paymentStatus, \n"
+                + "	FORMAT(d.createAt, 'yyyy-MM-dd HH:mm:ss') AS createAt, \n"
+                + "    FORMAT(d.updateAt, 'yyyy-MM-dd HH:mm:ss') AS updateAt, \n"
+                + "    d.createBy, d.isDelete, d.deleteAt, d.deleteBy, d.storeID, d.description, d.img,d.status FROM debtRecords d \n"
                 + " JOIN customers c ON d.customerID = c.customerID\n"
                 + " WHERE c.customerID = ? \n"
                 + " ORDER BY d.debtID DESC";
@@ -309,6 +358,49 @@ public class DAODebtRecords extends DBContext {
         }
         return list;
     }
+    
+    
+    
+      public List<DebtRecords> listAllHistory(String id) {
+        List<DebtRecords> list = new ArrayList<>();
+        String sql = "SELECT d.debtID, d.customerID, d.orderID, d.amount, d.paymentStatus, \n"
+                + "	FORMAT(d.createAt, 'yyyy-MM-dd HH:mm:ss') AS createAt, \n"
+                + "    FORMAT(d.updateAt, 'yyyy-MM-dd HH:mm:ss') AS updateAt, \n"
+                + "    d.createBy, d.isDelete, d.deleteAt, d.deleteBy, d.storeID, d.description, d.img,d.status, c.name FROM debtRecords d \n"
+                + " JOIN customers c ON d.customerID = c.customerID\n"
+                + " WHERE d.storeID = ? \n"
+                + " ORDER BY d.debtID DESC";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, id); // Truyền tham số vào dấu ?
+            ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
+
+            while (rs.next()) {
+                int debtID = rs.getInt("debtID");
+                int customerID = rs.getInt("customerID");
+                int orderID = rs.getInt("orderID");
+                BigDecimal amount = rs.getBigDecimal("amount");
+                int paymentStatus = rs.getInt("paymentStatus");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                Boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                int store = rs.getInt("storeID");
+                String description = rs.getString("description");
+                String img = rs.getString("img");
+                int status = rs.getInt("status");
+
+                DebtRecords record = new DebtRecords(debtID, customerID, orderID, amount, paymentStatus, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, store, description, img, status);
+                list.add(record);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAODebtRecords.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+    
 
     public List<DebtRecords> listAll() {
         List<DebtRecords> list = new ArrayList<>();

@@ -48,7 +48,9 @@ public class UpdateCustomer extends HttpServlet {
         DAOCustomers dao = new DAOCustomers();
         HttpSession session = request.getSession();
         Integer storeID = (Integer) session.getAttribute("storeID");
-        Customers customers = dao.getCustomer(customerid, storeID);
+        int role = (Integer) session.getAttribute("roleID");
+
+        Customers customers = dao.getCustomer(customerid, storeID, role);
         if (customers == null) {
             response.sendRedirect("ListCustomer");
         }
@@ -77,8 +79,8 @@ public class UpdateCustomer extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
         String email = request.getParameter("email");
+        int role = (Integer) session.getAttribute("roleID");
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -89,20 +91,41 @@ public class UpdateCustomer extends HttpServlet {
         Integer deleteBy = null;
         DAOCustomers dao = new DAOCustomers();
 
-        Customers customer = new Customers();
-        customer.setCustomerID(id);
-        customer.setName(name);
-        customer.setAddress(address);
-        customer.setPhone(phone);
-        customer.setUpdateAt(updateAt);
-        customer.setEmail(email);
-        customer.setIsDelete(isDelete);
-        int result = dao.updateCustomer(customer);
-        if (result > 0) {
-            session.setAttribute("message", "success");
-        } else {
-            session.setAttribute("message", "error");
+        if (role == 2) {
+            String phone = request.getParameter("phone");
+            Customers customer = new Customers();
+            customer.setCustomerID(id);
+            customer.setName(name);
+            customer.setAddress(address);
+            customer.setPhone(phone);
+            customer.setUpdateAt(updateAt);
+            customer.setEmail(email);
+            customer.setIsDelete(isDelete);
+            int result = dao.updateCustomer(customer);
+
+            if (result > 0) {
+                session.setAttribute("message", "success");
+            } else {
+                session.setAttribute("message", "error");
+            }
+        }else if((role == 3)){
+                
+            Customers customer = new Customers();
+            customer.setCustomerID(id);
+            customer.setName(name);
+            customer.setAddress(address);
+            customer.setUpdateAt(updateAt);
+            customer.setEmail(email);
+            customer.setIsDelete(isDelete);
+            int result = dao.updateCustomerNotPhone(customer);
+
+            if (result > 0) {
+                session.setAttribute("message", "success");
+            } else {
+                session.setAttribute("message", "error");
+            }
         }
+
         response.sendRedirect("UpdateCustomer?customerid=" + id);
 
     }

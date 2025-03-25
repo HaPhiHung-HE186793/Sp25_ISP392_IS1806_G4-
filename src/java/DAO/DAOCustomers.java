@@ -30,12 +30,12 @@ public class DAOCustomers extends DBContext {
 
     public static DAOCustomers INSTANCE = new DAOCustomers();
 
-    public Customers getCustomer(String id, int storeid) {
+    public Customers getCustomer(String id, int storeid, int userRole) {
         String sql = " select * from customers where customerID = ? and  storeID = ?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, id); // Truyền tham số vào dấu ?
-                        pre.setInt(2, storeid); // Truyền tham số vào dấu ?
+            pre.setInt(2, storeid); // Truyền tham số vào dấu ?
 
             ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
 
@@ -54,6 +54,11 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
+                            // Ẩn số điện thoại nếu role là "staff"
+            if (userRole==3) {
+                phone = maskPhoneNumber(phone);
+            }
+                
                 return new Customers(customerID, name, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
 
             }
@@ -63,16 +68,31 @@ public class DAOCustomers extends DBContext {
         return null;
     }
 
-    public List<Customers> findByNameOrPhone(String searchValue,int storeID) {
-        
-        
+    public String getCustomerNameByID(String id) {
+        String sql = "SELECT name FROM customers WHERE customerID = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, id);
+
+            ResultSet rs = pre.executeQuery(); // Thực thi truy vấn
+            if (rs.next()) { // Kiểm tra xem có dữ liệu hay không
+                return rs.getString("name");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy khách hàng
+    }
+
+    public List<Customers> findByNameOrPhone(String searchValue, int storeID) {
+
         List<Customers> customers = new ArrayList<>();
         String sql = "SELECT * FROM customers WHERE (phone LIKE ? OR name LIKE ?) AND isDelete = 0 AND storeID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + searchValue + "%"); // Tìm số điện thoại chứa searchPhone
             ps.setString(2, "%" + searchValue + "%");
-             ps.setInt(3, storeID);
+            ps.setInt(3, storeID);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -194,6 +214,40 @@ public class DAOCustomers extends DBContext {
         }
         return n;
     }
+    
+    
+        public int updateCustomerNotPhone(Customers customer) {
+        int n = 0;
+        String sql = "UPDATE customers SET name=?, email=?, address=?, updateAt=?, isDelete=? WHERE customerID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, customer.getName()); // name
+            pre.setString(2, customer.getEmail()); // email
+            pre.setString(3, customer.getAddress()); // address
+            pre.setString(4, customer.getUpdateAt()); // updateAt
+            pre.setBoolean(5, customer.isIsDelete()); // isDelete
+            pre.setInt(6, customer.getCustomerID()); // customerID
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOCustomers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+    
+
+    public int BanCustomer(Customers customer) {
+        int n = 0;
+        String sql = "UPDATE customers SET isDelete=? WHERE customerID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setBoolean(1, customer.isIsDelete()); // isDelete
+            pre.setInt(2, customer.getCustomerID()); // customerID
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOCustomers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
 
     public int insertCustomer(Customers customer) {
         int n = 0;
@@ -302,7 +356,7 @@ public class DAOCustomers extends DBContext {
         return list; // Trả về danh sách khách hàng
     }
 
-    public List<Customers> listCustomersByRole(int ID) {
+    public List<Customers> listCustomersByRole(int ID, int userRole) {
         List<Customers> list = new ArrayList<>();
         String sql = "";
 
@@ -321,6 +375,7 @@ public class DAOCustomers extends DBContext {
 
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
+
                 int customerID = rs.getInt("customerID");
                 String customerName = rs.getString("name");
                 String email = rs.getString("email");
@@ -335,6 +390,11 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
+                // Ẩn số điện thoại nếu role là "staff"
+                if (userRole == 3) {
+                    phone = maskPhoneNumber(phone);
+                }
+
                 Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
                 list.add(customer);
             }
@@ -344,7 +404,14 @@ public class DAOCustomers extends DBContext {
         return list;
     }
 
-    public List<Customers> listCustomersByRoleSearchName(int storeIDa, String name) {
+    private String maskPhoneNumber(String phone) {
+        if (phone != null && phone.length() >= 6) {
+            return phone.substring(0, 3) + "*****" + phone.substring(phone.length() - 3);
+        }
+        return phone; // Trả về số gốc nếu không đủ độ dài
+    }
+
+    public List<Customers> listCustomersByRoleSearchName(int storeIDa, String name, int userRole) {
         List<Customers> list = new ArrayList<>();
         String sql = "";
 
@@ -378,6 +445,11 @@ public class DAOCustomers extends DBContext {
                 int deleteBy = rs.getInt("deleteBy");
                 int storeID = rs.getInt("storeID");
 
+                // Ẩn số điện thoại nếu role là "staff"
+                if (userRole == 3) {
+                    phone = maskPhoneNumber(phone);
+                }
+
                 Customers customer = new Customers(customerID, customerName, email, phone, address, totalDebt, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
                 list.add(customer);
             }
@@ -386,13 +458,6 @@ public class DAOCustomers extends DBContext {
         }
         return list;
     }
-
-    public static void main(String[] args) {
-        DAOCustomers dao = new DAOCustomers();
-        List<Customers> list = dao.listCustomersByRoleSearchName(2, "");
-        for (Customers customers : list) {
-            System.out.println(customers.toString());
-        }
 
 //
 //    // 1. Thêm một khách hàng mới
@@ -410,5 +475,5 @@ public class DAOCustomers extends DBContext {
 ////    System.out.println("Remove result: " + removeResult);
 //
 //     4. Liệt kê tất cả khách hàng
-    }
 }
+

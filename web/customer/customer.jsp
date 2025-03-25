@@ -38,7 +38,7 @@
                             <div id="errorMessage" class="newDebt-notificationError">Thêm khách hàng thất bại.</div>
                         </c:if>
                     </div>
-                    <div class="filters">
+                    <div class="filters">       
                         <!--                        <select>
                                                     <option value="">Trạng thái</option>
                                                     <option value="">A->Z</option>
@@ -46,7 +46,6 @@
                         
                                                 </select>-->
                         <form action="ListCustomer" method="post" >
-
                             <input name="name" type="text" placeholder="Tìm kiếm" value="${searchName}">
                             <input name="number" type="number" placeholder="Số điện thoại" value="${searchNumber}">
                             <input name="startDate" type="date" value="${startDate}">
@@ -57,12 +56,14 @@
 
 
                         <button class="addNewDebt js-open-newDebt">Thêm người nợ</button>
-
+                        <c:if test="${sessionScope.roleID == 2}">
+                            <button class="addNewDebt js-open-newDebt" style=" background-color: #707070 !important;" onclick="window.location.href = '<%=request.getContextPath()%>/ListHistoryDebt'">Lịch sử nợ</button>
+                        </c:if>
                     </div>
 
                     <table>
                         <thead id="table-header">
-                            <tr>
+                            <tr>    
                                 <th>ID</th>
                                 <th>Tên</th>
                                 <th>Email</th>
@@ -108,15 +109,16 @@
                                             <button class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700">Chỉnh sửa</button>
                                         </a>
                                         <a href="ListDebtCustomer?customerid=${o.getCustomerID()}">
-                                            <button class="addNewDebt js-open-newDebt">Chi tiết </button>
+                                            <button class="addNewDebt js-open-newDebt">Chi tiết</button>
                                         </a>
+
                                     </td>
                                 </tr>   
                             </c:forEach>   
                         </tbody>
                     </table>
                 </div>
-                                <%@include file="/Component/pagination.jsp" %>
+                <%@include file="/Component/pagination.jsp" %>
 
             </div>
         </div>
