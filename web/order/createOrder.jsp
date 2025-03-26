@@ -478,16 +478,16 @@
                     <button onclick="openNewTab()">Thêm hóa đơn</button>
 
                     <script>
-                        // Kiểm tra số hóa đơn hiện tại trong localStorage
-                        let invoiceCount = localStorage.getItem("invoiceCount");
+                        // Kiểm tra số hóa đơn hiện tại trong sessionStorage
+                        let invoiceCount = sessionStorage.getItem("invoiceCount");
 
                         if (!invoiceCount) {
-                            localStorage.setItem("invoiceCount", 1); // Nếu chưa có, đặt là 1
+                            sessionStorage.setItem("invoiceCount", 1); // Nếu chưa có, đặt là 1
                         }
 
                         function openNewTab() {
-                            let invoiceNumber = parseInt(localStorage.getItem("invoiceCount")) + 1;
-                            localStorage.setItem("invoiceCount", invoiceNumber);
+                            let invoiceNumber = parseInt(sessionStorage.getItem("invoiceCount")) + 1;
+                            sessionStorage.setItem("invoiceCount", invoiceNumber);
 
                             window.open('CreateOrderServlet?invoice=' + invoiceNumber, '_blank');
                         }
@@ -1169,6 +1169,7 @@
                                     url: "CreateOrderServlet",
                                     type: "POST",
                                     data: $(this).serialize(), // Gửi dữ liệu form bằng AJAX
+                                    //Lấy toàn bộ dữ liệu từ form và serialize (chuyển đổi) chúng thành chuỗi dạng key-value, để có thể gửi đi qua AJAX.
                                     dataType: "json",
                                     success: function (response) {
                                         if (response.status === "processing") {

@@ -391,23 +391,22 @@ public class DAOProduct extends DBContext {
 
     public List<String> getZonesByProductID(int productID) {
         List<String> zones = new ArrayList<>();
-        String sql = "SELECT z.zoneName FROM ProductZones pz "
-                + "JOIN zones z ON pz.zoneID = z.zoneID "
-                + "WHERE pz.productID = ? AND pz.isDelete = 0 "
-                + "ORDER BY z.zoneName ASC";
+        String sql = "SELECT zoneName FROM zones "
+                + "WHERE productID = ? AND isDelete = 0 "
+                + "ORDER BY zoneName ASC";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, productID);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                zones.add(rs.getString("zoneName"));
+                zones.add(rs.getString("zoneName")); // Thêm từng zoneName vào danh sách
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return zones;
+        return zones; // Trả về danh sách các tên kho
     }
 
     public List<Integer> getProductUnitsByProductID(int productID) {
