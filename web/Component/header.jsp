@@ -11,7 +11,7 @@
     <body>
         <div class="header">
             <div class="name-project">
-                <h2>Quản lý gạo <i class="menu-hiden ti-menu  js-hidden-menu" style="margin-left: 10px;padding: 5px;"></i></h2>
+                <h2>${empty sessionScope.storeName ? "Quản lý gạo" : sessionScope.storeName}<i class="menu-hiden ti-menu  js-hidden-menu" style="margin-left: 10px;padding: 5px;"></i></h2>
             </div>
             <div class="balance">
                 <div class="dropdown">

@@ -102,12 +102,20 @@
             flex-direction: column;
             gap: 10px; /* Khoảng cách giữa các nút */
         }
+
+        #chartContainer {
+            background-color: white; /* Nền trắng */
+            padding: 10px; /* Optional padding */
+            border-radius: 5px; /* Optional rounded corners */
+        }
     </style>
 </head>
 <body>
     <div id="main">
-                   <jsp:include page="/Component/header.jsp"></jsp:include>
-            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+        <jsp:include page="/Component/header.jsp"></jsp:include>
+        <div class="menu ">  
+            <jsp:include page="/Component/menu.jsp"></jsp:include> 
+        </div>
         <div class="main-content">
             <div class="notification">
                 Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
@@ -133,7 +141,7 @@
                     <select name="year" id="year">
                         <% 
                             Integer[] yearsArray = (Integer[]) request.getAttribute("yearsArray");
-                            Integer selectedYear = (Integer) request.getAttribute("selectedYear"); // Chỉ khai báo một lần
+                            Integer selectedYear = (Integer) request.getAttribute("selectedYear");
                             if (yearsArray != null && yearsArray.length > 0) {
                                 for (Integer year : yearsArray) { 
                         %>
@@ -221,8 +229,8 @@
                             datasets: [{
                                 label: 'Tổng số tiền',
                                 data: totalAmounts,
-                                backgroundColor: 'rgba(201, 48, 44, 0.6)',
-                                borderColor: 'rgba(201, 48, 44, 1)',
+                                backgroundColor: 'rgba(0, 123, 255, 0.6)', // Màu xanh nước biển cho các cột
+                                borderColor: 'rgba(0, 123, 255, 1)', // Màu xanh nước biển cho viền
                                 borderWidth: 1
                             }]
                         },
@@ -230,6 +238,13 @@
                             scales: {
                                 y: {
                                     beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: 'black' // Đổi màu chữ của legend thành đen
+                                    }
                                 }
                             }
                         }
@@ -312,38 +327,35 @@
                 event.target.style.display = "none";
             }
         }
-        
-        
-        
-                // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
-// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
+        // Lấy các phần tử cần ẩn/hiện
+        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+        const newDebt = document.querySelector('.menu'); // Menu
+        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
-// Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
+        // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("menuHidden") === "true") {
+                newDebt.classList.add('hiden');
+                newDebt1.classList.add('hiden');
+                newDebt2.classList.add('hiden');
+            }
+        });
 
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
+        // Hàm toggle hiển thị
+        function toggleAddNewDebt() {
+            newDebt.classList.toggle('hiden');
+            newDebt1.classList.toggle('hiden');
+            newDebt2.classList.toggle('hiden');
 
-// Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+            // Lưu trạng thái vào localStorage
+            const isHidden = newDebt.classList.contains('hiden');
+            localStorage.setItem("menuHidden", isHidden);
+        }
 
+        // Gán sự kiện click
+        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
     </script>
 </body>
 </html>

@@ -26,7 +26,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import model.ProductPriceHistory;
 
@@ -776,6 +778,528 @@ public class DAOProduct extends DBContext {
         }
         return product;
     }
+    
+    //hàm lấy tổng đơn hàng ngày hôm  nay
+    public int getTotalOrdersToday(int storeId) {
+    int totalOrders = 0;
+    String sql = """
+        SELECT COUNT(*) AS total 
+        FROM orders 
+        WHERE storeId = ? 
+          AND CAST(createAt AS DATE) = CAST(GETDATE() AS DATE)
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                totalOrders = rs.getInt("total");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }    
+    return totalOrders;
+}
+
+
+    //hàm lấy tổng doanh thu ngày hôm nay
+    public double getTotalRevenueToday(int storeId) {
+    double totalRevenue = 0;
+    String sql = """
+        SELECT SUM(totalAmount) AS totalRevenue 
+        FROM orders 
+        WHERE storeId = ? 
+          AND CAST(createAt AS DATE) = CAST(GETDATE() AS DATE)
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next() && rs.getBigDecimal("totalRevenue") != null) {
+                totalRevenue = rs.getDouble("totalRevenue");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }    
+    return totalRevenue;
+}
+    
+    //hàm lấy tổng doanh thu tháng này
+    public double getTotalRevenueThisMonth(int storeId) {
+    double totalRevenue = 0;
+    String sql = """
+        SELECT SUM(totalAmount) AS totalRevenue 
+        FROM orders 
+        WHERE storeId = ? 
+          AND MONTH(createAt) = MONTH(GETDATE()) 
+          AND YEAR(createAt) = YEAR(GETDATE())
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next() && rs.getBigDecimal("totalRevenue") != null) {
+                totalRevenue = rs.getDouble("totalRevenue");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }    
+    return totalRevenue;
+}
+    // Hàm lấy tổng doanh thu của tháng trước
+public double getTotalRevenueLastMonth(int storeId) {
+    double totalRevenue = 0;
+    String sql = """
+        SELECT SUM(totalAmount) AS totalRevenue 
+        FROM orders 
+        WHERE storeId = ? 
+          AND MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) 
+          AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next() && rs.getBigDecimal("totalRevenue") != null) {
+                totalRevenue = rs.getDouble("totalRevenue");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }    
+    return totalRevenue;
+}
+
+   // Hàm lấy tổng doanh thu 7 ngày qua
+public double getTotalRevenueLast7Days(int storeId) {
+    double totalRevenue = 0;
+    String sql = """
+        SELECT SUM(totalAmount) AS totalRevenue 
+        FROM orders 
+        WHERE storeId = ? 
+          AND createAt >= DATEADD(DAY, -7, GETDATE())
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next() && rs.getBigDecimal("totalRevenue") != null) {
+                totalRevenue = rs.getDouble("totalRevenue");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }    
+    return totalRevenue;
+}
+
+
+
+
+
+    public int getBestSellingProduct() {
+    int bestSellingProductId = -1;
+    String sql = """
+        WITH MonthlySales AS (
+            SELECT TOP 1 oi.productID, SUM(oi.quantity) AS totalSold
+            FROM orders o
+            JOIN orderitems oi ON o.orderID = oi.orderID
+            WHERE YEAR(o.createAt) = YEAR(GETDATE()) AND MONTH(o.createAt) = MONTH(GETDATE())
+            GROUP BY oi.productID
+            ORDER BY totalSold DESC
+        ),
+        LastMonthSales AS (
+            SELECT TOP 1 oi.productID, SUM(oi.quantity) AS totalSold
+            FROM orders o
+            JOIN orderitems oi ON o.orderID = oi.orderID
+            WHERE YEAR(o.createAt) = YEAR(DATEADD(MONTH, -1, GETDATE())) 
+              AND MONTH(o.createAt) = MONTH(DATEADD(MONTH, -1, GETDATE()))
+            GROUP BY oi.productID
+            ORDER BY totalSold DESC
+        )
+        SELECT productID FROM MonthlySales
+        UNION
+        SELECT productID FROM LastMonthSales
+        """;
+
+    try (Statement state = conn.createStatement();
+         ResultSet rs = state.executeQuery(sql)) {
+        if (rs.next()) {
+            bestSellingProductId = rs.getInt("productID");
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return bestSellingProductId;
+}
+
+    //hàm lấy 3 sản phẩm bán chạy nhất tháng
+    public String[] getTop3BestSellingRice(int storeId) {
+    String[] topSellingRice = new String[3];
+    String sql = """
+        WITH MonthlySales AS (
+            SELECT TOP 3 oi.productID, p.productName, SUM(oi.quantity) AS totalSold
+            FROM OrderItems oi
+            JOIN orders o ON oi.orderID = o.orderID
+            JOIN products p ON oi.productID = p.productID
+            WHERE o.storeId = ? 
+              AND MONTH(o.createAt) = MONTH(GETDATE()) 
+              AND YEAR(o.createAt) = YEAR(GETDATE())
+            GROUP BY oi.productID, p.productName
+            ORDER BY totalSold DESC
+        )
+        SELECT * FROM MonthlySales
+        UNION ALL
+        SELECT TOP 3 oi.productID, p.productName, SUM(oi.quantity) AS totalSold
+        FROM OrderItems oi
+        JOIN orders o ON oi.orderID = o.orderID
+        JOIN products p ON oi.productID = p.productID
+        WHERE o.storeId = ?
+          AND MONTH(o.createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) 
+          AND YEAR(o.createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+          AND NOT EXISTS (SELECT 3 FROM MonthlySales) 
+        GROUP BY oi.productID, p.productName
+        ORDER BY totalSold DESC;
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        pstmt.setInt(2, storeId);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            int i = 0;
+            while (rs.next() && i < 3) {
+                topSellingRice[i] = rs.getString("productName");
+                i++;
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return topSellingRice;
+}
+
+
+    //lấy 3 tổng đơn bán chạy nhất tháng
+    public String[] getTop3TotalSold(int storeId) {
+    String[] totalSold = new String[3];
+    String sql = """
+        WITH MonthlySales AS (
+            SELECT TOP 3 oi.productID, p.productName, SUM(oi.quantity) AS totalSold
+            FROM OrderItems oi
+            JOIN orders o ON oi.orderID = o.orderID
+            JOIN products p ON oi.productID = p.productID
+            WHERE o.storeId = ? 
+              AND MONTH(o.createAt) = MONTH(GETDATE()) 
+              AND YEAR(o.createAt) = YEAR(GETDATE())
+            GROUP BY oi.productID, p.productName
+            ORDER BY totalSold DESC
+        )
+        SELECT * FROM MonthlySales
+        UNION ALL
+        SELECT TOP 3 oi.productID, p.productName, SUM(oi.quantity) AS totalSold
+        FROM OrderItems oi
+        JOIN orders o ON oi.orderID = o.orderID
+        JOIN products p ON oi.productID = p.productID
+        WHERE o.storeId = ?
+          AND MONTH(o.createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) 
+          AND YEAR(o.createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+          AND NOT EXISTS (SELECT 3 FROM MonthlySales) 
+        GROUP BY oi.productID, p.productName
+        ORDER BY totalSold DESC;
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        pstmt.setInt(2, storeId);
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            int index = 0;
+            while (rs.next() && index < 3) {
+                totalSold[index++] = rs.getString("totalSold");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return totalSold;
+}
+
+
+    //lấy tổng doanh thu của 3 sản phẩm bán chạy nhất tháng
+    public String[] getTop3TotalRevenue(int storeId) {
+    String[] totalRevenue = new String[3];
+    String sql = """
+        WITH MonthlySales AS (
+            SELECT TOP 3 oi.productID, p.productName, SUM(oi.price) AS totalRevenue
+            FROM OrderItems oi
+            JOIN orders o ON oi.orderID = o.orderID
+            JOIN products p ON oi.productID = p.productID
+            WHERE o.storeId = ? 
+              AND MONTH(o.createAt) = MONTH(GETDATE()) 
+              AND YEAR(o.createAt) = YEAR(GETDATE())
+            GROUP BY oi.productID, p.productName
+            ORDER BY totalRevenue DESC
+        )
+        SELECT * FROM MonthlySales
+        UNION ALL
+        SELECT TOP 3 oi.productID, p.productName, SUM(oi.quantity * oi.price) AS totalRevenue
+        FROM OrderItems oi
+        JOIN orders o ON oi.orderID = o.orderID
+        JOIN products p ON oi.productID = p.productID
+        WHERE o.storeId = ?
+          AND MONTH(o.createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) 
+          AND YEAR(o.createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+          AND NOT EXISTS (SELECT 3 FROM MonthlySales) 
+        GROUP BY oi.productID, p.productName
+        ORDER BY totalRevenue DESC;
+    """;
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        pstmt.setInt(2, storeId);
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            int index = 0;
+            while (rs.next() && index < 3) {
+                totalRevenue[index++] = rs.getString("totalRevenue");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return totalRevenue;
+}
+
+
+    
+    // Lấy tổng doanh thu theo ngày, giờ hoặc ngày trong tuần của hôm nay này
+    public Map<String, Double> getRevenueByViewType(String viewType, int storeId) {
+    Map<String, Double> revenueData = new LinkedHashMap<>();
+    String sql =null;
+
+    if ("hour".equals(viewType)) {        
+        sql = "SELECT DATEPART(HOUR, createAt) AS hour, SUM(totalAmount) AS revenue " +
+              "FROM orders " +
+              "WHERE CAST(createAt AS DATE) = CAST(GETDATE() AS DATE) AND storeId = ? " +
+              "GROUP BY DATEPART(HOUR, createAt) " +
+              "ORDER BY DATEPART(HOUR, createAt)";
+    }
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId); // Gán giá trị storeId vào câu lệnh SQL
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                revenueData.put(rs.getString(1), rs.getDouble("revenue"));
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return revenueData;
+}
+    
+    // Lấy tổng doanh thu theo ngày, giờ hoặc ngày trong tuần của tháng hiện tại
+public Map<String, Double> getRevenueCurrentMonthByViewType(String viewType, int storeId) {
+    Map<String, Double> revenueData = new LinkedHashMap<>();
+    String sql;
+
+    if ("weekday".equals(viewType)) {
+        sql = """
+            SELECT DATENAME(WEEKDAY, createAt) AS day, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE MONTH(createAt) = MONTH(GETDATE())
+              AND YEAR(createAt) = YEAR(GETDATE())
+              AND storeId = ?
+            GROUP BY DATENAME(WEEKDAY, createAt)
+            ORDER BY MIN(createAt)
+        """;
+    } else if ("day".equals(viewType)) {
+        sql = """
+            SELECT DAY(createAt) AS day, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE MONTH(createAt) = MONTH(GETDATE())
+              AND YEAR(createAt) = YEAR(GETDATE())
+              AND storeId = ?
+            GROUP BY DAY(createAt)
+            ORDER BY DAY(createAt)
+        """;
+    } else { // "hour"
+        sql = """
+            SELECT DATEPART(HOUR, createAt) AS hour, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE MONTH(createAt) = MONTH(GETDATE())
+              AND YEAR(createAt) = YEAR(GETDATE())
+              AND storeId = ?
+            GROUP BY DATEPART(HOUR, createAt)
+            ORDER BY DATEPART(HOUR, createAt)
+        """;
+    }
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                revenueData.put(rs.getString(1), rs.getDouble("revenue"));
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return revenueData;
+}
+
+    
+    // Lấy tổng doanh thu theo ngày, giờ hoặc ngày trong tuần của tháng trước
+    public Map<String, Double> getRevenueLastMonthByViewType(String viewType, int storeId) {
+    Map<String, Double> revenueData = new LinkedHashMap<>();
+    String sql;
+
+    if ("weekday".equals(viewType)) {
+        sql = """
+            SELECT DATENAME(WEEKDAY, createAt) AS day, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE()))
+              AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+              AND storeId = ?
+            GROUP BY DATENAME(WEEKDAY, createAt)
+            ORDER BY MIN(createAt)
+        """;
+    } else if ("day".equals(viewType)) {
+        sql = """
+            SELECT DAY(createAt) AS day, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE()))
+              AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+              AND storeId = ?
+            GROUP BY DAY(createAt)
+            ORDER BY DAY(createAt)
+        """;
+    } else { // "hour"
+        sql = """
+            SELECT DATEPART(HOUR, createAt) AS hour, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE CAST(createAt AS DATE) BETWEEN 
+                  CAST(DATEADD(MONTH, -1, GETDATE()) AS DATE) 
+                  AND CAST(EOMONTH(DATEADD(MONTH, -1, GETDATE())) AS DATE)
+              AND storeId = ?
+            GROUP BY DATEPART(HOUR, createAt)
+            ORDER BY DATEPART(HOUR, createAt)
+        """;
+    }
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                revenueData.put(rs.getString(1), rs.getDouble("revenue"));
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return revenueData;
+}
+    // Lấy tổng doanh thu theo ngày, giờ hoặc ngày trong tuần của 7 ngày qua
+    public Map<String, Double> getRevenueLast7DaysByViewType(String viewType, int storeId) {
+    Map<String, Double> revenueData = new LinkedHashMap<>();
+    String sql;
+
+    if ("weekday".equals(viewType)) {
+        sql = """
+            SELECT DATENAME(WEEKDAY, createAt) AS day, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
+              AND storeId = ?
+            GROUP BY DATENAME(WEEKDAY, createAt)
+            ORDER BY MIN(createAt)
+        """;
+    } else if ("day".equals(viewType)) {
+        sql = """
+            SELECT FORMAT(createAt, 'yyyy-MM-dd') AS day, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
+              AND storeId = ?
+            GROUP BY FORMAT(createAt, 'yyyy-MM-dd')
+            ORDER BY MIN(createAt)
+        """;
+    } else { // "hour"
+        sql = """
+            SELECT DATEPART(HOUR, createAt) AS hour, SUM(totalAmount) AS revenue
+            FROM orders
+            WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
+              AND storeId = ?
+            GROUP BY DATEPART(HOUR, createAt)
+            ORDER BY DATEPART(HOUR, createAt)
+        """;
+    }
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                revenueData.put(rs.getString(1), rs.getDouble("revenue"));
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return revenueData;
+}
+
+
+
+    
+    public double getRevenueChangePercentage(int storeId) {
+    String sql = "SELECT period, SUM(totalAmount) AS revenue FROM (" +
+                 "    SELECT 'current' AS period, totalAmount " +
+                 "    FROM orders WHERE MONTH(createAt) = MONTH(GETDATE()) " +
+                 "    AND YEAR(createAt) = YEAR(GETDATE()) AND storeId = ? " +
+                 "    UNION ALL " +
+                 "    SELECT 'previous' AS period, totalAmount " +
+                 "    FROM orders WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) " +
+                 "    AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE())) AND storeId = ?" +
+                 ") AS revenue_data GROUP BY period";
+
+    double currentRevenue = 0, previousRevenue = 0;
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, storeId);
+        pstmt.setInt(2, storeId);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                String period = rs.getString("period");
+                double revenue = rs.getDouble("revenue");
+                if ("current".equals(period)) {
+                    currentRevenue = revenue;
+                } else if ("previous".equals(period)) {
+                    previousRevenue = revenue;
+                }
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    if (previousRevenue == 0) {
+        return 0; // Tránh chia cho 0
+    }
+
+    return ((currentRevenue - previousRevenue) / previousRevenue) * 100;
+}
+
 
     public static void main(String[] args) {
         DAOProduct dao = new DAOProduct();
@@ -793,6 +1317,8 @@ public class DAOProduct extends DBContext {
 //        int removeResult = dao.removeProduct(4); // Giả sử ID của sản phẩm cần xóa
 //        System.out.println("Remove result: " + removeResult);
         // 4. Liệt kê tất cả sản phẩm
-        dao.listAll();
+        Map<String, Double> revenueByViewType = dao.getRevenueByViewType("hour", 3);
+        String[] a = dao.getTop3TotalRevenue(2);
+        System.out.println(a[0] + a[1]);
     }
 }

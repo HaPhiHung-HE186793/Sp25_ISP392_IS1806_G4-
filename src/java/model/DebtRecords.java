@@ -4,6 +4,7 @@
  */
 package model;
 
+import DAO.DAOCustomers;
 import java.math.BigDecimal;
 
 /**
@@ -191,5 +192,9 @@ public class DebtRecords {
         return "DebtRecords{" + "debtID=" + debtID + ", customerID=" + customerID + ", orderID=" + orderID + ", amount=" + amount + ", paymentStatus=" + paymentStatus + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", storeID=" + storeID + ", description=" + description + ", img=" + img + ", status=" + status + '}';
     }
 
-    
+    public String getNameCustomer(){
+        DAOCustomers dao = new DAOCustomers();
+        String name = dao.getCustomerNameByID(customerID+"");
+        return name;  
+    }
    }

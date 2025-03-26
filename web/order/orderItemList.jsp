@@ -319,7 +319,7 @@
     </div>
 
 </body>
-<<<<<<< HEAD
+
             <script>
                 
                       // Lấy các phần tử cần ẩn/hiện
@@ -353,6 +353,5 @@
 
             </script>
 
-=======
->>>>>>> origin/main
+
 </html>

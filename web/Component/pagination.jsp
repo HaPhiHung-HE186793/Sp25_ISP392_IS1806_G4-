@@ -22,6 +22,9 @@
     <input type="hidden" name="endDate" id="keyword" value="${requestScope.searchEndDate}">
     <input type="hidden" name="name" id="keyword" value="${requestScope.searchName}">
 
+        <input type="hidden" name="searchStartDate" id="keyword" value="${requestScope.searchStartDate}">
+    <input type="hidden" name="searchEndDate" id="keyword" value="${requestScope.searchEndDate}">
+    
     <input type="hidden" name="search" id="search" value="${requestScope.search}">
 
 

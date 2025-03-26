@@ -49,7 +49,7 @@
 
                     <div class="table-update">
                         <div class="table-header">
-                            <h3>Khách hàng</h3>
+                            <h3>Chi tiết công nợ</h3>
                         <c:if test="${message == 'success'}">
                             <div id="successMessage" class="newDebt-notification">Cập nhật thành công!</div>
                         </c:if>
@@ -108,7 +108,7 @@
                                     <td ><div class="newDebt-text"> Ảnh :</div></td>
                                     <td class="table-cell" style="width: 400px; height: 100px;"> 
                                         <c:if test="${not empty debtRecords.getImg()}">
-                                            <img src="${debtRecords.getImg()}" class="product-image" style="width: 400px;height: 400px  ; cursor: pointer; object-fit: contain;"
+                                            <img src="${debtRecords.getImg()}" class="product-image" style="    MARGIN-LEFT: 25px; width: 400px;height: 400px  ; cursor: pointer; object-fit: contain;"
                                                  onclick="showImageModal('${debtRecords.getImg()}')">
                                         </c:if>
                                     </td>  
@@ -118,7 +118,7 @@
                                     <td ><textarea class="newDebt-input newDebt-total"  rows="5" cols="10" >${debtRecords.getDescription()}</textarea><br></td>                                    
                                 </tr>                                    
                                 <tr class="newDebt-tableTbody-tr">
-                                    <td ><div class="newDebt-text"> Tổng nợ:</div></td>
+                                    <td ><div class="newDebt-text"> Ngày lập phiếu:</div></td>
                                     <td ><input class="newDebt-input newDebt-total"  value="${debtRecords.getUpdateAt()}" type="datetime-local" placeholder="0" readonly> </td>                                    
                                 </tr>  
                                 <tr class="newDebt-tableTbody-tr">  

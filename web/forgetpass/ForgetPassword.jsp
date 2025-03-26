@@ -44,10 +44,25 @@
                 border: none;
                 cursor: pointer;
                 font-size: 14px;
+                margin-right: 10px; /* Khoảng cách giữa các nút */
             }
 
             input[type="submit"]:hover {
-                background-color: #6c757d;
+                background-color: #5a6268; /* Màu tối hơn khi hover */
+            }
+
+            /* Thiết kế nút Quay lại */
+            .back-button {
+                padding: 5px 15px;
+                background-color: orange; /* Màu cam */
+                color: white; /* Màu chữ */
+                border: none; /* Không viền */
+                cursor: pointer; /* Con trỏ chuột khi hover */
+                font-size: 14px;
+            }
+
+            .back-button:hover {
+                background-color: darkorange; /* Màu tối hơn khi hover */
             }
 
             /* Thiết kế thông báo lỗi */
@@ -55,6 +70,11 @@
                 color: red;
                 font-size: 12px;
                 margin-top: 10px;
+            }
+
+            /* Thiết kế hàng chứa nút */
+            .button-container {
+                margin-top: 15px; /* Khoảng cách phía trên */
             }
         </style>
     </head>
@@ -66,16 +86,18 @@
                 <input type="text" name="email" placeholder="Nhập email" value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" required />
                 <br />
                 <input type="hidden" name="step" value="1" />
-                <input type="submit" value="Tiếp theo" />
                 
+                <!-- Hàng chứa nút -->
+                <div class="button-container">
+                    <input type="submit" value="Tiếp theo" />
+                    <input type="button" class="back-button" value="Quay lại" onclick="window.location.href='<%= request.getContextPath() %>/login/login.jsp'" />
+                </div>
+
                 <!-- Hiển thị thông báo lỗi nếu có -->
                 <span class="error-message">
                     <%= request.getAttribute("errorMessage") != null ? request.getAttribute("errorMessage") : "" %>
                 </span>
             </form>
-                 <div class="back-button">
-            <a href="<%= request.getContextPath() %>/login/login.jsp">Quay lại</a>
-        </div>
         </div>
     </body>
 </html>

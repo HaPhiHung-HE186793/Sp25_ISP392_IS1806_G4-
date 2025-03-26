@@ -35,14 +35,14 @@
         <url-pattern>/createstore</url-pattern>
         <url-pattern>/storedetail</url-pattern>
         <url-pattern>/updatestore</url-pattern>
-
         <url-pattern>/ListZones</url-pattern>
-
+        <url-pattern>/vnpay_payment</url-pattern>
+        <url-pattern>/vnpay_return</url-pattern>
         <url-pattern>/workschedule</url-pattern>
         <url-pattern>/createschedule</url-pattern>
         <url-pattern>/storeprofile</url-pattern>
         <url-pattern>/updateschedule</url-pattern>
-
+        <url-pattern>/dashboard</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -173,17 +173,14 @@
         <servlet-class>controller.products.HistoryExportPriceServlet</servlet-class>
     </servlet>
     <servlet>
-
         <servlet-name>DetailDebtCustomer</servlet-name>
         <servlet-class>controller.debt.DetailDebtCustomer</servlet-class>
-        </servlet>
-
-        <servlet>
-
+    </servlet>
+    <servlet>
         <servlet-name>ExportExcelDataServlet</servlet-name>
         <servlet-class>controller.products.ExportExcelDataServlet</servlet-class>
-</servlet>
-        <servlet>
+    </servlet>
+    <servlet>
         <servlet-name>workschedule</servlet-name>
         <servlet-class>controller.schedule.workSchedule</servlet-class>
     </servlet>
@@ -198,7 +195,21 @@
     <servlet>
         <servlet-name>updateschedule</servlet-name>
         <servlet-class>controller.schedule.updateSchedule</servlet-class>
+    </servlet>
+    <servlet>
 
+        <servlet-name>BanAndUnbanCustomer</servlet-name>
+        <servlet-class>controller.customer.BanAndUnbanCustomer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListHistoryDebt</servlet-name>
+        <servlet-class>controller.debt.ListHistoryDebt</servlet-class>
+    </servlet>
+
+    <servlet>
+
+        <servlet-name>dashboard</servlet-name>
+        <servlet-class>controller.products.DashBoard</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
@@ -317,7 +328,6 @@
         <url-pattern>/verifyotp</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-
         <servlet-name>ListZone</servlet-name>
         <url-pattern>/ListZone</url-pattern>
     </servlet-mapping>
@@ -326,7 +336,6 @@
         <url-pattern>/AddZone</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-
         <servlet-name>CreateImportOrderServlet</servlet-name>
         <url-pattern>/CreateImportOrderServlet</url-pattern>
     </servlet-mapping>
@@ -347,13 +356,10 @@
         <url-pattern>/storedetail</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-
         <servlet-name>ListZones</servlet-name>
         <url-pattern>/ListZones</url-pattern>
     </servlet-mapping>
-    <listener>
-        <listener-class>service.WebAppListener</listener-class>
-    </listener>
+
     <servlet-mapping>
         <servlet-name>HistoryImportPriceServlet</servlet-name>
         <url-pattern>/HistoryImportPriceServlet</url-pattern>
@@ -366,13 +372,11 @@
         <servlet-name>DetailDebtCustomer</servlet-name>
         <url-pattern>/DetailDebtCustomer</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-
         <servlet-name>ExportExcelDataServlet</servlet-name>
         <url-pattern>/ExportExcelDataServlet</url-pattern>
-</servlet-mapping>
-   <servlet-mapping>     
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>workschedule</servlet-name>
         <url-pattern>/workschedule</url-pattern>
     </servlet-mapping>
@@ -388,4 +392,23 @@
         <servlet-name>updateschedule</servlet-name>
         <url-pattern>/updateschedule</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+
+        <servlet-name>BanAndUnbanCustomer</servlet-name>
+        <url-pattern>/BanAndUnbanCustomer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListHistoryDebt</servlet-name>
+        <url-pattern>/ListHistoryDebt</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+
+        <servlet-name>dashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+
+    </servlet-mapping>
+    <listener>
+        <listener-class>service.WebAppListener</listener-class>
+    </listener>
 </web-app>
