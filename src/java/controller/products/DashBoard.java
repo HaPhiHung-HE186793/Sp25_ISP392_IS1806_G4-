@@ -129,7 +129,7 @@ public class DashBoard extends HttpServlet {
             totalRevenueDouble = new Double[]{0.0, 0.0, 0.0};
         } else {
             totalRevenueDouble = Arrays.stream(totalRevenue)
-                    .map(Double::parseDouble)
+                    .map(value -> (value == null || value.isEmpty()) ? 0.0 : Double.parseDouble(value))
                     .toArray(Double[]::new);
         }
 

@@ -1,5 +1,5 @@
 <%-- 
-    Document   : createUser
+    Document   : listStore
     Created on : 11 thg 2, 2025, 23:06:15
     Author     : nguyenanh
 --%>
@@ -17,7 +17,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
-        <title>List User</title>
+        <title>List Store</title>
     </head>
 
     <style>
