@@ -96,7 +96,7 @@
         .fixed-buttons {
             position: fixed;
             bottom: 20px; /* Cách đáy 20px */
-            left: 20px; /* Cách bên trái 20px */
+            right: 20px; /* Cách bên trái 20px */
             z-index: 1000; /* Đảm bảo nút nằm trên các phần tử khác */
             display: flex;
             flex-direction: column;
