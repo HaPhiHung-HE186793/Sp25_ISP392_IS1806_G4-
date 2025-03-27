@@ -162,16 +162,7 @@
             %>
         </div>
 
-            <div class="search-container">
-                <form action="<%=request.getContextPath()%>/URLOrderDetail" method="get">
-                    <input type="hidden" name="service" value="listOrderItem">
-                    <input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
-                    <input type="text" name="productName" placeholder="Nhập tên sản phẩm" 
-                           value="<%= request.getParameter("productName") != null ? request.getParameter("productName") : "" %>" 
-                           required>
-                    <button type="submit" class="btn">Tìm kiếm</button>
-                </form>
-            </div>
+            
 
             <div class="table-container">
                 <h3><%= request.getAttribute("tableTitle") %></h3>
@@ -216,7 +207,7 @@
                 </table>
             </div>
             <div class="refresh-container">
-                <a href="<%=request.getContextPath()%>/URLOrderDetail?service=listOrderItem&orderId=<%= request.getParameter("orderId") %>" class="btn">Hiển thị lại</a>
+                
                 <button id="toggleOrderPaper" class="btn">Phiếu Hóa Đơn</button>
             </div>
 
@@ -264,7 +255,7 @@
 
                     <p>Thành tiền: <%= decimalFormat.format(orderPaper.getTotalAmount()) %></p>
                     <p>Đã trả: <%= decimalFormat.format(orderPaper.getPaidAmount()) %></p>
-
+                    <button onclick="window.print();" class="btn">In Đơn Hàng</button>    
                     <%
                     } else {
                     %>
