@@ -169,7 +169,7 @@
                             <th>Thành tiền</th>                           
                             <th>Ngày tạo</th>                           
                             <th>Cửu vạn</th>
-                            <th>Trạng thái</th>
+                            <th>Mô tả</th>
                             <th>Chi tiết</th>
                         </tr>
                     </thead>
@@ -205,7 +205,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="total-amount">Tổng : <%= totalAmount %></div>
+            <div class="total-amount" <%= (customerName != null && !customerName.isEmpty()) || (selectedDate != null && !selectedDate.isEmpty()) ? "" : "style='display:none;'" %>>Tổng : <%= totalAmount %></div>
             <div class="pagination" aria-label="Quiz Pagination">
             <% if (currentPage > 1) { %>
                 <a href="URLOrderIn?page=<%= currentPage - 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Previous Page">&laquo; Trước</a>
