@@ -1318,6 +1318,65 @@ public class DAOProduct extends DBContext {
         return ((currentRevenue - previousRevenue) / previousRevenue) * 100;
     }
 
+    public List<Products> searchAndFilterProducts(String nameKeyword, String descKeyword, String stockStatus, String sortPrice, int storeID) {
+        List<Products> productsList = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE isDelete = 0 AND storeID = ?";
+
+        if (nameKeyword != null && !nameKeyword.isEmpty()) {
+            sql += " AND LOWER(productName) LIKE LOWER(?)";
+        }
+        if (descKeyword != null && !descKeyword.isEmpty()) {
+            sql += " AND LOWER(description) LIKE LOWER(?)";
+        }
+        if (stockStatus != null && !stockStatus.isEmpty()) {
+            if ("available".equals(stockStatus)) {
+                sql += " AND quantity > 0";
+            } else if ("outofstock".equals(stockStatus)) {
+                sql += " AND quantity = 0";
+            }
+        }
+        if ("asc".equals(sortPrice)) {
+            sql += " ORDER BY price ASC";
+        } else if ("desc".equals(sortPrice)) {
+            sql += " ORDER BY price DESC";
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, storeID);
+
+            if (nameKeyword != null && !nameKeyword.isEmpty()) {
+                ps.setString(paramIndex++, "%" + nameKeyword.toLowerCase() + "%");
+            }
+            if (descKeyword != null && !descKeyword.isEmpty()) {
+                ps.setString(paramIndex++, "%" + descKeyword.toLowerCase() + "%");
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Products product = new Products();
+                    product.setProductID(rs.getInt("productID"));
+                    product.setProductName(rs.getString("productName"));
+                    product.setDescription(rs.getString("description"));
+                    product.setPrice(rs.getDouble("price"));
+                    product.setQuantity(rs.getInt("quantity"));
+                    product.setImage(rs.getString("image"));
+                    product.setCreateAt(rs.getString("createAt"));
+                    product.setUpdateAt(rs.getString("updateAt"));
+                    product.setCreateBy(rs.getInt("createBy"));
+                    product.setIsDelete(rs.getBoolean("isDelete"));
+                    product.setDeleteAt(rs.getString("deleteAt"));
+                    product.setDeleteBy(rs.getInt("deleteBy"));
+
+                    productsList.add(product);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productsList;
+    }
+
     public static void main(String[] args) {
         DAOProduct dao = new DAOProduct();
 

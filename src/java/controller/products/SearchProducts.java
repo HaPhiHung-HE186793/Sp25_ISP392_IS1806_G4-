@@ -18,43 +18,42 @@ public class SearchProducts extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Integer storeID = (Integer) session.getAttribute("storeID");
 
-        String keyword = request.getParameter("search"); // Get search term
-        request.setAttribute("search", keyword);
+        if (storeID == null) {
+            response.sendRedirect("login.jsp"); // Chuyển hướng nếu chưa đăng nhập
+            return;
+        }
+
+        String nameSearch = request.getParameter("nameSearch") != null ? request.getParameter("nameSearch") : "";
+        String descSearch = request.getParameter("descSearch") != null ? request.getParameter("descSearch") : "";
+        String stockStatus = request.getParameter("stockStatus") != null ? request.getParameter("stockStatus") : "";
+        String priceSort = request.getParameter("priceSort") != null ? request.getParameter("priceSort") : "";
+
+        request.setAttribute("nameSearch", nameSearch);
+        request.setAttribute("descSearch", descSearch);
+        request.setAttribute("stockStatus", stockStatus);
+        request.setAttribute("priceSort", priceSort);
+
+        System.out.println("Received sortPrice from request: " + priceSort);
 
         DAOProduct dao = new DAOProduct();
-        List<Products> productsList;
+        List<Products> productsList = dao.searchAndFilterProducts(nameSearch, descSearch, stockStatus, priceSort, storeID);
 
-        if (keyword != null && !keyword.isEmpty()) {
-            productsList = dao.searchProducts(keyword); // New search method
-        } else {
-            productsList = dao.listAll();
-        }
+        int totalProducts = productsList.size();
+        int pageSize = 10;
+        int currentPage = request.getParameter("cp") != null ? Integer.parseInt(request.getParameter("cp")) : 1;
 
-        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalUsers = productsList.size();
-        int pageSize = 4;
-        int currentPage = 1;
+        Pagination page = new Pagination(totalProducts, pageSize, currentPage);
+        request.setAttribute("page", page);
 
-        if (request.getParameter("cp") != null) {
-            currentPage = Integer.parseInt(request.getParameter("cp"));
-        }
-        request.setAttribute("currentPageUrl", "ListRice"); // Hoặc "products"
-
-        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
-        session.setAttribute("page", page);
-
-        // Lấy danh sách user theo trang hiện tại
         int startIndex = page.getStartItem();
-        int endIndex = Math.min(startIndex + pageSize, totalUsers);
-        List<Products> paginatedUsers = productsList.subList(startIndex, endIndex);
+        int endIndex = Math.min(startIndex + pageSize, totalProducts);
+        List<Products> paginatedProducts = productsList.subList(startIndex, endIndex);
 
-        request.setAttribute("products", productsList);
-        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            request.getRequestDispatcher("dashboard/home.jsp").forward(request, response);
-        } else {
-            request.getRequestDispatcher("dashboard/home.jsp").forward(request, response);
-        }
+        request.setAttribute("products", paginatedProducts);
+
+        request.getRequestDispatcher("dashboard/home.jsp").forward(request, response);
     }
 
     @Override
@@ -67,5 +66,4 @@ public class SearchProducts extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
 }
