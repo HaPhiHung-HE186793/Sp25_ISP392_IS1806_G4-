@@ -674,10 +674,12 @@ public class DAOProduct extends DBContext {
     }
 
     public int insertProduct(Products product) {
-        int n = 0;
-        String sql = "INSERT INTO products (productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int productID = -1; // Giá trị mặc định nếu insert thất bại
+        String sql = "INSERT INTO products (productName, description, price, quantity, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         try {
-            PreparedStatement pre = conn.prepareStatement(sql);
+            // Sử dụng RETURN_GENERATED_KEYS để lấy ID vừa được tạo
+            PreparedStatement pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pre.setString(1, product.getProductName());
             pre.setString(2, product.getDescription());
             pre.setDouble(3, product.getPrice());
@@ -689,11 +691,21 @@ public class DAOProduct extends DBContext {
             pre.setBoolean(9, product.isIsDelete());
             pre.setString(10, product.getDeleteAt());
             pre.setInt(11, product.getDeleteBy());
-            n = pre.executeUpdate();
+            pre.setInt(12, product.getStoreID()); // Thêm storeID vào truy vấn
+
+            int affectedRows = pre.executeUpdate();
+
+            // Kiểm tra xem có bản ghi nào được thêm không
+            if (affectedRows > 0) {
+                ResultSet rs = pre.getGeneratedKeys();
+                if (rs.next()) {
+                    productID = rs.getInt(1); // Lấy productID vừa được tạo
+                }
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DAOProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return n;
+        return productID; // Trả về ID của sản phẩm vừa thêm
     }
 
 //    public void listAll() {
