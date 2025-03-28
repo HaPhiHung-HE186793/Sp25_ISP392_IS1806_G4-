@@ -254,6 +254,51 @@ public class DAOZones extends DBContext {
         return n;
     }
 
+    public List<Zones> searchAndFilterZones(String nameKeyword, String sortOrder, int storeID) {
+        List<Zones> zonesList = new ArrayList<>();
+        String sql = "SELECT * FROM zones WHERE storeID = ?"; // ✅ Lọc theo storeID
+
+        if (nameKeyword != null && !nameKeyword.isEmpty()) {
+            sql += " AND LOWER(zoneName) LIKE LOWER(?)";
+        }
+
+        // ✅ Sắp xếp theo tên từ A-Z hoặc Z-A
+        if ("asc".equalsIgnoreCase(sortOrder)) {
+            sql += " ORDER BY zoneName ASC";
+        } else if ("desc".equalsIgnoreCase(sortOrder)) {
+            sql += " ORDER BY zoneName DESC";
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, storeID); // ✅ Thiết lập giá trị storeID
+
+            if (nameKeyword != null && !nameKeyword.isEmpty()) {
+                ps.setString(paramIndex++, "%" + nameKeyword.toLowerCase() + "%");
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Zones zone = new Zones();
+                    zone.setZoneID(rs.getInt("zoneID"));
+                    zone.setZoneName(rs.getString("zoneName"));
+                    zone.setCreateAt(rs.getString("createAt"));
+                    zone.setUpdateAt(rs.getString("updateAt"));
+                    zone.setCreateBy(rs.getInt("createBy"));
+                    zone.setIsDelete(rs.getBoolean("isDelete"));
+                    zone.setDeleteAt(rs.getString("deleteAt"));
+                    zone.setDeleteBy(rs.getInt("deleteBy"));
+                    zone.setImage(rs.getString("image"));
+
+                    zonesList.add(zone);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return zonesList;
+    }
+
     public static void main(String[] args) {
         DAOZones dao = new DAOZones();
 
