@@ -120,9 +120,10 @@ public class DAODebtRecords extends DBContext {
         return generatedDebtID; // Trả về debtID để thêm vào queue
     }
 
-    public int addDebtRecord1(DebtRecords record) {
-        String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus,createBy, isDelete,status) "
-                + "VALUES (?, ?, ?, ?, ?, ?,0)";
+    public int addDebtRecord1(DebtRecords record,int userID) {
+        int storeID = DAOProduct.INSTANCE.getStoreIdByUserId(userID);
+        String insertSQL = "INSERT INTO DebtRecords (customerID, orderID, amount, paymentStatus,createBy, isDelete,status,storeID) "
+                + "VALUES (?, ?, ?, ?, ?, ?,0,?)";
 
         int generatedDebtID = -1;
 
@@ -134,6 +135,7 @@ public class DAODebtRecords extends DBContext {
 
             ps.setInt(5, record.getCreateBy());
             ps.setBoolean(6, record.isIsDelete());
+             ps.setInt(7, storeID);
 
             ps.executeUpdate();
 

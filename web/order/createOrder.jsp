@@ -15,11 +15,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
-        <% 
-     String invoiceNumber = (String) request.getAttribute("invoiceNumber");
-        %>
+       <title>Hóa đơn ${invoiceNumber}</title>
 
-        <title>Hóa đơn <%= invoiceNumber %></title>
 
 
 

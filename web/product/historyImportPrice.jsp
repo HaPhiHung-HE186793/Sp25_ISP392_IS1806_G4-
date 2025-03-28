@@ -145,10 +145,9 @@
 
 
                 <div style="text-align: right;">
-                    <button type="button" onclick="exportToExcel()">Xuất Excel</button>
+                    
                     <button type="button" onclick="redirectToSellPriceHistory()">Xem Lịch Sử Giá Bán</button>
                 </div>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 
                 <div class="table-container">
@@ -226,29 +225,7 @@
 
 
         <script>
-                        async function exportToExcel() {
-                            try {
-                                let response = await fetch("ExportExcelDataServlet?priceType=import");
-                                let data = await response.json();
-
-                                let worksheet = XLSX.utils.json_to_sheet(data.map(item => ({
-                                        "Tên sản phẩm": item.productName,
-                                        "Giá": item.price,
-                                        "Nhà Cung Cấp": item.supplier,
-                                        "Ngày thay đổi": item.changedAt,
-                                        "Người thay đổi": item.changedBy // Giờ đây là userName thay vì ID
-                                    })));
-
-                                let workbook = XLSX.utils.book_new();
-                                XLSX.utils.book_append_sheet(workbook, worksheet, "LichSuGiaNhap");
-
-                                XLSX.writeFile(workbook, "LichSuGiaNhap.xlsx");
-                            } catch (error) {
-                                console.error("Lỗi khi xuất Excel:", error);
-                                alert("Có lỗi xảy ra khi xuất Excel!");
-                            }
-                        }
-
+                        
                         function redirectToSellPriceHistory() {
                             window.location.href = "HistoryExportPriceServlet";
                         }

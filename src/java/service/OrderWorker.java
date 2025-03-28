@@ -128,8 +128,14 @@ public class OrderWorker extends Thread {
                 DebtRecords debtRecord = new DebtRecords(orderTask.getCustomerId(), orderId, debtAmount, paymentStatus, orderTask.getUserId(), false, 0);
 
                 DAODebtRecords dao = new DAODebtRecords();
+
                 // cần xử lí thêm việc tạo nợ có cần thành công không
-                int success = dao.addDebtRecord1(debtRecord);
+                int success = dao.addDebtRecord1(debtRecord,orderTask.getUserId());
+                
+                debtRecord.setDebtID(success);
+
+                // Đẩy vào hàng đợi để xử lý
+                WebAppListener.debtQueue.offer(debtRecord);
                 if (success < 0) {
                     conn.rollback(); // 🔥 Nếu tạo đơn hàng thất bại, rollback toàn bộ
                     processedOrders.put(orderTask.getUserId(), -1);
@@ -180,7 +186,7 @@ public class OrderWorker extends Thread {
                             System.out.println("✅ Đã cập nhật giá nhập kho cho sản phẩm ID: " + detail.getProductID());
 
                             // Chỉ ghi log nếu giá đã thay đổi
-                            boolean logged = DAOProduct.INSTANCE.logPriceChange(detail.getProductID(), newPrice, "import", orderTask.getUserId(),orderTask.getCustomerId());
+                            boolean logged = DAOProduct.INSTANCE.logPriceChange(detail.getProductID(), newPrice, "import", orderTask.getUserId(), orderTask.getCustomerId());
                             if (logged) {
                                 System.out.println("📜 Đã ghi lịch sử thay đổi giá nhập!");
                             } else {
@@ -194,26 +200,24 @@ public class OrderWorker extends Thread {
                     }
                 }
 
-                }
+            }
 
-                conn.commit(); // ✅ Nếu tất cả đều OK, commit thay đổi vào database
-                processedOrders.put(orderTask.getUserId(), orderId);
-                System.out.println("✅ [DONE] Đơn hàng đã xử lý xong! User ID: " + orderTask.getUserId() + " | Order ID: " + orderId);
-            }catch (SQLException e) {
+            conn.commit(); // ✅ Nếu tất cả đều OK, commit thay đổi vào database
+            processedOrders.put(orderTask.getUserId(), orderId);
+            System.out.println("✅ [DONE] Đơn hàng đã xử lý xong! User ID: " + orderTask.getUserId() + " | Order ID: " + orderId);
+        } catch (SQLException e) {
             if (conn != null) {
                 conn.rollback();
             }
             e.printStackTrace();
             processedOrders.put(orderTask.getUserId(), -1);
-        }finally {
+        } finally {
             if (conn != null) {
                 conn.setAutoCommit(true);// đặt lại trạng thái mặc đinh
             }
         }
 
-        }
-
-    
+    }
 
     public static Integer getProcessedOrder(int userId) {
         Integer status = processedOrders.get(userId);
