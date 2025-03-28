@@ -99,6 +99,30 @@ public class Zones {
         this.navigation = navigation;
     }
 
+    public Zones(String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID, String image, String navigation) {
+        this.zoneName = zoneName;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.storeID = storeID;
+        this.image = image;
+        this.navigation = navigation;
+    }
+    
+    public Zones(String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID, String image) {
+        this.zoneName = zoneName;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.navigation = navigation;
+    }
+
     public int getZoneID() {
         return zoneID;
     }

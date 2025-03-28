@@ -108,7 +108,7 @@ public class DAOZones extends DBContext {
 
     public int insertZone(Zones zone) {
         int n = 0;
-        String sql = "INSERT INTO zones (zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy,storeID) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+        String sql = "INSERT INTO zones (zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, zone.getZoneName());
@@ -125,6 +125,39 @@ public class DAOZones extends DBContext {
             Logger.getLogger(DAOZones.class.getName()).log(Level.SEVERE, null, ex);
         }
         return n;
+    }
+
+    public int insertZone1(Zones zone) {
+        int zoneID = -1; // Giá trị mặc định nếu insert thất bại
+        String sql = "INSERT INTO zones (zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID, image, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            // Sử dụng RETURN_GENERATED_KEYS để lấy ID vừa được tạo
+            PreparedStatement pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            pre.setString(1, zone.getZoneName());
+            pre.setString(2, zone.getCreateAt());
+            pre.setString(3, zone.getUpdateAt());
+            pre.setInt(4, zone.getCreateBy());
+            pre.setBoolean(5, zone.isIsDelete());
+            pre.setString(6, zone.getDeleteAt());
+            pre.setInt(7, zone.getDeleteBy());
+            pre.setInt(8, zone.getStoreID());
+            pre.setString(9, zone.getImage());
+            pre.setString(10, zone.getNavigation()); // Đổi `navigation` thành `description` nếu cần
+
+            int affectedRows = pre.executeUpdate();
+
+            // Kiểm tra xem có bản ghi nào được thêm không
+            if (affectedRows > 0) {
+                ResultSet rs = pre.getGeneratedKeys();
+                if (rs.next()) {
+                    zoneID = rs.getInt(1); // Lấy zoneID vừa được tạo
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOZones.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return zoneID; // Trả về ID của khu vực vừa thêm
     }
 
     public void listAll(String storeID) {
@@ -299,6 +332,21 @@ public class DAOZones extends DBContext {
         return zonesList;
     }
 
+    public boolean isZoneNameExists(String zoneName, int storeID) {
+        String sql = "SELECT COUNT(*) FROM zones WHERE zoneName = ? AND storeID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, zoneName);
+            ps.setInt(2, storeID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Nếu COUNT > 0 thì khu vực đã tồn tại trong cửa hàng đó
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log lỗi
+        }
+        return false; // Trả về false nếu có lỗi hoặc khu vực chưa tồn tại
+    }
+
     public static void main(String[] args) {
         DAOZones dao = new DAOZones();
 
@@ -317,5 +365,20 @@ public class DAOZones extends DBContext {
 
         // 4. Liệt kê tất cả khu vực
 //        dao.listAll();
+        Zones newZone = new Zones(
+                "Khu Vực D", // zoneName
+                "2025-03-28 10:00:00", // createAt
+                "2025-03-28 10:00:00", // updateAt
+                1, // createBy (UserID)
+                false, // isDelete
+                null, // deleteAt (có thể là NULL)
+                0, // deleteBy
+                1, // storeID
+                "ImageZone/test.jpg", // image
+                "Điểm D" // navigation
+        );
+
+        int insertResult = dao.insertZone1(newZone);
+        System.out.println("Insert result: " + insertResult);
     }
 }
