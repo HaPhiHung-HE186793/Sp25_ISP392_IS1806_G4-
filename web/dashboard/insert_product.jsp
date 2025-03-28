@@ -9,11 +9,11 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/themify-icons/themify-icons.css">
         <title>Bảng Điều Khiển</title>
     </head>
+
     <body>
         <div id="main">
-                          <jsp:include page="/Component/header.jsp"></jsp:include>
-            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
-
+            <jsp:include page="/Component/header.jsp"></jsp:include>
+            <jsp:include page="/Component/menu.jsp"></jsp:include>
                 <div class="main-content">
                     <div class="notification">
                         Thông báo: Mọi người có thể liên hệ admin tại fanpage Group 4
@@ -49,6 +49,32 @@
                                 </td>
                             </tr>
                             <tr>
+                            <tr>
+                                <td>Chọn khu vực</td>
+                                <td>
+                                    <div class="custom-dropdown">
+                                        <div class="dropdown-btn" onclick="toggleDropdown()">
+                                            <span id="selectedText">Chọn khu vực</span>
+                                            <span>▼</span>
+                                        </div>
+                                        <div class="dropdown-content" id="dropdownList">
+                                            <c:forEach var="zone" items="${zonesList}">
+                                                <label>
+                                                    <input type="checkbox" name="zoneIDs" value="${zone.zoneID}" 
+                                                           <c:if test="${selectedZones.contains(zone.zoneID)}">checked</c:if> 
+                                                               onchange="updateSelection()"> 
+                                                    ${zone.zoneName}
+                                                </label>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+                                    <div class="selected-items" id="selectedItems"></div>
+                                </td>
+                            </tr>
+
+
+                            </tr>
+                            <tr>
                                 <td>Tạo bởi (User ID):</td>
                                 <td>
                                     <input type="hidden" name="createBy" value="${sessionScope.userID}" required>
@@ -63,6 +89,215 @@
                 </div>
             </div>
         </div>
+        <style>body {
+                background-color: #121212;
+                color: white;
+                font-family: Arial, sans-serif;
+                text-align: center;
+            }
+
+            .main-content {
+                width: 50%;
+                margin: auto;
+                text-align: left;
+            }
+
+            .notification {
+                background-color: red;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .table-container {
+                background-color: #1E1E1E;
+                padding: 20px;
+                border-radius: 5px;
+            }
+
+            h3 {
+                text-align: center;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            td {
+                padding: 10px;
+            }
+
+            td:first-child {
+                text-align: right;
+                width: 30%;
+                font-weight: bold;
+            }
+
+            td:last-child {
+                text-align: left;
+            }
+
+            input, textarea, select {
+                width: 100%;
+                padding: 10px;
+                background-color: white;  /* Đổi nền thành màu trắng */
+                color: black;  /* Đổi màu chữ thành đen */
+                border: 1px solid gray;
+                border-radius: 8px; /* Bo tròn góc */
+                display: block;
+                box-sizing: border-box;
+                font-size: 16px; /* Cỡ chữ lớn hơn */
+            }
+
+            button {
+                background-color: red;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                display: block;
+                margin: 20px auto;
+            }
+
+            button:hover {
+                background-color: darkred;
+            }
+
+            img#previewImage {
+                max-width: 200px;
+                display: none;
+                margin-top: 10px;
+            }
+
+            /* Căn chỉnh dropdown Zone cho đều với input trên */
+            .select-container {
+                width: 100%;
+            }
+
+            select {
+                width: 100%;
+                padding: 10px;
+                background-color: #222;
+                color: white;
+                border: 1px solid gray;
+                display: block;
+                height: auto;
+            }
+
+            input:focus, textarea:focus, select:focus {
+                border-color: blue;
+                outline: none;
+                box-shadow: 0px 0px 5px rgba(0, 0, 255, 0.5);
+            }
+
+            .custom-dropdown {
+                position: relative;
+                width: 100%;
+            }
+
+            .dropdown-btn {
+                width: 100%;
+                padding: 10px;
+                background: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 8px;
+                text-align: left;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                width: 100%;
+                background: white;
+                border: 1px solid gray;
+                border-radius: 8px;
+                max-height: 200px;
+                overflow-y: auto;
+                z-index: 10;
+            }
+
+            .dropdown-content label {
+                display: block;
+                padding: 10px;
+                cursor: pointer;
+            }
+
+            .dropdown-content label:hover {
+                background: lightgray;
+            }
+
+            .selected-items {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-top: 5px;
+            }
+
+
+            /* Đảm bảo chữ dropdown luôn màu đen */
+            .dropdown-content {
+                background: white;
+                color: black; /* Chữ màu đen */
+                border: 1px solid gray;
+                border-radius: 8px;
+                max-height: 200px;
+                overflow-y: auto;
+                z-index: 10;
+                padding: 5px;
+            }
+
+            .dropdown-content label {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                cursor: pointer;
+                color: black; /* Đảm bảo chữ luôn hiển thị rõ */
+            }
+
+            .dropdown-content label:hover {
+                background: lightgray;
+            }
+
+            /* Căn chỉnh checkbox */
+            .dropdown-content input[type="checkbox"] {
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                border: 2px solid gray;
+                border-radius: 3px;
+                margin-right: 8px;
+                position: relative;
+                cursor: pointer;
+            }
+
+            /* Tạo dấu tick */
+            .dropdown-content input[type="checkbox"]:checked {
+                background-color: blue;
+                border-color: blue;
+            }
+
+            .dropdown-content input[type="checkbox"]:checked::after {
+                content: "✔";
+                font-size: 14px;
+                font-weight: bold;
+                color: white;
+                position: absolute;
+                left: 2px;
+                top: -2px;
+            }
+
+
+
+        </style>
         <script>
             document.getElementById("image").addEventListener("change", function (event) {
                 const file = event.target.files[0];
@@ -96,41 +331,46 @@
                 priceInput.value = price;
                 return true;
             }
-            
-            
-                  // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
-// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
+            function toggleDropdown() {
+                let dropdown = document.getElementById("dropdownList");
+                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            }
 
-// Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
+            function updateSelection() {
+                let checkboxes = document.querySelectorAll(".dropdown-content input[type='checkbox']");
+                let selectedItemsDiv = document.getElementById("selectedItems");
+                let selectedText = document.getElementById("selectedText");
 
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
+                selectedItemsDiv.innerHTML = "";
+                let selectedZones = [];
 
-// Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        let zoneName = checkbox.parentElement.textContent.trim();
+                        selectedZones.push(zoneName);
+
+                        let span = document.createElement("span");
+                        span.className = "selected-item";
+                        selectedItemsDiv.appendChild(span);
+                    }
+                });
+
+                selectedText.textContent = selectedZones.length > 0 ? selectedZones.join(", ") : "Chọn khu vực";
+            }
+
+
+            document.addEventListener("click", function (event) {
+                let dropdown = document.getElementById("dropdownList");
+                let button = document.querySelector(".dropdown-btn");
+
+                if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+                    dropdown.style.display = "none";
+                }
+            });
+
+
 
         </script>
     </body>
-
-
-
 </html>
-

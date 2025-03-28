@@ -1,6 +1,7 @@
 package controller.products;
 
 import DAO.DAOProduct;
+import DAO.DAOZones;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -12,7 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import java.util.List;
 import model.Products;
+import model.Zones;
 
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
@@ -20,6 +23,18 @@ import model.Products;
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class CreateProduct extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer storeID = (Integer) session.getAttribute("storeID");
+        DAOZones daoZone = new DAOZones();
+        List<Zones> zonesList = daoZone.getEmptyZones(storeID);
+
+        request.setAttribute("zonesList", zonesList);
+        request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -38,6 +53,10 @@ public class CreateProduct extends HttpServlet {
             request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
             return;
         }
+
+        // ✅ Lấy storeID từ request
+        Integer storeID = (Integer) session.getAttribute("storeID");
+
         int quantity = 0;
 
         Part imagePart = request.getPart("image");
@@ -63,23 +82,40 @@ public class CreateProduct extends HttpServlet {
         String deleteAt = null;
         Integer deleteBy = 0;
 
-        Products product = new Products(productName, description, price, quantity, "Image/" + imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
-        DAOProduct dao = new DAOProduct();
+        // ✅ Lấy danh sách zone được chọn từ form
+        String[] selectedZones = request.getParameterValues("zoneIDs");
 
-        if (dao.isProductNameExists(productName)) {
-            request.setAttribute("message", "Lỗi: Tên sản phẩm đã tồn tại");
+        if (selectedZones == null || selectedZones.length == 0) {
+            request.setAttribute("message", "Lỗi: Bạn chưa chọn khu vực");
             request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
             return;
         }
 
-        int result = dao.insertProduct(product);
+        DAOProduct daoProduct = new DAOProduct();
+        DAOZones daoZones = new DAOZones();
 
-        if (result > 0) {
-            request.setAttribute("message", "Thêm sản phẩm thành công");
+        // ✅ Kiểm tra sản phẩm đã tồn tại trong cửa hàng này
+        if (daoProduct.isProductNameExists(productName, storeID)) {
+            request.setAttribute("message", "Lỗi: Tên sản phẩm đã tồn tại trong cửa hàng này");
+            request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
+            return;
+        }
+
+        // ✅ Thêm sản phẩm vào bảng products, có storeID
+        Products product = new Products(productName, description, price, quantity, "Image/" + imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
+        int productID = daoProduct.insertProduct(product); // Trả về productID
+
+        if (productID > 0) {
+            for (String zoneIdStr : selectedZones) {
+                int zoneID = Integer.parseInt(zoneIdStr);
+                daoZones.updateZoneWithProduct(zoneID, productID, storeID); // ✅ Cập nhật storeID
+            }
+            request.setAttribute("message", "Thêm sản phẩm vào khu vực thành công");
         } else {
             request.setAttribute("message", "Lỗi: Thêm sản phẩm thất bại");
         }
 
         request.getRequestDispatcher("ListProducts").forward(request, response);
     }
+
 }

@@ -643,20 +643,20 @@ public class DAOProduct extends DBContext {
         return false;
     }
 
-    public boolean isProductNameExists(String productName) {
-        String sql = "SELECT COUNT(*) FROM Products WHERE productName = ?"; // Assuming 'Products' is your table name
-        try ( // Your DBConnect class
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
+    public boolean isProductNameExists(String productName, int storeID) {
+        String sql = "SELECT COUNT(*) FROM products WHERE productName = ? AND storeID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, productName);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0; // Return true if count > 0 (product exists)
+            ps.setInt(2, storeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception appropriately (log it, etc.)
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        return false; // Return false if there's an error or product doesn't exist
+        return false;
     }
 
     public int updateIsDelete(int productID, boolean isDelete) {

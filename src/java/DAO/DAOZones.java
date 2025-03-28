@@ -72,7 +72,6 @@ public class DAOZones extends DBContext {
         }
         return list;
     }
-    
 
     public int removeZone(int zoneID) {
         int n = 0;
@@ -150,6 +149,48 @@ public class DAOZones extends DBContext {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public List<Zones> getEmptyZones(int storeID) {
+        List<Zones> list = new ArrayList<>();
+        String sql = "SELECT * FROM zones WHERE (productID IS NULL OR productID = 0) AND storeID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, storeID);  // Thiết lập tham số storeID
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int zoneID = rs.getInt("zoneID");
+                    String zoneName = rs.getString("zoneName");
+                    String createAt = rs.getString("createAt");
+                    String updateAt = rs.getString("updateAt");
+                    int createBy = rs.getInt("createBy");
+                    Boolean isDelete = rs.getBoolean("isDelete");
+                    String deleteAt = rs.getString("deleteAt");
+                    int deleteBy = rs.getInt("deleteBy");
+                    String image = rs.getString("image");
+
+                    Zones zone = new Zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, image);
+                    list.add(zone);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean updateZoneWithProduct(int zoneID, int productID, int storeID) {
+        String sql = "UPDATE zones SET productID = ? WHERE zoneID = ? AND storeID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productID);
+            ps.setInt(2, zoneID);
+            ps.setInt(3, storeID);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     public static void main(String[] args) {
