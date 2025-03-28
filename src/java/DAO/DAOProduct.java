@@ -1419,6 +1419,35 @@ public class DAOProduct extends DBContext {
         return zones;
     }
 
+    public Products getProductById(int productID) {
+        Products product = null;
+        String sql = "SELECT * FROM Products WHERE productID = ? AND isDelete = 0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    product = new Products();
+                    product.setProductID(rs.getInt("productID"));
+                    product.setProductName(rs.getString("productName"));
+                    product.setDescription(rs.getString("description"));
+                    product.setPrice(rs.getDouble("price"));
+                    product.setQuantity(rs.getInt("quantity"));
+                    product.setImage(rs.getString("image"));
+                    product.setCreateAt(rs.getString("createAt"));
+                    product.setUpdateAt(rs.getString("updateAt"));
+                    product.setCreateBy(rs.getInt("createBy"));
+                    product.setIsDelete(rs.getBoolean("isDelete"));
+                    product.setDeleteAt(rs.getString("deleteAt"));
+                    product.setDeleteBy(rs.getInt("deleteBy"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return product;
+    }
+
     public static void main(String[] args) {
         DAOProduct dao = new DAOProduct();
 

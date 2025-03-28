@@ -193,6 +193,54 @@ public class DAOZones extends DBContext {
         return false;
     }
 
+    public List<Integer> getSelectedZoneIDsByProductID(int productID) {
+        List<Integer> selectedZoneIDs = new ArrayList<>();
+        String sql = "SELECT zoneID FROM zones WHERE productID = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, productID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                selectedZoneIDs.add(rs.getInt("zoneID"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return selectedZoneIDs;
+    }
+
+    public List<Zones> listAll1(int storeID) {
+        List<Zones> zoneList = new ArrayList<>();
+        String sql = "SELECT * FROM zones WHERE storeID = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, storeID); // Gán giá trị storeID vào câu lệnh SQL
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int zoneID = rs.getInt("zoneID");
+                String zoneName = rs.getString("zoneName");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                int store = rs.getInt("storeID");
+                String image = rs.getString("image");
+                String navigation = rs.getString("description");
+                Zones zone = new Zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID, image, navigation);
+                zoneList.add(zone); // Thêm zone vào danh sách
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return zoneList; // Trả về danh sách zone
+    }
+
     public static void main(String[] args) {
         DAOZones dao = new DAOZones();
 
