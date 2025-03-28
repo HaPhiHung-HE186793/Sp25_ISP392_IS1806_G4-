@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import model.ProductPriceHistory;
+import model.Zones;
 
 public class DAOProduct extends DBContext {
 
@@ -780,27 +781,44 @@ public class DAOProduct extends DBContext {
         return list;
     }
 
-    public Products getProductById(int productID) {
+    public Products getProductByID(int productID) {
         Products product = null;
-        String sql = "SELECT * FROM Products WHERE productID = ? AND isDelete = 0";
+        String sql = "SELECT p.productID, p.productName, p.description, p.price, p.quantity, p.image, p.isDelete, "
+                + "z.zoneName "
+                + // ❌ Bỏ productQuantity
+                "FROM products p "
+                + "LEFT JOIN zones z ON p.productID = z.productID "
+                + "WHERE p.productID = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, productID);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    product = new Products();
-                    product.setProductID(rs.getInt("productID"));
-                    product.setProductName(rs.getString("productName"));
-                    product.setDescription(rs.getString("description"));
-                    product.setPrice(rs.getDouble("price"));
-                    product.setQuantity(rs.getInt("quantity"));
-                    product.setImage(rs.getString("image"));
-                    product.setCreateAt(rs.getString("createAt"));
-                    product.setUpdateAt(rs.getString("updateAt"));
-                    product.setCreateBy(rs.getInt("createBy"));
-                    product.setIsDelete(rs.getBoolean("isDelete"));
-                    product.setDeleteAt(rs.getString("deleteAt"));
-                    product.setDeleteBy(rs.getInt("deleteBy"));
+                StringBuilder zoneNames = new StringBuilder();
+
+                while (rs.next()) {
+                    if (product == null) { // Chỉ khởi tạo đối tượng sản phẩm một lần
+                        product = new Products();
+                        product.setProductID(rs.getInt("productID"));
+                        product.setProductName(rs.getString("productName"));
+                        product.setDescription(rs.getString("description"));
+                        product.setPrice(rs.getDouble("price"));
+                        product.setQuantity(rs.getInt("quantity"));
+                        product.setImage(rs.getString("image"));
+                        product.setIsDelete(rs.getBoolean("isDelete"));
+                    }
+
+                    // Xử lý danh sách zone
+                    String zoneName = rs.getString("zoneName");
+                    if (zoneName != null) {
+                        if (zoneNames.length() > 0) {
+                            zoneNames.append(", ");
+                        }
+                        zoneNames.append(zoneName);
+                    }
+                }
+
+                if (product != null) {
+                    product.setZoneName(zoneNames.toString()); // Lưu danh sách khu vực vào sản phẩm
                 }
             }
         } catch (SQLException e) {
@@ -1375,6 +1393,30 @@ public class DAOProduct extends DBContext {
             e.printStackTrace();
         }
         return productsList;
+    }
+
+    public List<Zones> getZonesByProduct(int productID) {
+        List<Zones> zones = new ArrayList<>();
+        String sql = "SELECT zoneID, zoneName, description "
+                + "FROM zones "
+                + "WHERE productID = ?";  // Lấy danh sách khu vực theo productID
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, productID);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Zones zone = new Zones();
+                zone.setZoneID(rs.getInt("zoneID"));
+                zone.setZoneName(rs.getString("zoneName"));
+                zone.setNavigation(rs.getString("description"));
+                zones.add(zone);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return zones;
     }
 
     public static void main(String[] args) {

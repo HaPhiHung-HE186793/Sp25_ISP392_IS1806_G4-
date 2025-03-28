@@ -171,6 +171,62 @@ public class Zones {
         this.storeID = storeID;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public String getNavigation() {
+        return navigation;
+    }
+
+    public void setNavigation(String navigation) {
+        this.navigation = navigation;
+    }
+
+    public int getZoneQuantities() {
+        return ZoneQuantities;
+    }
+
+    public void setZoneQuantities(int ZoneQuantities) {
+        this.ZoneQuantities = ZoneQuantities;
+    }
+
     @Override
     public String toString() {
         return "Zones{" + "zoneID=" + zoneID + ", zoneName=" + zoneName + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", storeID=" + storeID + '}';
