@@ -19,6 +19,14 @@ public class Zones {
     private String deleteAt; // Có thể sử dụng LocalDateTime nếu cần
     private int deleteBy;
     private int storeID;
+    private String image;
+    // Thêm các thuộc tính liên quan đến sản phẩm
+    private String productName;
+    private String productImage;
+    private int quantity;
+    private int productID;
+    private String navigation;
+    private int ZoneQuantities;
 
     public Zones() {
     }
@@ -33,6 +41,62 @@ public class Zones {
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
         this.storeID = storeID;
+    }
+
+    public Zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, String image) {
+        this.zoneID = zoneID;
+        this.zoneName = zoneName;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.image = image;
+    }
+
+    // Constructor với đầy đủ thông tin zone và product
+    public Zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, boolean isDelete,
+            String deleteAt, int deleteBy, String image, int productID, String productName, String productImage, int quantity, String navigation) {
+        this.zoneID = zoneID;
+        this.zoneName = zoneName;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.image = image;
+        this.productID = productID;
+        this.productName = productName;
+        this.productImage = productImage;
+        this.quantity = quantity;
+        this.navigation = navigation;
+    }
+
+    public Zones(String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+        this.zoneName = zoneName;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.navigation = navigation;
+    }
+
+    public Zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID, String image, String navigation) {
+        this.zoneID = zoneID;
+        this.zoneName = zoneName;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.storeID = storeID;
+        this.image = image;
+        this.navigation = navigation;
     }
 
     public int getZoneID() {
@@ -112,5 +176,4 @@ public class Zones {
         return "Zones{" + "zoneID=" + zoneID + ", zoneName=" + zoneName + ", createAt=" + createAt + ", updateAt=" + updateAt + ", createBy=" + createBy + ", isDelete=" + isDelete + ", deleteAt=" + deleteAt + ", deleteBy=" + deleteBy + ", storeID=" + storeID + '}';
     }
 
-    
 }
