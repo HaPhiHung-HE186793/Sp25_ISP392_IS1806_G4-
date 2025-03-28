@@ -51,7 +51,7 @@
                                 <th>Ngày tạo</th>
                                 <th>Cập nhật lần cuối</th>
                                 <th>Mô tả</th>
-                                <th>Hoạt động</th>
+                                <th>Trạng thái</th>
                                     <c:if test="${sessionScope.roleID == 2}">
                                     <th>Hành động</th>
                                     </c:if>

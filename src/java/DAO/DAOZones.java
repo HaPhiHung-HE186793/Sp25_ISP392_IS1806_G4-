@@ -398,6 +398,30 @@ public class DAOZones extends DBContext {
         return false;
     }
 
+    public int updateZoneIsDelete(int zoneID, boolean isDelete) {
+        int n = 0;
+        String updateZoneSQL = "UPDATE zones SET isDelete=? WHERE zoneID=?";
+        String deleteProductsSQL = "DELETE FROM products WHERE productID IN (SELECT productID FROM zones WHERE zoneID=?)";
+
+        try (PreparedStatement preZone = conn.prepareStatement(updateZoneSQL); PreparedStatement preProducts = conn.prepareStatement(deleteProductsSQL)) {
+
+            // Cập nhật trạng thái isDelete của Zone
+            preZone.setBoolean(1, isDelete);
+            preZone.setInt(2, zoneID);
+            n = preZone.executeUpdate();
+
+            // Nếu isDelete = true, xóa toàn bộ sản phẩm liên quan đến zone
+            if (isDelete) {
+                preProducts.setInt(1, zoneID);
+                preProducts.executeUpdate();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOZones.class.getName()).log(Level.SEVERE, "Error updating zone delete status", ex);
+        }
+        return n;
+    }
+
     public static void main(String[] args) {
         DAOZones dao = new DAOZones();
 
