@@ -162,7 +162,36 @@ public class RemindOrder extends HttpServlet {
             }
 
             totalAmount = dao.getTotalAmount(totalAmountSql); // Lấy tổng giá tiền từ database
+                                // Tính số lượng hóa đơn trả thiếu và tổng số tiền trả thiếu
+                    String countSql = "SELECT COUNT(*) FROM orders o " +
+                                      "JOIN users u ON o.userID = u.ID "+
+                                      "WHERE o.paidAmount < o.totalAmount AND o.orderType = 1 ";
 
+                    if (storeID != null) {
+                        countSql += "AND u.storeID = " + storeID + " ";
+                    }
+                    if (selectedDate != null && !selectedDate.isEmpty()) {
+            countSql += (customerName != null ? "AND " : (storeID != null ? "AND " : "WHERE ")) + "CONVERT(date, o.createAt) = '" + selectedDate + "' ";
+        }
+
+                    int count = dao.getTotalRecords(countSql); // Số lượng hóa đơn trả thiếu
+
+                    String totalMissingSql = "SELECT SUM(o.totalAmount - o.paidAmount) FROM orders o " +
+                                             "JOIN users u ON o.userID = u.ID "+
+                                             "WHERE o.paidAmount < o.totalAmount AND o.orderType = 1 ";
+
+                    if (storeID != null) {
+                        totalMissingSql += "AND u.storeID = " + storeID + " ";
+                    }
+                    if (selectedDate != null && !selectedDate.isEmpty()) {
+                    totalMissingSql += (customerName != null ? "AND " : (storeID != null ? "AND " : "WHERE ")) + "CONVERT(date, o.createAt) = '" + selectedDate + "' ";
+        }
+
+                    double totalMissingAmount = dao.getTotalAmount(totalMissingSql); // Tổng số tiền trả thiếu
+
+                    // Gửi thông tin thống kê đến JSP
+                    request.setAttribute("countMissingOrders", count);
+                    request.setAttribute("totalMissingAmount", totalMissingAmount);
             request.setAttribute("data", vector);
             request.setAttribute("tableTitle", "Danh sách hóa đơn trả thiếu");
             request.setAttribute("pageTitle", "order");

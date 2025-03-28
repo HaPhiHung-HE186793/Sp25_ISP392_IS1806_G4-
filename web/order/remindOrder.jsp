@@ -52,6 +52,12 @@
     </script>
     <style>
         /* CSS Styles... */
+        .statistics {
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+    }
         .action-button {
             padding: 5px 10px;
             border: none;
@@ -143,18 +149,7 @@
                 <button class="action-button" onclick="performSearch()">Tìm kiếm</button>
                 <button class="action-button" onclick="resetFilters()">Đặt lại</button>
             </div>
-            <div>
-                
-                <select id="sortColumn">
-                    <option value="0" <%= "0".equals(sortColumn) ? "selected" : "" %>>Mã hóa đơn</option>
-                    <option value="1" <%= "1".equals(sortColumn) ? "selected" : "" %>>Tên khách hàng</option>
-                    <option value="2" <%= "2".equals(sortColumn) ? "selected" : "" %>>Người tạo</option>
-                    <option value="3" <%= "3".equals(sortColumn) ? "selected" : "" %>>Khách đã trả</option>
-                    <option value="4" <%= "4".equals(sortColumn) ? "selected" : "" %>>Thành tiền</option>
-                    <option value="5" <%= "5".equals(sortColumn) ? "selected" : "" %>>Ngày tạo</option>                   
-                </select>
-                <button class="action-button" onclick="performSort()">Sắp xếp</button>
-            </div>
+            
             <div class="table-container">
                 <table id="orderTable" data-sort-order="asc">
                     <thead>
@@ -167,8 +162,8 @@
                             <th>Tiền còn thiếu</th>
                             <th>Ngày tạo</th>                           
                             <th>Cửu vạn</th>
-                            <th>Trạng thái</th>
-                            <th>Nhắc Nợ</th> <!-- Thay đổi tiêu đề cột -->
+                            
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -193,9 +188,9 @@
                         </td>
                             <td><%= showOrder.getCreateAt() %></td>                           
                             <td><%= showOrder.getPorter() %></td>
-                            <td><%= showOrder.getStatus() %></td>
+                            
                             <td>
-                            <a href="<%=request.getContextPath()%>/URLRemindMail?service=show&email=<%= showOrder.getEmail() %>&orderId=<%= showOrder.getOrderID() %>" class="blue-button">Gửi Nhắc Nhở</a>
+                            
                               </td>
                         </tr>
                         <%
@@ -224,10 +219,47 @@
                 <a href="URLRemindOrder?page=<%= currentPage + 1 %>&customerName=<%= customerName != null ? customerName : "" %>&date=<%= selectedDate != null ? selectedDate : "" %>&sortColumn=<%= sortColumn %>&sortOrder=<%= sortOrder %>" class="page-link" aria-label="Next Page">Sau &raquo;</a>
             <% } %>
             </div>
+            <div class="statistics">
+            <h3>Thống Kê Hóa Đơn Trả Thiếu</h3>
+            <p>Số lượng hóa đơn trả thiếu: <%= request.getAttribute("countMissingOrders") %></p>
+            <p>Tổng số tiền trả thiếu: <%= decimalFormat.format((Double) request.getAttribute("totalMissingAmount")) %></p>
+        </div>
             <div class="back-button">
                 <a href="<%=request.getContextPath()%>/URLOrder?service=listshow" class="action-button">Quay lại</a>
             </div>
         </div>
     </div>
 </body>
+ <script>
+                
+            // Lấy các phần tử cần ẩn/hiện
+                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+                        const newDebt = document.querySelector('.menu'); // Menu
+                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+                        document.addEventListener("DOMContentLoaded", function () {
+                            if (localStorage.getItem("menuHidden") === "true") {
+                                newDebt.classList.add('hiden');
+                                newDebt1.classList.add('hiden');
+                                newDebt2.classList.add('hiden');
+                            }
+                        });
+
+// Hàm toggle hiển thị
+                        function toggleAddNewDebt() {
+                            newDebt.classList.toggle('hiden');
+                            newDebt1.classList.toggle('hiden');
+                            newDebt2.classList.toggle('hiden');
+
+                            // Lưu trạng thái vào localStorage
+                            const isHidden = newDebt.classList.contains('hiden');
+                            localStorage.setItem("menuHidden", isHidden);
+                        }
+
+// Gán sự kiện click
+                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+
+            </script>
 </html>
