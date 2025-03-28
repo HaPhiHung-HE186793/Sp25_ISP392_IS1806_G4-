@@ -241,6 +241,19 @@ public class DAOZones extends DBContext {
         return zoneList; // Trả về danh sách zone
     }
 
+    public int removeProductFromZones(int productID) {
+        int n = 0;
+        String sql = "DELETE FROM zones WHERE productID = ?";
+
+        try (PreparedStatement pre = conn.prepareStatement(sql)) {
+            pre.setInt(1, productID);
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOZones.class.getName()).log(Level.SEVERE, "Error removing product from zones", ex);
+        }
+        return n;
+    }
+
     public static void main(String[] args) {
         DAOZones dao = new DAOZones();
 
