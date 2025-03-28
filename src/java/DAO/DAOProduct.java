@@ -792,6 +792,7 @@ public class DAOProduct extends DBContext {
         }
         return list;
     }
+    
 
     public Products getProductByID(int productID) {
         Products product = null;

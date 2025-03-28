@@ -347,6 +347,57 @@ public class DAOZones extends DBContext {
         return false; // Trả về false nếu có lỗi hoặc khu vực chưa tồn tại
     }
 
+    public Zones getZoneByID(int zoneID) {
+        Zones zone = null;
+        String sql = "SELECT * FROM zones WHERE zoneID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, zoneID);
+            System.out.println("Executing SQL: " + ps.toString()); // Debug SQL
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    zone = new Zones(
+                            rs.getInt("zoneID"),
+                            rs.getString("zoneName"),
+                            rs.getString("createAt"),
+                            rs.getString("updateAt"),
+                            rs.getInt("createBy"),
+                            rs.getBoolean("isDelete"),
+                            rs.getString("deleteAt"),
+                            rs.getInt("deleteBy"),
+                            rs.getInt("storeID"), // Lấy storeID từ DB,
+                            rs.getString("image"), // Đường dẫn ảnh
+                            rs.getString("description")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return zone;
+    }
+
+    public boolean updateZone(int zoneID, String zoneName, String description, String imagePath, String updateAt, int storeID) {
+        String sql = "UPDATE Zones SET zoneName = ?, description = ?, image = ?, updateAt = ?, storeID = ? WHERE zoneID = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, zoneName);
+            statement.setString(2, description);
+            statement.setString(3, imagePath);
+            statement.setString(4, updateAt);
+            statement.setInt(5, storeID);
+            statement.setInt(6, zoneID);
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            Logger.getLogger(DAOZones.class.getName()).log(Level.SEVERE, "Error updating zone", e);
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         DAOZones dao = new DAOZones();
 
