@@ -10,7 +10,9 @@
     </head>
     <body>
         <div id="main">
-            <jsp:include page="/Component/menu.jsp"></jsp:include>
+            <jsp:include page="/Component/header.jsp"></jsp:include>
+            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+
                 <div class="main-content">
                     <h2>Thêm Khu Vực Mới</h2>
 
@@ -44,24 +46,54 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><button type="submit">Thêm Khu Vực</button></td>
+                            <td colspan="2">
+                                <button type="button" onclick="window.location.href = '${pageContext.request.contextPath}/ListZones'">Quay lại</button>
+                                <button type="submit">Thêm Khu Vực</button></td>
                         </tr>
                     </table>
                 </form>
             </div>
         </div>
-<!--        <script>
-            document.getElementById("image").addEventListener("change", function (event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById("previewImage").src = e.target.result;
-                        document.getElementById("previewImage").style.display = "block";
-                    };
-                    reader.readAsDataURL(file);
+        <!--        <script>
+                    document.getElementById("image").addEventListener("change", function (event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                document.getElementById("previewImage").src = e.target.result;
+                                document.getElementById("previewImage").style.display = "block";
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                </script>-->
+        <script>// Lấy các phần tử cần ẩn/hiện
+            const openAddNew = document.querySelector('.js-hidden-menu'); // Nút toggle
+            const newDebt0 = document.querySelector('.menu'); // Menu
+            const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+            const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+
+// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
+            document.addEventListener("DOMContentLoaded", function () {
+                if (localStorage.getItem("menuHidden") === "true") {
+                    newDebt0.classList.add('hiden');
+                    newDebt1.classList.add('hiden');
+                    newDebt2.classList.add('hiden');
                 }
             });
-        </script>-->
+// Hàm toggle hiển thị
+            function toggleAddNewDebt() {
+                newDebt0.classList.toggle('hiden');
+                newDebt1.classList.toggle('hiden');
+                newDebt2.classList.toggle('hiden');
+                // Lưu trạng thái vào localStorage
+                const isHidden = newDebt0.classList.contains('hiden');
+                localStorage.setItem("menuHidden", isHidden);
+            }
+
+// Gán sự kiện click
+            openAddNew.addEventListener('click', toggleAddNewDebt);
+
+        </script>
     </body>
 </html>
