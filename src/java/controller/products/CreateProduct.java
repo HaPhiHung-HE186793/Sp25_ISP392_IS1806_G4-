@@ -39,7 +39,6 @@ public class CreateProduct extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(Integer.MAX_VALUE);
 
@@ -54,10 +53,7 @@ public class CreateProduct extends HttpServlet {
             return;
         }
 
-        // ✅ Lấy storeID từ request
         Integer storeID = (Integer) session.getAttribute("storeID");
-
-        int quantity = 0;
 
         Part imagePart = request.getPart("image");
         String imageName = "";
@@ -74,17 +70,12 @@ public class CreateProduct extends HttpServlet {
 
         int createBy = (session.getAttribute("userID") != null) ? (int) session.getAttribute("userID") : 0;
 
-        boolean isDelete = false;
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String createAt = now.format(formatter);
         String updateAt = createAt;
-        String deleteAt = null;
-        Integer deleteBy = 0;
 
-        // ✅ Lấy danh sách zone được chọn từ form
         String[] selectedZones = request.getParameterValues("zoneIDs");
-
         if (selectedZones == null || selectedZones.length == 0) {
             request.setAttribute("message", "Lỗi: Bạn chưa chọn khu vực");
             request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
@@ -94,25 +85,37 @@ public class CreateProduct extends HttpServlet {
         DAOProduct daoProduct = new DAOProduct();
         DAOZones daoZones = new DAOZones();
 
-        // ✅ Kiểm tra sản phẩm đã tồn tại trong cửa hàng này
         if (daoProduct.isProductNameExists(productName, storeID)) {
             request.setAttribute("message", "Lỗi: Tên sản phẩm đã tồn tại trong cửa hàng này");
             request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
             return;
         }
 
-        // ✅ Thêm sản phẩm vào bảng products, có storeID
-        Products product = new Products(productName, description, price, quantity, "Image/" + imageName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID);
-        int productID = daoProduct.insertProduct(product); // Trả về productID
+        Products product = new Products(productName, description, price, 0, "Image/" + imageName, createAt, updateAt, createBy, false, null, 0, storeID);
+        int productID = daoProduct.insertProduct(product);
 
         if (productID > 0) {
             for (String zoneIdStr : selectedZones) {
                 int zoneID = Integer.parseInt(zoneIdStr);
-                daoZones.updateZoneWithProduct(zoneID, productID, storeID); // ✅ Cập nhật storeID
+                daoZones.updateZoneWithProduct(zoneID, productID, storeID);
             }
-            request.setAttribute("message", "Thêm sản phẩm vào khu vực thành công");
+
+            // ✅ Lưu quy cách đóng gói vào bảng ProductUnits
+            String[] productUnits = request.getParameterValues("productUnit");
+
+// Nếu người dùng không chọn gì, thêm mặc định là 1
+            if (productUnits == null || productUnits.length == 0) {
+                daoProduct.insertProductUnit(productID, 1);
+            } else {
+                for (String unit : productUnits) {
+                    int unitSize = Integer.parseInt(unit);
+                    daoProduct.insertProductUnit(productID, unitSize);
+                }
+            }
+
+            request.setAttribute("message", "Thêm sản phẩm và quy cách đóng gói thành công!");
         } else {
-            request.setAttribute("message", "Lỗi: Thêm sản phẩm thất bại");
+            request.setAttribute("message", "Lỗi: Thêm sản phẩm thất bại!");
         }
 
         request.getRequestDispatcher("ListProducts").forward(request, response);

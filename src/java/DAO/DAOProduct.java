@@ -1461,6 +1461,20 @@ public class DAOProduct extends DBContext {
         return product;
     }
 
+    public boolean insertProductUnit(int productID, int unitSize) {
+        String sql = "INSERT INTO ProductUnits (productID, unitSize) VALUES (?, ?)";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, productID);
+            ps.setInt(2, unitSize);
+            int rowsInserted = ps.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public static void main(String[] args) {
         DAOProduct dao = new DAOProduct();
 

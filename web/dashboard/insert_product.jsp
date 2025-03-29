@@ -71,6 +71,24 @@
                                     <div class="selected-items" id="selectedItems"></div>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>Chọn quy cách đóng gói</td>
+                                <td>
+                                    <div class="custom-dropdown">
+                                        <div class="dropdown-btn" onclick="toggleUnitDropdown('unitDropdownList')">
+                                            <span id="selectedUnitText">Chọn quy cách</span>
+                                            <span>▼</span>
+                                        </div>
+                                        <div class="dropdown-content" id="unitDropdownList">
+                                            <label><input type="checkbox" name="productUnit" value="30" onchange="updateUnitSelection()"> 30kg</label>
+                                            <label><input type="checkbox" name="productUnit" value="50" onchange="updateUnitSelection()"> 50kg</label>
+                                            <label><input type="checkbox" name="productUnit" value="100" onchange="updateUnitSelection()"> 100kg</label>
+                                        </div>
+                                    </div>
+                                    <div class="selected-items" id="selectedUnits"></div>
+                                </td>
+                            </tr>
+
 
 
                             </tr>
@@ -295,6 +313,55 @@
                 top: -2px;
             }
 
+            /* Dropdown cho Quy Cách Đóng Gói */
+            #unitDropdownList {
+                background: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 8px;
+                max-height: 200px;
+                overflow-y: auto;
+                z-index: 10;
+                padding: 5px;
+            }
+
+            #unitDropdownList label {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                cursor: pointer;
+                color: black;
+            }
+
+            #unitDropdownList label:hover {
+                background: lightgray;
+            }
+
+            #unitDropdownList input[type="checkbox"] {
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                border: 2px solid gray;
+                border-radius: 3px;
+                margin-right: 8px;
+                position: relative;
+                cursor: pointer;
+            }
+
+            #unitDropdownList input[type="checkbox"]:checked {
+                background-color: blue;
+                border-color: blue;
+            }
+
+            #unitDropdownList input[type="checkbox"]:checked::after {
+                content: "✔";
+                font-size: 14px;
+                font-weight: bold;
+                color: white;
+                position: absolute;
+                left: 2px;
+                top: -2px;
+            }
 
 
         </style>
@@ -359,6 +426,32 @@
                 selectedText.textContent = selectedZones.length > 0 ? selectedZones.join(", ") : "Chọn khu vực";
             }
 
+            function toggleUnitDropdown() {
+                let dropdown = document.getElementById("unitDropdownList");
+                dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+            }
+
+            function updateUnitSelection() {
+                let checkboxes = document.querySelectorAll("#unitDropdownList input[type='checkbox']");
+                let selectedItemsDiv = document.getElementById("selectedUnits");
+                let selectedText = document.getElementById("selectedUnitText");
+
+                selectedItemsDiv.innerHTML = "";
+                let selectedUnits = [];
+
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        let unitName = checkbox.parentElement.textContent.trim();
+                        selectedUnits.push(unitName);
+
+                        let span = document.createElement("span");
+                        span.className = "selected-item";
+                        selectedItemsDiv.appendChild(span);
+                    }
+                });
+
+                selectedText.textContent = selectedUnits.length > 0 ? selectedUnits.join(", ") : "Chọn quy cách";
+            }
 
             document.addEventListener("click", function (event) {
                 let dropdown = document.getElementById("dropdownList");
@@ -366,6 +459,15 @@
 
                 if (!dropdown.contains(event.target) && !button.contains(event.target)) {
                     dropdown.style.display = "none";
+                }
+            });
+
+            document.addEventListener("click", function (event) {
+                let dropdownUnit = document.getElementById("unitDropdownList");
+                let buttonUnit = document.querySelector(".dropdown-btn.unit");
+
+                if (dropdownUnit && buttonUnit && !dropdownUnit.contains(event.target) && !buttonUnit.contains(event.target)) {
+                    dropdownUnit.style.display = "none";
                 }
             });
 
