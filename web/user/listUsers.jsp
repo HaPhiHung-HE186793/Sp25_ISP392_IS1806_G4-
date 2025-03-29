@@ -179,7 +179,7 @@
                                     <c:if test="${sessionScope.roleID == 1}">
                                     <th>Người tạo</th>
                                     </c:if>
-                                <th style="border-left: 1px solid black;">Hành động</th>
+                                <th style="border-left: 1px solid black; width: 195px;">Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="table-tbody">
@@ -253,16 +253,16 @@
                     <div style="margin-left: -220px;" >
                     </div>                             
                 </div>
-                            <div style="display: flex; align-items: center; gap: 180px;">
+                            <div style="display: flex; align-items: center; gap: 180px; margin-bottom: -120px; margin-top: 2px;">
                                 <div style="color: #fbfbfb; font-size: 15px; margin: 20px 0; padding: 10px; line-height: 1.6; letter-spacing: 1px;">
                                     Trang ${sessionScope.page.getCurrentPage()} - 10 out of ${sessionScope.page.getTotalPage()}
                                 </div>
                                 <%@include file="/Component/pagination.jsp" %>
                             </div>
+                            
             </div>                            
-        </div>
+        </div>        
         
-        <%@include file="/Component/footer.jsp" %>
 
 
     </body>
