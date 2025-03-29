@@ -204,6 +204,26 @@
         <servlet-name>dashboard</servlet-name>
         <servlet-class>controller.products.DashBoard</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProductDetailServlet</servlet-name>
+        <servlet-class>controller.products.ProductDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchZones</servlet-name>
+        <servlet-class>controller.zone.SearchZones</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertZones</servlet-name>
+        <servlet-class>controller.zone.InsertZones</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateZones</servlet-name>
+        <servlet-class>controller.zone.UpdateZones</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateZoneIsDeleteServlet</servlet-name>
+        <servlet-class>controller.zone.UpdateZoneIsDeleteServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordServlet</servlet-name>
         <url-pattern>/forgotpass</url-pattern>
@@ -395,4 +415,24 @@
     <listener>
         <listener-class>service.WebAppListener</listener-class>
     </listener>
+    <servlet-mapping>
+        <servlet-name>ProductDetailServlet</servlet-name>
+        <url-pattern>/ProductDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchZones</servlet-name>
+        <url-pattern>/SearchZones</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertZones</servlet-name>
+        <url-pattern>/InsertZones</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateZones</servlet-name>
+        <url-pattern>/UpdateZones</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateZoneIsDeleteServlet</servlet-name>
+        <url-pattern>/UpdateZoneIsDeleteServlet</url-pattern>
+    </servlet-mapping>
 </web-app>
