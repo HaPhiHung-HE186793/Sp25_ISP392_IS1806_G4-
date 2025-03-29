@@ -127,6 +127,7 @@ public class createUser extends HttpServlet {
 
         List<Store> listStore = daos.listStore();
         request.setAttribute("storeList", listStore);
+        request.setAttribute("storeIdCreate", storeid);
         request.setAttribute("success", "Thêm thành công!");
         request.setAttribute("userName", userName);
         request.setAttribute("emaill", email);

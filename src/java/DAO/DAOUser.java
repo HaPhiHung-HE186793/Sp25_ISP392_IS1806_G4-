@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Types;
 
 /**
  *
@@ -205,13 +206,17 @@ public class DAOUser extends DBContext {
 
     public int updateUser2(User user) {
         int n = 0;
-        String sql = "UPDATE Users SET userName = ?, userPassword = ?, email = ?, roleID = ?, updateAt = CURRENT_TIMESTAMP, createBy = ? WHERE ID = ?";
+        String sql = "UPDATE Users SET userName = ?, userPassword = ?, email = ?, roleID = ?, updateAt = CURRENT_TIMESTAMP, storeid = ? WHERE ID = ?";
         try (PreparedStatement pre = conn.prepareStatement(sql)) {
             pre.setString(1, user.getUserName()); // userName
             pre.setString(2, hashPassword(user.getUserPassword())); // userPassword (hashed)
             pre.setString(3, user.getEmail()); // email
             pre.setInt(4, user.getRoleID()); // roleID
-            pre.setInt(5, user.getCreateBy()); // createBy (người chỉnh sửa)
+            if (user.getStoreID() == 0) {
+                pre.setNull(4, Types.INTEGER);
+            } else {
+                pre.setInt(4, user.getStoreID());
+            }
             pre.setInt(6, user.getID()); // ID của user cần cập nhật
 
             n = pre.executeUpdate();
@@ -223,12 +228,16 @@ public class DAOUser extends DBContext {
 
     public int updateUser3(User user) {
         int n = 0;
-        String sql = "UPDATE Users SET userName = ?, email = ?, roleID = ?, updateAt = CURRENT_TIMESTAMP, createBy = ? WHERE ID = ?";
+        String sql = "UPDATE Users SET userName = ?, email = ?, roleID = ?, updateAt = CURRENT_TIMESTAMP, storeid = ? WHERE ID = ?";
         try (PreparedStatement pre = conn.prepareStatement(sql)) {
             pre.setString(1, user.getUserName()); // userName
             pre.setString(2, user.getEmail()); // email
             pre.setInt(3, user.getRoleID()); // roleID
-            pre.setInt(4, user.getCreateBy()); // createBy (người chỉnh sửa)
+            if (user.getStoreID() == 0) {
+                pre.setNull(4, Types.INTEGER);
+            } else {
+                pre.setInt(4, user.getStoreID());
+            }
             pre.setInt(5, user.getID()); // ID của user cần cập nhật
 
             n = pre.executeUpdate();
@@ -355,9 +364,10 @@ public class DAOUser extends DBContext {
                 Boolean isDelete = rs.getBoolean("isDelete");
                 String deleteAt = rs.getString("deleteAt");
                 int deleteBy = rs.getInt("deleteBy");
+                int storeid = rs.getInt("storeid");
 
                 // Tạo đối tượng User từ dữ liệu truy vấn
-                user = new User(userID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy);
+                user = new User(userID, username, password, email, roleID, image, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeid);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -510,6 +520,7 @@ public class DAOUser extends DBContext {
         }
         return users;
     }
+
     public List<User> getUsersByStore(int storeid, List<User> U) {
         List<User> users = new ArrayList<>();
         for (User user : U) {

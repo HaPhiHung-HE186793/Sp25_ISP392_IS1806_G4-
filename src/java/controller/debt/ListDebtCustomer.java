@@ -46,12 +46,16 @@ public class ListDebtCustomer extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         Integer storeID = (Integer) session.getAttribute("storeID");
 
         DAODebtRecords dao = new DAODebtRecords();
         DAOCustomers daoC = new DAOCustomers();
         String customerid = request.getParameter("customerid");
-                int role = (Integer) session.getAttribute("roleID");
 
         Customers customers = daoC.getCustomer(customerid, storeID,role);
         if (customers == null) {

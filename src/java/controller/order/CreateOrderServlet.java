@@ -71,6 +71,12 @@ public class CreateOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         // Kiểm tra nếu phản hồi chưa được commit, tiến hành forward
         if (!response.isCommitted()) {
             String invoiceNumber = request.getParameter("invoice");

@@ -15,6 +15,7 @@ import jakarta.servlet.RequestDispatcher;
 import java.util.List;
 import java.util.Vector;
 import DAO.DAOOrderPaper;
+import jakarta.servlet.http.HttpSession;
 import model.OrderPaper;
 
 @WebServlet(name = "ControllerOrderDetail", urlPatterns = {"/URLOrderDetail"})
@@ -31,6 +32,12 @@ public class ControllerOrderDetail extends HttpServlet {
         DAOOrderItems dao = DAOOrderItems.INSTANCE;
         DAOCustomerOrder dao2 = new DAOCustomerOrder();
         DAOOrderPaper dao3 = new DAOOrderPaper();
+        HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
 
         String service = request.getParameter("service");
         if (service == null) {

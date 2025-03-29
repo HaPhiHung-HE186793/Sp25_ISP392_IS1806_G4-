@@ -165,7 +165,7 @@
                                     <select name="storeid" id="sortColumn" class="store-select">
                                         <option value="">Chọn cửa hàng</option>
                                         <c:forEach var="store" items="${storeList}">
-                                            <option  value="${store.getStoreID()}" ${store.getStoreID() eq sortColumn ? "selected" : ""}>${store.getStoreName()}</option>
+                                            <option  value="${store.getStoreID()}" ${store.getStoreID() eq storeIdCreate ? "selected" : ""}>${store.getStoreName()}</option>
                                         </c:forEach>
                                     </select>
                                 </td>
@@ -174,22 +174,16 @@
                                 <input hidden name="storeid" value="${user.getStoreID()}">
                             </c:if> 
                             <td>
-                                <c:if test="${u.getRoleID() == 1}">
-                                    <div>
-                                        <input type="radio" name="roleID" value="1" id="admin" required>
-                                        <label for="admin">Admin</label>
-                                    </div>
+                                <c:if test="${u.getRoleID() == 1}">                                    
                                     <div>
                                         <input type="radio" name="roleID" value="2" id="store_owner">
                                         <label for="store_owner">Chủ Cửa Hàng</label>
                                     </div>
-                                </c:if>
-                                <c:if test="${u.getRoleID() == 2}">
+                                </c:if>                                
                                     <div>
                                         <input type="radio" name="roleID" value="3" id="employee">
                                         <label for="employee">Nhân Viên</label>
-                                    </div>
-                                </c:if>
+                                    </div>                                
                             </td>
                             <td style="border-left: 1px solid black;">     
                                 <button type="submit">Tạo tài khoản</button>                                

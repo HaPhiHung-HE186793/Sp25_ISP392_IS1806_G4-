@@ -43,12 +43,16 @@ public class UpdateCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
 
         String customerid = request.getParameter("customerid");
         DAOCustomers dao = new DAOCustomers();
-        HttpSession session = request.getSession();
         Integer storeID = (Integer) session.getAttribute("storeID");
-        int role = (Integer) session.getAttribute("roleID");
 
         Customers customers = dao.getCustomer(customerid, storeID, role);
         if (customers == null) {

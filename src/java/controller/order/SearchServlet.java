@@ -66,14 +66,18 @@ public class SearchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
-
+        HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
         String keyword = request.getParameter("searchProduct");
 
         int orderType = Integer.parseInt(request.getParameter("orderType"));
-         HttpSession session = request.getSession();
          int userId = (int) session.getAttribute("userID");
 
         if (keyword != null && !keyword.trim().isEmpty()) {

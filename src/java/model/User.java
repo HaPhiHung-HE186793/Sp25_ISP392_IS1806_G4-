@@ -24,8 +24,7 @@ public class User {
     private Boolean isDelete;
     private String deleteAt;
     private int deleteBy;
-    private String creatorName;
-    private String storeName;
+    private List<String> creatorName;
     private int storeID;
 
     public User() {
@@ -172,11 +171,11 @@ public class User {
         this.deleteBy = deleteBy;
     }
 
-    public String getCreatorName() {
+    public List<String> getCreatorName() {
         return creatorName;
     }
 
-    public void setCreatorName(String creatorName) {
+    public void setCreatorName(List<String> creatorName) {
         this.creatorName = creatorName;
     }
 
@@ -192,6 +191,10 @@ public class User {
         DAOStore daos = new DAOStore();
         String name = daos.getStoreNamesByStoreID(storeID);
         return name;
+    }
+    public List<String> getOwnerName() { 
+        DAOStore dao = new DAOStore();
+        return dao.getUserNamesByStoreID(storeID);
     }
 
               

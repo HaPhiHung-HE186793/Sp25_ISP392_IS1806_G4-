@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import service.OrderWorker;
 
 /**
@@ -58,6 +59,12 @@ public class CheckOrderStatusServlet extends HttpServlet {
             throws ServletException, IOException {
          response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         int userId = Integer.parseInt(request.getParameter("userId"));
         boolean clearStatus = request.getParameter("clear") != null;
         if (clearStatus) {

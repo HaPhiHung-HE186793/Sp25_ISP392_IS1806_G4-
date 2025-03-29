@@ -204,8 +204,10 @@
                                         <span>${u.getCreateAt().substring(11)}</span>
                                     </td>
                                     <td>${u.getIsDelete() ? "Đã khóa" : "Hoạt động"}</td>
-                                    <td>
-                                        ${u.getCreatorName()}
+                                    <td>                                        
+                                        <c:forEach var="owner" items="${u.getCreatorName()}">
+                                            ${owner} <br>
+                                        </c:forEach>
                                     </td>
                                     <td style="border-left: 1px solid black; display: flex; align-items: center;">
                                         <button onclick="window.location.href = 'listusers?id=${u.getID()}'"  
