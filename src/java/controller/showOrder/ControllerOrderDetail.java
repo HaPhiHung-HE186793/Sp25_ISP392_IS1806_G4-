@@ -44,7 +44,7 @@ public class ControllerOrderDetail extends HttpServlet {
             service = "listOrderItem";
         }
 
-        int pageSize = 5; // Số hàng mỗi trang
+        int pageSize = 10; // Số hàng mỗi trang
         int pageNumber = 1; // Số trang hiện tại
         String pageParam = request.getParameter("page");
         if (pageParam != null) {

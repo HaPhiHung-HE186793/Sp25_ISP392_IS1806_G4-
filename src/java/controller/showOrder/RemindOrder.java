@@ -72,7 +72,7 @@ public class RemindOrder extends HttpServlet {
             service = "listshow";
         }
 
-        int pageSize = 5; // Số hàng mỗi trang
+        int pageSize = 10; // Số hàng mỗi trang
         int pageNumber = 1; // Số trang hiện tại
         String pageParam = request.getParameter("page");
         if (pageParam != null) {
