@@ -792,7 +792,6 @@ public class DAOProduct extends DBContext {
         }
         return list;
     }
-    
 
     public Products getProductByID(int productID) {
         Products product = null;
@@ -1475,6 +1474,51 @@ public class DAOProduct extends DBContext {
         }
         return false;
     }
+
+    public String getProductUnitSize(int productID) {
+        String sql = "SELECT unitSize FROM ProductUnits WHERE productID = ?";
+        StringBuilder unitSizes = new StringBuilder();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (unitSizes.length() > 0) {
+                    unitSizes.append(", "); // Ngăn cách bằng dấu ", "
+                }
+                unitSizes.append(rs.getString("unitSize"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return unitSizes.toString(); // Trả về danh sách unitSize dạng chuỗi
+    }
+
+    public boolean updateUnitSizeByProductID(int productID, List<Integer> newUnitSizes) {
+        String deleteSql = "DELETE FROM ProductUnits WHERE productID = ?";
+        String insertSql = "INSERT INTO ProductUnits (productID, unitSize) VALUES (?, ?)";
+
+        try (PreparedStatement deletePs = conn.prepareStatement(deleteSql)) {
+            deletePs.setInt(1, productID);
+            deletePs.executeUpdate(); // Xóa tất cả unitSize cũ
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        try (PreparedStatement insertPs = conn.prepareStatement(insertSql)) {
+            for (int unitSize : newUnitSizes) {
+                insertPs.setInt(1, productID);
+                insertPs.setInt(2, unitSize);
+                insertPs.addBatch(); // Gom vào batch để tối ưu hóa
+            }
+            insertPs.executeBatch(); // Thực thi batch insert
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         DAOProduct dao = new DAOProduct();
 

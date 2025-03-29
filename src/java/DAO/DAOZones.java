@@ -274,6 +274,38 @@ public class DAOZones extends DBContext {
         return zoneList; // Trả về danh sách zone
     }
 
+    public List<Zones> getSelectedAndEmptyZones(int storeID, int productID) {
+        List<Zones> zoneList = new ArrayList<>();
+        String sql = "SELECT * FROM zones WHERE storeID = ? AND (productID = ? OR productID IS NULL)";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, storeID);
+            pstmt.setInt(2, productID);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int zoneID = rs.getInt("zoneID");
+                String zoneName = rs.getString("zoneName");
+                String createAt = rs.getString("createAt");
+                String updateAt = rs.getString("updateAt");
+                int createBy = rs.getInt("createBy");
+                boolean isDelete = rs.getBoolean("isDelete");
+                String deleteAt = rs.getString("deleteAt");
+                int deleteBy = rs.getInt("deleteBy");
+                String image = rs.getString("image");
+                String navigation = rs.getString("description");
+                int productZoneID = rs.getInt("productID"); // Lấy productID trong zone
+
+                Zones zone = new Zones(zoneID, zoneName, createAt, updateAt, createBy, isDelete, deleteAt, deleteBy, storeID, image, navigation, productZoneID);
+                zoneList.add(zone);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return zoneList;
+    }
+
     public int removeProductFromZones(int productID) {
         int n = 0;
         String sql = "DELETE FROM zones WHERE productID = ?";

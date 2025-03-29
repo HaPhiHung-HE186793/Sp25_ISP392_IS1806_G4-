@@ -20,6 +20,7 @@ import java.util.Date;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import model.Zones;
 
@@ -45,16 +46,17 @@ public class UpdateProducts extends HttpServlet {
                 response.sendRedirect("ListProducts");
                 return;
             }
-
+            String unitSize = daoProduct.getProductUnitSize(productID);
             // Lấy danh sách zone đã được chọn cho sản phẩm
             List<Integer> selectedZones = daoZones.getSelectedZoneIDsByProductID(productID);
 
             // Lấy toàn bộ danh sách zone
-            List<Zones> zonesList = daoZones.listAll1(storeID);
+            List<Zones> zonesList = daoZones.getSelectedAndEmptyZones(storeID, productID);
 
             // Gửi dữ liệu lên JSP
             request.setAttribute("product", product);
             request.setAttribute("zonesList", zonesList);
+            request.setAttribute("unitSize", unitSize);
             request.setAttribute("selectedZones", selectedZones); // Danh sách các zone đã chọn
 
             request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
@@ -80,7 +82,9 @@ public class UpdateProducts extends HttpServlet {
             Products existingProduct = daoProduct.getProductById(productId);
             String image = existingProduct.getImage();
             int userId = (int) session.getAttribute("userID");
-            
+            String unitSizeStr = request.getParameter("unitSize"); // Lấy chuỗi quy cách
+            String[] unitSizeArray = unitSizeStr.split(","); // Tách thành mảng
+
             //quynh
             double oldPrice = existingProduct.getPrice();
 
@@ -120,12 +124,26 @@ public class UpdateProducts extends HttpServlet {
                         }
                     }
                 }
-                //quynh
-               // chỉ ghi log nếu giá thay đổi
-               if(oldPrice!=price){
-                   boolean logged = DAOProduct.INSTANCE.logPriceChange(productId, BigDecimal.valueOf(price), "sell", userId,null);
-               }
+                List<Integer> unitSizeValues = new ArrayList<>();
+                for (String unitSize : unitSizeArray) {
+                    try {
+                        unitSizeValues.add(Integer.parseInt(unitSize.trim()));
+                    } catch (NumberFormatException e) {
+                        System.out.println("Lỗi chuyển đổi quy cách: " + unitSize);
+                        success = false;
+                    }
+                }
 
+                // Vòng lặp 2: Cập nhật lại toàn bộ unitSize mới
+                boolean updatedUnitSize = daoProduct.updateUnitSizeByProductID(productId, unitSizeValues);
+                if (!updatedUnitSize) {
+                    success = false;
+                }
+                //quynh
+                // chỉ ghi log nếu giá thay đổi
+                if (oldPrice != price) {
+                    boolean logged = DAOProduct.INSTANCE.logPriceChange(productId, BigDecimal.valueOf(price), "sell", userId, null);
+                }
                 // Kiểm tra trạng thái cập nhật zone
                 if (success) {
                     request.setAttribute("message", "Cập nhật sản phẩm và khu vực thành công");

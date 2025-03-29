@@ -24,6 +24,8 @@ public class Products {
     private int deleteBy;
     private int storeID;
     private String zoneName;
+    private int unitID;
+    private int unitSize;
 
     public Products() {
     }
@@ -168,6 +170,22 @@ public class Products {
 
     public void setZoneName(String zoneName) {
         this.zoneName = zoneName;
+    }
+
+    public int getUnitID() {
+        return unitID;
+    }
+
+    public void setUnitID(int unitID) {
+        this.unitID = unitID;
+    }
+
+    public int getUnitSize() {
+        return unitSize;
+    }
+
+    public void setUnitSize(int unitSize) {
+        this.unitSize = unitSize;
     }
 
 }

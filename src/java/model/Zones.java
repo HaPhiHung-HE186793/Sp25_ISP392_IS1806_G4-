@@ -111,7 +111,7 @@ public class Zones {
         this.image = image;
         this.navigation = navigation;
     }
-    
+
     public Zones(String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID, String image) {
         this.zoneName = zoneName;
         this.createAt = createAt;
@@ -121,6 +121,21 @@ public class Zones {
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
         this.navigation = navigation;
+    }
+
+    public Zones(int zoneID, String zoneName, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID, String image, String navigation, int productID) {
+        this.zoneID = zoneID;
+        this.zoneName = zoneName;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+        this.createBy = createBy;
+        this.isDelete = isDelete;
+        this.deleteAt = deleteAt;
+        this.deleteBy = deleteBy;
+        this.storeID = storeID;
+        this.image = image;
+        this.navigation = navigation;
+        this.productID = productID;
     }
 
     public int getZoneID() {

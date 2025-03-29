@@ -58,18 +58,40 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Chọn khu vực:</td>
+                                <td>Quy cách:</td>
                                 <td>
-                                    <select name="zoneIDs" multiple required>
-                                        <c:forEach var="zone" items="${zonesList}">
-                                            <option value="${zone.zoneID}"
-                                                    <c:if test="${selectedZones.contains(zone.zoneID)}">selected</c:if>>
-                                                ${zone.zoneName}
-                                            </option>
-                                        </c:forEach>
-                                    </select>
+                                    <input type="text" name="unitSize" value="${param.unitSize != null ? param.unitSize : unitSize}" required>
+                                    <small>Nhập các giá trị cách nhau bởi dấu phẩy (,)</small>
                                 </td>
                             </tr>
+
+
+                            <tr>
+                                <td>Chọn khu vực:</td>
+                                <td>
+                                    <div class="dropdown-container">
+                                        <div class="custom-dropdown">
+                                            <div class="dropdown-btn" onclick="toggleDropdown()">
+                                                <span id="selectedText">Chọn khu vực</span>
+                                                <span>▼</span>
+                                            </div>
+                                            <div class="dropdown-content" id="dropdownList">
+                                                <c:forEach var="zone" items="${zonesList}">
+                                                    <label>
+                                                        <input type="checkbox" name="zoneIDs" value="${zone.zoneID}" 
+                                                               <c:if test="${selectedZones.contains(zone.zoneID)}">checked</c:if>
+                                                                   onchange="updateSelection()"> 
+                                                        ${zone.zoneName}
+                                                    </label>
+                                                </c:forEach>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="selected-items" id="selectedItems"></div>
+                                </td>
+                            </tr>
+
+
                             <tr>
                                 <td colspan="2">
                                     <button type="button" onclick="window.location.href = 'ListProducts'">Quay lại</button>
@@ -82,7 +104,65 @@
                 </div>
             </div>
         </div>
+        <style>.custom-dropdown {
+                position: relative;
+                width: 100%;
+            }
 
+            .dropdown-btn {
+                width: 100%;
+                padding: 10px;
+                background: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 8px;
+                text-align: left;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                width: 100%;
+                background: white;
+                border: 1px solid gray;
+                border-radius: 8px;
+                max-height: 200px;
+                overflow-y: auto;
+                z-index: 10;
+                color: black;
+            }
+
+            .dropdown-content label {
+                display: block;
+                padding: 10px;
+                cursor: pointer;
+            }
+
+            .dropdown-content label:hover {
+                background: lightgray;
+            }
+
+            .selected-items {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-top: 5px;
+            }
+            .dropdown-container {
+                display: flex;
+                justify-content: flex-end; /* Căn sang phải */
+                width: 100%;
+            }
+
+            .custom-dropdown {
+                width: 300px; /* Điều chỉnh độ rộng theo ý muốn */
+            }
+
+        </style>
         <script>
             document.getElementById("image").addEventListener("change", function (event) {
                 const file = event.target.files[0];
@@ -156,6 +236,41 @@
 
 // Gán sự kiện click
             openAddNew.addEventListener('click', toggleAddNewDebt);
+            function toggleDropdown() {
+                let dropdown = document.getElementById("dropdownList");
+                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            }
+
+            function updateSelection() {
+                let checkboxes = document.querySelectorAll(".dropdown-content input[type='checkbox']");
+                let selectedItemsDiv = document.getElementById("selectedItems");
+                let selectedText = document.getElementById("selectedText");
+
+                selectedItemsDiv.innerHTML = "";
+                let selectedZones = [];
+
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        let zoneName = checkbox.parentElement.textContent.trim();
+                        selectedZones.push(zoneName);
+
+                        let span = document.createElement("span");
+                        span.className = "selected-item";
+                        selectedItemsDiv.appendChild(span);
+                    }
+                });
+
+                selectedText.textContent = selectedZones.length > 0 ? selectedZones.join(", ") : "Chọn khu vực";
+            }
+
+            document.addEventListener("click", function (event) {
+                let dropdown = document.getElementById("dropdownList");
+                let button = document.querySelector(".dropdown-btn");
+
+                if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+                    dropdown.style.display = "none";
+                }
+            });
 
 
         </script>
