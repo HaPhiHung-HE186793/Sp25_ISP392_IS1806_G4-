@@ -69,7 +69,8 @@
 
                                     <th>Ngừng bán</th>
                                     </c:if> <%-- End of roleID check for table headers --%>
-
+                                <th>Hành động</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="productTableBody">

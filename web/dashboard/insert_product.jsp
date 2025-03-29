@@ -73,25 +73,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Chọn quy cách đóng gói</td>
+                                <td>Quy cách đóng gói:</td>
                                 <td>
-                                    <div class="custom-dropdown">
-                                        <div class="dropdown-btn" onclick="toggleUnitDropdown('unitDropdownList')">
-                                            <span id="selectedUnitText">Chọn quy cách</span>
-                                            <span>▼</span>
-                                        </div>
-                                        <div class="dropdown-content" id="unitDropdownList">
-                                            <label><input type="checkbox" name="productUnit" value="30" onchange="updateUnitSelection()"> 30kg</label>
-                                            <label><input type="checkbox" name="productUnit" value="50" onchange="updateUnitSelection()"> 50kg</label>
-                                            <label><input type="checkbox" name="productUnit" value="100" onchange="updateUnitSelection()"> 100kg</label>
-                                        </div>
-                                    </div>
-                                    <div class="selected-items" id="selectedUnits"></div>
+                                    <input type="text" name="productUnit" id="productUnit" placeholder="Nhập quy cách (vd: 30kg, 50kg)">
                                 </td>
                             </tr>
-
-
-
                             </tr>
                             <tr>
                                 <td>Tạo bởi (User ID):</td>

@@ -101,24 +101,30 @@ public class CreateProduct extends HttpServlet {
             }
 
             // ✅ Lưu quy cách đóng gói vào bảng ProductUnits
-            String[] productUnits = request.getParameterValues("productUnit");
+            // Lấy giá trị từ input text
+            String productUnitStr = request.getParameter("productUnit");
 
-// Nếu người dùng không chọn gì, thêm mặc định là 1
-            if (productUnits == null || productUnits.length == 0) {
+// Nếu không có dữ liệu, mặc định lưu 1
+            if (productUnitStr == null || productUnitStr.trim().isEmpty()) {
                 daoProduct.insertProductUnit(productID, 1);
             } else {
-                for (String unit : productUnits) {
-                    int unitSize = Integer.parseInt(unit);
-                    daoProduct.insertProductUnit(productID, unitSize);
+                // Tách các giá trị theo dấu ",", loại bỏ khoảng trắng thừa
+                String[] unitStrings = productUnitStr.split(",");
+
+                for (String unit : unitStrings) {
+                    try {
+                        // Chuyển đổi từng giá trị thành số nguyên
+                        int unitSize = Integer.parseInt(unit.trim().replaceAll("[^0-9]", ""));
+                        daoProduct.insertProductUnit(productID, unitSize);
+                    } catch (NumberFormatException e) {
+                        // Bỏ qua giá trị không hợp lệ
+                        System.out.println("Bỏ qua giá trị không hợp lệ: " + unit);
+                    }
                 }
             }
 
-            request.setAttribute("message", "Thêm sản phẩm và quy cách đóng gói thành công!");
-        } else {
-            request.setAttribute("message", "Lỗi: Thêm sản phẩm thất bại!");
+            request.getRequestDispatcher("ListProducts").forward(request, response);
         }
 
-        request.getRequestDispatcher("ListProducts").forward(request, response);
     }
-
 }
