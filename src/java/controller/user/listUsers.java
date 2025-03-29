@@ -16,6 +16,7 @@ import java.util.List;
 import DAO.DAOUser;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import model.Store;
 import model.pagination.Pagination;
 import model.User;
@@ -79,7 +80,7 @@ public class listUsers extends HttpServlet {
             return;
         }
         String error = null;
-        
+
         List<Store> storeList = daos.listStore();
 
         if (request.getParameter("id") != null && !(request.getParameter("id") == "")) {
@@ -89,11 +90,10 @@ public class listUsers extends HttpServlet {
                 // Không cho phép chỉnh sửa user cùng role
                 if (Users.getRoleID() == user_current.getRoleID() && user_current.getID() != Users.getID()) {
                     error = "Không được phép chỉnh sửa.";
-                } else 
-//                    if (Users.getRoleID() == 3 && user_current.getRoleID() == 1) {
-//                    error = "Không được phép chỉnh sửa.";
-//                } else 
-                        if (Users.getRoleID() == 1 && user_current.getRoleID() == 2) {
+                } else //                    if (Users.getRoleID() == 3 && user_current.getRoleID() == 1) {
+                //                    error = "Không được phép chỉnh sửa.";
+                //                } else 
+                if (Users.getRoleID() == 1 && user_current.getRoleID() == 2) {
                     error = "Không được phép chỉnh sửa.";
                 } else {
                     request.setAttribute("u", Users);
@@ -101,7 +101,7 @@ public class listUsers extends HttpServlet {
                     request.getRequestDispatcher("updateuser").forward(request, response);
                 }
             }
-        } 
+        }
 //        //block user
 //        if (request.getParameter("blockid") != null) {
 //            int blockid = Integer.parseInt(request.getParameter("blockid"));
@@ -139,10 +139,19 @@ public class listUsers extends HttpServlet {
         session.setAttribute("page", page);
         request.setAttribute("currentPageUrl", "listusers"); // Hoặc "products"
 
-        for (User user : U) {
-            User u = dao.getUserbyID(user.getCreateBy());
-            String creatorName = u.getUserName();
-            user.setCreatorName(creatorName);                     
+        if (roleID == 1) {
+            for (User user : U) {
+                User u = dao.getUserbyID(user.getCreateBy());
+                String creatorName = u.getUserName();
+                List<String> creatorNameList = new ArrayList<>();
+                creatorNameList.add(creatorName);
+                user.setCreatorName(creatorNameList);
+            }
+        } else {
+            for (User user : U) {
+                List<String> creatorName = user.getOwnerName();
+                user.setCreatorName(creatorName);
+            }
         }
 
         String endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -167,6 +176,7 @@ public class listUsers extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Integer roleID = (Integer) session.getAttribute("roleID");
         User user_current = (User) session.getAttribute("user");
         List<User> filteredUsers = null;
         String mess = null;
@@ -184,7 +194,7 @@ public class listUsers extends HttpServlet {
         List<Store> storeList = daos.listStore();
         String actionBlock = request.getParameter("actionBlock");
         String userIDBlock = request.getParameter("userIDBlock");
-        if (userIDBlock != null && !(userIDBlock == "")) { 
+        if (userIDBlock != null && !(userIDBlock == "")) {
             int id = Integer.parseInt(userIDBlock);
             User U = dao.getUserbyID(id);
             if (U.getRoleID() == 1) {
@@ -258,12 +268,22 @@ public class listUsers extends HttpServlet {
 
         }
 
-        //lay ten creatrBy
-        for (User user : filteredUsers) {
-            User u = dao.getUserbyID(user.getCreateBy());
-            String creatorName = u.getUserName();
-            user.setCreatorName(creatorName);
+        //lay ten creatrBy       
+        if (roleID == 1) {
+            for (User user : filteredUsers) {
+                User u = dao.getUserbyID(user.getCreateBy());
+                String creatorName = u.getUserName();
+                List<String> creatorNameList = new ArrayList<>();
+                creatorNameList.add(creatorName);
+                user.setCreatorName(creatorNameList);
+            }
+        } else {
+            for (User user : filteredUsers) {
+                List<String> creatorName = user.getOwnerName();
+                user.setCreatorName(creatorName);
+            }
         }
+        
         // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
         int totalUsers = filteredUsers.size();
         int pageSize = 9;

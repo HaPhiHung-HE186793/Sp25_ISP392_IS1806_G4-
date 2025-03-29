@@ -15,55 +15,55 @@
         <link rel="stylesheet" href="./assets/fonts/themify-icons/themify-icons.css">
         <title>Update User</title>
     </head>
-<!-- Select2 CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<!-- jQuery và Select2 JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <!-- jQuery và Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <style>
-    /* Thay đổi màu nền và màu chữ cho dropdown Select2 */
-    .select2-container--default .select2-selection--single {
-        background-color: #fff;
-        color: #000;
-        border: 1px solid #333;
-        height: 24px ; /* Giảm chiều cao */        
-        line-height: 24px;
-    }
-    
-    /* Màu chữ cho text hiển thị */
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #555;
-        line-height: 24px;
-        
-    }
-    
-    /* Màu nền cho dropdown menu */
-    .select2-container--default .select2-dropdown {
-        background-color: #000;
-        border: 1px solid #333;
-    }
-    
-    /* Màu chữ và nền cho các option */
-    .select2-container--default .select2-results__option {
-        color: #fff;
-        background-color: #333;
-    }
-    
-    /* Màu nền khi hover option */
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background-color: #333;
-        color: #fff;
-    }
-    
-    /* Màu nền cho option đã chọn */
-    .select2-container--default .select2-results__option[aria-selected=true] {
-        background-color: #444;
-    }
-    
-    /* Màu cho mũi tên dropdown */
-    .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-color: #000 transparent transparent transparent;
-    }
+        /* Thay đổi màu nền và màu chữ cho dropdown Select2 */
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #333;
+            height: 24px ; /* Giảm chiều cao */
+            line-height: 24px;
+        }
+
+        /* Màu chữ cho text hiển thị */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #555;
+            line-height: 24px;
+
+        }
+
+        /* Màu nền cho dropdown menu */
+        .select2-container--default .select2-dropdown {
+            background-color: #000;
+            border: 1px solid #333;
+        }
+
+        /* Màu chữ và nền cho các option */
+        .select2-container--default .select2-results__option {
+            color: #fff;
+            background-color: #333;
+        }
+
+        /* Màu nền khi hover option */
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Màu nền cho option đã chọn */
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #444;
+        }
+
+        /* Màu cho mũi tên dropdown */
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: #000 transparent transparent transparent;
+        }
 
         /* Search Input */
         .search-box input[type="text"] {
@@ -85,7 +85,7 @@
     <body>
 
         <div id="main">
-               <jsp:include page="/Component/header.jsp"></jsp:include>
+            <jsp:include page="/Component/header.jsp"></jsp:include>
             <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
 
                 <div class="main-content">
@@ -131,7 +131,7 @@
                                 <th>Email</th>
                                 <th>Mật khẩu mới</th>
                                 <th>Xác nhận mật khẩu</th>
-                                <c:if test="${u.getRoleID() == 1}">
+                                    <c:if test="${u.getRoleID() == 1}">
                                     <th>Cửa hàng</th>  
                                     </c:if>   
                                 <th>Chức năng</th>
@@ -161,23 +161,19 @@
                             <c:if test="${u.getRoleID() == 1}">
                                 <td>
                                     <select name="storeid" id="sortColumn" class="store-select">
-                                        <option value="">Chọn cửa hàng</option>
                                         <c:forEach var="store" items="${storeList}">
-                                            <option  value="${store.getStoreID()}" ${store.getStoreID() eq sortColumn ? "selected" : ""}>${store.getStoreName()}</option>
+                                            <option value="${store.getStoreID()}" ${store.getStoreID() eq user_update.getStoreID() ? "selected" : ""}>
+                                                ${store.getStoreName()}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </td>
                             </c:if> 
                             <c:if test="${u.getRoleID() == 2}">
-                                <input hidden name="storeid" value="${user.getStoreID()}">
+                                <input hidden name="storeid" value="${user_update.getStoreID()}">
                             </c:if> 
                             <td>
-                                <c:if test="${u.getRoleID() == 1}">
-                                    <div>
-                                        <input type="radio" name="roleID" value="1" id="admin" 
-                                               ${user_update.getRoleID() == 1 ? "checked" : ""} required>
-                                        <label for="admin">Admin</label>
-                                    </div>
+                                <c:if test="${u.getRoleID() == 1}">                                    
                                     <div>
                                         <input type="radio" name="roleID" value="2" id="store_owner" 
                                                ${user_update.getRoleID() == 2 ? "checked" : ""}>
@@ -214,17 +210,17 @@
     </body>
     <script>
         $(document).ready(function () {
-        $(".store-select").select2({
-            placeholder: "Tìm kiếm cửa hàng...",
-            allowClear: true
+            $(".store-select").select2({
+                placeholder: "Tìm kiếm cửa hàng...",
+                allowClear: true
+            });
+            // Ẩn dropdown khi click ra ngoài
+            $(document).on("click", function (e) {
+                if (!$(e.target).closest(".select2-container").length) {
+                    $(".store-select").select2("close");
+                }
+            });
         });
-        // Ẩn dropdown khi click ra ngoài
-        $(document).on("click", function (e) {
-            if (!$(e.target).closest(".select2-container").length) {
-                $(".store-select").select2("close");
-            }
-        });
-    });
 
         // search store
         $(document).ready(function () {
@@ -269,7 +265,7 @@
             $("#selectedStoreId").val(id);
             $("#storeSuggestions").hide();
         }
-        
+
         // Hàm ẩn thông báo sau 3 giây
         function hideNotification(notificationId) {
             setTimeout(function () {
@@ -316,38 +312,38 @@
 
     </script>
 
-                <script>
-                
-                      // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
+    <script>
+
+        // Lấy các phần tử cần ẩn/hiện
+        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
+        const newDebt = document.querySelector('.menu'); // Menu
+        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
+        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
 
 // Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("menuHidden") === "true") {
+                newDebt.classList.add('hiden');
+                newDebt1.classList.add('hiden');
+                newDebt2.classList.add('hiden');
+            }
+        });
 
 // Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
+        function toggleAddNewDebt() {
+            newDebt.classList.toggle('hiden');
+            newDebt1.classList.toggle('hiden');
+            newDebt2.classList.toggle('hiden');
 
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
+            // Lưu trạng thái vào localStorage
+            const isHidden = newDebt.classList.contains('hiden');
+            localStorage.setItem("menuHidden", isHidden);
+        }
 
 // Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
+        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
 
-                
-            </script>
+
+    </script>
 
 </html>

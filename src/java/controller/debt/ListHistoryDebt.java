@@ -52,6 +52,10 @@ public class ListHistoryDebt extends HttpServlet {
             response.sendRedirect("ListDebtCustomer");
             return; // Dừng xử lý tiếp
         }
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         DAODebtRecords dao = new DAODebtRecords();
 
         List<DebtRecords> listHistoryDebt = dao.listAllHistory(storeID + "");

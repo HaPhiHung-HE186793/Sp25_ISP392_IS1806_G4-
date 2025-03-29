@@ -1,6 +1,7 @@
 package controller.products;
 
 import DAO.DAOProduct;
+import DAO.DAOZones;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,7 +18,12 @@ public class CheckIsDelete extends HttpServlet {
         boolean isDeleted = Boolean.parseBoolean(request.getParameter("isDeleted"));
 
         DAOProduct dao = new DAOProduct();
-        dao.updateIsDelete(productId, isDeleted); // Gọi phương thức cập nhật isDelete trong DAO
+        DAOZones daoZones = new DAOZones();
+        int updatedRows = dao.updateIsDelete(productId, isDeleted); // Gọi phương thức cập nhật isDelete trong DAO
+        if (updatedRows > 0 && isDeleted) {
+            // Nếu sản phẩm bị ngừng hoạt động, xóa sản phẩm khỏi tất cả các zone
+            daoZones.removeProductFromZones(productId);
+        }
         request.getRequestDispatcher("ListProducts").forward(request, response);
 //        response.getWriter().write("OK"); // Phản hồi về cho client (không bắt buộc)
     }

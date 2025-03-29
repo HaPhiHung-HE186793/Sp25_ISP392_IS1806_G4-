@@ -50,7 +50,10 @@ public class ListCustomer extends HttpServlet {
         List<Customers> listCustomer = new ArrayList<>();
         Integer role = (Integer) session.getAttribute("roleID");
         Integer storeID = (Integer) session.getAttribute("storeID");
-        
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
   
         listCustomer = dao.listCustomersByRole(storeID,role);
 

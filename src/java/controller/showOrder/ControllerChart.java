@@ -11,6 +11,7 @@ import model.Chart;
 import jakarta.servlet.RequestDispatcher;
 import java.util.Vector;
 import DAO.DAOBestSeller;
+import jakarta.servlet.http.HttpSession;
 import model.BestSeller;
 
 @WebServlet(name = "ControllerChart", urlPatterns = {"/URLChart"})
@@ -19,6 +20,12 @@ public class ControllerChart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         DAOChart dao = new DAOChart();
         DAOBestSeller dao1 = new DAOBestSeller();
         Integer storeID = (Integer) request.getSession().getAttribute("storeID");

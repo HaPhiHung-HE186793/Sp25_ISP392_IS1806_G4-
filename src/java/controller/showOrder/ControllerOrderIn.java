@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.ShowOrder;
 import DAO.DAOShowOrder;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpSession;
 import java.util.Vector;
 
 /**
@@ -60,6 +61,12 @@ public class ControllerOrderIn extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         DAOShowOrder dao = new DAOShowOrder();
+        HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         String service = request.getParameter("service");
         if (service == null) {
             service = "listshow";

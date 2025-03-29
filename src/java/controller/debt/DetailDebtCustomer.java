@@ -44,6 +44,11 @@ public class DetailDebtCustomer extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
         Integer storeID = (Integer) session.getAttribute("storeID");
 
         DAODebtRecords dao = new DAODebtRecords();

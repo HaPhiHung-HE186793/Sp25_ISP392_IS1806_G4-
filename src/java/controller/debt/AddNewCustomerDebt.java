@@ -43,6 +43,11 @@ public class AddNewCustomerDebt extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        Integer role = (Integer) session.getAttribute("roleID");
+        if (role == 1) {
+            response.sendRedirect("listusers"); // sửa thành đường dẫn của trang chủ sau khi hoàn thành code
+            return;
+        }
 
         DAOCustomers daoCus = new DAOCustomers();
         response.setContentType("text/html;charset=UTF-8");

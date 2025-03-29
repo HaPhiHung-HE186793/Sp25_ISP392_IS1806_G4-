@@ -14,7 +14,7 @@
     <body>
         <div id="main">
             <jsp:include page="/Component/header.jsp"></jsp:include>
-            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+            <jsp:include page="/Component/menu.jsp"></jsp:include>
 
                 <div class="main-content">
                     <div class="notification">
@@ -24,20 +24,31 @@
                     <div class="table-container">
                         <h3>Sản phẩm</h3>
                         <div class="filters">
-                            <select>
+                            <form action="ListRice" method="get">
+                                <input type="text" name="nameSearch" placeholder="Nhập tên gạo" value="${nameSearch}">
+                            <input type="text" name="descSearch" placeholder="Nhập mô tả" value="${descSearch}">
+
+                            <select name="stockStatus">
                                 <option value="">Trạng thái</option>
-                                <option value="">A->Z</option>
-                                <option value="">Z->A</option>
+                                <option value="available" ${stockStatus == 'available' ? 'selected' : ''}>Còn hàng</option>
+                                <option value="outofstock" ${stockStatus == 'outofstock' ? 'selected' : ''}>Hết hàng</option>
                             </select>
-                            <form id="searchForm">
-                                <input type="text" name="search" id="searchInput" placeholder="Nhập tên gạo hoặc mô tả" value="${param.search}">
-                            <button type="button" onclick="clearSearch()">Bỏ lọc</button>
+
+                            <select name="priceSort">
+                                <option value="">Sắp xếp theo giá</option>
+                                <option value="asc" ${priceSort == 'asc' ? 'selected' : ''}>Giá thấp đến cao</option>
+                                <option value="desc" ${priceSort == 'desc' ? 'selected' : ''}>Giá cao đến thấp</option>
+                            </select>
+
+                            <button type="submit">Tìm kiếm</button>
+                            <a href="ListProducts"><button type="button">Bỏ lọc</button></a>
                         </form>
 
 
 
+
                         <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
-                            <a href="./dashboard/insert_product.jsp"><button>Thêm gạo</button></a>
+                            <a href="CreateProduct"><button>Thêm gạo</button></a>
                         </c:if> <%-- End of roleID check for buttons --%>
 
                     </div>
@@ -63,7 +74,7 @@
                         </thead>
                         <tbody id="productTableBody">
                             <c:forEach items="${products}" var="p" begin="${sessionScope.page.getStartItem()}" end="${sessionScope.page.getLastItem()}">
-                                <c:if test="${(sessionScope.roleID == 2) or (not p.isIsDelete() and (sessionScope.roleID != 1 ))}">
+                                <c:if test="${(sessionScope.roleID == 2) or (not p.isIsDelete() and (sessionScope.roleID != 1 and sessionScope.roleID != 3))}">
                                     <tr class="no-rows">
                                         <td>${p.getProductID()}</td>
                                         <td>${p.getProductName()}</td>
@@ -86,6 +97,7 @@
 
                                         <c:if test="${sessionScope.roleID == 2}"> <%-- Check if roleID is 1 --%>
                                             <td><a href="UpdateProduct?productID=${p.getProductID()}"><button>Sửa</button></a></td>
+                                            <td><a href="ProductDetail?productID=${p.getProductID()}"><button>Chi tiết</button></a></td>
                                         </c:if> <%-- End of roleID check for table data --%>
 
 
@@ -96,62 +108,6 @@
                     </table>
 
                     <script>
-                        document.getElementById("searchInput").addEventListener("input", function () {
-                            fetchProducts();
-                        });
-
-                        function clearSearch() {
-                            document.getElementById("searchInput").value = "";
-                            fetchProducts();
-                        }
-
-                        function fetchProducts() {
-                            let keyword = document.getElementById("searchInput").value;
-
-                            fetch("ListRice?search=" + encodeURIComponent(keyword), {
-                                method: "GET",
-                                headers: {"X-Requested-With": "XMLHttpRequest"}
-                            })
-                                    .then(response => response.text())
-                                    .then(data => {
-// Parse nội dung HTML trả về và cập nhật bảng sản phẩm
-                                        let tempDiv = document.createElement("div");
-                                        tempDiv.innerHTML = data;
-                                        let newTableBody = tempDiv.querySelector("#productTableBody").innerHTML;
-                                        document.getElementById("productTableBody").innerHTML = newTableBody;
-                                    });
-                        }
-
-
-
-                        // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
-
-// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
-
-// Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
-
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
-
-// Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
 
                     </script>
                 </div>
@@ -159,7 +115,6 @@
         </div>
         <%@include file="/Component/pagination.jsp" %>
     </body>
-
 
     <script>
 

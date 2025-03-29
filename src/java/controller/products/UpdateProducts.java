@@ -1,6 +1,7 @@
 package controller.products;
 
 import DAO.DAOProduct;
+import DAO.DAOZones;
 import jakarta.servlet.RequestDispatcher;
 import model.Products;
 import jakarta.servlet.ServletException;
@@ -18,7 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpSession;
-import java.math.BigDecimal;
+import java.util.List;
+import model.Zones;
 
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB: Kích thước tối đa lưu vào bộ nhớ trước khi ghi vào file
@@ -32,38 +34,50 @@ public class UpdateProducts extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             int productID = Integer.parseInt(request.getParameter("productID"));
-
-            DAOProduct dao = new DAOProduct();
-            Products product = dao.getProductById(productID);
-
+            HttpSession session = request.getSession();
+            DAOProduct daoProduct = new DAOProduct();
+            DAOZones daoZones = new DAOZones();
+            Integer storeID = (Integer) session.getAttribute("storeID");
+            // Lấy thông tin sản phẩm
+            Products product = daoProduct.getProductById(productID);
             if (product == null) {
-                response.sendRedirect("ListRice"); // Or redirect to an error page
+                response.sendRedirect("ListProducts");
                 return;
             }
 
+            // Lấy danh sách zone đã được chọn cho sản phẩm
+            List<Integer> selectedZones = daoZones.getSelectedZoneIDsByProductID(productID);
+
+            // Lấy toàn bộ danh sách zone
+            List<Zones> zonesList = daoZones.listAll1(storeID);
+
+            // Gửi dữ liệu lên JSP
             request.setAttribute("product", product);
+            request.setAttribute("zonesList", zonesList);
+            request.setAttribute("selectedZones", selectedZones); // Danh sách các zone đã chọn
+
             request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
         } catch (NumberFormatException e) {
-            response.sendRedirect("ListRice"); // Or redirect to an error page
+            response.sendRedirect("ListProducts");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         try {
             int productId = Integer.parseInt(request.getParameter("productID"));
             String productName = request.getParameter("productName");
             String description = request.getParameter("description");
-            String priceStr = request.getParameter("price").replaceFirst("^0+(\\d+)", "$1"); // Xóa số 0 ở đầu
-            double price = Double.parseDouble(priceStr);
-
-            // Lấy sản phẩm hiện tại từ DB để lấy ảnh cũ nếu không cập nhật ảnh mới
-            DAOProduct dao = new DAOProduct();
-            Products existingProduct = dao.getProductById(productId);
-            String image = existingProduct.getImage(); // Giữ ảnh cũ mặc định
-            //quynh
-            double oldPrice = existingProduct.getPrice();
+            double price = Double.parseDouble(request.getParameter("price"));
+            HttpSession session = request.getSession();
+            // Lấy danh sách zone được chọn từ request
+            String[] selectedZoneIDs = request.getParameterValues("zoneIDs");
+            Integer storeID = (Integer) session.getAttribute("storeID");
+            // Lấy sản phẩm hiện tại để giữ ảnh cũ nếu không cập nhật
+            DAOProduct daoProduct = new DAOProduct();
+            DAOZones daoZones = new DAOZones();
+            Products existingProduct = daoProduct.getProductById(productId);
+            String image = existingProduct.getImage();
 
             // Xử lý upload ảnh mới (nếu có)
             Part imagePart = request.getPart("image");
@@ -77,16 +91,7 @@ public class UpdateProducts extends HttpServlet {
                 File imageFile = new File(uploadFolder, imageName);
                 imagePart.write(imageFile.getAbsolutePath());
 
-                // Cập nhật đường dẫn ảnh mới
                 image = "Image/" + imageName;
-            }
-
-            // Kiểm tra giá trị hợp lệ
-            if (price < 0) {
-                request.setAttribute("errorMessage", "Giá sản phẩm không thể âm!");
-                request.setAttribute("product", existingProduct);
-                request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
-                return;
             }
 
             // Cập nhật thời gian
@@ -94,33 +99,43 @@ public class UpdateProducts extends HttpServlet {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String updateAt = now.format(formatter);
 
-            // Cập nhật sản phẩm vào DB
-            boolean updated = dao.updateProduct(productId, productName, description, price, image, updateAt);
-//quynh
-            HttpSession session = request.getSession();
-            int userId = (int) session.getAttribute("userID");
+            // Cập nhật thông tin sản phẩm
+            boolean updated = daoProduct.updateProduct(productId, productName, description, price, image, updateAt);
 
-            if (updated) {
-                //quynh
-               // chỉ ghi log nếu giá thay đổi
-               if(oldPrice!=price){
-                   boolean logged = DAOProduct.INSTANCE.logPriceChange(productId, BigDecimal.valueOf(price), "sell", userId,null);
-               }
+            if (updated) { // Nếu cập nhật sản phẩm thành công thì mới xử lý zone
+                boolean success = true; // Biến kiểm tra lỗi khi cập nhật zone
 
-                request.setAttribute("message", "Cập nhật sản phẩm thành công");
+                // Kiểm tra xem có zone nào được chọn không
+                if (selectedZoneIDs != null) {
+                    for (String zoneIdStr : selectedZoneIDs) {
+                        int zoneID = Integer.parseInt(zoneIdStr);
+                        boolean updatedZone = daoZones.updateZoneWithProduct(zoneID, productId, storeID);
+                        if (!updatedZone) {
+                            success = false; // Nếu có lỗi
+                        }
+                    }
+                }
+
+                // Kiểm tra trạng thái cập nhật zone
+                if (success) {
+                    request.setAttribute("message", "Cập nhật sản phẩm và khu vực thành công");
+                } else {
+                    request.setAttribute("message", "Lỗi: Một số khu vực không được cập nhật thành công");
+                }
             } else {
                 request.setAttribute("message", "Lỗi: Cập nhật sản phẩm thất bại");
             }
 
             // Chuyển hướng về danh sách sản phẩm
             request.getRequestDispatcher("ListProducts").forward(request, response);
+
         } catch (NumberFormatException e) {
-            int productId = Integer.parseInt(request.getParameter("productID"));
-            request.setAttribute("errorMessage", "Giá sản phẩm không hợp lệ!");
-            DAOProduct dao = new DAOProduct();
-            Products product = dao.getProductById(productId);
-            request.setAttribute("product", product);
+            request.setAttribute("errorMessage", "Lỗi: Dữ liệu đầu vào không hợp lệ!");
+            request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình cập nhật!");
             request.getRequestDispatcher("dashboard/update_products.jsp").forward(request, response);
         }
     }
+
 }

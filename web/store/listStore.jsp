@@ -148,16 +148,17 @@
                     <div style="margin-left: -220px;" >
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 180px;">
+                <div style="display: flex; align-items: center; gap: 180px; margin-bottom: -120px;">
                     <div style="color: #fbfbfb; font-size: 15px; margin: 20px 0; padding: 10px; line-height: 1.6; letter-spacing: 1px;">
                         Trang ${sessionScope.page.getCurrentPage()} - 10 out of ${sessionScope.page.getTotalPage()}
                     </div>
                     <%@include file="/Component/pagination.jsp" %>
-                </div>                      
+                </div>        
+                
             </div>
         </div>
 
-        <%@include file="/Component/footer.jsp" %>
+        
 
 
     </body>

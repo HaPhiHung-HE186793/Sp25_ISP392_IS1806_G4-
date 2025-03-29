@@ -291,12 +291,12 @@
                             </div>
                         </div>
                         <div class="button-group">
-                            <c:if test="${user_current.getRoleID() == 1}">
+                            <c:if test="${user.getRoleID() == 1}">
                             <button type="button" onclick="window.location.href = 'liststore'">
                                 Quay về danh sách cửa hàng
                             </button>
                             </c:if>
-                            <c:if test="${user_current.getRoleID() == 2}">
+                            <c:if test="${user.getRoleID() == 2}">
                             <button type="button" onclick="window.location.href = 'storeprofile'">
                                 Quay về hồ sơ cửa hàng
                             </button>

@@ -9,18 +9,21 @@ package model;
  * @author ADMIN
  */
 public class Products {
+
     private int productID;
     private String productName;
     private String description;
-    private double price; 
+    private double price;
     private int quantity;
     private String image;
-    private String createAt; 
-    private String updateAt; 
+    private String createAt;
+    private String updateAt;
     private int createBy;
-    private boolean isDelete; 
-    private String deleteAt; 
+    private boolean isDelete;
+    private String deleteAt;
     private int deleteBy;
+    private int storeID;
+    private String zoneName;
 
     public Products() {
     }
@@ -40,7 +43,7 @@ public class Products {
         this.deleteBy = deleteBy;
     }
 
-    public Products(String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy) {
+    public Products(String productName, String description, double price, int quantity, String image, String createAt, String updateAt, int createBy, boolean isDelete, String deleteAt, int deleteBy, int storeID) {
         this.productName = productName;
         this.description = description;
         this.price = price;
@@ -52,6 +55,7 @@ public class Products {
         this.isDelete = isDelete;
         this.deleteAt = deleteAt;
         this.deleteBy = deleteBy;
+        this.storeID = storeID;
     }
 
     public int getProductID() {
@@ -150,5 +154,20 @@ public class Products {
         this.deleteBy = deleteBy;
     }
 
-    
+    public int getStoreID() {
+        return storeID;
+    }
+
+    public void setStoreID(int storeID) {
+        this.storeID = storeID;
+    }
+
+    public String getZoneName() {
+        return zoneName;
+    }
+
+    public void setZoneName(String zoneName) {
+        this.zoneName = zoneName;
+    }
+
 }

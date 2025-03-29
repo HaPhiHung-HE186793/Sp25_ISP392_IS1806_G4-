@@ -9,8 +9,8 @@
     </head>
     <body>
         <div id="main">
-                      <jsp:include page="/Component/header.jsp"></jsp:include>
-            <div class="menu ">  <jsp:include page="/Component/menu.jsp"></jsp:include> </div>
+            <jsp:include page="/Component/header.jsp"></jsp:include>
+            <jsp:include page="/Component/menu.jsp"></jsp:include>
 
                 <div class="main-content">
                     <div class="notification">
@@ -54,6 +54,19 @@
                                     <c:if test="${empty product.image}">
                                         <img id="previewImage" src="#" alt="Xem trước ảnh" style="max-width: 200px; display: none; margin-top: 10px;">
                                     </c:if>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Chọn khu vực:</td>
+                                <td>
+                                    <select name="zoneIDs" multiple required>
+                                        <c:forEach var="zone" items="${zonesList}">
+                                            <option value="${zone.zoneID}"
+                                                    <c:if test="${selectedZones.contains(zone.zoneID)}">selected</c:if>>
+                                                ${zone.zoneName}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
                                 </td>
                             </tr>
                             <tr>
@@ -111,40 +124,6 @@
                 priceInput.value = price;
                 return true;
             }
-            
-            
-                   // Lấy các phần tử cần ẩn/hiện
-                        const openAddNewDebt = document.querySelector('.js-hidden-menu'); // Nút toggle
-                        const newDebt = document.querySelector('.menu'); // Menu
-                        const newDebt1 = document.querySelector('.main-content'); // Nội dung chính
-                        const newDebt2 = document.querySelector('.sidebar'); // Sidebar
-
-// Kiểm tra trạng thái đã lưu trong localStorage khi trang load
-                        document.addEventListener("DOMContentLoaded", function () {
-                            if (localStorage.getItem("menuHidden") === "true") {
-                                newDebt.classList.add('hiden');
-                                newDebt1.classList.add('hiden');
-                                newDebt2.classList.add('hiden');
-                            }
-                        });
-
-// Hàm toggle hiển thị
-                        function toggleAddNewDebt() {
-                            newDebt.classList.toggle('hiden');
-                            newDebt1.classList.toggle('hiden');
-                            newDebt2.classList.toggle('hiden');
-
-                            // Lưu trạng thái vào localStorage
-                            const isHidden = newDebt.classList.contains('hiden');
-                            localStorage.setItem("menuHidden", isHidden);
-                        }
-
-// Gán sự kiện click
-                        openAddNewDebt.addEventListener('click', toggleAddNewDebt);
-
         </script>
     </body>
-
-
-
 </html>

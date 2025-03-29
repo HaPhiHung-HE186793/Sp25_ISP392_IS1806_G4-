@@ -87,6 +87,7 @@ public class updateUser extends HttpServlet {
         request.setAttribute("storeList", listStore);
         User user = daou.getUserbyID(userid);
         request.setAttribute("user_update", user);
+        System.out.println(user.getStoreID());
         request.setAttribute("u", user_current);
         request.getRequestDispatcher("user/updateUser.jsp").forward(request, response);
 
@@ -112,7 +113,11 @@ public class updateUser extends HttpServlet {
         String newPassword = request.getParameter("password");
         String confirmPassword = request.getParameter("cfpass");
         String roleParam = request.getParameter("roleID");
-
+        String storeidParam = request.getParameter("storeid");
+        int storeid = 0;
+        if(storeidParam != null){
+           storeid = Integer.parseInt(storeidParam);
+        }
         //lay ra user khi chi update
         User u = daou.getUserbyID(userid);
         int roleID = 0; // Mặc định giá trị không hợp lệ
@@ -201,7 +206,7 @@ public class updateUser extends HttpServlet {
             newUser.setEmail(email);
             newUser.setUserPassword(newPassword);
             newUser.setRoleID(roleID);
-            newUser.setCreateBy(createBy);
+            newUser.setStoreID(storeid);
             daou.updateUser2(newUser);
 
             // Gửi email thông báo thay đổi mật khẩu (chạy trên luồng khác)
@@ -217,7 +222,7 @@ public class updateUser extends HttpServlet {
             newUser.setUserName(userName);
             newUser.setEmail(email);
             newUser.setRoleID(roleID);
-            newUser.setCreateBy(createBy);
+            newUser.setStoreID(storeid);
             daou.updateUser3(newUser);
 
             // Nếu email thay đổi, gửi email xác nhận thay đổi (chạy song song)

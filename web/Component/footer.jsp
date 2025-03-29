@@ -15,11 +15,11 @@
                 /*                position: fixed;*/
                 bottom: 0;
                 left: 0;
-                width: calc(100% - 270px); /* Giảm chiều rộng theo sidebar */
+                width: auto; /* Giảm chiều rộng theo sidebar */
                 max-width: 1200px; /* Giới hạn chiều rộng */
                 background-color: #333;
                 color: white;
-                margin-left: 220px;
+                margin-left: -9px;
                 padding: 17px;
                 font-size: 14px;
             }

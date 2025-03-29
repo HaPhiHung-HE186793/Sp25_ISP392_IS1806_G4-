@@ -41,7 +41,7 @@ public class CreateStore extends HttpServlet {
         HttpSession session = request.getSession();
         User user_current = (User) session.getAttribute("user");
         // Lấy dữ liệu từ form
-        String storeName = request.getParameter("storeName");
+        String storeName =  request.getParameter("storeName");
         Part filePart = request.getPart("logo");
         String phone = request.getParameter("phone");
         String email = request.getParameter("email");          

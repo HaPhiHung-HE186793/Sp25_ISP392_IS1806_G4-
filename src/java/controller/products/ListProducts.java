@@ -41,47 +41,35 @@ public class ListProducts extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         DAOProduct dBConnect = new DAOProduct();
-                HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
 
-        List<Products> products = dBConnect.listAll();     
-        
-        // Cập nhật pagination dựa trên số lượng kết quả tìm kiếm
-        int totalUsers = products.size();
-        int pageSize = 4;
+        // Lấy storeID từ request
+        Integer storeID = (Integer) session.getAttribute("storeID");
+
+        List<Products> products = dBConnect.listAll1(storeID); // Truyền storeID vào
+
+        // Pagination
+        int totalProducts = products.size();
+        int pageSize = 20;
         int currentPage = 1;
 
         if (request.getParameter("cp") != null) {
             currentPage = Integer.parseInt(request.getParameter("cp"));
         }
-        request.setAttribute("currentPageUrl", "ListProducts"); // Hoặc "products"
+        request.setAttribute("currentPageUrl", "ListProducts?storeID=" + storeID); //check lai
 
-        Pagination page = new Pagination(totalUsers, pageSize, currentPage);
+        Pagination page = new Pagination(totalProducts, pageSize, currentPage);
         session.setAttribute("page", page);
 
-        // Lấy danh sách user theo trang hiện tại
+        // Lấy danh sách sản phẩm theo trang
         int startIndex = page.getStartItem();
-        int endIndex = Math.min(startIndex + pageSize, totalUsers);
-        List<Products> paginatedUsers = products.subList(startIndex, endIndex);
-        
-        request.setAttribute("products", products);
+        int endIndex = Math.min(startIndex + pageSize, totalProducts);
+        List<Products> paginatedProducts = products.subList(startIndex, endIndex);
+
+        request.setAttribute("products", paginatedProducts);
+        request.setAttribute("storeID", storeID); // Truyền storeID vào request
         RequestDispatcher dispatcher = request.getRequestDispatcher("/dashboard/home.jsp");
         dispatcher.forward(request, response);
-//        PrintWriter out = response.getWriter();
-//        for(Products pro: products){
-//        out.println("Product ID: " + pro.getProductID());
-//        out.println("Product Name: " + pro.getProductName());
-//        out.println("Description: " + pro.getDescription());
-//        out.println("Price: " + pro.getPrice());
-//        out.println("Quantity: " + pro.getQuantity());
-//        out.println("Image: " + pro.getImage());
-//        out.println("Create At: " + pro.getCreateAt());
-//        out.println("Update At: " + pro.getUpdateAt());
-//        out.println("Create By: " + pro.getCreateBy());
-//        out.println("Is Delete: " + pro.isIsDelete());
-//        out.println("Delete At: " + pro.getDeleteAt());
-//        out.println("Delete By: " + pro.getDeleteBy());
-//        out.println("--------------------"); // Separator between products
-//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
