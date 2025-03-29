@@ -43,6 +43,12 @@
         <url-pattern>/storeprofile</url-pattern>
         <url-pattern>/updateschedule</url-pattern>
         <url-pattern>/dashboard</url-pattern>
+        <url-pattern>/ProductDetailServlet</url-pattern>
+        <url-pattern>/SearchZones</url-pattern>
+        <url-pattern>/InsertZones</url-pattern>
+        <url-pattern>/UpdateZones</url-pattern>
+        <url-pattern>/UpdateZoneIsDeleteServlet</url-pattern>
+        
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
@@ -247,6 +253,26 @@
     <servlet>
         <servlet-name>CreateOrderServlet</servlet-name>
         <servlet-class>controller.order.CreateOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProductDetailServlet</servlet-name>
+        <servlet-class>controller.products.ProductDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchZones</servlet-name>
+        <servlet-class>controller.zone.SearchZones</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertZones</servlet-name>
+        <servlet-class>controller.zone.InsertZones</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateZones</servlet-name>
+        <servlet-class>controller.zone.UpdateZones</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateZoneIsDeleteServlet</servlet-name>
+        <servlet-class>controller.zone.UpdateZoneIsDeleteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CreateOrderServlet</servlet-name>

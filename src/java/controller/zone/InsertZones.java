@@ -43,9 +43,9 @@ public class InsertZones extends HttpServlet {
         }
 
         // Xử lý upload ảnh (nếu có)
-        String imageName = "";
         Part imagePart = request.getPart("image");
-        if (imagePart != null && imagePart.getSize() > 0) {
+        String imageName = null;
+        if(imagePart != null && imagePart.getSize() > 0){                        
             String uploadDir = getServletContext().getRealPath("/ImageZone/");
             File uploadFolder = new File(uploadDir);
             if (!uploadFolder.exists()) {
@@ -53,7 +53,7 @@ public class InsertZones extends HttpServlet {
             }
             imageName = imagePart.getSubmittedFileName();
             File imageFile = new File(uploadFolder, imageName);
-            imagePart.write(imageFile.getAbsolutePath());
+            imagePart.write(imageFile.getAbsolutePath());        
         }
 
         // Lấy thời gian hiện tại
@@ -63,7 +63,7 @@ public class InsertZones extends HttpServlet {
         String updateAt = createAt; // Ban đầu updateAt cũng là thời điểm hiện tại
 
         // Tạo đối tượng Zone
-        Zones newZone = new Zones(zoneName, createAt, updateAt, createBy, false, updateAt, createBy, storeID, "ImageZone/" + imageName, description);
+        Zones newZone = new Zones(zoneName, createAt, updateAt, createBy, false, updateAt, createBy, storeID, imageName, description);
 
         // Thêm khu vực vào database
         int result = dao.insertZone1(newZone);

@@ -27,7 +27,7 @@
                         <tr>
                             <td>Ảnh:</td>
                             <td>
-                                <input type="file" name="image" id="image" accept="image/*" required>
+                                <input type="file" name="image" id="image" accept="image/*" >
                                 <br>
                                 <img id="previewImage" src="#" alt="Xem trước ảnh" style="max-width: 200px; display: none; margin-top: 10px;">
                             </td>
@@ -50,7 +50,7 @@
                 </form>
             </div>
         </div>
-        <script>
+<!--        <script>
             document.getElementById("image").addEventListener("change", function (event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -62,6 +62,6 @@
                     reader.readAsDataURL(file);
                 }
             });
-        </script>
+        </script>-->
     </body>
 </html>

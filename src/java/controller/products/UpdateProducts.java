@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.List;
 import model.Zones;
 
@@ -78,6 +79,10 @@ public class UpdateProducts extends HttpServlet {
             DAOZones daoZones = new DAOZones();
             Products existingProduct = daoProduct.getProductById(productId);
             String image = existingProduct.getImage();
+            int userId = (int) session.getAttribute("userID");
+            
+            //quynh
+            double oldPrice = existingProduct.getPrice();
 
             // Xử lý upload ảnh mới (nếu có)
             Part imagePart = request.getPart("image");
@@ -115,6 +120,11 @@ public class UpdateProducts extends HttpServlet {
                         }
                     }
                 }
+                //quynh
+               // chỉ ghi log nếu giá thay đổi
+               if(oldPrice!=price){
+                   boolean logged = DAOProduct.INSTANCE.logPriceChange(productId, BigDecimal.valueOf(price), "sell", userId,null);
+               }
 
                 // Kiểm tra trạng thái cập nhật zone
                 if (success) {
