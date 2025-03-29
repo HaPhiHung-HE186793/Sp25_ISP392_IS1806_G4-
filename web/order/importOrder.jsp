@@ -886,7 +886,7 @@
                                 <div class="action-buttons">
 
                                     <button type="submit" id="submitOrder">Tạo Hóa Đơn</button>
-                                    <button id="printOrderBtn" type="button" class="print-btn">In Hóa Đơn</button>
+<!--                                    <button id="printOrderBtn" type="button" class="print-btn">In Hóa Đơn</button>-->
                                 </div>
 
                                 <p id="orderStatus"></p>

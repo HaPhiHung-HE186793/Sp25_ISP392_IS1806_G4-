@@ -73,11 +73,11 @@ public class SearchServlet extends HttpServlet {
         String keyword = request.getParameter("searchProduct");
 
         int orderType = Integer.parseInt(request.getParameter("orderType"));
-         HttpSession session = request.getSession();
-         int userId = (int) session.getAttribute("userID");
+        HttpSession session = request.getSession();
+        int userId = (int) session.getAttribute("userID");
 
         if (keyword != null && !keyword.trim().isEmpty()) {
-            List<Products> products = DAOProduct.INSTANCE.searchProductsByName(keyword,userId);
+            List<Products> products = DAOProduct.INSTANCE.searchProductsByName(keyword, userId);
 
             if (products.isEmpty()) {
                 out.println("<p>Không tìm thấy sản phẩm.</p>");
@@ -116,7 +116,6 @@ public class SearchServlet extends HttpServlet {
                         out.println("<div class='product-item' onclick=\"addProductToOrder('"
                                 + product.getProductID() + "','"
                                 + product.getProductName() + "',"
-                               
                                 + unitSizesStr.toString() + ")\">");
 
                         // Ảnh sản phẩm
@@ -138,7 +137,7 @@ public class SearchServlet extends HttpServlet {
                         out.println("<p class='product-description'>"
                                 + (product.getDescription() != null ? product.getDescription() : "")
                                 + "</p>");
-                         // Hiển thị danh sách zones
+                        // Hiển thị danh sách zones
                         out.println("<p class='product-zones'>Kho: " + String.join(", ", zones) + "</p>");
 
                         out.println("</div>"); // đóng div .product-content
@@ -152,13 +151,11 @@ public class SearchServlet extends HttpServlet {
                                 + product.getProductName() + "','"
                                 + (int) product.getPrice() + "','"
                                 + product.getQuantity() + "',"
-                                
                                 + unitSizesStr.toString() + ")\">");
                         // Ảnh sản phẩm
                         out.println("<div class='product-image'>"
                                 + "<img src='" + product.getImage() + "' alt='Product Image' />"
                                 + "</div>");
-                        
 
                         // Container chứa nội dung
                         out.println("<div class='product-content'>");
@@ -205,9 +202,8 @@ public class SearchServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Integer storeID = (Integer) session.getAttribute("storeID");
 
-
         String searchValue = request.getParameter("keyword");
-        List<Customers> customers = DAOCustomers.INSTANCE.findByNameOrPhone(searchValue,storeID);
+        List<Customers> customers = DAOCustomers.INSTANCE.findByNameOrPhone(searchValue, storeID);
 
         if (customers.isEmpty()) {
             out.println("<p>Không tìm thấy khach hang.</p>");
@@ -226,7 +222,9 @@ public class SearchServlet extends HttpServlet {
                         + customer.getTotalDebt() + "')\">");
 
                 out.println("<h3>" + customer.getName() + "</h3>");
-                out.println("<p>SĐT: " + customer.getPhone() + "</p>");
+                out.println("<p>SĐT: " + (customer.getPhone().length() >= 7
+                        ? customer.getPhone().substring(0, 7) + "***"
+                        : customer.getPhone() + "***") + "</p>");
 
                 out.println("</div>");
             }
