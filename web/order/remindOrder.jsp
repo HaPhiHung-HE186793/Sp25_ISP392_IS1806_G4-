@@ -161,7 +161,7 @@
                             <th>Thành tiền</th> 
                             <th>Tiền còn thiếu</th>
                             <th>Ngày tạo</th>                           
-                            <th>Cửu vạn</th>
+                            
                             
                             
                         </tr>
@@ -187,11 +187,9 @@
                             <%= decimalFormat.format(remainingAmount) %>
                         </td>
                             <td><%= showOrder.getCreateAt() %></td>                           
-                            <td><%= showOrder.getPorter() %></td>
                             
-                            <td>
                             
-                              </td>
+                            
                         </tr>
                         <%
                             }

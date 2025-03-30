@@ -53,7 +53,7 @@ public class ControllerOrder extends HttpServlet {
             sortColumn = "0"; // Giá trị mặc định
         }
         if (sortOrder == null) {
-            sortOrder = "asc"; // Giá trị mặc định
+            sortOrder = "desc"; // Giá trị mặc định
         }
 
         String sql = "SELECT o.orderID, c.name, u.userName, o.paidAmount, o.totalAmount, o.createAt, o.updateAt, o.porter, o.status, u.storeID, o.orderType " +

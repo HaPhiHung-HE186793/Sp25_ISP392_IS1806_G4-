@@ -154,12 +154,12 @@
                     <option value="3" <%= "3".equals(sortColumn) ? "selected" : "" %>>Khách đã trả</option>
                     <option value="4" <%= "4".equals(sortColumn) ? "selected" : "" %>>Thành tiền</option>
                     <option value="5" <%= "5".equals(sortColumn) ? "selected" : "" %>>Ngày tạo</option>
-                    <option value="6" <%= "6".equals(sortColumn) ? "selected" : "" %>>Cửu vạn</option>
+                    
                 </select>
                 <button class="action-button" onclick="performSort()">Sắp xếp</button>
             </div>
             <div class="table-container">
-                <table id="orderTable" data-sort-order="asc">
+                <table id="orderTable" data-sort-order="desc">
                     <thead>
                         <tr>
                             <th>Mã hóa đơn</th>
@@ -168,7 +168,7 @@
                             <th>Đã trả</th>
                             <th>Thành tiền</th>                           
                             <th>Ngày tạo</th>                           
-                            <th>Cửu vạn</th>
+                            
                             <th>Mô tả</th>
                             <th>Chi tiết</th>
                         </tr>
@@ -186,7 +186,7 @@
                             <td><%= decimalFormat.format(showOrder.getPaidAmount()) %></td>
                             <td><%= decimalFormat.format(showOrder.getTotalAmount()) %></td>
                             <td><%= showOrder.getCreateAt() %></td>                           
-                            <td><%= showOrder.getPorter() %></td>
+                            
                             <td><%= showOrder.getStatus() %></td>
                             <td>
                                 <button class="action-button" onclick="window.location.href='URLOrderDetailIn?service=listOrderItem&orderId=<%= showOrder.getOrderID() %>'">Chi tiết</button>

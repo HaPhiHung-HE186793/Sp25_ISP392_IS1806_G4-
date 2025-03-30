@@ -893,7 +893,7 @@ public class DAOProduct extends DBContext {
         String sql = """
         SELECT SUM(totalAmount) AS totalRevenue 
         FROM orders 
-        WHERE storeId = ? 
+        WHERE storeId = ? and orderType = 0
           AND MONTH(createAt) = MONTH(GETDATE()) 
           AND YEAR(createAt) = YEAR(GETDATE())
     """;
@@ -918,7 +918,7 @@ public class DAOProduct extends DBContext {
         String sql = """
         SELECT SUM(totalAmount) AS totalRevenue 
         FROM orders 
-        WHERE storeId = ? 
+        WHERE storeId = ? and orderType = 0
           AND MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) 
           AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
     """;
@@ -943,7 +943,7 @@ public class DAOProduct extends DBContext {
         String sql = """
         SELECT SUM(totalAmount) AS totalRevenue 
         FROM orders 
-        WHERE storeId = ? 
+        WHERE storeId = ? and orderType = 0
           AND createAt >= DATEADD(DAY, -7, GETDATE())
     """;
 

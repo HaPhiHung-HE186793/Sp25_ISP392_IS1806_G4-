@@ -117,7 +117,7 @@ public class DashBoard extends HttpServlet {
             out.flush();
             return;
         }
-        double totalRevenue7Day = productDAO.getTotalRevenueLast7Days(storeId);;    // 7 ngày qua   
+        double totalRevenue7Day = productDAO.getTotalRevenueLast7Days(storeId);   // 7 ngày qua   
         double totalRevenueThisMonth = productDAO.getTotalRevenueThisMonth(storeId); // Tháng này
         double totalRevenueLastMonth = productDAO.getTotalRevenueLastMonth(storeId); // Tháng trước
 
