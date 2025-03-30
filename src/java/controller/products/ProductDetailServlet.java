@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import DAO.DAOProduct;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Products;
 import model.Zones;
@@ -24,6 +25,11 @@ public class ProductDetailServlet extends HttpServlet {
                 request.getRequestDispatcher("/dashboard/ListProducts").forward(request, response);
                 return;
             }
+            HttpSession session = request.getSession();
+            Integer roleID = (Integer) session.getAttribute("roleID");
+        if(roleID == 1 ){
+            request.getRequestDispatcher("listusers").forward(request, response);
+        }
 
             int productID = Integer.parseInt(productIDParam);
 

@@ -32,6 +32,13 @@ public class CreateProduct extends HttpServlet {
         DAOZones daoZone = new DAOZones();
         List<Zones> zonesList = daoZone.getEmptyZones(storeID);
 
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if(roleID == 1 ){
+            request.getRequestDispatcher("listusers").forward(request, response);
+        }
+        if(roleID == 3 ){
+            request.getRequestDispatcher("ListProducts").forward(request, response);
+        }
         request.setAttribute("zonesList", zonesList);
         request.getRequestDispatcher("/dashboard/insert_product.jsp").forward(request, response);
     }

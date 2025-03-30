@@ -50,7 +50,9 @@ public class ListZone extends HttpServlet {
         List<Zones> listZone = new ArrayList<>();
         Integer role = (Integer) session.getAttribute("roleID");
         Integer createBy = (Integer) session.getAttribute("createBy");
-        
+        if(role == 1 ){
+            request.getRequestDispatcher("listusers").forward(request, response);
+        }
   
         listZone = dao.listZones(createBy+"");
 

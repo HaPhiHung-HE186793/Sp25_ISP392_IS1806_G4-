@@ -42,6 +42,10 @@ public class ListProducts extends HttpServlet {
             throws ServletException, IOException {
         DAOProduct dBConnect = new DAOProduct();
         HttpSession session = request.getSession();
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if(roleID == 1 ){
+            request.getRequestDispatcher("listusers").forward(request, response);
+        }
 
         // Lấy storeID từ request
         Integer storeID = (Integer) session.getAttribute("storeID");

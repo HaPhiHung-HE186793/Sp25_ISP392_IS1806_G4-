@@ -25,11 +25,19 @@ public class UpdateZones extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+                HttpSession session = request.getSession();
+
         try {
             // Lấy tham số zoneID từ request
             String zoneIDParam = request.getParameter("zoneID");
             System.out.println("Received zoneID: " + zoneIDParam);
-
+            Integer roleID = (Integer) session.getAttribute("roleID");
+        if(roleID == 1 ){
+            request.getRequestDispatcher("listusers").forward(request, response);
+        }
+        if(roleID == 3 ){
+            request.getRequestDispatcher("ListZones").forward(request, response);
+        }
             // Kiểm tra nếu zoneID không hợp lệ
             if (zoneIDParam == null || zoneIDParam.trim().isEmpty()) {
                 request.setAttribute("message", "Lỗi: Không có ID khu vực được truyền!");

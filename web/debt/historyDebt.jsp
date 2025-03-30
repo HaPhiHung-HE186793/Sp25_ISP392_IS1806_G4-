@@ -107,6 +107,7 @@
                                 <th>Ghi chú</th>
                                 <th>thời gian tạo</th>
                                 <th>Ngày lập phiếu</th>
+                                <th>Mã hóa đơn</th>
                                 <th>Hành động</th>
 
                             </tr>
@@ -155,6 +156,7 @@
 
                                     <td >${o.getCreateAt()}</td>
                                     <td >${o.getUpdateAt()}</td>
+                                    <td>${o.getOrderID() == 0 ? '' : o.getOrderID()}</td>
 
                                     <td> 
                                         <a href="DetailDebtCustomer?debtid=${o.getDebtID()}">

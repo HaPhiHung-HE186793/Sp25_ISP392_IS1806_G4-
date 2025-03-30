@@ -30,6 +30,13 @@ public class InsertZones extends HttpServlet {
         Integer storeID = (Integer) session.getAttribute("storeID");
         session.setMaxInactiveInterval(Integer.MAX_VALUE);
 
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if(roleID == 1 ){
+            request.getRequestDispatcher("listusers").forward(request, response);
+        }
+        if(roleID == 3 ){
+            request.getRequestDispatcher("ListZones").forward(request, response);
+        }
         // Lấy dữ liệu từ form
         String zoneName = request.getParameter("zoneName");
         int createBy = (session.getAttribute("userID") != null) ? (int) session.getAttribute("userID") : 0;

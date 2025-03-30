@@ -46,6 +46,13 @@ public class UpdateProducts extends HttpServlet {
                 response.sendRedirect("ListProducts");
                 return;
             }
+            Integer roleID = (Integer) session.getAttribute("roleID");
+        if(roleID == 1 ){
+            request.getRequestDispatcher("listusers").forward(request, response);
+        }
+        if(roleID == 3 ){
+            request.getRequestDispatcher("ListProducts").forward(request, response);
+        }
             String unitSize = daoProduct.getProductUnitSize(productID);
             // Lấy danh sách zone đã được chọn cho sản phẩm
             List<Integer> selectedZones = daoZones.getSelectedZoneIDsByProductID(productID);
