@@ -1222,7 +1222,7 @@ public class DAOProduct extends DBContext {
             FROM orders
             WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE()))
               AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
-              AND storeId = ?
+              AND storeId = ? and orderType = 0
             GROUP BY DATENAME(WEEKDAY, createAt)
             ORDER BY MIN(createAt)
         """;
@@ -1232,7 +1232,7 @@ public class DAOProduct extends DBContext {
             FROM orders
             WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE()))
               AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
-              AND storeId = ?
+              AND storeId = ? and orderType = 0
             GROUP BY DAY(createAt)
             ORDER BY DAY(createAt)
         """;
@@ -1243,7 +1243,7 @@ public class DAOProduct extends DBContext {
             WHERE CAST(createAt AS DATE) BETWEEN 
                   CAST(DATEADD(MONTH, -1, GETDATE()) AS DATE) 
                   AND CAST(EOMONTH(DATEADD(MONTH, -1, GETDATE())) AS DATE)
-              AND storeId = ?
+              AND storeId = ? and orderType = 0
             GROUP BY DATEPART(HOUR, createAt)
             ORDER BY DATEPART(HOUR, createAt)
         """;
@@ -1273,7 +1273,7 @@ public class DAOProduct extends DBContext {
             SELECT DATENAME(WEEKDAY, createAt) AS day, SUM(totalAmount) AS revenue
             FROM orders
             WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
-              AND storeId = ?
+              AND storeId = ? and orderType = 0
             GROUP BY DATENAME(WEEKDAY, createAt)
             ORDER BY MIN(createAt)
         """;
@@ -1282,7 +1282,7 @@ public class DAOProduct extends DBContext {
             SELECT FORMAT(createAt, 'yyyy-MM-dd') AS day, SUM(totalAmount) AS revenue
             FROM orders
             WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
-              AND storeId = ?
+              AND storeId = ? and orderType = 0
             GROUP BY FORMAT(createAt, 'yyyy-MM-dd')
             ORDER BY MIN(createAt)
         """;
@@ -1291,7 +1291,7 @@ public class DAOProduct extends DBContext {
             SELECT DATEPART(HOUR, createAt) AS hour, SUM(totalAmount) AS revenue
             FROM orders
             WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
-              AND storeId = ?
+              AND storeId = ? and orderType = 0
             GROUP BY DATEPART(HOUR, createAt)
             ORDER BY DATEPART(HOUR, createAt)
         """;

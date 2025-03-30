@@ -84,7 +84,12 @@ public class listUsers extends HttpServlet {
         List<Store> storeList = daos.listStore();
 
         if (request.getParameter("id") != null && !(request.getParameter("id") == "")) {
-            int id = Integer.parseInt(request.getParameter("id"));
+            int id = -1;
+            try {
+                id = Integer.parseInt(request.getParameter("id"));
+            } catch (Exception e) {
+            }
+            
             User Users = dao.getUserbyID(id);
             if (Users != null) {
                 // Không cho phép chỉnh sửa user cùng role

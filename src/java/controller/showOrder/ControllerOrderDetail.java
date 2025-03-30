@@ -52,7 +52,11 @@ public class ControllerOrderDetail extends HttpServlet {
         }
 
         int offset = (pageNumber - 1) * pageSize;
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        int orderId = -1;
+            try {
+                orderId = Integer.parseInt(request.getParameter("orderId"));
+            } catch (Exception e) {
+            }
         String productName = request.getParameter("productName");
 
         String sql = "SELECT o.orderitemID, o.productID, o.productName, o.price, o.unitPrice, o.quantity, od.orderID " +

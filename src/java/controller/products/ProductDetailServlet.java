@@ -21,7 +21,7 @@ public class ProductDetailServlet extends HttpServlet {
             String productIDParam = request.getParameter("productID");
             if (productIDParam == null || productIDParam.isEmpty()) {
                 request.setAttribute("errorMessage", "Thiếu mã sản phẩm.");
-                request.getRequestDispatcher("/dashboard/error.jsp").forward(request, response);
+                request.getRequestDispatcher("/dashboard/ListProducts").forward(request, response);
                 return;
             }
 
@@ -33,7 +33,7 @@ public class ProductDetailServlet extends HttpServlet {
             // Kiểm tra nếu sản phẩm không tồn tại
             if (product == null) {
                 request.setAttribute("errorMessage", "Sản phẩm không tồn tại hoặc đã bị xóa.");
-                request.getRequestDispatcher("/dashboard/a.jsp").forward(request, response);
+                request.getRequestDispatcher("ListProducts").forward(request, response);
                 return;
             }
 
@@ -47,11 +47,11 @@ public class ProductDetailServlet extends HttpServlet {
 
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Mã sản phẩm không hợp lệ.");
-            request.getRequestDispatcher("/dashboard/b.jsp").forward(request, response);
+            request.getRequestDispatcher("ListProducts").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi khi tải thông tin sản phẩm: " + e.getMessage());
-            request.getRequestDispatcher("/dashboard/c.jsp").forward(request, response);
+            request.getRequestDispatcher("ListProducts").forward(request, response);
         }
     }
 
