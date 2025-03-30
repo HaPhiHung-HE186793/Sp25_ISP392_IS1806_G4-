@@ -893,7 +893,7 @@ public class DAOProduct extends DBContext {
         String sql = """
         SELECT SUM(totalAmount) AS totalRevenue 
         FROM orders 
-        WHERE storeId = ? and orderType = 0
+        WHERE storeId = ? and orderType = 1
           AND MONTH(createAt) = MONTH(GETDATE()) 
           AND YEAR(createAt) = YEAR(GETDATE())
     """;
@@ -918,7 +918,7 @@ public class DAOProduct extends DBContext {
         String sql = """
         SELECT SUM(totalAmount) AS totalRevenue 
         FROM orders 
-        WHERE storeId = ? and orderType = 0
+        WHERE storeId = ? and orderType = 1
           AND MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) 
           AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
     """;
@@ -943,7 +943,7 @@ public class DAOProduct extends DBContext {
         String sql = """
         SELECT SUM(totalAmount) AS totalRevenue 
         FROM orders 
-        WHERE storeId = ? and orderType = 0
+        WHERE storeId = ? and orderType = 1
           AND createAt >= DATEADD(DAY, -7, GETDATE())
     """;
 
@@ -1098,7 +1098,7 @@ public class DAOProduct extends DBContext {
             FROM OrderItems oi
             JOIN orders o ON oi.orderID = o.orderID
             JOIN products p ON oi.productID = p.productID
-            WHERE o.storeId = ? 
+            WHERE o.storeId = ? and orderType = 1
               AND MONTH(o.createAt) = MONTH(GETDATE()) 
               AND YEAR(o.createAt) = YEAR(GETDATE())
             GROUP BY oi.productID, p.productName
@@ -1222,7 +1222,7 @@ public class DAOProduct extends DBContext {
             FROM orders
             WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE()))
               AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
-              AND storeId = ? and orderType = 0
+              AND storeId = ? and orderType = 1
             GROUP BY DATENAME(WEEKDAY, createAt)
             ORDER BY MIN(createAt)
         """;
@@ -1232,7 +1232,7 @@ public class DAOProduct extends DBContext {
             FROM orders
             WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE()))
               AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE()))
-              AND storeId = ? and orderType = 0
+              AND storeId = ? and orderType = 1
             GROUP BY DAY(createAt)
             ORDER BY DAY(createAt)
         """;
@@ -1243,7 +1243,7 @@ public class DAOProduct extends DBContext {
             WHERE CAST(createAt AS DATE) BETWEEN 
                   CAST(DATEADD(MONTH, -1, GETDATE()) AS DATE) 
                   AND CAST(EOMONTH(DATEADD(MONTH, -1, GETDATE())) AS DATE)
-              AND storeId = ? and orderType = 0
+              AND storeId = ? and orderType = 1
             GROUP BY DATEPART(HOUR, createAt)
             ORDER BY DATEPART(HOUR, createAt)
         """;
@@ -1273,7 +1273,7 @@ public class DAOProduct extends DBContext {
             SELECT DATENAME(WEEKDAY, createAt) AS day, SUM(totalAmount) AS revenue
             FROM orders
             WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
-              AND storeId = ? and orderType = 0
+              AND storeId = ? and orderType = 1
             GROUP BY DATENAME(WEEKDAY, createAt)
             ORDER BY MIN(createAt)
         """;
@@ -1282,7 +1282,7 @@ public class DAOProduct extends DBContext {
             SELECT FORMAT(createAt, 'yyyy-MM-dd') AS day, SUM(totalAmount) AS revenue
             FROM orders
             WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
-              AND storeId = ? and orderType = 0
+              AND storeId = ? and orderType = 1
             GROUP BY FORMAT(createAt, 'yyyy-MM-dd')
             ORDER BY MIN(createAt)
         """;
@@ -1291,7 +1291,7 @@ public class DAOProduct extends DBContext {
             SELECT DATEPART(HOUR, createAt) AS hour, SUM(totalAmount) AS revenue
             FROM orders
             WHERE createAt >= DATEADD(DAY, -6, CAST(GETDATE() AS DATE))
-              AND storeId = ? and orderType = 0
+              AND storeId = ? and orderType = 1
             GROUP BY DATEPART(HOUR, createAt)
             ORDER BY DATEPART(HOUR, createAt)
         """;
@@ -1312,15 +1312,15 @@ public class DAOProduct extends DBContext {
     }
 
     public double getRevenueChangePercentage(int storeId) {
-        String sql = "SELECT period, SUM(totalAmount) AS revenue FROM ("
-                + "    SELECT 'current' AS period, totalAmount "
-                + "    FROM orders WHERE MONTH(createAt) = MONTH(GETDATE()) "
-                + "    AND YEAR(createAt) = YEAR(GETDATE()) AND storeId = ? "
-                + "    UNION ALL "
-                + "    SELECT 'previous' AS period, totalAmount "
-                + "    FROM orders WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) "
-                + "    AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE())) AND storeId = ?"
-                + ") AS revenue_data GROUP BY period";
+        String sql = "SELECT period, SUM(totalAmount) AS revenue FROM (\n"
+                + "                    SELECT 'current' AS period, totalAmount \n"
+                + "                    FROM orders WHERE MONTH(createAt) = MONTH(GETDATE()) \n"
+                + "                  AND YEAR(createAt) = YEAR(GETDATE()) AND storeId = ? and orderType = 1 \n"
+                + "                    UNION ALL \n"
+                + "                 SELECT 'previous' AS period, totalAmount \n"
+                + "                   FROM orders WHERE MONTH(createAt) = MONTH(DATEADD(MONTH, -1, GETDATE())) \n"
+                + "                  AND YEAR(createAt) = YEAR(DATEADD(MONTH, -1, GETDATE())) AND storeId = ? and orderType = 1\n"
+                + "                ) AS revenue_data GROUP BY period";
 
         double currentRevenue = 0, previousRevenue = 0;
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -1342,7 +1342,11 @@ public class DAOProduct extends DBContext {
         }
 
         if (previousRevenue == 0) {
-            return 0; // Tránh chia cho 0
+            if (currentRevenue > 0) {
+                return 100.0; // Doanh thu tháng trước là 0, tháng này có doanh thu => tăng 100%
+            } else {
+                return 0.0; // Cả hai tháng đều không có doanh thu => không thay đổi
+            }
         }
 
         return ((currentRevenue - previousRevenue) / previousRevenue) * 100;
@@ -1537,6 +1541,7 @@ public class DAOProduct extends DBContext {
         // 4. Liệt kê tất cả sản phẩm
         Map<String, Double> revenueByViewType = dao.getRevenueByViewType("hour", 3);
         String[] a = dao.getTop3TotalRevenue(2);
-        System.out.println(a[0] + a[1]);
+        double ab = dao.getRevenueChangePercentage(2);
+        System.out.println(ab);
     }
 }
